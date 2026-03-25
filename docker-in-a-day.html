@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docker in a Day — Internals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#2496ed;--a2:#57b6f5;--a3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 40%,rgba(36,150,237,0.04) 0%,transparent 55%);pointer-events:none;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
+  .back:hover{color:var(--accent);}
+  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .tag-pill{display:inline-flex;background:rgba(36,150,237,0.08);border:1px solid rgba(36,150,237,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
+  .sub{color:var(--muted);font-size:.92rem;max-width:580px;margin-bottom:2rem;}
+  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
+  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
+  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
+  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
+  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
+  .section{margin-bottom:3.5rem;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--a2);}
+  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
+  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
+  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
+  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(36,150,237,0.1);color:var(--a2);padding:.1rem .3rem;border-radius:3px;}
+  .cb{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
+  .hl{color:var(--a3);}
+  .resources{display:flex;flex-direction:column;gap:.75rem;}
+  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
+  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(36,150,237,0.08);color:var(--a2);border:1px solid rgba(36,150,237,0.2);white-space:nowrap;}
+  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
+  .rc a:hover{color:var(--accent);}
+  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  .qr{background:rgba(36,150,237,0.04);border:1px solid rgba(36,150,237,0.15);border-radius:10px;padding:1.5rem;}
+  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);letter-spacing:.08em;margin-bottom:1rem;}
+  .qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+  .qi{background:rgba(0,0,0,0.2);border-radius:6px;padding:.75rem;}
+  .qi .q{font-size:.78rem;color:var(--text);margin-bottom:.3rem;font-weight:500;}
+  .qi .a{font-size:.73rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="back">← Dashboard</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🐋 DOCKER IN A DAY · 5 HOURS</span>
+</nav>
+<div class="hero">
+  <div class="tag-pill">DOCKER · CONTAINER INTERNALS · SECURITY</div>
+  <h1>Docker — Internals in a Day</h1>
+  <p class="sub">You use Docker daily. Now understand what namespaces and cgroups actually do, why OverlayFS copy-on-write matters, and how to build production-grade images for your Go services.</p>
+  <div class="timeline">
+    <div class="tblock"><div class="time">H 0–1</div><div class="topic">Namespaces + cgroups</div></div>
+    <div class="tblock"><div class="time">H 1–2</div><div class="topic">OverlayFS + Image Layers</div></div>
+    <div class="tblock"><div class="time">H 2–3.5</div><div class="topic">Multi-stage Builds + BuildKit</div></div>
+    <div class="tblock"><div class="time">H 3.5–4.5</div><div class="topic">Networking Deep</div></div>
+    <div class="tblock"><div class="time">H 4.5–5</div><div class="topic">Security: Rootless, Seccomp</div></div>
+  </div>
+</div>
+<main>
+
+<div class="section">
+  <h2><span class="sn">01</span>Key Concepts</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Linux Namespaces</h3>
+      <ul>
+        <li><strong>PID:</strong> container has its own PID 1 (init), isolated process tree</li>
+        <li><strong>Network:</strong> own network stack, interfaces, routing table</li>
+        <li><strong>Mount:</strong> own filesystem view, pivot_root</li>
+        <li><strong>UTS:</strong> own hostname and domainname</li>
+        <li><strong>IPC:</strong> isolated shared memory, semaphores</li>
+        <li><strong>User:</strong> root in container ≠ root on host (user ns)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>cgroups v2</h3>
+      <ul>
+        <li>Resource limits: CPU, memory, disk I/O, network (tc)</li>
+        <li>CPU limit: <code>cpu.max = 50000 100000</code> = 50% of one core</li>
+        <li>Memory limit: <code>memory.max</code> → OOM kill when exceeded</li>
+        <li>cgroup v2 unified hierarchy (vs v1 per-subsystem)</li>
+        <li>Kubernetes: requests = CPU shares, limits = cgroup max</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>OverlayFS</h3>
+      <ul>
+        <li>Layers: lower (read-only image layers) + upper (container rw)</li>
+        <li>Read: check upper first, fallback to lower layers</li>
+        <li>Write (CoW): copy file from lower to upper on first write</li>
+        <li>Delete: whiteout file created in upper layer</li>
+        <li>Shared layers: multiple containers share read-only layers</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Docker Networking Modes</h3>
+      <ul>
+        <li><strong>Bridge:</strong> default, docker0 bridge, NAT</li>
+        <li><strong>Host:</strong> share host network namespace (best performance)</li>
+        <li><strong>None:</strong> no network, full isolation</li>
+        <li><strong>Overlay:</strong> multi-host (Docker Swarm / Kubernetes flannel)</li>
+        <li><strong>Macvlan:</strong> container gets own MAC, direct L2 access</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Container Runtime Hierarchy</h3>
+      <ul>
+        <li>Docker → containerd → runc (OCI runtime)</li>
+        <li>containerd: manages image pull, start, stop, networking</li>
+        <li>runc: creates namespaces, cgroups, calls pivot_root</li>
+        <li>K8s bypasses Docker: kubelet → containerd (since K8s 1.24)</li>
+        <li>Alternatives: podman (rootless, daemonless), cri-o</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Container Security</h3>
+      <ul>
+        <li>Rootless containers: user namespace maps container root to unprivileged UID</li>
+        <li>Seccomp: syscall whitelist (Docker default blocks ~44 syscalls)</li>
+        <li>AppArmor/SELinux: MAC policy on file access, network</li>
+        <li>Capabilities: drop ALL, add only needed (NET_BIND_SERVICE)</li>
+        <li>Read-only rootfs: <code>--read-only</code> + tmpfs for /tmp</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">02</span>Must-Know Deep Dives</h2>
+
+  <div class="deep">
+    <h3>🔥 Multi-Stage Build for Go — Production Pattern</h3>
+    <div class="cb"><span class="hl"># Multi-stage: build binary in builder, copy to minimal runtime</span>
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+
+<span class="hl"># Layer cache: copy go.mod/go.sum first (changes rarely)</span>
+COPY go.mod go.sum ./
+RUN go mod download  # Cached unless deps change
+
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-w -s" \      # Strip debug info (-60% binary size)
+    -trimpath \              # Remove local path info
+    -o /binary ./cmd/server
+
+<span class="hl"># Runtime: scratch or distroless (no shell = smaller attack surface)</span>
+FROM gcr.io/distroless/static-debian12
+COPY --from=builder /binary /binary
+COPY --chown=nonroot:nonroot --from=builder /app/config /config
+
+USER nonroot  # Never run as root
+EXPOSE 8080
+ENTRYPOINT ["/binary"]
+
+<span class="hl"># Final image size: ~8MB (vs 300MB with golang:alpine)</span></div>
+    <p>Your Go microservices should use this pattern. <code>CGO_ENABLED=0</code> produces a static binary with no libc dependency — can run in <code>scratch</code> or <code>distroless</code>. The multi-stage pattern is what made your Hyperledger Fabric images deployable on GKE.</p>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 BuildKit — Cache Mounts for Faster CI</h3>
+    <div class="cb"><span class="hl"># Enable BuildKit</span>
+DOCKER_BUILDKIT=1 docker build .
+
+<span class="hl"># BuildKit cache mount: persist Go module cache across builds</span>
+RUN --mount=type=cache,target=/root/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /binary ./cmd/server
+
+<span class="hl"># BuildKit secret: inject secrets without baking into layers</span>
+RUN --mount=type=secret,id=npm_token \
+    NPM_TOKEN=$(cat /run/secrets/npm_token) npm install
+
+<span class="hl"># Parallel build stages (BuildKit builds independent stages in parallel)</span>
+FROM base AS stage1
+RUN ...
+
+FROM base AS stage2  # Runs in parallel with stage1
+RUN ...</div>
+    <p>Cache mounts alone cut your Go build time from 3 minutes to 20 seconds on repeated builds. Module cache persists across Docker layer changes. Your Jenkins/Helm pipeline should use BuildKit with cache mounts.</p>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Security Hardening Checklist</h3>
+    <div class="cb"><span class="hl"># 1. Non-root user</span>
+RUN addgroup -g 1001 app && adduser -u 1001 -G app -s /bin/sh -D app
+USER app
+
+<span class="hl"># 2. Read-only filesystem</span>
+docker run --read-only --tmpfs /tmp myservice
+
+<span class="hl"># 3. Drop ALL capabilities, add only what's needed</span>
+docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE myservice
+
+<span class="hl"># 4. Scan image for CVEs before push</span>
+docker scout cves myservice:latest
+# Or: trivy image myservice:latest
+
+<span class="hl"># 5. No latest tags in production — use digest</span>
+FROM golang:1.22.1-alpine@sha256:abc123...
+
+<span class="hl"># 6. .dockerignore — don't leak secrets or bloat image</span>
+.git
+*.md
+**/*_test.go
+.env
+config/secrets/</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">03</span>Resources</h2>
+  <div class="resources">
+    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=8fi7uSYlOdc" target="_blank">Liz Rice — Container Security (USENIX)</a><p>45 min. Builds a container from scratch using Go. Best "what actually is a container" explanation.</p></div></div>
+    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://docs.docker.com/build/buildkit/" target="_blank">BuildKit Official Docs</a><p>Cache mounts, secrets, SSH forwarding. All the features your CI/CD pipeline should use.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://iximiuz.com/en/posts/container-networking-is-simple/" target="_blank">Ivan Velichko — Container Networking is Simple</a><p>Builds container networking from scratch with veth pairs and bridges. Best networking deep dive.</p></div></div>
+    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://github.com/GoogleContainerTools/distroless" target="_blank">Google Distroless Containers</a><p>Language-specific base images with minimal attack surface. Use for your Go services.</p></div></div>
+    <div class="res"><span class="rt">TOOL</span><div class="rc"><a href="https://github.com/aquasecurity/trivy" target="_blank">Trivy — Container Vulnerability Scanner</a><p>Scan images for CVEs in CI pipeline. Better than Snyk for free OSS use. Integrate with your Jenkins.</p></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">04</span>Quick Revision</h2>
+  <div class="qr">
+    <h3>DOCKER FLASH CARDS</h3>
+    <div class="qg">
+      <div class="qi"><div class="q">Container vs VM?</div><div class="a">Container: shared kernel, isolated via namespaces+cgroups. VM: separate kernel, hardware virtualization. Container: &lt;10ms start, &lt;10MB overhead. VM: 30s start, 100MB+ overhead.</div></div>
+      <div class="qi"><div class="q">OverlayFS CoW?</div><div class="a">Read: check upper layer (rw) first, then lower layers (ro). Write: copy file from lower to upper on first modification. Multiple containers share read-only lower layers → efficient.</div></div>
+      <div class="qi"><div class="q">Rootless container?</div><div class="a">User namespace maps container UID 0 → host unprivileged UID (e.g. 100000). Root in container can't do root things on host. Podman: rootless by default.</div></div>
+      <div class="qi"><div class="q">Best Go image strategy?</div><div class="a">Multi-stage: build in golang:alpine, copy binary to distroless/static. CGO_ENABLED=0 for static binary. Final image ~5-10MB. No shell = reduced attack surface.</div></div>
+      <div class="qi"><div class="q">BuildKit cache mount?</div><div class="a">--mount=type=cache,target=/root/go/pkg/mod persists Go module cache between builds. Layer invalidation no longer evicts module cache. 10x faster repeated builds.</div></div>
+      <div class="qi"><div class="q">cgroup CPU limit vs request?</div><div class="a">Requests = cpu.shares (relative weight, proportional). Limits = cpu.cfs_quota_us/cpu.cfs_period_us (hard throttle). CPU throttling kills p99 latency even when average CPU is low.</div></div>
+    </div>
+  </div>
+</div>
+</main>
+</body>
+</html>

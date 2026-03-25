@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Prep — Staff Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#fbbf24;--a2:#fcd34d;--a3:#00e5b0;--a4:#ff5f40;--text:#e8eaf0;--muted:#6b7385;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 70% 60%,rgba(251,191,36,0.04) 0%,transparent 55%);pointer-events:none;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
+  .back:hover{color:var(--accent);}
+  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .tag-pill{display:inline-flex;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
+  .sub{color:var(--muted);font-size:.92rem;max-width:580px;margin-bottom:2rem;}
+  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
+  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
+  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
+  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
+  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
+  .section{margin-bottom:3.5rem;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--accent);}
+  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
+  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
+  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
+  .story-card{background:var(--s2);border-radius:8px;padding:1.25rem;margin-bottom:.75rem;}
+  .story-card .q{font-size:.85rem;color:var(--accent);font-weight:600;margin-bottom:.75rem;}
+  .story-card .star-section{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.6rem;}
+  .star-box{background:rgba(0,0,0,0.2);border-radius:6px;padding:.6rem;}
+  .star-box .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.3rem;text-transform:uppercase;}
+  .star-box p{font-size:.75rem;color:var(--muted);line-height:1.5;}
+  .signal{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.15rem .5rem;border-radius:4px;margin-top:.4rem;}
+  .sig-good{background:rgba(0,229,176,0.08);color:var(--a3);border:1px solid rgba(0,229,176,0.2);}
+  .sig-bad{background:rgba(255,95,64,0.08);color:var(--a4);border:1px solid rgba(255,95,64,0.2);}
+  .sysdesign-framework{background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
+  .framework-steps{display:flex;flex-direction:column;gap:.75rem;}
+  .step{display:flex;gap:1rem;align-items:flex-start;}
+  .step-num{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--accent);background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:4px;padding:.2rem .6rem;white-space:nowrap;margin-top:.1rem;}
+  .step-content{flex:1;}
+  .step-content strong{font-size:.85rem;color:var(--text);}
+  .step-content p{font-size:.8rem;color:var(--muted);margin-top:.2rem;}
+  .resources{display:flex;flex-direction:column;gap:.75rem;}
+  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
+  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(251,191,36,0.08);color:var(--a2);border:1px solid rgba(251,191,36,0.2);white-space:nowrap;}
+  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
+  .rc a:hover{color:var(--accent);}
+  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  .qr{background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:1.5rem;}
+  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);letter-spacing:.08em;margin-bottom:1rem;}
+  .traps{display:flex;flex-direction:column;gap:.6rem;}
+  .trap{background:rgba(0,0,0,0.2);border-radius:6px;padding:.85rem;}
+  .trap .t{font-size:.82rem;color:var(--a4);margin-bottom:.4rem;font-weight:600;}
+  .trap .fix{font-size:.78rem;color:var(--muted);}
+  .comp-table{width:100%;border-collapse:collapse;margin:.75rem 0;}
+  .comp-table th{background:rgba(251,191,36,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.5rem .75rem;text-align:left;}
+  .comp-table td{font-size:.8rem;color:var(--muted);padding:.5rem .75rem;border-bottom:1px solid rgba(30,37,48,0.5);}
+  .comp-table td:first-child{color:var(--text);}
+  @media(max-width:600px){.star-section{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="back">← Dashboard</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🎯 INTERVIEW PREP · 8 HOURS</span>
+</nav>
+<div class="hero">
+  <div class="tag-pill">STAFF ENGINEER INTERVIEW · BEHAVIORAL + TECHNICAL + NEGOTIATION</div>
+  <h1>Interview Prep in a Day</h1>
+  <p class="sub">Calibrated for Senior → Staff transition. How to lead a system design session. STAR stories from your distributed systems work. Salary negotiation for Staff-level comp. How not to fail on behavioral rounds.</p>
+  <div class="timeline">
+    <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">System Design Framework</div></div>
+    <div class="tblock"><div class="time">H 1.5–3.5</div><div class="topic">Behavioral: STAR Stories</div></div>
+    <div class="tblock"><div class="time">H 3.5–5</div><div class="topic">Coding Interview Strategy</div></div>
+    <div class="tblock"><div class="time">H 5–6.5</div><div class="topic">Staff-Level Questions</div></div>
+    <div class="tblock"><div class="time">H 6.5–8</div><div class="topic">Compensation + Negotiation</div></div>
+  </div>
+</div>
+<main>
+
+<div class="section">
+  <h2><span class="sn">01</span>System Design Interview — Staff Framework</h2>
+  <div class="sysdesign-framework">
+    <div class="framework-steps">
+      <div class="step">
+        <span class="step-num">MIN 0–3</span>
+        <div class="step-content">
+          <strong>Clarify Requirements (you ask, they answer)</strong>
+          <p>Who are the users? What scale — DAU, requests/sec? Read vs write ratio? Latency SLA (p99)? Consistency requirements? Any special constraints? Global or single-region? <strong>Don't design until you know this.</strong> Staff engineers are expected to discover requirements, not wait for them.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">MIN 3–8</span>
+        <div class="step-content">
+          <strong>Capacity Estimation + Back-of-Envelope</strong>
+          <p>100M DAU × 10 actions/day = 1B actions/day = ~12K RPS. Storage: 100M users × 1KB profile = 100GB. Know: 1 day = 86K seconds (round to 100K). Bandwidth: 12K RPS × 100KB = 1.2 GB/s. This sets the conversation — design for this scale.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">MIN 8–20</span>
+        <div class="step-content">
+          <strong>High-Level Design — Draw the Box Diagram</strong>
+          <p>Client → LB → API gateway → Services → Storage. Be specific: "a read-optimized service" → "a Go microservice with connection pool to Cassandra, caches in Redis with 5-min TTL". Name technologies. Explain choices. Staff engineers commit to decisions with reasoning.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">MIN 20–35</span>
+        <div class="step-content">
+          <strong>Deep Dive — Pick the Hardest Component</strong>
+          <p>Interviewer will ask — or you should volunteer: "The hardest part is message delivery guarantees. Let me go deep on that." Show you can go from HLD to LLD. Explain the data model, API contracts, failure modes. This is where Staff-level depth shows.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">MIN 35–45</span>
+        <div class="step-content">
+          <strong>Trade-offs + Scaling + Follow-ups</strong>
+          <p>Proactively say: "This design has a bottleneck at X. At 10x scale I'd shard by Y. Currently we'd hit the single Kafka partition at 1M msgs/sec, so we'd partition by account_id." Interviewers love engineers who identify their own design's weaknesses.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deep">
+    <h3>Signs of Staff vs Senior in System Design</h3>
+    <div class="cards" style="margin-top:0;">
+      <div class="card">
+        <h3>Senior Signals ✓</h3>
+        <ul>
+          <li>Correctly identifies main components</li>
+          <li>Knows common patterns (LB, cache, DB)</li>
+          <li>Responds to interviewer hints</li>
+          <li>Can implement what they design</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Staff Signals ✓✓</h3>
+        <ul>
+          <li>Drives the conversation proactively</li>
+          <li>Identifies multiple valid approaches + trade-offs</li>
+          <li>Connects design to business requirements</li>
+          <li>Proactively surfaces failure modes</li>
+          <li>Knows when NOT to use a technology</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">02</span>Behavioral — STAR Stories from Your Work</h2>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;">Your experience is excellent for Staff-level stories. Here are pre-built STAR templates using your actual work.</p>
+
+  <div class="story-card">
+    <div class="q">Q: Tell me about a time you made an architectural decision with significant trade-offs.</div>
+    <div class="star-section">
+      <div class="star-box"><div class="label">Situation</div><p>Building CBDC interoperable bridge — needed to connect multiple blockchain networks in real-time.</p></div>
+      <div class="star-box"><div class="label">Task</div><p>Design the cross-network asset transfer system with guaranteed delivery and double-spend prevention.</p></div>
+      <div class="star-box"><div class="label">Action</div><p>Chose Kafka-based event sourcing with exactly-once semantics. Considered 2PC but rejected for availability. Implemented Saga pattern with compensating transactions. Chose CP over AP for CBDC's zero-tolerance for double spend.</p></div>
+      <div class="star-box"><div class="label">Result</div><p>99.99% uptime, zero double-spends in production. Trade-off: higher latency during Kafka broker unavailability — acceptable for financial system.</p></div>
+    </div>
+    <span class="signal sig-good">Signals: technical depth, explicit trade-off reasoning, business context awareness</span>
+  </div>
+
+  <div class="story-card">
+    <div class="q">Q: Tell me about a time you improved system performance significantly.</div>
+    <div class="star-section">
+      <div class="star-box"><div class="label">Situation</div><p>MariaDB query load spiking during forex settlement, causing latency spikes in peak trading hours.</p></div>
+      <div class="star-box"><div class="label">Task</div><p>Reduce DB load without data accuracy loss for financial transactions.</p></div>
+      <div class="star-box"><div class="label">Action</div><p>Analyzed query patterns → forex rates read 100:1 vs write. Designed Redis cache with time-bucketed keys (forex:rate:USDEUR:15min), cache-aside pattern, TTL aligned to rate feed update frequency. Added event-driven invalidation via Kafka for real-time rate changes.</p></div>
+      <div class="star-box"><div class="label">Result</div><p>80% reduction in DB load. P99 latency dropped from 200ms to 15ms. Zero cache staleness incidents — TTL + event invalidation covered all cases.</p></div>
+    </div>
+    <span class="signal sig-good">Signals: measurement-driven, layered solution (not just "added cache"), quantified results</span>
+  </div>
+
+  <div class="story-card">
+    <div class="q">Q: Describe a time you had to lead without authority.</div>
+    <div class="star-section">
+      <div class="star-box"><div class="label">Situation</div><p>Multi-org Hyperledger Fabric deployment — each bank had separate DevOps teams with different deployment preferences.</p></div>
+      <div class="star-box"><div class="label">Task</div><p>Standardize deployment across 5 participant banks without authority over their infrastructure teams.</p></div>
+      <div class="star-box"><div class="label">Action</div><p>Designed Helm chart that was composable — each bank could override values while sharing core chart. Ran workshops demonstrating 60% faster deployment. Created runbook for their ops teams. Made it easy to adopt, not mandatory.</p></div>
+      <div class="star-box"><div class="label">Result</div><p>4/5 banks adopted within 2 months. 60% deployment time reduction. One bank held out — respected their decision, kept compatibility. Cross-team trust built.</p></div>
+    </div>
+    <span class="signal sig-good">Signals: influence without authority, empathy for other teams, pragmatism (not mandating)</span>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">03</span>Staff-Level Question Bank</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Architecture Questions</h3>
+      <ul>
+        <li>"How would you migrate a monolith to microservices?"</li>
+        <li>"How do you handle distributed transactions?"</li>
+        <li>"When would you NOT use microservices?"</li>
+        <li>"How do you ensure consistency across services?"</li>
+        <li>"How do you design for 10x traffic in 6 months?"</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Leadership Questions</h3>
+      <ul>
+        <li>"How do you resolve technical disagreements?"</li>
+        <li>"Tell me about a time you changed course mid-project"</li>
+        <li>"How do you balance tech debt vs new features?"</li>
+        <li>"How do you mentor junior engineers?"</li>
+        <li>"How do you influence decisions above your level?"</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Deep Technical</h3>
+      <ul>
+        <li>"Kafka exactly-once — how does it actually work?"</li>
+        <li>"You have a split brain in your DB cluster — what now?"</li>
+        <li>"How do you detect memory leaks in a Go service?"</li>
+        <li>"Explain your understanding of strong consistency"</li>
+        <li>"How would you debug a service with rising p99 latency?"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">04</span>Common Staff Interview Traps</h2>
+  <div class="traps">
+    <div class="trap">
+      <div class="t">❌ Trap: Jumping to solution without requirements</div>
+      <div class="fix">Fix: Always spend 3-5 minutes clarifying. Interviewers penalize engineers who design before understanding. Say "Before I design, I want to understand the usage patterns — is this read or write heavy?"</div>
+    </div>
+    <div class="trap">
+      <div class="t">❌ Trap: Using buzzwords without depth ("I'd use Kubernetes")</div>
+      <div class="fix">Fix: Always explain the why. "I'd containerize with Docker and deploy on Kubernetes because we need horizontal scaling for the stateless API layer, and K8s HPA handles traffic spikes automatically with Prometheus metrics."</div>
+    </div>
+    <div class="trap">
+      <div class="t">❌ Trap: Proposing a perfect system with no trade-offs</div>
+      <div class="fix">Fix: All systems have trade-offs. Proactively say: "This design optimizes for availability at the cost of strong consistency — which is acceptable for this feed use case but wouldn't work for payments."</div>
+    </div>
+    <div class="trap">
+      <div class="t">❌ Trap: Behavioral answers without data ("I improved performance")</div>
+      <div class="fix">Fix: Always quantify. "Reduced P99 from 200ms to 15ms" not "made it faster". "Reduced deployment time by 60%" not "made deployments faster".</div>
+    </div>
+    <div class="trap">
+      <div class="t">❌ Trap: Waiting for interviewer to ask about trade-offs</div>
+      <div class="fix">Fix: Staff engineers proactively surface weaknesses. "One limitation of this approach is..." shows intellectual honesty and system-level thinking.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">05</span>Compensation Strategy</h2>
+  <div class="deep">
+    <h3>Staff Engineer Comp Framework (India Market 2025)</h3>
+    <table class="comp-table">
+      <tr><th>Company Tier</th><th>Base (INR)</th><th>ESOPs/RSUs</th><th>Total Comp</th></tr>
+      <tr><td>FAANG/MNC India</td><td>60–90 LPA</td><td>40–80L/yr (vesting)</td><td>1–1.7 Cr/yr</td></tr>
+      <tr><td>Tier 1 Indian Product</td><td>45–70 LPA</td><td>Variable</td><td>50–80 LPA</td></tr>
+      <tr><td>Growth Startup (Series B+)</td><td>35–55 LPA</td><td>High ESOP grant</td><td>Bet on equity</td></tr>
+      <tr><td>Remote (US company)</td><td>$120–180K USD</td><td>RSUs</td><td>Strong if remote-first</td></tr>
+    </table>
+    <p style="margin-top:.75rem;"><strong>Negotiation Rules:</strong> Never accept first offer. "I'm very excited about this role. The offer is below my expectations — I was targeting X based on my research and the impact I'll bring. Is there flexibility?" Always negotiate stock separately from base. Ask about cliff, vesting schedule, and whether they do refreshes.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">06</span>Resources</h2>
+  <div class="resources">
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://staffeng.com/guides/staff-archetypes" target="_blank">Staff Eng — Staff Archetypes (Will Larson)</a><p>Tech lead, architect, solver, right-hand — which archetype are you? Understand what interviewers look for.</p></div></div>
+    <div class="res"><span class="rt">BOOK</span><div class="rc"><a href="https://www.oreilly.com/library/view/staff-engineer/9781098118723/" target="_blank">Staff Engineer: Leadership Beyond the Management Track</a><p>Read Part 1 (archetypes) + Part 3 (interview prep). Skip the management sections for now.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://www.levels.fyi/blog/cracking-the-staff-engineer-interview.html" target="_blank">levels.fyi — Cracking the Staff Engineer Interview</a><p>Interview format expectations at different companies. What "staff caliber" means in practice.</p></div></div>
+    <div class="res"><span class="rt">TOOL</span><div class="rc"><a href="https://www.levels.fyi/" target="_blank">Levels.fyi — Compensation Benchmarks</a><p>Real-world comp data. Filter by company + level. Your anchor for any negotiation.</p></div></div>
+    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=30zfYVxuNms" target="_blank">Tech Interview Handbook — Behavioral Interview Guide</a><p>STAR method with real examples. Dense, structured. 20 min max value.</p></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">07</span>Day-Before Checklist</h2>
+  <div class="qr">
+    <h3>FINAL PREP — 24 HOURS OUT</h3>
+    <div class="traps">
+      <div class="trap" style="background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);">
+        <div class="fix">✓ Have 3 STAR stories ready: impact, trade-off decision, conflict/disagreement. From your CBDC, ForEx, Fabric work.</div>
+      </div>
+      <div class="trap" style="background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);">
+        <div class="fix">✓ Practice: "Tell me about yourself" in exactly 90 seconds. Senior SWE → distributed systems → CBDC at scale → Staff trajectory.</div>
+      </div>
+      <div class="trap" style="background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);">
+        <div class="fix">✓ Have your comp target ready. Base + equity separately. Minimum acceptable. Don't reveal first.</div>
+      </div>
+      <div class="trap" style="background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);">
+        <div class="fix">✓ Questions to ask them: "What does success look like at 6 months?", "What's the biggest technical challenge the team faces?", "How does eng influence product decisions?"</div>
+      </div>
+      <div class="trap" style="background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);">
+        <div class="fix">✓ Know the company's tech stack, recent engineering blog posts, any public system design talks by their engineers.</div>
+      </div>
+      <div class="trap" style="background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);">
+        <div class="fix">✓ Sleep 8h. No last-minute cramming. Your CBDC/Kafka/Go expertise is the asset — let it surface naturally.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

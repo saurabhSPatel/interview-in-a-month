@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Advanced — Runtime Internals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#00acd7;--a2:#00e5b0;--a3:#ff5f40;--text:#e8eaf0;--muted:#6b7385;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 25% 60%,rgba(0,172,215,0.05) 0%,transparent 55%);pointer-events:none;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
+  .back:hover{color:var(--accent);}
+  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .tag-pill{display:inline-flex;background:rgba(0,172,215,0.08);border:1px solid rgba(0,172,215,0.2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
+  .sub{color:var(--muted);font-size:.92rem;max-width:580px;margin-bottom:2rem;}
+  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
+  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
+  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
+  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
+  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
+  .section{margin-bottom:3.5rem;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--accent);}
+  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
+  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
+  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
+  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(0,172,215,0.1);color:var(--accent);padding:.1rem .3rem;border-radius:3px;}
+  .cb{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
+  .hl{color:var(--a2);}
+  .resources{display:flex;flex-direction:column;gap:.75rem;}
+  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
+  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(0,172,215,0.08);color:var(--accent);border:1px solid rgba(0,172,215,0.2);white-space:nowrap;}
+  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
+  .rc a:hover{color:var(--accent);}
+  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  .qr{background:rgba(0,172,215,0.04);border:1px solid rgba(0,172,215,0.15);border-radius:10px;padding:1.5rem;}
+  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);letter-spacing:.08em;margin-bottom:1rem;}
+  .qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+  .qi{background:rgba(0,0,0,0.2);border-radius:6px;padding:.75rem;}
+  .qi .q{font-size:.78rem;color:var(--text);margin-bottom:.3rem;font-weight:500;}
+  .qi .a{font-size:.73rem;color:var(--muted);}
+  .gmp-diagram{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);line-height:2;overflow-x:auto;}
+  .gmp-diagram .box{display:inline-block;border:1px solid var(--accent);padding:.15rem .5rem;border-radius:4px;color:var(--accent);margin:0 .2rem;}
+  .gmp-diagram .gbox{border-color:var(--a2);color:var(--a2);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="back">← Dashboard</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);">🐹 GO EXPERT IN A DAY · 7 HOURS</span>
+</nav>
+<div class="hero">
+  <div class="tag-pill">GO · RUNTIME INTERNALS · EXPERT LEVEL</div>
+  <h1>Go — Runtime Internals</h1>
+  <p class="sub">You already write production Go. This day is about understanding what the runtime does: GMP scheduler, GC pauses, channel internals, interface dispatch — so you can debug and optimize at the deepest level.</p>
+  <div class="timeline">
+    <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">GMP Scheduler Deep</div></div>
+    <div class="tblock"><div class="time">H 1.5–3</div><div class="topic">Garbage Collector</div></div>
+    <div class="tblock"><div class="time">H 3–4</div><div class="topic">Channel + Sync Internals</div></div>
+    <div class="tblock"><div class="time">H 4–5</div><div class="topic">Interface + Reflection</div></div>
+    <div class="tblock"><div class="time">H 5–6.5</div><div class="topic">pprof + trace Profiling</div></div>
+    <div class="tblock"><div class="time">H 6.5–7</div><div class="topic">Generics + Patterns</div></div>
+  </div>
+</div>
+<main>
+
+<div class="section">
+  <h2><span class="sn">01</span>GMP Scheduler Architecture</h2>
+  <div class="gmp-diagram">
+<span class="box">G</span> Goroutine — stack (~2KB initial), program counter, goroutine-local state<br>
+<span class="box">M</span> Machine (OS Thread) — executes G, needs P to run<br>
+<span class="box">P</span> Processor — logical CPU, local run queue (256 G max), GC state<br>
+<br>
+M needs P to run G: <span class="box">M</span> + <span class="box">P</span> → executes <span class="box gbox">G1 G2 G3...</span><br>
+<br>
+GOMAXPROCS = number of P's (default: number of CPU cores)<br>
+<br>
+Global queue: Gs not assigned to any P yet<br>
+Work-stealing: idle M steals half of busy P's local queue
+  </div>
+  <div class="deep" style="margin-top:1rem;">
+    <h3>Scheduler Events — When Goroutines Yield</h3>
+    <p>Goroutines yield cooperatively at: <code>runtime.Gosched()</code>, channel ops, syscalls, function calls (preemption points added in Go 1.14+). Before 1.14: tight CPU loops could starve other goroutines — preemptive scheduling solved this via signal-based preemption (SIGURG).</p>
+    <p><strong>Syscall handling:</strong> On blocking syscall, M releases P → P can be taken by another M → goroutine blocked on syscall gets its own M. When syscall returns: try to re-acquire P, otherwise park M, goroutine goes to global queue. This is how Go handles 10K+ blocking DB calls.</p>
+    <div class="cb"><span class="hl">// Diagnose scheduler issues</span>
+GODEBUG=schedtrace=1000 ./yourservice  # Scheduler stats every 1s
+GODEBUG=scheddetail=1 GODEBUG=schedtrace=100 ./yourservice  # Verbose
+
+<span class="hl">// Output example:</span>
+// SCHED 1000ms: gomaxprocs=8 idleprocs=2 threads=12 spinningthreads=1
+//   runqueue=3 [4 2 0 1 0 3 2 1]  ← per-P local queue sizes</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">02</span>Key Concepts</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Tricolor GC — How It Works</h3>
+      <ul>
+        <li>White: not yet visited (candidates for collection)</li>
+        <li>Gray: visited, references not yet scanned</li>
+        <li>Black: visited, all references scanned (safe)</li>
+        <li>Start: all white. Mark roots gray. Process gray → black.</li>
+        <li>Sweep: all remaining white are garbage</li>
+        <li>Concurrent: runs alongside user goroutines (write barrier)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>GC Tuning — GOGC</h3>
+      <ul>
+        <li><code>GOGC=100</code> (default): GC when heap doubles</li>
+        <li>Lower GOGC: more frequent GC, less memory, more CPU</li>
+        <li>Higher GOGC: rarer GC, more memory, less CPU overhead</li>
+        <li>Go 1.19+: <code>GOMEMLIMIT</code> — soft memory limit (better than GOGC)</li>
+        <li><code>runtime.GC()</code>: force collection (testing only)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Channel Internals</h3>
+      <ul>
+        <li>hchan struct: circular buffer + mutex + send/recv queues</li>
+        <li>Buffered: copy into buffer if space, else park sender goroutine</li>
+        <li>Unbuffered: sender parks until receiver ready (rendezvous)</li>
+        <li>Closed channel: receive returns zero value + false</li>
+        <li>select: pseudo-random choice among ready cases</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Interface Internals</h3>
+      <ul>
+        <li>Interface = two pointers: (type, data) = (itab, value)</li>
+        <li>itab: interface type + concrete type + method pointer table</li>
+        <li>Type assertion: check itab.type matches expected</li>
+        <li>nil interface ≠ interface with nil value inside</li>
+        <li>Dynamic dispatch: one pointer dereference + function call</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Memory Model</h3>
+      <ul>
+        <li>Happens-before: goroutine creation, channel ops, sync.Mutex</li>
+        <li>No synchronization = data race = undefined behavior</li>
+        <li>Race detector: <code>go run -race</code> (30% overhead, catch races)</li>
+        <li>sync/atomic: lock-free operations at L1 cache speed</li>
+        <li>sync.Map: RWMutex optimized for mostly-reads + many keys</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Goroutine Stack</h3>
+      <ul>
+        <li>Initial: 2KB (Go 1.4+, was 8KB before)</li>
+        <li>Grows by copying to new location (no stack pointer tricks)</li>
+        <li>Shrinks at GC if usage much less than allocated</li>
+        <li>Max default: 1GB (can set with SetMaxStack)</li>
+        <li>Stack scan at GC: roots for tricolor marking</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">03</span>Must-Know Deep Dives</h2>
+
+  <div class="deep">
+    <h3>🔥 pprof — Profiling Your Go Service</h3>
+    <div class="cb"><span class="hl">// Add to your service (import side effects)</span>
+import _ "net/http/pprof"
+
+func main() {
+    go http.ListenAndServe("localhost:6060", nil)  // pprof endpoint
+    // ... rest of your service
+}
+
+<span class="hl">// CPU profile: what's consuming CPU?</span>
+go tool pprof http://localhost:6060/debug/pprof/profile?seconds=30
+# In pprof: (top) shows top functions, (web) shows flame graph
+
+<span class="hl">// Memory profile: what's allocating?</span>
+go tool pprof http://localhost:6060/debug/pprof/heap
+
+<span class="hl">// Goroutine profile: goroutine leak detection</span>
+curl http://localhost:6060/debug/pprof/goroutine?debug=1
+
+<span class="hl">// Trace: scheduler, GC, syscalls timeline</span>
+curl http://localhost:6060/debug/pprof/trace?seconds=5 > trace.out
+go tool trace trace.out  # Interactive browser UI</div>
+    <p>For your notification service (10K+ alerts/sec): start with CPU profile — find the hot functions. If latency spikes: use trace to see GC pause impact. Goroutine count growing? Check goroutine dump for leak pattern.</p>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Common Performance Pitfalls</h3>
+    <div class="cb"><span class="hl">// 1. String concatenation in loop: O(n²) allocations</span>
+var s string
+for _, v := range items { s += v }  // Bad
+b := strings.Builder{}
+for _, v := range items { b.WriteString(v) }  // Good
+
+<span class="hl">// 2. interface{} in hot path: heap escapes</span>
+fmt.Sprintf("user %d", userID)  // Causes heap alloc for userID
+// Use strconv.AppendInt into buffer instead
+
+<span class="hl">// 3. Slice append growing: pre-allocate capacity</span>
+result := make([]Item, 0, len(input))  // Pre-allocate
+
+<span class="hl">// 4. Map iteration order: non-deterministic (by design)</span>
+// Use sorted keys if you need determinism
+
+<span class="hl">// 5. sync.Pool for object reuse (your notification service)</span>
+var bufPool = sync.Pool{
+    New: func() any { return new(bytes.Buffer) },
+}
+buf := bufPool.Get().(*bytes.Buffer)
+buf.Reset()
+defer bufPool.Put(buf)</div>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Go Generics — Patterns for Expert Use</h3>
+    <div class="cb"><span class="hl">// Type constraints with interface</span>
+type Number interface {
+    ~int | ~int64 | ~float64  // Tilde: includes derived types
+}
+
+func Sum[T Number](nums []T) T {
+    var total T
+    for _, n := range nums { total += n }
+    return total
+}
+
+<span class="hl">// Generic data structure (replaces interface{} slice)</span>
+type Stack[T any] struct {
+    items []T
+}
+func (s *Stack[T]) Push(item T) { s.items = append(s.items, item) }
+func (s *Stack[T]) Pop() (T, bool) {
+    if len(s.items) == 0 { var zero T; return zero, false }
+    item := s.items[len(s.items)-1]
+    s.items = s.items[:len(s.items)-1]
+    return item, true
+}
+
+<span class="hl">// When NOT to use generics: simple functions that work fine with interface{}</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 nil Interface Trap — Classic Bug</h3>
+    <div class="cb"><span class="hl">// This will panic unexpectedly</span>
+type MyError struct { msg string }
+func (e *MyError) Error() string { return e.msg }
+
+func doSomething() error {
+    var err *MyError = nil  // Typed nil
+    return err  // Returns interface with (type=*MyError, value=nil)
+}
+
+func main() {
+    if err := doSomething(); err != nil {  // TRUE! interface is not nil!
+        panic(err)  // Panics on "nil" error
+    }
+}
+
+<span class="hl">// Fix: return untyped nil</span>
+func doSomething() error {
+    // ... if no error:
+    return nil  // Returns interface (type=nil, value=nil)
+}</div>
+    <p>This bit every Go developer once. Especially dangerous in middleware/wrapper functions. Lesson: always return bare <code>nil</code> for error, never return a typed nil pointer as error interface.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">04</span>Resources</h2>
+  <div class="resources">
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://go.dev/blog/ismmkeynote" target="_blank">Go GC: Prioritizing Low Latency and Simplicity — Official</a><p>The Go team explains GC design goals. How they reduced STW from seconds to sub-millisecond. Essential context.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html" target="_blank">Ardan Labs — Scheduling in Go (3-part series)</a><p>Bill Kennedy's deep dive on GMP. Best external scheduler resource. Read all 3 parts.</p></div></div>
+    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=2557w0qsDV0" target="_blank">Kavya Joshi — Understanding Channels</a><p>25-min deep dive on hchan internals. Watch this if you use channels heavily (your notification service).</p></div></div>
+    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://pkg.go.dev/runtime/pprof" target="_blank">Go pprof — Official Docs</a><p>Complete profiling API. Integrate into your services — not just for debugging, for performance SLOs.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://go.dev/doc/faq#nil_error" target="_blank">Go FAQ — Why is my nil error value not equal to nil?</a><p>Official explanation of the nil interface trap. Short, authoritative.</p></div></div>
+    <div class="res"><span class="rt">CODE</span><div class="rc"><a href="https://go.dev/src/runtime/proc.go" target="_blank">Go Runtime Source: runtime/proc.go</a><p>Read the schedule() and findRunnable() functions. 1000 lines. Best GMP doc.</p></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">05</span>Quick Revision</h2>
+  <div class="qr">
+    <h3>GO INTERNALS FLASH CARDS</h3>
+    <div class="qg">
+      <div class="qi"><div class="q">What is a P in GMP?</div><div class="a">Processor — logical CPU context. Holds local run queue (~256 Gs), GC state. M needs P to run. GOMAXPROCS = number of Ps. idle Ms work-steal from busy Ps.</div></div>
+      <div class="qi"><div class="q">How does Go prevent goroutine starvation?</div><div class="a">Signal-based preemption (Go 1.14+). SIGURG sent to thread, goroutine preempted at next safe point. Global queue checked every 61 scheduler cycles.</div></div>
+      <div class="qi"><div class="q">GOGC vs GOMEMLIMIT?</div><div class="a">GOGC: ratio-based, triggers when heap grows by GOGC%. GOMEMLIMIT (Go 1.19+): absolute limit, GC aggressive near limit. Use GOMEMLIMIT for K8s memory.limit alignment.</div></div>
+      <div class="qi"><div class="q">Interface equality trap?</div><div class="a">Interface nil only if BOTH type and value are nil. Typed nil pointer converted to interface = non-nil interface. Always return bare nil for error.</div></div>
+      <div class="qi"><div class="q">sync.Pool guarantee?</div><div class="a">Pooled objects may be evicted at any GC. Pool is a cache, not a free list. Always call Reset() before use. Zero-allocation pattern for hot path.</div></div>
+      <div class="qi"><div class="q">When does goroutine stack grow?</div><div class="a">On function call: stack guard check. If exceeded: new larger stack allocated, old contents copied, all pointers updated. Expensive — avoid deep recursion in hot path.</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

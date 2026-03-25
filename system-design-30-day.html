@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design in 30 Days</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090f;--surface:#0e1117;--surface2:#141820;--border:#1e2530;--accent:#5b8fff;--accent2:#ff5f40;--accent3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 80% 20%,rgba(91,143,255,0.04) 0%,transparent 55%);pointer-events:none;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back-link{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
+  .back-link:hover{color:var(--accent);}
+  .hero{max-width:1100px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .tag{display:inline-flex;align-items:center;background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:1rem;}
+  h1 span{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero-desc{color:var(--muted);font-size:.95rem;max-width:600px;margin-bottom:2rem;}
+  .meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:3rem;}
+  .meta-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1.3rem;}
+  .meta-box .val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);}
+  .meta-box .key{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  main{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
+  .week-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);margin-top:3.5rem;}
+  .week-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);}
+  .week-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
+  .week-theme{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);color:var(--accent);padding:.2rem .6rem;border-radius:4px;margin-left:auto;}
+  .day-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;}
+  .day-card:hover{border-color:rgba(91,143,255,0.25);}
+  .day-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;cursor:pointer;}
+  .day-num-badge{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);min-width:52px;}
+  .day-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;flex:1;}
+  .day-type{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);color:var(--muted);}
+  .day-toggle{color:var(--muted);font-size:.8rem;transition:transform .3s;}
+  .day-body{padding:0 1.5rem 1.5rem;display:none;}
+  .day-body.open{display:block;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+  .info-block{background:var(--surface2);border-radius:8px;padding:1rem;}
+  .info-block h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase;}
+  .info-block p,.info-block li{font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .info-block ul{list-style:none;display:flex;flex-direction:column;gap:.35rem;}
+  .info-block ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .tradeoff-box{background:rgba(255,95,64,0.05);border:1px solid rgba(255,95,64,0.15);border-radius:8px;padding:1rem;margin-top:.75rem;}
+  .tradeoff-box h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase;}
+  .tradeoff-box p{font-size:.82rem;color:var(--muted);line-height:1.6;}
+  .interview-tip{background:rgba(0,229,176,0.05);border:1px solid rgba(0,229,176,0.15);border-radius:8px;padding:1rem;margin-top:.75rem;}
+  .interview-tip h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent3);letter-spacing:.08em;margin-bottom:.6rem;}
+  .interview-tip p{font-size:.82rem;color:var(--muted);line-height:1.6;}
+  .sys-diagram{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:.75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);line-height:1.8;overflow-x:auto;}
+  .sys-diagram span{color:var(--accent3);}
+  .checkpoint-card{background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.2);border-radius:10px;padding:1.5rem;margin-top:1.5rem;}
+  .checkpoint-card h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:.75rem;}
+  .checkpoint-card ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+  .checkpoint-card li{font-size:.83rem;color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;}
+  .checkpoint-card li::before{content:'▸';color:var(--accent);}
+  @media(max-width:768px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="back-link">← Back</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent);">System Design · 30 Days</span>
+</nav>
+
+<div class="hero">
+  <div class="tag">HLD + LLD · STAFF-LEVEL · TRADE-OFFS FIRST</div>
+  <h1>System Design <span>in 30 Days</span></h1>
+  <p class="hero-desc">From CAP theorem to designing WhatsApp. Every day: one concept, one real system, the trade-offs a Staff engineer thinks about. Interview-ready by Day 30.</p>
+  <div class="meta-row">
+    <div class="meta-box"><div class="val">30</div><div class="key">Days Total</div></div>
+    <div class="meta-box"><div class="val">~2h</div><div class="key">Per Day</div></div>
+    <div class="meta-box"><div class="val">12</div><div class="key">System Designs</div></div>
+    <div class="meta-box"><div class="val">HLD+LLD</div><div class="key">Both Covered</div></div>
+  </div>
+</div>
+
+<main>
+
+<!-- WEEK 1: FOUNDATIONS -->
+<div class="week-header" id="week1">
+  <span class="week-num">WEEK 01</span>
+  <span class="week-title">Foundations — Scaling, Caching, Networking, CAP</span>
+  <span class="week-theme">FIRST PRINCIPLES</span>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 01</span>
+    <span class="day-name">Scaling Fundamentals — Vertical vs Horizontal</span>
+    <span class="day-type">Concept</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Core Concepts</h4>
+        <ul>
+          <li>Vertical scaling: limits, SPOF, no code change</li>
+          <li>Horizontal scaling: stateless requirement, complexity</li>
+          <li>Stateless vs stateful services: session handling</li>
+          <li>Scale cube: X (clone), Y (decompose), Z (shard)</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Real-World System</h4>
+        <p>Your CBDC platform: why Go microservices (stateless, horizontal) beat a monolith for Hyperledger Fabric nodes that need independent scaling per participant bank.</p>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Trade-offs to Articulate</h4>
+      <p>Vertical: fast, cheap ops, but hard ceiling ~96-core machines. Horizontal: theoretically infinite, but requires service discovery, consistent hashing, session externalization, distributed state. CAP implications change when you go horizontal.</p>
+    </div>
+    <div class="interview-tip">
+      <h4>Interview Approach</h4>
+      <p>When asked "how do you scale X?": first identify the bottleneck (CPU/memory/IO/network), then choose axis. Don't say "add more servers" — say "I'd scale the stateless API tier horizontally behind a load balancer, while keeping the database vertical + read replicas initially."</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 02</span>
+    <span class="day-name">Load Balancing — Algorithms & Layers</span>
+    <span class="day-type">Infra</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Core Concepts</h4>
+        <ul>
+          <li>L4 (TCP) vs L7 (HTTP) load balancing</li>
+          <li>Algorithms: Round Robin, Least Connections, IP Hash, Consistent Hashing</li>
+          <li>Health checks: active vs passive</li>
+          <li>Session affinity (sticky sessions) — when to avoid</li>
+          <li>Anycast for global load balancing</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Real System: Nginx/HAProxy vs AWS ALB</h4>
+        <ul>
+          <li>L7 ALB: path-based routing for microservices</li>
+          <li>Weighted routing for canary deployments</li>
+          <li>Connection draining for zero-downtime deploys</li>
+          <li>Your Helm deployments already use K8s Services (kube-proxy = software LB)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Trade-offs</h4>
+      <p>Consistent hashing LB: minimizes cache misses when scaling (same key → same server). But IP Hash breaks when clients use proxies (all appear as single IP). Least-connections beats round-robin for variable request costs (long-running jobs).</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 03</span>
+    <span class="day-name">Caching — Strategies, Invalidation, Redis Deep</span>
+    <span class="day-type">Caching</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Caching Strategies</h4>
+        <ul>
+          <li><strong>Cache-aside (Lazy):</strong> app checks cache, miss → DB, populate cache</li>
+          <li><strong>Write-through:</strong> write to cache + DB synchronously</li>
+          <li><strong>Write-behind:</strong> write to cache, async flush to DB</li>
+          <li><strong>Read-through:</strong> cache loads from DB on miss</li>
+          <li>TTL vs event-based invalidation</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Your Redis Experience Mapped</h4>
+        <p>80% DB load reduction you achieved = cache-aside pattern. Key design: <code>forex:rate:{USD}:{EUR}:{timestamp_bucket}</code> — time-bucketed TTL. Stampede prevention: probabilistic early expiration or distributed lock (Redis SET NX PX).</p>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Cache Invalidation — "Hardest Problem in CS"</h4>
+      <p>Write-through: consistency but write latency doubles. Write-behind: fast writes but data loss risk on cache crash. Cache-aside: stale reads possible (use short TTL). Event-driven invalidation via Kafka (your expertise): write → publish event → consumers invalidate specific keys. Most consistent approach.</p>
+    </div>
+    <div class="interview-tip">
+      <h4>Senior-Level Points</h4>
+      <p>Mention: Cache stampede (thundering herd), dog-pile effect. Solutions: mutex lock, probabilistic early refresh, request coalescing. Also discuss: hot keys, cache warming, multilevel caching (L1=local in-process, L2=Redis, L3=DB).</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 04</span>
+    <span class="day-name">CAP Theorem + Consistency Models</span>
+    <span class="day-type">Theory</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>CAP Theorem</h4>
+        <ul>
+          <li>Consistency: all nodes see same data simultaneously</li>
+          <li>Availability: every request gets a response</li>
+          <li>Partition Tolerance: system works despite network splits</li>
+          <li>Reality: P always occurs in distributed systems → choose C or A</li>
+          <li>PACELC extends CAP: latency vs consistency tradeoff even without partition</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Consistency Models (Spectrum)</h4>
+        <ul>
+          <li><strong>Strong:</strong> linearizability (single node illusion)</li>
+          <li><strong>Sequential:</strong> operations ordered consistently</li>
+          <li><strong>Causal:</strong> causally related ops in order</li>
+          <li><strong>Eventual:</strong> all nodes converge eventually</li>
+          <li><strong>Read-your-writes:</strong> session consistency</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Real Mapping to Systems</h4>
+      <p>Hyperledger Fabric (your work): CP system — consensus before commit, sacrifices availability during partition. Redis (your work): AP by default with async replication, eventual consistency. Your CBDC forex settlement: needed strong consistency for double-spend prevention → chose CP, accepted availability hit.</p>
+    </div>
+    <div class="interview-tip">
+      <h4>Interview Signal</h4>
+      <p>Never say "I'd use CAP theorem" — say "Given the partition tolerance requirement, I need to choose between consistency and availability. For payment systems like this CBDC, I'd choose CP — a failed transaction is better than a duplicate credit." This is Staff-level thinking.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 05</span>
+    <span class="day-name">Rate Limiting — Token Bucket, Leaky Bucket, Sliding Log</span>
+    <span class="day-type">Resilience</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Algorithms</h4>
+        <ul>
+          <li><strong>Fixed Window:</strong> simple, burst at boundaries</li>
+          <li><strong>Sliding Window Log:</strong> accurate, memory heavy</li>
+          <li><strong>Sliding Window Counter:</strong> approximation, memory efficient</li>
+          <li><strong>Token Bucket:</strong> allows bursts, smooth long-term rate</li>
+          <li><strong>Leaky Bucket:</strong> constant output rate, queue fills</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Distributed Rate Limiting</h4>
+        <ul>
+          <li>Redis INCR + EXPIRE for fixed window</li>
+          <li>Redis Lua scripts for atomicity</li>
+          <li>Sliding window with Redis sorted sets</li>
+          <li>Gossip-based eventual rate limiting</li>
+          <li>Kong/Nginx rate limit middleware</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sys-diagram">
+Client → [API Gateway] → Redis (rate_key = user:endpoint:window_bucket)<br>
+<span>MULTI → INCR key → EXPIRE key 60 → EXEC</span><br>
+if count > limit: return 429 + Retry-After header<br>
+else: forward to service
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 06</span>
+    <span class="day-name">CDN, DNS, Proxies — Request Flow</span>
+    <span class="day-type">Networking</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>CDN Internals</h4>
+        <ul>
+          <li>Edge PoPs: geographically distributed cache nodes</li>
+          <li>Cache-Control headers govern CDN caching</li>
+          <li>Push vs Pull CDN models</li>
+          <li>Origin shield: single origin fetch, multi-edge serve</li>
+          <li>Cache invalidation: URL versioning vs API purge</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>DNS Deep Dive</h4>
+        <ul>
+          <li>Recursive vs authoritative resolvers</li>
+          <li>TTL strategy for blue-green deployments</li>
+          <li>GeoDNS for traffic routing</li>
+          <li>DNS-based load balancing: Route53 weighted routing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="interview-tip">
+      <h4>Full Request Flow (Memorize This)</h4>
+      <p>Client → DNS (TTL cache miss → recursive resolver → authoritative) → CDN edge (cache hit → return) → [cache miss] → Load Balancer → API Gateway (auth, rate limit) → Service → Cache (hit) or DB. Know latency at each hop: DNS ~30ms, CDN hit ~5ms, DB query ~5-20ms.</p>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint-card">
+  <h3>🎯 Week 1 Checkpoint</h3>
+  <ul>
+    <li>Draw full request flow from client to DB from memory</li>
+    <li>Explain CAP using your CBDC system as example — which guarantees did you actually make?</li>
+    <li>Design a rate limiter for 10K RPS without looking at notes</li>
+    <li>Explain cache invalidation strategies and when each breaks</li>
+  </ul>
+</div>
+
+<!-- WEEK 2: STORAGE -->
+<div class="week-header" id="week2">
+  <span class="week-num">WEEK 02</span>
+  <span class="week-title">Storage Deep Dives — SQL, NoSQL, Sharding, Replication</span>
+  <span class="week-theme">DATA LAYER</span>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 08</span>
+    <span class="day-name">SQL vs NoSQL — When to Choose What</span>
+    <span class="day-type">Storage</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>SQL Strengths</h4>
+        <ul>
+          <li>ACID transactions (your CBDC payment system)</li>
+          <li>Complex joins, aggregations</li>
+          <li>Schema enforcement = data integrity</li>
+          <li>Mature tooling, EXPLAIN plans, indexes</li>
+          <li>Best for: financial systems, ERP, anything relational</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>NoSQL Categories</h4>
+        <ul>
+          <li><strong>Document (MongoDB):</strong> flexible schema, JSON nesting</li>
+          <li><strong>Key-Value (Redis/DynamoDB):</strong> O(1) access, simple</li>
+          <li><strong>Wide-Column (Cassandra):</strong> time-series, write-heavy</li>
+          <li><strong>Graph (Neo4j):</strong> relationship traversal</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Decision Framework for Interviews</h4>
+      <p>Ask yourself: (1) Do I need ACID multi-entity transactions? → SQL. (2) Do I need to query by multiple attributes with complex joins? → SQL. (3) Is write throughput >50K/s with simple access patterns? → Cassandra/DynamoDB. (4) Flexible schema, document-centric reads? → MongoDB. (5) Cache/session? → Redis. Don't say "I'd use MongoDB because it's flexible" — that's junior thinking.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 09</span>
+    <span class="day-name">Database Internals — B-Tree, LSM, MVCC, WAL</span>
+    <span class="day-type">Internals</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>B-Tree (PostgreSQL/MySQL)</h4>
+        <ul>
+          <li>Balanced tree, O(log n) reads and writes</li>
+          <li>Good read/write mix workloads</li>
+          <li>Pages: typically 8KB, tuned for disk</li>
+          <li>Write amplification: updating internal nodes</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>LSM Tree (RocksDB/Cassandra)</h4>
+        <ul>
+          <li>Write to MemTable → flush to SSTable on disk</li>
+          <li>Compaction merges SSTables</li>
+          <li>O(1) writes (sequential), O(log n) reads</li>
+          <li>Write amplification during compaction</li>
+          <li>Bloom filters prevent unnecessary disk reads</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-block" style="margin-top:.75rem;">
+      <h4>MVCC + WAL</h4>
+      <p style="margin-bottom:.5rem;"><strong>MVCC:</strong> Multiple readers, one writer. Each transaction sees snapshot. Old versions kept until no longer needed (vacuum). Enables non-blocking reads.</p>
+      <p><strong>WAL (Write-Ahead Log):</strong> Write to log first, then data pages. On crash: replay WAL for recovery. Also enables replication — ship WAL to replicas. PostgreSQL uses this for streaming replication.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 10</span>
+    <span class="day-name">Sharding — Strategies and Hotspot Prevention</span>
+    <span class="day-type">Scalability</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Sharding Strategies</h4>
+        <ul>
+          <li><strong>Hash sharding:</strong> uniform distribution, no range queries</li>
+          <li><strong>Range sharding:</strong> range queries efficient, hotspots risk</li>
+          <li><strong>Directory sharding:</strong> lookup table, flexible, single point</li>
+          <li><strong>Geo sharding:</strong> data locality, GDPR compliance</li>
+          <li><strong>Consistent hashing:</strong> minimize re-distribution on scale</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Consistent Hashing</h4>
+        <ul>
+          <li>Virtual nodes (vnodes): better distribution</li>
+          <li>When node added/removed: only adjacent keys move</li>
+          <li>k/n keys move on average (not k total)</li>
+          <li>Used by: Cassandra, DynamoDB, Redis Cluster</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Shard Key Selection — Critical</h4>
+      <p>Bad shard key = hotspots = one shard does all work. For social network: user_id hash works until celebrities exist (hot users). Solution: celebrity detection + fan-out on write vs fan-out on read. For time-series: time-based sharding causes write hotspot on latest shard. Use time + device_id composite key.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 11</span>
+    <span class="day-name">Replication — Sync vs Async, Quorum</span>
+    <span class="day-type">Availability</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Replication Models</h4>
+        <ul>
+          <li><strong>Single-leader:</strong> all writes to primary, fan-out to replicas</li>
+          <li><strong>Multi-leader:</strong> multiple write points, conflict resolution</li>
+          <li><strong>Leaderless (Dynamo):</strong> write/read quorums</li>
+          <li>Async: low latency writes, risk of data loss</li>
+          <li>Sync: durability guarantee, higher write latency</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Quorum Reads/Writes</h4>
+        <ul>
+          <li>n = replicas, w = write quorum, r = read quorum</li>
+          <li>Strong consistency: w + r &gt; n</li>
+          <li>Typical: n=3, w=2, r=2</li>
+          <li>Read-heavy: w=3, r=1 (write everywhere, read one)</li>
+          <li>Write-heavy: w=1, r=3 (fast writes, consistent reads)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="interview-tip">
+      <h4>Why This Matters for Your Background</h4>
+      <p>Hyperledger Fabric uses PBFT-like consensus — a multi-party quorum system. You can connect your blockchain consensus experience directly to Dynamo-style quorum writes. This is excellent Staff-level signal in interviews.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 12–13</span>
+    <span class="day-name">Indexing Deep Dive + Query Optimization</span>
+    <span class="day-type">Performance</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Index Types</h4>
+        <ul>
+          <li><strong>B-Tree:</strong> equality + range queries</li>
+          <li><strong>Hash:</strong> equality only, faster for exact match</li>
+          <li><strong>Composite:</strong> leftmost-prefix rule is critical</li>
+          <li><strong>Covering:</strong> query served from index alone (no table fetch)</li>
+          <li><strong>Partial:</strong> index on subset (WHERE active = true)</li>
+          <li><strong>Full-text:</strong> inverted index, TF-IDF scoring</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Query Planning Signals</h4>
+        <ul>
+          <li>EXPLAIN ANALYZE: seq scan vs index scan</li>
+          <li>Index selectivity: high cardinality = better index</li>
+          <li>N+1 query problem: eager load with JOIN</li>
+          <li>Connection pooling: pgBouncer transaction mode</li>
+          <li>Read replicas for analytical queries</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint-card">
+  <h3>🎯 Week 2 Checkpoint</h3>
+  <ul>
+    <li>When would you choose LSM over B-Tree? Articulate write amplification trade-off</li>
+    <li>Design a sharding strategy for a payment system with hot accounts — what's your approach?</li>
+    <li>Explain MVCC and why it enables non-blocking reads</li>
+    <li>w=2, r=2, n=3 — is this strongly consistent? What if w=1, r=3?</li>
+  </ul>
+</div>
+
+<!-- WEEK 3: MESSAGING & REAL-TIME -->
+<div class="week-header" id="week3">
+  <span class="week-num">WEEK 03</span>
+  <span class="week-title">Messaging Systems, Kafka Internals, Real-Time Architecture</span>
+  <span class="week-theme">EVENT-DRIVEN</span>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 15</span>
+    <span class="day-name">Kafka Internals — Partitions, Offsets, Consumer Groups</span>
+    <span class="day-type">Messaging</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Kafka Architecture</h4>
+        <ul>
+          <li>Topic → Partitions (ordered, immutable log)</li>
+          <li>Offset: per-partition monotonic counter</li>
+          <li>Consumer Group: each partition consumed by one consumer</li>
+          <li>Replication factor: ISR (In-Sync Replicas)</li>
+          <li>Leader election via ZooKeeper / KRaft</li>
+          <li>Retention: time-based or size-based</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Performance Knobs (Your Experience)</h4>
+        <ul>
+          <li>Partition count: parallelism ceiling for consumers</li>
+          <li>acks=all: strongest durability, highest latency</li>
+          <li>linger.ms + batch.size: throughput vs latency</li>
+          <li>Compression: LZ4 for speed, zstd for ratio</li>
+          <li>Log compaction: keep only latest value per key</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Ordering Guarantee Nuance</h4>
+      <p>Kafka guarantees per-partition ordering only. Cross-partition: use a single partition (lose parallelism) or accept reordering. For your CBDC asset transfers: partition by account_id → all transfers for one account are ordered. But cross-account transactions need 2-phase approach or saga pattern.</p>
+    </div>
+    <div class="interview-tip">
+      <h4>Staff-Level: Exactly-Once Semantics</h4>
+      <p>Kafka EOS: idempotent producer (sequence numbers), transactional API (atomic produce + consumer offset commit). In practice: idempotent consumers (dedup on DB side) are simpler and more resilient. Your forex gateway likely uses this — mention it.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 16</span>
+    <span class="day-name">Distributed Transactions — 2PC, Saga, Outbox Pattern</span>
+    <span class="day-type">Consistency</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>2-Phase Commit (2PC)</h4>
+        <ul>
+          <li>Coordinator: PREPARE → all VOTE YES → COMMIT</li>
+          <li>Blocking: coordinator failure = all locked</li>
+          <li>Used in distributed SQL (Google Spanner uses 2PC)</li>
+          <li>Avoid for microservices: too much coupling</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Saga Pattern (Your Kafka Expertise)</h4>
+        <ul>
+          <li>Choreography: services emit events, react to others</li>
+          <li>Orchestration: central coordinator sends commands</li>
+          <li>Compensating transactions: undo on failure</li>
+          <li>Your CBDC: orchestrated saga for cross-border settlement</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tradeoff-box">
+      <h4>Outbox Pattern — Avoid Dual Write</h4>
+      <p>Problem: write to DB + publish to Kafka — what if Kafka fails? Solution: Outbox table in same DB transaction. CDC (Debezium) reads WAL → publishes to Kafka. Atomicity within DB, eventual delivery to Kafka. This is production-grade pattern every Staff eng must know.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 17</span>
+    <span class="day-name">Real-Time Systems — WebSockets, SSE, Long Polling</span>
+    <span class="day-type">Real-Time</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Protocols Comparison</h4>
+        <ul>
+          <li><strong>Long Polling:</strong> client waits, server holds until data. Simple, high latency</li>
+          <li><strong>SSE:</strong> server → client only, HTTP/1.1 compatible. Good for feeds</li>
+          <li><strong>WebSocket:</strong> full-duplex, persistent TCP. Chat, gaming, forex tickers</li>
+          <li><strong>WebTransport:</strong> QUIC-based, future standard</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>At Scale: Connection Management</h4>
+        <ul>
+          <li>10K WS connections per server (Go handles well)</li>
+          <li>Presence service: heartbeat + timeout tracking</li>
+          <li>Fan-out: user in multiple rooms → multiple subscriptions</li>
+          <li>Message broker as pub-sub backend (Redis PubSub, Kafka)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 18–19</span>
+    <span class="day-name">Observability — Metrics, Logs, Traces (The 3 Pillars)</span>
+    <span class="day-type">Production</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Metrics (Prometheus/Grafana)</h4>
+        <ul>
+          <li>RED: Rate, Errors, Duration (per service)</li>
+          <li>USE: Utilization, Saturation, Errors (per resource)</li>
+          <li>Histogram: percentile latency (p99, p999)</li>
+          <li>Cardinality: avoid high-cardinality labels (user_id)</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Distributed Tracing (Jaeger/Tempo)</h4>
+        <ul>
+          <li>Span: single operation with timing</li>
+          <li>Trace: tree of spans across services</li>
+          <li>Propagate: W3C TraceContext header</li>
+          <li>Sampling: head-based (random %) vs tail-based (on error)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint-card">
+  <h3>🎯 Week 3 Checkpoint</h3>
+  <ul>
+    <li>Explain the outbox pattern to a "junior" without reading notes</li>
+    <li>When does Kafka guarantee ordering? When doesn't it?</li>
+    <li>Design a presence system for WhatsApp (10M concurrent users) — real-time connection tracking</li>
+    <li>Saga choreography vs orchestration — when to use each?</li>
+  </ul>
+</div>
+
+<!-- WEEK 4: REAL SYSTEM DESIGNS -->
+<div class="week-header" id="week4">
+  <span class="week-num">WEEK 04</span>
+  <span class="week-title">Real System Designs — HLD + LLD Interview Practice</span>
+  <span class="week-theme">FULL DESIGNS</span>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 22</span>
+    <span class="day-name">Design WhatsApp — Messaging at Scale</span>
+    <span class="day-type">Full HLD+LLD</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="sys-diagram">
+<span>HLD Flow:</span><br>
+Client → [WebSocket Server Cluster] → [Message Service]<br>
+                                          ↓<br>
+                               [Kafka: msg-events topic]<br>
+                                    ↓            ↓<br>
+                        [Delivery Service]  [Persistence Service]<br>
+                                    ↓            ↓<br>
+                        [Recipient WS Conn]  [Cassandra: messages]<br>
+<br>
+<span>Presence:</span> Redis SET user:online → 30s TTL, heartbeat every 15s<br>
+<span>Push Notif:</span> FCM/APNs for offline users
+    </div>
+    <div class="grid2" style="margin-top:.75rem;">
+      <div class="info-block">
+        <h4>Key Design Decisions</h4>
+        <ul>
+          <li>Cassandra: write-optimized, time-ordered messages per chat</li>
+          <li>Message ID: timestamp + server ID + sequence (Snowflake-like)</li>
+          <li>E2E encryption: keys exchanged OOB, server stores ciphertext only</li>
+          <li>Media: S3 storage, CDN delivery, URL in message</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>LLD: Message State Machine</h4>
+        <ul>
+          <li>States: SENT → DELIVERED → READ</li>
+          <li>ACK back to sender via WebSocket</li>
+          <li>Offline delivery: store in Cassandra, push on reconnect</li>
+          <li>Group messages: fan-out per member (bounded fan-out)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 23</span>
+    <span class="day-name">Design YouTube — Video at Scale</span>
+    <span class="day-type">Full HLD+LLD</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="sys-diagram">
+<span>Upload Flow:</span><br>
+Client → [Upload Service] → S3 (raw video)<br>
+                              ↓<br>
+                    [Transcoding Job Queue (Kafka)]<br>
+                              ↓<br>
+                    [Worker Farm: FFmpeg containers]<br>
+                              ↓<br>
+                    [S3: 360p, 720p, 1080p, 4K segments (HLS)]<br>
+                              ↓<br>
+                    [CDN distribution]<br>
+<br>
+<span>View Flow:</span><br>
+Client → CDN (HLS manifest + segments) → Adaptive Bitrate streaming
+    </div>
+    <div class="info-block" style="margin-top:.75rem;">
+      <h4>Scale Numbers to Know</h4>
+      <p>500 hours uploaded per minute. Transcoding: parallelized per video segment. CDN: 95%+ of views served from edge. Recommendation: offline ML pipeline, pre-computed feeds. View count: approximate with HyperLogLog or sharded counters (Redis INCR per shard, aggregate).</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 24</span>
+    <span class="day-name">Design Uber — Real-Time Location & Matching</span>
+    <span class="day-type">Full HLD+LLD</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Location Service</h4>
+        <ul>
+          <li>Driver sends location every 4 seconds</li>
+          <li>Geohash: encode lat/lng as string (precision = radius)</li>
+          <li>Redis: key = geohash:cell, value = set of driver IDs</li>
+          <li>Query: nearby geohash cells for area search</li>
+          <li>WebSocket for driver location streaming</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Matching Service</h4>
+        <ul>
+          <li>Rider request → query nearby drivers (geohash lookup)</li>
+          <li>Score by: distance + rating + driver type + surge</li>
+          <li>Dispatch to top N drivers, first accept wins</li>
+          <li>Distributed lock on driver during dispatch window</li>
+          <li>ETA: precomputed road graph (OSRM/Google Maps)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 25</span>
+    <span class="day-name">Design URL Shortener + Distributed Cache</span>
+    <span class="day-type">HLD</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="info-block" style="margin-bottom:.75rem;">
+      <h4>URL Shortener — Simple but Deep</h4>
+      <p>Hash: MD5(url) → take first 7 chars → collision check → store. Better: base62 encoding of auto-increment ID. CDN at edge for redirect (301 permanent, 302 for analytics). Scale: 100M URLs/day → Cassandra for write throughput, Redis for hot URLs.</p>
+    </div>
+    <div class="info-block">
+      <h4>Distributed Cache (Redis Cluster)</h4>
+      <p>Consistent hashing across nodes. Hash slots: 16384 slots distributed across nodes. CRC16(key) % 16384 → slot → node. Replication: each master has N replicas. Failure: replica promotes, clients redirect. Cache-aside pattern for application layer.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 26</span>
+    <span class="day-name">Design Twitter Feed — Fan-out Strategies</span>
+    <span class="day-type">Full HLD+LLD</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>Fan-out on Write (Push)</h4>
+        <ul>
+          <li>On tweet: push to all followers' feed caches</li>
+          <li>O(followers) work at write time</li>
+          <li>Read is O(1) — just fetch pre-built feed</li>
+          <li>Celebrity problem: 50M followers = 50M writes</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>Fan-out on Read (Pull)</h4>
+        <ul>
+          <li>On load: fetch tweets from all followed users</li>
+          <li>Merge, sort, paginate at read time</li>
+          <li>Heavy reads, but celebrities don't cause write spikes</li>
+          <li>Twitter uses hybrid: push for normal users, pull for celebrities</li>
+        </ul>
+      </div>
+    </div>
+    <div class="interview-tip">
+      <h4>Staff-Level Answer</h4>
+      <p>Hybrid approach: classify users by follower count. Regular users (< 1M followers): fan-out on write to Redis ZSET (score=timestamp). Celebrity users: on read, merge their recent tweets with pre-built feed. This is the actual Twitter approach — mention it confidently.</p>
+    </div>
+  </div>
+</div>
+
+<div class="day-card">
+  <div class="day-header" onclick="toggle(this)">
+    <span class="day-num-badge">DAY 27–28</span>
+    <span class="day-name">LLD Deep Dives — Design Patterns in Practice</span>
+    <span class="day-type">LLD</span>
+    <span class="day-toggle">▼</span>
+  </div>
+  <div class="day-body">
+    <div class="grid2">
+      <div class="info-block">
+        <h4>LLD: Parking Lot System</h4>
+        <ul>
+          <li>Entities: ParkingLot, Level, Slot, Ticket, Vehicle</li>
+          <li>Strategy pattern: pricing per vehicle type</li>
+          <li>Observer: availability board updates</li>
+          <li>Factory: vehicle creation by type</li>
+          <li>Concurrent slot booking: optimistic locking</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h4>LLD: Notification System</h4>
+        <ul>
+          <li>Strategy: Email, SMS, Push, Slack</li>
+          <li>Template method: notification formatting</li>
+          <li>Queue-based delivery with retry (exponential backoff)</li>
+          <li>Idempotency key: deduplicate sends</li>
+          <li>Rate limiting per user/channel</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint-card" style="background:rgba(0,229,176,0.04);border-color:rgba(0,229,176,0.2);">
+  <h3 style="color:var(--accent3);">🏆 Day 29–30: Full Mock System Design Sessions</h3>
+  <ul>
+    <li><strong>Day 29:</strong> 45-min mock: Design a real-time leaderboard (gaming). Cover: storage, real-time updates, global ranking, 10M players. Time yourself.</li>
+    <li><strong>Day 30:</strong> 45-min mock: Design a distributed job scheduler (cron at scale). Cover: single execution guarantee, failure recovery, priority queues.</li>
+    <li>Standard: HLD on whiteboard in first 10 min, then drill into hardest component, then discuss trade-offs unprompted</li>
+    <li>Signal: You should be driving the conversation, not answering questions reactively</li>
+  </ul>
+</div>
+
+</main>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.day-toggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+document.querySelectorAll('.day-card:first-of-type .day-header').forEach(h => h.click());
+</script>
+</body>
+</html>

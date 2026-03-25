@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS Fundamentals in a Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#a855f7;--a2:#c084fc;--a3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 80% 50%,rgba(168,85,247,0.04) 0%,transparent 55%);pointer-events:none;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
+  .back:hover{color:var(--accent);}
+  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .tag-pill{display:inline-flex;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
+  .sub{color:var(--muted);font-size:.92rem;max-width:580px;margin-bottom:2rem;}
+  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
+  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
+  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
+  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
+  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
+  .section{margin-bottom:3.5rem;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--a2);}
+  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
+  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
+  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
+  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(168,85,247,0.1);color:var(--a2);padding:.1rem .3rem;border-radius:3px;}
+  .cb{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
+  .hl{color:var(--a3);}
+  .resources{display:flex;flex-direction:column;gap:.75rem;}
+  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
+  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(168,85,247,0.08);color:var(--a2);border:1px solid rgba(168,85,247,0.2);white-space:nowrap;}
+  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
+  .rc a:hover{color:var(--accent);}
+  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  .qr{background:rgba(168,85,247,0.04);border:1px solid rgba(168,85,247,0.15);border-radius:10px;padding:1.5rem;}
+  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);letter-spacing:.08em;margin-bottom:1rem;}
+  .qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+  .qi{background:rgba(0,0,0,0.2);border-radius:6px;padding:.75rem;}
+  .qi .q{font-size:.78rem;color:var(--text);margin-bottom:.3rem;font-weight:500;}
+  .qi .a{font-size:.73rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="back">← Dashboard</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🧮 CS FUNDAMENTALS · 6 HOURS</span>
+</nav>
+<div class="hero">
+  <div class="tag-pill">CS FUNDAMENTALS · DISTRIBUTED SYSTEMS · NETWORKING</div>
+  <h1>CS Fundamentals in a Day</h1>
+  <p class="sub">Raft consensus to QUIC. Bloom filters to HyperLogLog. Vector clocks to TLS handshake. The theoretical underpinnings that explain why distributed systems behave the way they do.</p>
+  <div class="timeline">
+    <div class="tblock"><div class="time">H 0–1</div><div class="topic">Complexity + Amortization</div></div>
+    <div class="tblock"><div class="time">H 1–2</div><div class="topic">Consensus: Raft, Paxos</div></div>
+    <div class="tblock"><div class="time">H 2–3</div><div class="topic">Networking: TCP/TLS/HTTP</div></div>
+    <div class="tblock"><div class="time">H 3–4.5</div><div class="topic">Prob. Data Structures</div></div>
+    <div class="tblock"><div class="time">H 4.5–5.5</div><div class="topic">Encoding + Serialization</div></div>
+    <div class="tblock"><div class="time">H 5.5–6</div><div class="topic">Distributed Clocks</div></div>
+  </div>
+</div>
+<main>
+
+<div class="section">
+  <h2><span class="sn">01</span>Key Concepts</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Raft Consensus</h3>
+      <ul>
+        <li>Leader election: term-based, candidate wins majority votes</li>
+        <li>Log replication: leader → followers, committed when majority ACK</li>
+        <li>Safety: committed entry survives any leader change</li>
+        <li>Election timeout: random 150–300ms to avoid split vote</li>
+        <li>Used by: etcd (Kubernetes), CockroachDB, Consul</li>
+        <li>Your Hyperledger Fabric uses PBFT variant (BFT Raft)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Vector Clocks + Lamport</h3>
+      <ul>
+        <li>Lamport timestamp: logical counter, inc on send/receive</li>
+        <li>Establishes happens-before but not concurrent events</li>
+        <li>Vector clock: per-process counter array</li>
+        <li>VC detects concurrency: neither dominates = concurrent</li>
+        <li>Used for conflict detection in Dynamo, CRDTs</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Bloom Filter</h3>
+      <ul>
+        <li>Probabilistic set membership: no false negatives, yes false positives</li>
+        <li>k hash functions → k bits set in bit array</li>
+        <li>Space efficient: 10 bits/element for 1% FPR</li>
+        <li>Used by: Cassandra (skip SSTable reads), Chrome (safe browsing), Kafka (log dedup)</li>
+        <li>Counting BF: deletions allowed (increment/decrement)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>HyperLogLog</h3>
+      <ul>
+        <li>Approximate cardinality (count distinct) in O(1) space</li>
+        <li>1.5KB memory estimates billions of unique items</li>
+        <li>Algorithm: leading zeros of hashed values</li>
+        <li>Standard error: ~1.04 / sqrt(m) where m = registers</li>
+        <li>Redis PFADD/PFCOUNT uses HLL — your Redis expertise</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>TCP/IP Stack</h3>
+      <ul>
+        <li>3-way handshake: SYN → SYN-ACK → ACK (1.5 RTT)</li>
+        <li>Congestion control: AIMD, slow start, cubic</li>
+        <li>HOL blocking: stream blocked by lost packet</li>
+        <li>TIME_WAIT: 2×MSL (2 min) after close — port reuse issue</li>
+        <li>SO_REUSEPORT: multiple processes bind same port (kernel LB)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>HTTP/2 vs HTTP/3 vs QUIC</h3>
+      <ul>
+        <li>HTTP/2: multiplexing over single TCP, header compression (HPACK)</li>
+        <li>HTTP/2 HOL: TCP packet loss blocks all streams</li>
+        <li>HTTP/3: QUIC (UDP-based), per-stream loss recovery</li>
+        <li>QUIC: 0-RTT reconnect (session resumption), connection migration</li>
+        <li>Your Gin/HTTP services: HTTP/2 with TLS termination at LB</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">02</span>Must-Know Deep Dives</h2>
+
+  <div class="deep">
+    <h3>🔥 TLS 1.3 Handshake — What Happens on Every HTTPS Request</h3>
+    <div class="cb"><span class="hl">// TLS 1.3 (1-RTT, vs TLS 1.2's 2-RTT)</span>
+Client → Server: ClientHello (supported cipher suites, key_share)
+Server → Client: ServerHello (chosen cipher, key_share, Certificate, Finished)
+<span class="hl">// Encryption starts here — much earlier than TLS 1.2</span>
+Client → Server: Finished (verify server cert, compute master secret)
+Client → Server: HTTP Request (already encrypted)
+
+<span class="hl">// 0-RTT Session Resumption:</span>
+Client → Server: Early Data (pre_shared_key from previous session)
+<span class="hl">// Replays possible — only safe for idempotent requests (GET, HEAD)</span>
+    </div>
+    <p><strong>Certificate validation:</strong> OCSP stapling (server includes cert revocation proof), CT logs (certificate transparency — detect rogue CAs). For your CBDC security background: mutual TLS (mTLS) is Hyperledger Fabric's channel authentication mechanism.</p>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Encoding: Protobuf vs JSON vs Avro</h3>
+    <p><strong>JSON:</strong> human-readable, schema-optional, 100% overhead. Type coercion issues. Use for APIs, config, debugging.</p>
+    <p><strong>Protobuf:</strong> binary, schema required (proto files), 5-10x smaller than JSON, backward compatible with field numbers. Required fields are required — don't remove them. Use for internal service communication where schema evolution is controlled.</p>
+    <p><strong>Avro:</strong> schema in header, schema evolution via schema registry. Kafka standard for streaming. Your Kafka events should use Avro + Confluent Schema Registry for schema evolution guarantees.</p>
+    <div class="cb"><span class="hl">// Amortized Complexity — why ArrayList append is O(1) amortized</span>
+// Double array when full: 1→2→4→8→16→32... operations = 2n total copies
+// For n appends: n + n/2 + n/4 + ... = 2n work = O(1) amortized per append
+// Go slices: same doubling strategy. append() = O(1) amortized, O(n) worst case</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">03</span>Resources</h2>
+  <div class="resources">
+    <div class="res"><span class="rt">INTERACTIVE</span><div class="rc"><a href="https://raft.github.io/" target="_blank">Raft Consensus — Interactive Visualization</a><p>Visualize leader election and log replication. 15 min here = better than any blog post on Raft.</p></div></div>
+    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=IPQLSmS19xk" target="_blank">Martin Kleppmann — Distributed Systems (Cambridge Lectures)</a><p>Lecture 5-8 cover vector clocks, consistency, consensus. Dense, academic quality.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://blog.cloudflare.com/quic-is-now-rfc-9000/" target="_blank">Cloudflare — QUIC is Now RFC 9000</a><p>Best practical QUIC explanation. How Cloudflare deployed HTTP/3 globally. Latency numbers included.</p></div></div>
+    <div class="res"><span class="rt">PAPER</span><div class="rc"><a href="https://llimllib.github.io/bloomfilter-tutorial/" target="_blank">Bloom Filters by Example — Interactive</a><p>Visual + mathematical explanation. Implement one from scratch — 30 mins.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://engineering.fb.com/2018/12/13/data-infrastructure/hyperloglog/" target="_blank">Meta Engineering — HyperLogLog in Practice</a><p>How Meta uses HLL for counting distinct users. Production numbers and accuracy discussion.</p></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">04</span>Quick Revision</h2>
+  <div class="qr">
+    <h3>CS FUNDAMENTALS FLASH CARDS</h3>
+    <div class="qg">
+      <div class="qi"><div class="q">Raft vs Paxos?</div><div class="a">Same safety guarantees, different framing. Raft: understandable, leader-based, strong leader. Paxos: foundational theory, flexible, harder to implement. etcd uses Raft.</div></div>
+      <div class="qi"><div class="q">Bloom filter FP rate?</div><div class="a">FPR ≈ (1 - e^(-kn/m))^k where k=hash funcs, n=items, m=bits. 10 bits/item, 7 hash funcs → ~1% FPR. Never false negatives.</div></div>
+      <div class="qi"><div class="q">HTTP/2 HOL blocking?</div><div class="a">TCP packet loss blocks ALL HTTP/2 streams (one TCP stream). HTTP/3/QUIC: per-stream loss recovery — losing packet only blocks that stream.</div></div>
+      <div class="qi"><div class="q">Vector clock concurrent?</div><div class="a">VC A concurrent with B if neither A ≤ B nor B ≤ A (neither dominates). Need CRDT or user-visible conflict to resolve.</div></div>
+      <div class="qi"><div class="q">Protobuf backward compat?</div><div class="a">Add fields: OK (old code ignores unknown fields). Remove required fields: NEVER (breaks old decoders). Change field types: NEVER. Rename: OK (uses field number, not name).</div></div>
+      <div class="qi"><div class="q">Amortized O(1) append?</div><div class="a">Doubling strategy: total copies over n appends = 2n. Cost per append = 2n/n = O(2) = O(1) amortized. Worst case single append: O(n).</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

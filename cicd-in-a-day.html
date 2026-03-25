@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CI/CD in a Day — Senior Level</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#22c55e;--a2:#4ade80;--a3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 65% 35%,rgba(34,197,94,0.04) 0%,transparent 55%);pointer-events:none;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
+  .back:hover{color:var(--accent);}
+  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .tag-pill{display:inline-flex;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
+  .sub{color:var(--muted);font-size:.92rem;max-width:580px;margin-bottom:2rem;}
+  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
+  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
+  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
+  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
+  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
+  .section{margin-bottom:3.5rem;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--a2);}
+  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
+  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
+  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
+  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(34,197,94,0.1);color:var(--a2);padding:.1rem .3rem;border-radius:3px;}
+  .cb{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
+  .hl{color:var(--a3);}
+  .resources{display:flex;flex-direction:column;gap:.75rem;}
+  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
+  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(34,197,94,0.08);color:var(--a2);border:1px solid rgba(34,197,94,0.2);white-space:nowrap;}
+  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
+  .rc a:hover{color:var(--accent);}
+  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  .qr{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.15);border-radius:10px;padding:1.5rem;}
+  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);letter-spacing:.08em;margin-bottom:1rem;}
+  .qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+  .qi{background:rgba(0,0,0,0.2);border-radius:6px;padding:.75rem;}
+  .qi .q{font-size:.78rem;color:var(--text);margin-bottom:.3rem;font-weight:500;}
+  .qi .a{font-size:.73rem;color:var(--muted);}
+  .pipeline-diag{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);line-height:2.2;overflow-x:auto;}
+  .pipeline-diag .box{display:inline-block;border:1px solid var(--accent);padding:.1rem .5rem;border-radius:4px;color:var(--accent);margin:0 .2rem;}
+  .pipeline-diag .fail{border-color:#ff5f40;color:#ff5f40;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="back">← Dashboard</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🔁 CI/CD IN A DAY · 6 HOURS</span>
+</nav>
+<div class="hero">
+  <div class="tag-pill">CI/CD · GITOPS · DEPLOYMENT STRATEGIES · SECRETS</div>
+  <h1>CI/CD in a Day</h1>
+  <p class="sub">You've built Helm-driven pipelines for multi-region Fabric networks. This day is about understanding GitOps, deployment strategies, and pipeline optimization at Staff level depth.</p>
+  <div class="timeline">
+    <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">CI Pipeline Design</div></div>
+    <div class="tblock"><div class="time">H 1.5–3</div><div class="topic">GitOps: ArgoCD + Flux</div></div>
+    <div class="tblock"><div class="time">H 3–4.5</div><div class="topic">Deployment Strategies</div></div>
+    <div class="tblock"><div class="time">H 4.5–5.5</div><div class="topic">Secrets + Feature Flags</div></div>
+    <div class="tblock"><div class="time">H 5.5–6</div><div class="topic">Pipeline Optimization</div></div>
+  </div>
+</div>
+<main>
+
+<div class="section">
+  <h2><span class="sn">01</span>Ideal CI Pipeline — Mental Model</h2>
+  <div class="pipeline-diag">
+git push → <span class="box">Lint + Format</span> → <span class="box">Unit Tests</span> → <span class="box">Build Image</span><br>
+                                                              ↓<br>
+<span class="box">Integration Tests</span> → <span class="box">Security Scan</span> → <span class="box">Push Image + Tag</span><br>
+                                            ↓                          ↓<br>
+<span class="fail">CVE found → Block</span>                <span class="box">Update Helm values.yaml</span><br>
+                                                                       ↓<br>
+                                              <span class="box">ArgoCD detects drift → Sync</span><br>
+                                                                       ↓<br>
+                                              <span class="box">Canary Deploy → Metrics → Promote</span>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">02</span>Key Concepts</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>GitOps Principles</h3>
+      <ul>
+        <li>Git = single source of truth for desired state</li>
+        <li>Declarative: what, not how</li>
+        <li>Automated reconciliation: agent detects drift, corrects</li>
+        <li>ArgoCD: pull-based (agent in cluster → pull from Git)</li>
+        <li>Flux: GitOps toolkit, more composable than ArgoCD</li>
+        <li>No kubectl apply in CI — Git PR = change gate</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Deployment Strategies</h3>
+      <ul>
+        <li><strong>Rolling:</strong> replace pods one-by-one. Simple, brief mixed versions</li>
+        <li><strong>Blue-Green:</strong> full parallel env, instant cutover. 2x infra cost</li>
+        <li><strong>Canary:</strong> 5% → 25% → 100% traffic. Catch bugs with low blast radius</li>
+        <li><strong>Shadow:</strong> copy traffic to new version, compare responses</li>
+        <li><strong>A/B:</strong> user-segment based, business metrics focused</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Secrets Management</h3>
+      <ul>
+        <li><strong>Vault:</strong> dynamic secrets (DB creds expire), lease-based</li>
+        <li><strong>Sealed Secrets:</strong> encrypt Kubernetes secrets, safe to commit</li>
+        <li><strong>External Secrets Operator:</strong> sync AWS SSM → K8s secret</li>
+        <li>Never: secrets in env vars, Docker image layers, git commits</li>
+        <li>IRSA: K8s ServiceAccount → AWS IAM via OIDC (no static keys)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Feature Flags</h3>
+      <ul>
+        <li>Decouple deployment from release</li>
+        <li>Tools: OpenFeature (open standard), LaunchDarkly, Flagsmith</li>
+        <li>Flag types: boolean, multivariate, percentage rollout</li>
+        <li>Targeting: user segments, environments, account IDs</li>
+        <li>Kill switch: emergency disable without redeploy</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Testing in CI</h3>
+      <ul>
+        <li>Unit: fast, no dependencies, table-driven in Go</li>
+        <li>Integration: real DB (testcontainers), real Kafka</li>
+        <li>E2E: simulate real user flows, expensive — run nightly</li>
+        <li>Contract: Pact testing for microservice API contracts</li>
+        <li>Chaos: fault injection in staging (Chaos Monkey, LitmusChaos)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Pipeline Optimization</h3>
+      <ul>
+        <li>Parallelize: lint, test, build in parallel jobs</li>
+        <li>Cache: Docker layers (BuildKit), Go module cache, npm</li>
+        <li>Fail fast: run cheapest checks first (lint before build)</li>
+        <li>Incremental: only build changed services (Nx, Turborepo)</li>
+        <li>Self-hosted runners: no cold starts, persistent cache</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">03</span>Must-Know Deep Dives</h2>
+
+  <div class="deep">
+    <h3>🔥 GitHub Actions — Production-Grade Workflow</h3>
+    <div class="cb"><span class="hl"># .github/workflows/deploy.yml — what your pipeline should look like</span>
+name: Deploy Go Service
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    <span class="hl"># Service containers for integration tests</span>
+    services:
+      postgres:
+        image: postgres:15
+        env: { POSTGRES_PASSWORD: test }
+        options: --health-cmd pg_isready
+      kafka:
+        image: confluentinc/cp-kafka:7.5.0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: go.mod, cache: true }
+      - run: go test -race -coverprofile=coverage.out ./...
+      - run: go vet ./...
+
+  build-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write  <span class="hl"># For OIDC auth to AWS/GCP — no static credentials!</span>
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build + push image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker build --cache-from type=gha --cache-to type=gha,mode=max \
+            -t gcr.io/myproject/service:$IMAGE_TAG .
+          docker push gcr.io/myproject/service:$IMAGE_TAG
+      <span class="hl"># Update Helm values → ArgoCD auto-syncs</span>
+      - name: Update image tag in values.yaml
+        run: |
+          sed -i "s/tag:.*/tag: ${{ github.sha }}/" helm/values.yaml
+          git commit -am "chore: deploy ${{ github.sha }}"
+          git push</div>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 ArgoCD GitOps Pattern — Your Helm Experience Extended</h3>
+    <p>ArgoCD continuously reconciles desired state (Git Helm chart) with actual state (K8s). When your Helm values.yaml changes (image tag updated by CI), ArgoCD detects drift and syncs within 3 minutes (default poll interval).</p>
+    <div class="cb"><span class="hl"># ArgoCD Application CR — deploy from Helm chart in Git</span>
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cbdc-bridge
+  namespace: argocd
+spec:
+  destination:
+    namespace: production
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/org/infra
+    path: helm/cbdc-bridge
+    targetRevision: HEAD
+    helm:
+      valueFiles: [values-production.yaml]
+  syncPolicy:
+    automated:
+      prune: true      <span class="hl"># Remove resources deleted from Git</span>
+      selfHeal: true   <span class="hl"># Correct manual kubectl changes</span>
+    syncOptions: [CreateNamespace=true]</div>
+    <p>This is the pattern for your multi-region Fabric deployment — each region is an ArgoCD Application, pointing to environment-specific values. No more manual <code>helm upgrade</code> — Git PR = deploy gate.</p>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Canary Deployment with Argo Rollouts</h3>
+    <div class="cb"><span class="hl"># Argo Rollouts: progressive delivery with automated analysis</span>
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+spec:
+  strategy:
+    canary:
+      steps:
+      - setWeight: 5      <span class="hl"># Send 5% traffic to new version</span>
+      - pause: {duration: 10m}
+      - analysis:           <span class="hl"># Check metrics before proceeding</span>
+          templates: [{templateName: success-rate}]
+      - setWeight: 25
+      - pause: {duration: 10m}
+      - setWeight: 100    <span class="hl"># Full rollout if metrics pass</span>
+
+---
+<span class="hl"># Analysis template: check p99 latency + error rate</span>
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+spec:
+  metrics:
+  - name: success-rate
+    provider:
+      prometheus:
+        query: |
+          sum(rate(http_requests_total{status!~"5.."}[5m])) /
+          sum(rate(http_requests_total[5m])) > 0.99</div>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Vault Dynamic Secrets — No More Rotation Scripts</h3>
+    <p>Static secrets (username/password) rotate rarely, get leaked, sit in environment variables. Vault dynamic secrets: application requests credentials → Vault creates DB user with TTL → app uses → credentials expire. No rotation scripts, no secret sprawl.</p>
+    <div class="cb"><span class="hl"># Vault generates MariaDB credentials on demand</span>
+vault secrets enable database
+vault write database/config/mariadb \
+    plugin_name=mysql-database-plugin \
+    connection_url="{{username}}:{{password}}@tcp(mariadb:3306)/" \
+    allowed_roles="cbdc-service"
+
+vault write database/roles/cbdc-service \
+    db_name=mariadb \
+    creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}'; GRANT SELECT, INSERT ON cbdc.* TO '{{name}}'@'%';" \
+    default_ttl="1h" max_ttl="24h"
+
+<span class="hl"># Your Go service requests creds at startup, renews before expiry</span>
+# vault-agent sidecar in K8s handles this transparently</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">04</span>Resources</h2>
+  <div class="resources">
+    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank">ArgoCD Official Docs</a><p>Read: Getting Started, App of Apps pattern, Sync Hooks. Given your Helm experience, you'll ramp in 1h.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://engineering.atspotify.com/2023/04/behind-the-scenes-of-spotifys-ci-cd-pipeline/" target="_blank">Spotify Engineering — Behind Spotify's CI/CD Pipeline</a><p>How Spotify manages 300+ microservices. Architecture decisions that scale.</p></div></div>
+    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://developer.hashicorp.com/vault/docs/secrets/databases" target="_blank">HashiCorp Vault — Database Secrets Engine</a><p>Dynamic secrets documentation. Critical upgrade from static secret management.</p></div></div>
+    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://argoproj.github.io/argo-rollouts/" target="_blank">Argo Rollouts — Progressive Delivery</a><p>Canary + blue-green with automated metric analysis. Integrates with your Prometheus setup.</p></div></div>
+    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=MeU5_k9ssrs" target="_blank">TechWorld Nana — ArgoCD Complete Tutorial (40 min)</a><p>GitOps concepts to working deployment. Fast, dense. Watch at 1.5x.</p></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">05</span>Quick Revision</h2>
+  <div class="qr">
+    <h3>CI/CD FLASH CARDS</h3>
+    <div class="qg">
+      <div class="qi"><div class="q">GitOps vs traditional CD?</div><div class="a">Traditional: CI pushes to cluster (kubectl apply). GitOps: agent in cluster pulls from Git. GitOps: audit trail in Git, self-healing, no cluster credentials in CI.</div></div>
+      <div class="qi"><div class="q">Canary vs Blue-Green?</div><div class="a">Canary: gradual traffic shift (5→25→100%), risk isolation. Blue-Green: full parallel env, instant switch, 2x infra cost. Use canary for low-blast-radius rollout, B-G for zero-downtime + easy rollback.</div></div>
+      <div class="qi"><div class="q">How does ArgoCD detect drift?</div><div class="a">Polls Git every 3 min (or webhook). Compares live K8s resources to desired state. Drift = out-of-sync. selfHeal=true → auto corrects manual changes.</div></div>
+      <div class="qi"><div class="q">Sealed Secrets vs ESO?</div><div class="a">Sealed Secrets: encrypt secrets with cluster pub key, commit to Git. ESO (External Secrets): sync from AWS SSM/Vault into K8s secret. ESO = better audit trail + source-of-truth outside cluster.</div></div>
+      <div class="qi"><div class="q">OIDC auth in GitHub Actions?</div><div class="a">GitHub mints JWT for each run. GCP/AWS verifies JWT against GitHub's OIDC endpoint. Exchange for cloud credentials. No static secrets in GitHub at all.</div></div>
+      <div class="qi"><div class="q">Vault dynamic secrets benefit?</div><div class="a">Short-lived credentials (1h TTL). Breach limited to TTL window. No manual rotation. Audit log per-credential. Zero standing access.</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</body>
+</html>
