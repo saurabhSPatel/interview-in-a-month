@@ -3,285 +3,1579 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rust in a Day — Advanced</title>
+<title>Rust — Basics to Advanced</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#ce422b;--a2:#ff8c69;--a3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
+  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#ce422b;--a2:#ff8c69;--a3:#00e5b0;--a4:#fbbf24;--text:#e8eaf0;--muted:#6b7385;}
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 70% 30%,rgba(206,66,43,0.05) 0%,transparent 55%);pointer-events:none;}
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
-  .back:hover{color:var(--accent);}
-  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
+  nav{position:sticky;top:0;background:rgba(7,9,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}.back:hover{color:var(--accent);}
+  .hero{max-width:1100px;margin:0 auto;padding:4rem 2rem 2rem;}
   .tag-pill{display:inline-flex;background:rgba(206,66,43,0.08);border:1px solid rgba(206,66,43,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
   h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
-  .sub{color:var(--muted);font-size:.92rem;max-width:560px;margin-bottom:2rem;}
-  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
-  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--a2);font-weight:700;}
-  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
-  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
-  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--a2);opacity:.7;}
-  .section{margin-bottom:3.5rem;}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+  .sub{color:var(--muted);font-size:.95rem;max-width:660px;margin-bottom:2rem;line-height:1.75;}
+  .toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.5rem;margin-bottom:3rem;}
+  .toc-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.6rem .9rem;text-decoration:none;color:var(--muted);font-size:.76rem;font-family:'JetBrains Mono',monospace;transition:all .2s;}
+  .toc-item:hover{border-color:var(--accent);color:var(--a2);}
+  .toc-item span{color:var(--accent);margin-right:.4rem;}
+  main{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
+  .module{margin-bottom:4rem;scroll-margin-top:70px;}
+  .mod-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid var(--border);}
+  .mod-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);background:rgba(206,66,43,0.08);border:1px solid rgba(206,66,43,0.2);padding:.2rem .6rem;border-radius:4px;}
+  .mod-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
+  .mod-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-left:auto;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1rem;}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--a2);}
-  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
-  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
-  .card ul li::before{content:'▸ ';color:var(--a2);font-size:.7rem;}
+  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem;color:var(--a2);}
+  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.7;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:.35rem;}
+  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
+  .card strong{color:var(--text);}
   .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
-  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
-  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(206,66,43,0.1);color:var(--a2);padding:.1rem .3rem;border-radius:3px;}
-  .cb{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
-  .hl{color:var(--a3);}
+  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;color:var(--text);}
+  .deep p{font-size:.84rem;color:var(--muted);line-height:1.75;margin-bottom:.6rem;}
+  .cb{background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:8px;padding:1.1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.9;overflow-x:auto;white-space:pre;}
+  .hl{color:var(--a3);}.hl2{color:var(--a2);}.hl3{color:var(--a4);}
+  .note{background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:8px;padding:.9rem 1rem;margin:.75rem 0;font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .note strong{color:var(--a4);}
+  .warn{background:rgba(255,95,64,0.05);border:1px solid rgba(255,95,64,0.2);border-radius:8px;padding:.9rem 1rem;margin:.75rem 0;font-size:.82rem;color:var(--muted);line-height:1.65;}
+  .warn strong{color:#ff5f40;}
+  .quiz-block{background:rgba(206,66,43,0.03);border:1px solid rgba(206,66,43,0.15);border-radius:10px;padding:1.25rem;margin-top:1.25rem;}
+  .quiz-block h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--a2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
+  .quiz-q{margin-bottom:1rem;}
+  .quiz-q p{font-size:.83rem;color:var(--text);margin-bottom:.5rem;font-weight:500;}
+  .quiz-options{display:flex;flex-direction:column;gap:.3rem;}
+  .quiz-options label{display:flex;align-items:flex-start;gap:.5rem;font-size:.8rem;color:var(--muted);cursor:pointer;padding:.35rem .5rem;border-radius:4px;}
+  .quiz-options input[type=radio]{accent-color:var(--accent);margin-top:.2rem;flex-shrink:0;}
+  .quiz-btn{margin-top:.75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);background:rgba(206,66,43,0.08);border:1px solid rgba(206,66,43,0.2);padding:.4rem 1rem;border-radius:4px;cursor:pointer;}
+  .quiz-result{margin-top:.75rem;font-size:.8rem;padding:.5rem .75rem;border-radius:4px;display:none;}
+  .quiz-result.show{display:block;}
+  .quiz-result.correct{background:rgba(0,229,176,0.08);color:var(--a3);border:1px solid rgba(0,229,176,0.2);}
+  .quiz-result.wrong{background:rgba(255,95,64,0.08);color:#ff5f40;border:1px solid rgba(255,95,64,0.2);}
   .resources{display:flex;flex-direction:column;gap:.75rem;}
   .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
   .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(206,66,43,0.08);color:var(--a2);border:1px solid rgba(206,66,43,0.2);white-space:nowrap;}
-  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
-  .rc a:hover{color:var(--a2);}
+  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}.rc a:hover{color:var(--a2);}
   .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  .qr{background:rgba(206,66,43,0.04);border:1px solid rgba(206,66,43,0.15);border-radius:10px;padding:1.5rem;}
-  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);letter-spacing:.08em;margin-bottom:1rem;}
-  .qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
-  .qi{background:rgba(0,0,0,0.2);border-radius:6px;padding:.75rem;}
-  .qi .q{font-size:.78rem;color:var(--text);margin-bottom:.3rem;font-weight:500;}
-  .qi .a{font-size:.73rem;color:var(--muted);}
-  .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+  .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
   .vs-box{background:var(--s2);border-radius:8px;padding:1rem;}
   .vs-box h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.08em;margin-bottom:.6rem;}
-  .vs-box p,.vs-box li{font-size:.82rem;color:var(--muted);line-height:1.6;}
   .vs-box ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
-  .vs-box ul li::before{content:'▸ ';font-size:.7rem;}
-  .rust-col h4{color:var(--a2);} .rust-col li::before{color:var(--a2)!important;}
-  .go-col h4{color:#00acd7;} .go-col li::before{color:#00acd7!important;}
-  @media(max-width:600px){.vs-grid{grid-template-columns:1fr;}}
+  .vs-box li{font-size:.82rem;color:var(--muted);line-height:1.6;}
+  .vs-box li::before{content:'▸ ';font-size:.7rem;}
+  .rust-col h4{color:var(--a2);}.rust-col li::before{color:var(--a2)!important;}
+  .go-col h4{color:#00acd7;}.go-col li::before{color:#00acd7!important;}
+  @media(max-width:768px){.cards{grid-template-columns:1fr;}.toc{grid-template-columns:1fr 1fr;}.vs-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <nav>
   <a href="index.html" class="back">← Dashboard</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🦀 RUST ADVANCED · 7 HOURS</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🦀 RUST · BASICS TO ADVANCED</span>
 </nav>
+
 <div class="hero">
-  <div class="tag-pill">RUST · ADVANCED · BUILDING ON YOUR UTXO SERVICE</div>
-  <h1>Rust — Expert Level in a Day</h1>
-  <p class="sub">You built a production Rust service. Now internalize what the borrow checker truly enforces, how async/await works at the machine level, and unsafe patterns that matter.</p>
-  <div class="timeline">
-    <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">Ownership, Lifetimes, Variance</div></div>
-    <div class="tblock"><div class="time">H 1.5–3</div><div class="topic">Async Rust: Futures, Tokio</div></div>
-    <div class="tblock"><div class="time">H 3–4.5</div><div class="topic">Unsafe Rust + FFI</div></div>
-    <div class="tblock"><div class="time">H 4.5–5.5</div><div class="topic">Design Patterns in Rust</div></div>
-    <div class="tblock"><div class="time">H 5.5–6.5</div><div class="topic">Memory Layout + Perf</div></div>
-    <div class="tblock"><div class="time">H 6.5–7</div><div class="topic">Rust vs Go: when to use what</div></div>
+  <div class="tag-pill">COMPLETE RUST · ZERO TO PRODUCTION · 12 MODULES</div>
+  <h1>Rust — Basics to Advanced</h1>
+  <p class="sub">Every core Rust concept from your first variable to async runtimes and unsafe internals. Code examples for every concept. Quizzes after each module. Designed to build understanding layer by layer.</p>
+  <div class="toc">
+    <a href="#m1" class="toc-item"><span>01</span>Variables & Types</a>
+    <a href="#m2" class="toc-item"><span>02</span>Functions & Control Flow</a>
+    <a href="#m3" class="toc-item"><span>03</span>Ownership & Borrowing</a>
+    <a href="#m4" class="toc-item"><span>04</span>Structs & Enums</a>
+    <a href="#m5" class="toc-item"><span>05</span>Error Handling</a>
+    <a href="#m6" class="toc-item"><span>06</span>Traits & Generics</a>
+    <a href="#m7" class="toc-item"><span>07</span>Collections & Iterators</a>
+    <a href="#m8" class="toc-item"><span>08</span>Closures & Functional</a>
+    <a href="#m9" class="toc-item"><span>09</span>Lifetimes — Deep</a>
+    <a href="#m10" class="toc-item"><span>10</span>Async / Tokio</a>
+    <a href="#m11" class="toc-item"><span>11</span>Unsafe Rust & FFI</a>
+    <a href="#m12" class="toc-item"><span>12</span>Memory Layout & Patterns</a>
   </div>
 </div>
+
 <main>
 
-<div class="section">
-  <h2><span class="sn">01</span>Key Concepts</h2>
+<!-- ══════════════════════ M1 ══════════════════════ -->
+<div class="module" id="m1">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 01</span>
+    <span class="mod-title">Variables, Types & Primitives</span>
+    <span class="mod-tag">FOUNDATION</span>
+  </div>
+
+  <div class="deep">
+    <h3>Variables — Immutable by Default</h3>
+    <div class="cb"><span class="hl">// Variables are IMMUTABLE by default — a core safety feature</span>
+let x = 5;           <span class="hl">// immutable — cannot reassign</span>
+let mut y = 5;       <span class="hl">// mutable — can reassign</span>
+y = 10;              <span class="hl">// OK</span>
+<span class="hl">// x = 10;           // ERROR: cannot assign twice to immutable variable</span>
+
+<span class="hl">// Shadowing — rebind the same name (creates a NEW variable)</span>
+let z = 5;
+let z = z + 1;       <span class="hl">// new z shadows old z. Value: 6</span>
+let z = "now a string"; <span class="hl">// shadowing can even change the type!</span>
+<span class="hl">// Shadowing != mut: mut keeps the type, shadowing can change it</span>
+
+<span class="hl">// Constants — always immutable, type annotation required, compile-time value</span>
+const MAX_POINTS: u32 = 100_000;  <span class="hl">// _ is visual separator</span>
+<span class="hl">// Cannot use runtime values in const — must be a literal or const expression</span>
+
+<span class="hl">// Static — single memory address for program lifetime</span>
+static GREETING: &str = "Hello";  <span class="hl">// 'static lifetime, stored in binary</span>
+static mut COUNTER: u32 = 0;      <span class="hl">// mutable static — requires unsafe to access</span></div>
+  </div>
+
   <div class="cards">
     <div class="card">
-      <h3>Ownership Model — Deep</h3>
+      <h3>Integer Types</h3>
       <ul>
-        <li>Move semantics: value has one owner, move = transfer</li>
-        <li>Copy types: stack-only, no destructor (i32, bool, char, tuples of Copy)</li>
-        <li>Clone: explicit deep copy (expensive — allocation)</li>
-        <li>Drop: deterministic destructor (RAII), called at scope end</li>
-        <li>Drop order: reverse declaration order, fields before struct</li>
+        <li><strong>Signed:</strong> i8, i16, i32, i64, i128, isize</li>
+        <li><strong>Unsigned:</strong> u8, u16, u32, u64, u128, usize</li>
+        <li><strong>Default:</strong> i32 — fastest on most modern CPUs</li>
+        <li><strong>isize/usize:</strong> pointer-sized — always use for indexing and lengths</li>
+        <li><strong>Overflow in debug:</strong> panics. In release: wraps around silently.</li>
+        <li><strong>Safe ops:</strong> <code>checked_add()</code>, <code>saturating_add()</code>, <code>wrapping_add()</code></li>
+        <li><strong>Literals:</strong> 0xFF (hex), 0o77 (octal), 0b1010 (binary), 1_000_000 (visual)</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Borrow Checker — Invariants</h3>
+      <h3>Float, Bool, Char</h3>
       <ul>
-        <li>At any time: ONE mutable ref OR N immutable refs</li>
-        <li>Refs must not outlive referent (lifetime check)</li>
-        <li>No aliased mutable state (XOR mutability)</li>
-        <li>This prevents: data races, use-after-free, dangling pointers</li>
-        <li>Enforced at compile time: zero runtime overhead</li>
+        <li><strong>f32:</strong> 32-bit IEEE 754 float</li>
+        <li><strong>f64:</strong> 64-bit float — the default, more precise</li>
+        <li>Float arithmetic: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> (remainder)</li>
+        <li><strong>bool:</strong> <code>true</code> / <code>false</code> — 1 byte in memory</li>
+        <li><strong>char:</strong> Unicode scalar value — 4 bytes (NOT 1 byte like C)</li>
+        <li>char can be any valid Unicode: <code>'A'</code>, <code>'ñ'</code>, <code>'中'</code>, <code>'😀'</code></li>
+        <li>char is NOT a u8 — they are different types in Rust</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Lifetimes — Not Magic</h3>
+      <h3>Compound Types</h3>
       <ul>
-        <li>Lifetime = scope for which reference is valid</li>
-        <li>Elision: compiler infers in simple cases (single input ref)</li>
-        <li><code>'a</code> on struct: struct cannot outlive ref it holds</li>
-        <li>Static lifetime: entire program duration (global data)</li>
-        <li>Higher-ranked: <code>for&lt;'a&gt; Fn(&'a str)</code> — any lifetime</li>
+        <li><strong>Tuple:</strong> <code>(i32, f64, bool)</code> — fixed size, mixed types</li>
+        <li>Access tuple: <code>tup.0</code>, <code>tup.1</code> — dot notation with index</li>
+        <li>Destructure: <code>let (x, y, z) = tup;</code></li>
+        <li><strong>Unit tuple:</strong> <code>()</code> — "void", the empty tuple, 0 bytes</li>
+        <li><strong>Array:</strong> <code>[i32; 5]</code> — fixed length, same type, stack allocated</li>
+        <li>Array access: <code>arr[0]</code> — panics if out of bounds in debug</li>
+        <li><strong>Slice:</strong> <code>&[i32]</code> — view into array/vec — fat pointer (ptr + len)</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Async Rust — Conceptual</h3>
+      <h3>String vs &str</h3>
       <ul>
-        <li>Future: lazy, zero-cost state machine at compile time</li>
-        <li>async fn: desugars to impl Future</li>
-        <li>Executor runs futures: Tokio, async-std</li>
-        <li>await: yields control when I/O pending</li>
-        <li>No implicit heap allocation (unlike Go goroutines)</li>
+        <li><strong>&str:</strong> immutable reference to UTF-8 bytes — borrowed, no allocation</li>
+        <li><strong>String:</strong> owned, heap-allocated, growable UTF-8 string</li>
+        <li>String literals are <code>&'static str</code> — baked into binary</li>
+        <li>Convert <code>&str → String</code>: <code>"hi".to_string()</code> or <code>String::from("hi")</code></li>
+        <li>Convert <code>String → &str</code>: <code>&my_string</code> (deref coercion)</li>
+        <li>Function params: prefer <code>&str</code> — accepts both String and &str</li>
+        <li>Indexing by char: use <code>.chars()</code> — bytes ≠ chars in Unicode</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Trait System</h3>
+      <h3>Type Inference & Casting</h3>
       <ul>
-        <li>Static dispatch: monomorphization (zero-cost, code bloat)</li>
-        <li>Dynamic dispatch: <code>dyn Trait</code> = vtable pointer</li>
-        <li>Object safety: required to use as <code>dyn Trait</code></li>
-        <li>Blanket impl: <code>impl&lt;T: Display&gt; ToString for T</code></li>
-        <li>Orphan rule: impl own trait OR for own type</li>
+        <li>Rust infers types from usage — most annotations are optional</li>
+        <li>Explicit cast: <code>let x = 2.9f64 as i32;</code> — truncates (not rounds) → 2</li>
+        <li>No implicit coercions — all conversions must be explicit</li>
+        <li>Parse: <code>"42".parse::&lt;i32&gt;()</code> — returns Result</li>
+        <li><code>From</code>: safe infallible conversion — <code>i32::from(5u8)</code></li>
+        <li><code>Into</code>: inverse of From — <code>let x: i64 = 5i32.into()</code></li>
+        <li><code>TryFrom/TryInto</code>: fallible conversion — returns Result</li>
       </ul>
     </div>
-    <div class="card">
-      <h3>Error Handling Patterns</h3>
-      <ul>
-        <li><code>thiserror</code>: derive Error for library crates</li>
-        <li><code>anyhow</code>: ergonomic errors for application code</li>
-        <li><code>?</code> operator: early return on Err, converts with From</li>
-        <li>Never panic in library code — return Result</li>
-        <li>Error enum variants with context (not just strings)</li>
-      </ul>
-    </div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Variables & Types</h4>
+    <div class="quiz-q"><p>Q1. What is the default integer type in Rust when no annotation is given?</p><div class="quiz-options"><label><input type="radio" name="m1q1" value="a"> u32</label><label><input type="radio" name="m1q1" value="b"> i32</label><label><input type="radio" name="m1q1" value="c"> i64</label><label><input type="radio" name="m1q1" value="d"> usize</label></div></div>
+    <div class="quiz-q"><p>Q2. How large is a <code>char</code> in Rust?</p><div class="quiz-options"><label><input type="radio" name="m1q2" value="a"> 1 byte (ASCII)</label><label><input type="radio" name="m1q2" value="b"> 2 bytes (UTF-16)</label><label><input type="radio" name="m1q2" value="c"> 4 bytes (Unicode scalar value)</label><label><input type="radio" name="m1q2" value="d"> Variable size</label></div></div>
+    <div class="quiz-q"><p>Q3. What is the key difference between <code>let mut x</code> and <code>let x</code> / <code>let x</code> (shadowing)?</p><div class="quiz-options"><label><input type="radio" name="m1q3" value="a"> No difference — both allow reassignment</label><label><input type="radio" name="m1q3" value="b"> mut allows reassignment of the same type; shadowing creates a new variable and can change the type</label><label><input type="radio" name="m1q3" value="c"> Shadowing is only allowed in global scope</label><label><input type="radio" name="m1q3" value="d"> mut is faster at runtime</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','c','b'],['m1q1','m1q2','m1q3'],'m1r')">Check Answers</button>
+    <div class="quiz-result" id="m1r"></div>
   </div>
 </div>
 
-<div class="section">
-  <h2><span class="sn">02</span>Must-Know Deep Dives</h2>
-
-  <div class="deep">
-    <h3>🔥 Async/Await Internals — What Tokio Actually Does</h3>
-    <p>Every <code>async fn</code> compiles to a state machine enum. Each <code>.await</code> point becomes a state. When the future is polled, it resumes from the last yielded state. No heap allocation for the state machine itself — it lives on the stack of the spawned task.</p>
-    <p><strong>Pinning:</strong> Self-referential structs (futures holding references to their own fields) cannot be moved after creation. <code>Pin&lt;T&gt;</code> prevents moving the value. <code>Unpin</code> marker trait: most types implement it. Futures that self-reference must be <code>!Unpin</code>.</p>
-    <div class="cb"><span class="hl">// async fn desugars to this:</span>
-async fn fetch_data(url: &str) -> Result&lt;String&gt; { ... }
-
-// Becomes roughly:
-enum FetchDataFuture&lt;'a&gt; {
-    State0 { url: &'a str },          // Before first .await
-    State1 { connection: TcpStream }, // After connect, before read
-    State2 { data: Vec&lt;u8&gt; },        // After read, before decode
-    Done,
-}
-
-impl Future for FetchDataFuture&lt;'_&gt; {
-    type Output = Result&lt;String&gt;;
-    fn poll(self: Pin&lt;&mut Self&gt;, cx: &mut Context) -> Poll&lt;Self::Output&gt; {
-        match self.get_mut() {
-            Self::State0 { url } => {
-                <span class="hl">// Try to connect. If pending, register waker and return Pending.</span>
-                // When socket ready, OS notifies → Waker::wake() called → re-poll
-            }
-        }
-    }
-}</div>
-    <p><strong>Tokio runtime:</strong> Work-stealing thread pool. Each worker thread has a local run queue + can steal from others. Single-threaded runtime (Tokio <code>current_thread</code>) for your UTXO service that didn't need parallelism.</p>
+<!-- ══════════════════════ M2 ══════════════════════ -->
+<div class="module" id="m2">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 02</span>
+    <span class="mod-title">Functions & Control Flow</span>
+    <span class="mod-tag">BASICS</span>
   </div>
 
   <div class="deep">
-    <h3>🔥 Unsafe Rust — When and How</h3>
-    <p>Unsafe doesn't disable the borrow checker. It only unlocks 5 additional capabilities: raw pointer dereference, calling unsafe functions, implementing unsafe traits, mutating statics, accessing union fields.</p>
-    <div class="cb"><span class="hl">// Pattern: safe abstraction over unsafe internals</span>
-pub struct GapBuffer {
-    data: Vec&lt;u8&gt;,
-    gap_start: usize,
-    gap_end: usize,
+    <h3>Functions</h3>
+    <div class="cb"><span class="hl">// fn keyword, snake_case names, type annotations required on params</span>
+fn add(x: i32, y: i32) -> i32 {
+    x + y   <span class="hl">// no semicolon = expression = implicit return value</span>
 }
 
-impl GapBuffer {
-    pub fn insert(&mut self, ch: u8) {
-        if self.gap_start == self.gap_end { self.expand_gap(); }
-        unsafe {
-            <span class="hl">// SAFETY: gap_start is always < data.len() by invariant</span>
-            *self.data.get_unchecked_mut(self.gap_start) = ch;
-        }
-        self.gap_start += 1;
-    }
+<span class="hl">// Explicit return — only needed for early returns</span>
+fn safe_divide(a: f64, b: f64) -> Option&lt;f64&gt; {
+    if b == 0.0 { return None; }  <span class="hl">// early return</span>
+    Some(a / b)                   <span class="hl">// implicit return</span>
 }
 
-<span class="hl">// Your UTXO service: likely needed unsafe for crypto operations
-// interfacing with C libraries (libsecp256k1)</span>
-extern "C" {
-    fn secp256k1_ecdsa_sign(
-        ctx: *const Secp256k1Context,
-        sig: *mut Signature,
-        msg: *const u8,
-    ) -> i32;
-}</div>
+<span class="hl">// Unit type () is the default return — Rust's "void"</span>
+fn greet(name: &str) {           <span class="hl">// implicitly -> ()</span>
+    println!("Hello, {}!", name);
+}
+
+<span class="hl">// Statements vs Expressions — fundamental distinction in Rust
+// Statement: performs action, no value, ends with semicolon
+// Expression: evaluates to a value, no semicolon</span>
+
+let y = {           <span class="hl">// block is an expression</span>
+    let x = 3;
+    x + 1           <span class="hl">// last line without ; = value of block</span>
+};                  <span class="hl">// y = 4</span>
+
+<span class="hl">// Adding ; to last line makes it a statement — block evaluates to ()</span></div>
   </div>
 
   <div class="deep">
-    <h3>🔥 Memory Layout — Zero-Cost Abstractions</h3>
-    <p>Rust structs: fields laid out in order with alignment padding (unlike C++ guaranteed order). <code>#[repr(C)]</code> forces C layout for FFI. <code>#[repr(packed)]</code> removes padding (unaligned reads = UB on some architectures).</p>
-    <p><strong>Enum layout optimization:</strong> <code>Option&lt;&amp;T&gt;</code> is the same size as <code>&amp;T</code> — null pointer optimization. <code>Option&lt;NonZeroU32&gt;</code> = 4 bytes. Rust's type system enables this without any runtime overhead.</p>
-    <div class="cb"><span class="hl">// Enum memory — discriminant + largest variant</span>
+    <h3>Control Flow</h3>
+    <div class="cb"><span class="hl">// if is an expression — use in let bindings</span>
+let num = 7;
+let label = if num % 2 == 0 { "even" } else { "odd" };
+<span class="hl">// Both arms must return the same type!</span>
+
+<span class="hl">// loop — infinite, use break to exit (can return a value)</span>
+let mut counter = 0;
+let result = loop {
+    counter += 1;
+    if counter == 10 { break counter * 2; }  <span class="hl">// returns 20</span>
+};
+
+<span class="hl">// Labeled loops — break/continue specific outer loop</span>
+'outer: for i in 0..5 {
+    for j in 0..5 {
+        if i + j == 6 { break 'outer; }
+    }
+}
+
+<span class="hl">// while</span>
+let mut n = 3;
+while n != 0 { println!("{}!", n); n -= 1; }
+
+<span class="hl">// for — idiomatic Rust, always use over while for iteration</span>
+for i in 0..5 { print!("{} ", i); }   <span class="hl">// 0 1 2 3 4 (exclusive)</span>
+for i in 0..=5 { print!("{} ", i); }  <span class="hl">// 0 1 2 3 4 5 (inclusive)</span>
+for item in &vec { println!("{}", item); }
+for (i, v) in vec.iter().enumerate() { println!("{}: {}", i, v); }
+
+<span class="hl">// match — exhaustive pattern matching (compiler checks all cases)</span>
+let x = 5u32;
+match x {
+    1       => println!("one"),
+    2 | 3   => println!("two or three"),   <span class="hl">// OR patterns</span>
+    4..=9   => println!("four to nine"),   <span class="hl">// range pattern</span>
+    n if n % 2 == 0 => println!("even: {}", n),  <span class="hl">// match guard</span>
+    _       => println!("something else"), <span class="hl">// wildcard — must cover rest</span>
+}
+
+<span class="hl">// if let — concise single-pattern match</span>
+if let Some(val) = some_option { println!("got: {}", val); }
+
+<span class="hl">// while let — loop while pattern matches</span>
+while let Some(top) = stack.pop() { println!("{}", top); }</div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Functions & Control Flow</h4>
+    <div class="quiz-q"><p>Q1. In Rust, omitting the semicolon from the last line of a function:</p><div class="quiz-options"><label><input type="radio" name="m2q1" value="a"> Causes a compile error</label><label><input type="radio" name="m2q1" value="b"> Returns that expression as the function's return value</label><label><input type="radio" name="m2q1" value="c"> Returns unit type ()</label><label><input type="radio" name="m2q1" value="d"> Has no effect</label></div></div>
+    <div class="quiz-q"><p>Q2. Which construct can return a value in Rust via break?</p><div class="quiz-options"><label><input type="radio" name="m2q2" value="a"> while</label><label><input type="radio" name="m2q2" value="b"> for</label><label><input type="radio" name="m2q2" value="c"> loop</label><label><input type="radio" name="m2q2" value="d"> if</label></div></div>
+    <div class="quiz-q"><p>Q3. match in Rust must be:</p><div class="quiz-options"><label><input type="radio" name="m2q3" value="a"> Used only with integers</label><label><input type="radio" name="m2q3" value="b"> Exhaustive — all possible values must be covered</label><label><input type="radio" name="m2q3" value="c"> Used with a default arm always</label><label><input type="radio" name="m2q3" value="d"> Limited to 10 arms maximum</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','c','b'],['m2q1','m2q2','m2q3'],'m2r')">Check Answers</button>
+    <div class="quiz-result" id="m2r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M3 ══════════════════════ -->
+<div class="module" id="m3">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 03</span>
+    <span class="mod-title">Ownership & Borrowing</span>
+    <span class="mod-tag">CORE CONCEPT</span>
+  </div>
+
+  <div class="note"><strong>Key insight:</strong> Ownership is Rust's solution to memory safety without a garbage collector. All checks happen at compile time — zero runtime cost. Once you internalize the 3 rules, everything else follows.</div>
+
+  <div class="deep">
+    <h3>The Three Ownership Rules</h3>
+    <div class="cb"><span class="hl">// Rule 1: Every value has exactly ONE owner</span>
+let s1 = String::from("hello");  <span class="hl">// s1 owns this String on the heap</span>
+
+<span class="hl">// Rule 2: Only one owner at a time — assignment MOVES ownership</span>
+let s2 = s1;   <span class="hl">// s1 is MOVED to s2. s1 is now invalid!</span>
+<span class="hl">// println!("{}", s1); // ERROR: value borrowed after move</span>
+println!("{}", s2);    <span class="hl">// OK</span>
+
+<span class="hl">// Rule 3: When owner goes out of scope, value is DROPPED (memory freed)</span>
+{
+    let s3 = String::from("world");
+} <span class="hl">// s3 goes out of scope → drop() called → heap memory freed automatically</span>
+
+<span class="hl">// Clone: explicit deep copy — duplicates heap data</span>
+let s1 = String::from("hello");
+let s2 = s1.clone();   <span class="hl">// BOTH s1 and s2 are valid, independent copies</span>
+println!("{} and {}", s1, s2);
+
+<span class="hl">// Copy types (stack-only, no destructor): i32, f64, bool, char, tuples of Copy
+// These are COPIED, not moved — both variables remain valid</span>
+let x = 5;
+let y = x;   <span class="hl">// Copy — x is still valid</span>
+println!("{} and {}", x, y);  <span class="hl">// OK</span>
+
+<span class="hl">// Functions behave like assignment — they take ownership or copy</span>
+fn takes_ownership(s: String) { println!("{}", s); }  <span class="hl">// s dropped here</span>
+fn makes_copy(n: i32) { println!("{}", n); }           <span class="hl">// i32 is Copy</span>
+
+let s = String::from("hello");
+takes_ownership(s);      <span class="hl">// s moved into function</span>
+<span class="hl">// println!("{}", s);   // ERROR: s was moved</span>
+
+let n = 5;
+makes_copy(n);           <span class="hl">// n is copied</span>
+println!("{}", n);       <span class="hl">// OK — Copy type</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Borrowing — References</h3>
+    <div class="cb"><span class="hl">// &T — immutable reference. Borrow without taking ownership.</span>
+fn length(s: &String) -> usize { s.len() }  <span class="hl">// borrows s, does not own it</span>
+
+let s = String::from("hello");
+let len = length(&s);    <span class="hl">// pass reference — s is NOT moved</span>
+println!("{} has {} chars", s, len);  <span class="hl">// s still valid!</span>
+
+<span class="hl">// &mut T — mutable reference. Borrow AND allow modification.</span>
+fn push_world(s: &mut String) { s.push_str(", world"); }
+
+let mut s = String::from("hello");  <span class="hl">// must be mut to create &mut</span>
+push_world(&mut s);
+println!("{}", s);  <span class="hl">// "hello, world"</span>
+
+<span class="hl">// BORROW RULES — enforced at compile time:
+// RULE A: ONE &mut OR any number of & — NEVER both at same time</span>
+let mut s = String::from("hello");
+let r1 = &s;        <span class="hl">// OK</span>
+let r2 = &s;        <span class="hl">// OK — multiple immutable refs allowed</span>
+<span class="hl">// let r3 = &mut s; // ERROR: cannot borrow mutably while immutably borrowed</span>
+println!("{} {}", r1, r2);  <span class="hl">// r1, r2 last used here — borrows END here (NLL)</span>
+let r3 = &mut s;    <span class="hl">// OK now — r1 and r2 are no longer in scope</span>
+r3.push('!');
+
+<span class="hl">// RULE B: References must NOT outlive the value they point to</span>
+<span class="hl">// fn dangle() -> &String {      // ERROR</span>
+<span class="hl">//     let s = String::from("hi");</span>
+<span class="hl">//     &s  // s is dropped at end of scope — reference would dangle!</span>
+<span class="hl">// }  // solution: return String (transfer ownership) instead of &String</span></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Slices</h3>
+      <ul>
+        <li>Slice = reference to a contiguous part of a collection</li>
+        <li>String slice: <code>&s[0..5]</code> — bytes 0 to 4 (half-open range)</li>
+        <li>Array slice: <code>&arr[1..3]</code> — elements 1 and 2</li>
+        <li>Fat pointer: stores (pointer to start, length)</li>
+        <li><code>&str</code> is just a string slice — all string literals are <code>&str</code></li>
+        <li>Slices prevent common off-by-one and dangling pointer bugs</li>
+        <li>Prefer <code>&[T]</code> over <code>&Vec&lt;T&gt;</code> in function params — more flexible</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Move vs Copy vs Clone</h3>
+      <ul>
+        <li><strong>Move:</strong> heap types (String, Vec, Box) — ownership transfers, original invalid</li>
+        <li><strong>Copy:</strong> stack types (i32, bool, f64, char, arrays of Copy) — both valid</li>
+        <li><strong>Clone:</strong> explicit deep copy — always works, may allocate</li>
+        <li>A type implements <code>Copy</code> only if it has no heap data and no Drop impl</li>
+        <li>Tuple is Copy only if ALL its elements are Copy</li>
+        <li>Array <code>[T; N]</code> is Copy only if T is Copy</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Ownership & Borrowing</h4>
+    <div class="quiz-q"><p>Q1. After <code>let s2 = s1;</code> where s1 is a String, what happens to s1?</p><div class="quiz-options"><label><input type="radio" name="m3q1" value="a"> s1 is cloned — both s1 and s2 remain valid</label><label><input type="radio" name="m3q1" value="b"> s1 is moved — using s1 afterward is a compile error</label><label><input type="radio" name="m3q1" value="c"> s1 is freed immediately</label><label><input type="radio" name="m3q1" value="d"> s1 becomes a reference to s2</label></div></div>
+    <div class="quiz-q"><p>Q2. Can you have a mutable reference and an immutable reference to the same value at the same time?</p><div class="quiz-options"><label><input type="radio" name="m3q2" value="a"> Yes — any number of references can coexist</label><label><input type="radio" name="m3q2" value="b"> No — one &mut OR many &T, never both simultaneously</label><label><input type="radio" name="m3q2" value="c"> Yes, if the variable is declared mut</label><label><input type="radio" name="m3q2" value="d"> Yes, as long as you don't write through both</label></div></div>
+    <div class="quiz-q"><p>Q3. Why can't a function return a reference to a local variable?</p><div class="quiz-options"><label><input type="radio" name="m3q3" value="a"> Rust doesn't allow returning references at all</label><label><input type="radio" name="m3q3" value="b"> Local variables are dropped at function end — the reference would dangle</label><label><input type="radio" name="m3q3" value="c"> References can only point to heap-allocated data</label><label><input type="radio" name="m3q3" value="d"> You must use Box to return anything from a function</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['m3q1','m3q2','m3q3'],'m3r')">Check Answers</button>
+    <div class="quiz-result" id="m3r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M4 ══════════════════════ -->
+<div class="module" id="m4">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 04</span>
+    <span class="mod-title">Structs & Enums</span>
+    <span class="mod-tag">DATA MODELING</span>
+  </div>
+
+  <div class="deep">
+    <h3>Structs</h3>
+    <div class="cb"><span class="hl">// Named-field struct</span>
+struct User {
+    username: String,
+    email: String,
+    age: u32,
+    active: bool,
+}
+
+<span class="hl">// Instantiation — order doesn't matter, but all fields required</span>
+let user1 = User {
+    username: String::from("alice"),
+    email: String::from("alice@example.com"),
+    age: 30,
+    active: true,
+};
+
+<span class="hl">// Field shorthand — when variable name matches field name</span>
+let username = String::from("bob");
+let user2 = User { username, email: String::from("bob@b.com"), age: 25, active: true };
+
+<span class="hl">// Struct update syntax — copy remaining fields from another instance</span>
+let user3 = User {
+    email: String::from("carol@c.com"),
+    ..user1  <span class="hl">// NOTE: String fields are MOVED from user1 — user1.email no longer valid</span>
+};
+
+<span class="hl">// Tuple struct — named tuple type</span>
+struct Color(u8, u8, u8);
+struct Point(f64, f64, f64);
+let red = Color(255, 0, 0);
+println!("{}", red.0);  <span class="hl">// access by index</span>
+
+<span class="hl">// Unit struct — no fields; useful for implementing traits</span>
+struct Sentinel;
+
+<span class="hl">// Methods via impl block</span>
+impl User {
+    <span class="hl">// Associated function (no self) — constructor pattern</span>
+    fn new(username: String, email: String) -> Self {
+        Self { username, email, age: 0, active: true }
+    }
+
+    fn is_active(&self) -> bool { self.active }         <span class="hl">// immutable borrow</span>
+    fn deactivate(&mut self) { self.active = false; }   <span class="hl">// mutable borrow</span>
+    fn into_email(self) -> String { self.email }        <span class="hl">// takes ownership</span>
+}
+
+let mut u = User::new(String::from("dan"), String::from("dan@d.com"));
+u.deactivate();  <span class="hl">// Rust auto-borrows: sugar for User::deactivate(&mut u)</span>
+println!("{}", u.is_active());  <span class="hl">// false</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Enums — Rust's Superpower</h3>
+    <div class="cb"><span class="hl">// Each variant can hold DIFFERENT types and amounts of data</span>
 enum Message {
-    Quit,                    // 0 bytes payload
-    Move { x: i32, y: i32 }, // 8 bytes payload
-    Write(String),           // 24 bytes payload (ptr+len+cap)
+    Quit,                         <span class="hl">// unit variant — no data</span>
+    Move { x: i32, y: i32 },     <span class="hl">// struct-like variant</span>
+    Write(String),                <span class="hl">// single value</span>
+    ChangeColor(u8, u8, u8),      <span class="hl">// tuple variant</span>
 }
-// Size: 24 + 8 (discriminant+padding) = 32 bytes
 
-<span class="hl">// Niche optimization: Option&lt;&T&gt; uses null as None</span>
-use std::mem::size_of;
-assert_eq!(size_of::&lt;Option&lt;&i32&gt;&gt;(), size_of::&lt;&i32&gt;()); // true!</div>
+impl Message {
+    fn call(&self) {
+        match self {
+            Message::Quit => println!("Quit"),
+            Message::Move { x, y } => println!("Move to {},{}", x, y),
+            Message::Write(s) => println!("Write: {}", s),
+            Message::ChangeColor(r, g, b) => println!("Color: {},{},{}", r, g, b),
+        }
+    }
+}
+
+<span class="hl">// Option&lt;T&gt; — built-in nullable type. No null in safe Rust!</span>
+<span class="hl">// enum Option&lt;T&gt; { Some(T), None }</span>
+let five: Option&lt;i32&gt; = Some(5);
+let absent: Option&lt;i32&gt; = None;
+
+<span class="hl">// MUST unwrap before using — forces you to handle the None case</span>
+let n = five.unwrap_or(0);         <span class="hl">// default if None</span>
+let n = five.unwrap_or_default();  <span class="hl">// type's Default value</span>
+let doubled = five.map(|n| n * 2); <span class="hl">// transform the inner value: Some(10)</span>
+if let Some(val) = five { println!("{}", val); }
+
+<span class="hl">// Pattern matching — exhaustive</span>
+match five {
+    Some(n) if n > 0 => println!("positive: {}", n),  <span class="hl">// guard</span>
+    Some(n) => println!("non-positive: {}", n),
+    None => println!("nothing"),
+}</div>
   </div>
 
   <div class="deep">
-    <h3>🔥 Rust vs Go — The Real Answer</h3>
+    <h3>Advanced Pattern Matching</h3>
+    <div class="cb"><span class="hl">// Destructuring structs</span>
+struct Point { x: i32, y: i32 }
+let p = Point { x: 3, y: 7 };
+let Point { x, y } = p;    <span class="hl">// x=3, y=7</span>
+
+<span class="hl">// Destructuring with rename</span>
+let Point { x: px, y: py } = p;
+
+<span class="hl">// Ignore fields</span>
+let Point { x, .. } = p;   <span class="hl">// ignore y</span>
+
+<span class="hl">// @ bindings — bind a value while also testing it</span>
+match age {
+    n @ 0..=17  => println!("minor, age {}", n),
+    n @ 18..=64 => println!("adult, age {}", n),
+    n           => println!("senior, age {}", n),
+}
+
+<span class="hl">// Tuple patterns</span>
+match (x, y) {
+    (0, 0) => println!("origin"),
+    (x, 0) => println!("on x-axis at {}", x),
+    (0, y) => println!("on y-axis at {}", y),
+    (x, y) => println!("({}, {})", x, y),
+}
+
+<span class="hl">// Nested enum patterns</span>
+enum Color { Rgb(u8,u8,u8), Hsv(u16,u8,u8) }
+enum Shape { Circle { radius: f64, color: Color }, Square(f64) }
+
+match shape {
+    Shape::Circle { radius, color: Color::Rgb(r,g,b) } =>
+        println!("Circle r={} rgb({},{},{})", radius, r, g, b),
+    Shape::Circle { radius, color: Color::Hsv(..) } =>
+        println!("HSV circle, r={}", radius),
+    Shape::Square(side) => println!("Square side={}", side),
+}</div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Structs & Enums</h4>
+    <div class="quiz-q"><p>Q1. What does <code>Option&lt;T&gt;</code> solve in Rust?</p><div class="quiz-options"><label><input type="radio" name="m4q1" value="a"> It speeds up optional field access</label><label><input type="radio" name="m4q1" value="b"> It replaces null — forces explicit handling of absent values, making null pointer errors impossible</label><label><input type="radio" name="m4q1" value="c"> It enables garbage collection for optional values</label><label><input type="radio" name="m4q1" value="d"> It is required for all function return types</label></div></div>
+    <div class="quiz-q"><p>Q2. An "associated function" in a Rust impl block differs from a method because:</p><div class="quiz-options"><label><input type="radio" name="m4q2" value="a"> It's called with . notation instead of ::</label><label><input type="radio" name="m4q2" value="b"> It takes no self parameter — called with :: syntax, like a static method</label><label><input type="radio" name="m4q2" value="c"> It cannot return Self</label><label><input type="radio" name="m4q2" value="d"> It can only be used for constructors</label></div></div>
+    <div class="quiz-q"><p>Q3. Rust's match requires exhaustive coverage because:</p><div class="quiz-options"><label><input type="radio" name="m4q3" value="a"> It's a syntax requirement with no deeper purpose</label><label><input type="radio" name="m4q3" value="b"> The compiler ensures you handle every possible case — preventing unhandled state bugs at compile time</label><label><input type="radio" name="m4q3" value="c"> Only integers can be non-exhaustive</label><label><input type="radio" name="m4q3" value="d"> It enables runtime type checking</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['m4q1','m4q2','m4q3'],'m4r')">Check Answers</button>
+    <div class="quiz-result" id="m4r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M5 ══════════════════════ -->
+<div class="module" id="m5">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 05</span>
+    <span class="mod-title">Error Handling</span>
+    <span class="mod-tag">PRODUCTION ESSENTIAL</span>
+  </div>
+
+  <div class="deep">
+    <h3>Result&lt;T, E&gt; and the ? Operator</h3>
+    <div class="cb"><span class="hl">// Result&lt;T, E&gt; is the primary error type in Rust
+// enum Result&lt;T, E&gt; { Ok(T), Err(E) }</span>
+
+use std::fs;
+use std::io;
+
+<span class="hl">// The ? operator — propagate errors without boilerplate</span>
+fn read_username(path: &str) -> Result&lt;String, io::Error&gt; {
+    let s = fs::read_to_string(path)?;  <span class="hl">// ? = return Err early if error, else unwrap Ok</span>
+    Ok(s.trim().to_string())
+}
+
+<span class="hl">// ? desugars to:</span>
+<span class="hl">// match fs::read_to_string(path) {</span>
+<span class="hl">//     Ok(val) => val,</span>
+<span class="hl">//     Err(e)  => return Err(e.into()),  // .into() converts error type</span>
+<span class="hl">// }</span>
+
+<span class="hl">// Chaining ? elegantly</span>
+fn process(path: &str) -> Result&lt;Vec&lt;i32&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = fs::read_to_string(path)?;
+    let nums: Vec&lt;i32&gt; = content
+        .lines()
+        .map(|l| l.trim().parse::&lt;i32&gt;())
+        .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()?;  <span class="hl">// collect into Result</span>
+    Ok(nums)
+}
+
+<span class="hl">// Common Result methods</span>
+result.is_ok();  result.is_err();
+result.unwrap()                    <span class="hl">// panics on Err — tests/prototypes only</span>
+result.expect("custom message")    <span class="hl">// panics with message</span>
+result.unwrap_or(default_val)      <span class="hl">// default if Err</span>
+result.unwrap_or_else(|e| handle(e))
+result.map(|v| transform(v))       <span class="hl">// transform Ok value, pass Err through</span>
+result.map_err(|e| convert(e))     <span class="hl">// transform Err value</span>
+result.and_then(|v| next(v))       <span class="hl">// chain — flatMap for Result</span>
+result.or_else(|e| recover(e))     <span class="hl">// recover from Err</span>
+result.ok()                        <span class="hl">// convert to Option (drops error info)</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Custom Error Types</h3>
+    <div class="cb"><span class="hl">// Method 1: thiserror — derive macro for library error types</span>
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+enum AppError {
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),         <span class="hl">// #[from] auto-impl From&lt;io::Error&gt;</span>
+
+    #[error("Parse error: {0}")]
+    Parse(#[from] std::num::ParseIntError),
+
+    #[error("config value {value} is out of range {min}..={max}")]
+    OutOfRange { value: i32, min: i32, max: i32 },
+
+    #[error("unknown error")]
+    Unknown,
+}
+
+<span class="hl">// ? now works across error types automatically</span>
+fn load_config(path: &str) -> Result&lt;i32, AppError&gt; {
+    let s = std::fs::read_to_string(path)?;  <span class="hl">// io::Error → AppError::Io via From</span>
+    let n: i32 = s.trim().parse()?;          <span class="hl">// ParseIntError → AppError::Parse</span>
+    if n &lt; 0 || n &gt; 100 {
+        return Err(AppError::OutOfRange { value: n, min: 0, max: 100 });
+    }
+    Ok(n)
+}
+
+<span class="hl">// Method 2: anyhow — type-erased errors for application code</span>
+use anyhow::{Context, Result, bail, ensure};
+
+fn run() -> Result&lt;()&gt; {  <span class="hl">// anyhow::Result hides the error type</span>
+    let s = std::fs::read_to_string("config.txt")
+        .context("failed to read config.txt")?;  <span class="hl">// adds context to any error</span>
+
+    let n: i32 = s.trim().parse()
+        .context("config must be an integer")?;
+
+    ensure!(n &gt; 0, "value must be positive, got {}", n);  <span class="hl">// returns Err if false</span>
+
+    if n &gt; 1000 { bail!("value {} too large (max 1000)", n); }  <span class="hl">// early return Err</span>
+
+    println!("config: {}", n);
+    Ok(())
+}
+
+<span class="hl">// Idiom: use thiserror in libraries, anyhow in binaries/applications</span></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>panic! vs Result</h3>
+      <ul>
+        <li><strong>panic!:</strong> unrecoverable bugs — broken invariants, programmer errors</li>
+        <li><strong>Result:</strong> expected, recoverable failures — bad input, network, file not found</li>
+        <li>Use <code>unwrap()</code> only when: in tests, when failure is truly logically impossible, or prototyping</li>
+        <li><code>assert!</code> / <code>assert_eq!</code>: in tests and debug invariant checks</li>
+        <li>Libraries: always return Result — let caller decide</li>
+        <li>Applications: may panic at program entry, propagate Results otherwise</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>The Error Trait</h3>
+      <ul>
+        <li><code>std::error::Error</code>: the base trait for all error types</li>
+        <li>Requires: <code>Display</code> (human message) + <code>Debug</code></li>
+        <li>Optional: <code>source()</code> — returns underlying cause (error chain)</li>
+        <li><code>Box&lt;dyn Error&gt;</code>: type-erased error — OK for simple programs</li>
+        <li><code>dyn Error + Send + Sync</code>: thread-safe type-erased error</li>
+        <li><code>anyhow::Error</code>: idiomatic type-erased error with context and backtrace</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Error Handling</h4>
+    <div class="quiz-q"><p>Q1. The ? operator in Rust:</p><div class="quiz-options"><label><input type="radio" name="m5q1" value="a"> Panics if the Result is Err</label><label><input type="radio" name="m5q1" value="b"> Returns early with Err if error; unwraps Ok value to continue</label><label><input type="radio" name="m5q1" value="c"> Silently swallows the error</label><label><input type="radio" name="m5q1" value="d"> Converts any error type to a String</label></div></div>
+    <div class="quiz-q"><p>Q2. <code>unwrap()</code> should be used in production code:</p><div class="quiz-options"><label><input type="radio" name="m5q2" value="a"> Always — it's more concise</label><label><input type="radio" name="m5q2" value="b"> Never</label><label><input type="radio" name="m5q2" value="c"> Only when you have certainty the value is Ok/Some and can document why</label><label><input type="radio" name="m5q2" value="d"> Only in library crates</label></div></div>
+    <div class="quiz-q"><p>Q3. The idiomatic Rust error handling stack for a library is:</p><div class="quiz-options"><label><input type="radio" name="m5q3" value="a"> panic! for everything</label><label><input type="radio" name="m5q3" value="b"> Box&lt;dyn Error&gt; everywhere</label><label><input type="radio" name="m5q3" value="c"> thiserror for typed library errors; anyhow for application-level error handling</label><label><input type="radio" name="m5q3" value="d"> String for all error messages</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','c','c'],['m5q1','m5q2','m5q3'],'m5r')">Check Answers</button>
+    <div class="quiz-result" id="m5r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M6 ══════════════════════ -->
+<div class="module" id="m6">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 06</span>
+    <span class="mod-title">Traits & Generics</span>
+    <span class="mod-tag">ABSTRACTION</span>
+  </div>
+
+  <div class="deep">
+    <h3>Traits — Shared Behaviour</h3>
+    <div class="cb"><span class="hl">// Define a trait — shared interface across types</span>
+trait Animal {
+    fn name(&self) -> &str;
+    fn sound(&self) -> String;
+    <span class="hl">// Default implementation — can be overridden</span>
+    fn describe(&self) -> String {
+        format!("{} says {}", self.name(), self.sound())
+    }
+}
+
+struct Dog { name: String }
+struct Cat { name: String }
+
+impl Animal for Dog {
+    fn name(&self) -> &str { &self.name }
+    fn sound(&self) -> String { String::from("woof") }
+}
+
+impl Animal for Cat {
+    fn name(&self) -> &str { &self.name }
+    fn sound(&self) -> String { String::from("meow") }
+    <span class="hl">// describe() uses default implementation</span>
+}
+
+<span class="hl">// Trait bounds — static dispatch (monomorphized, zero overhead)</span>
+fn print_animal(a: &impl Animal) { println!("{}", a.describe()); }
+<span class="hl">// Equivalent longer form (trait bound syntax):</span>
+fn print_animal&lt;A: Animal&gt;(a: &A) { println!("{}", a.describe()); }
+
+<span class="hl">// Multiple bounds</span>
+fn print_and_debug&lt;T: Animal + std::fmt::Debug&gt;(a: &T) {
+    println!("{:?}", a);
+    println!("{}", a.describe());
+}
+
+<span class="hl">// Where clause — cleaner for complex bounds</span>
+fn compare&lt;T, U&gt;(t: &T, u: &U)
+where
+    T: Animal + Clone,
+    U: Animal + std::fmt::Display,
+{ /* ... */ }
+
+<span class="hl">// Return impl Trait — caller doesn't know concrete type</span>
+fn make_animal() -> impl Animal { Dog { name: String::from("Rex") } }
+
+<span class="hl">// Return dyn Trait — type erased, heap-allocated, runtime dispatch</span>
+fn make_animal_dyn(is_dog: bool) -> Box&lt;dyn Animal&gt; {
+    if is_dog { Box::new(Dog { name: String::from("Rex") }) }
+    else       { Box::new(Cat { name: String::from("Whiskers") }) }
+}
+<span class="hl">// Use dyn Trait when you need DIFFERENT concrete types at runtime</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Generics</h3>
+    <div class="cb"><span class="hl">// Generic function — works for any T that satisfies the bound</span>
+fn largest&lt;T: PartialOrd&gt;(list: &[T]) -> &T {
+    let mut largest = &list[0];
+    for item in list {
+        if item &gt; largest { largest = item; }
+    }
+    largest
+}
+
+println!("{}", largest(&[34, 50, 25, 100, 65]));  <span class="hl">// 100</span>
+println!("{}", largest(&[1.5, 2.7, 0.3]));        <span class="hl">// 2.7</span>
+
+<span class="hl">// Generic struct</span>
+struct Stack&lt;T&gt; { items: Vec&lt;T&gt; }
+
+impl&lt;T&gt; Stack&lt;T&gt; {
+    fn new() -> Self { Stack { items: Vec::new() } }
+    fn push(&mut self, item: T) { self.items.push(item); }
+    fn pop(&mut self) -> Option&lt;T&gt; { self.items.pop() }
+    fn peek(&self) -> Option&lt;&T&gt; { self.items.last() }
+    fn is_empty(&self) -> bool { self.items.is_empty() }
+}
+
+<span class="hl">// Conditional impl — only add method when T meets extra bound</span>
+impl&lt;T: std::fmt::Display&gt; Stack&lt;T&gt; {
+    fn print_top(&self) {
+        match self.peek() {
+            Some(t) => println!("top: {}", t),
+            None    => println!("stack is empty"),
+        }
+    }
+}
+
+<span class="hl">// Important derive macros (auto-implement common traits)</span>
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
+struct Point { x: i32, y: i32 }
+
+<span class="hl">// Debug: {:?} printing   Clone: .clone()   PartialEq: ==
+// Eq: stricter equality  Hash: use as HashMap key  Default: Point::default()</span></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>impl Trait vs dyn Trait</h3>
+      <ul>
+        <li><strong>impl Trait:</strong> static dispatch — compiler generates code per type (monomorphization) — fast, no heap, no vtable</li>
+        <li><strong>dyn Trait:</strong> dynamic dispatch — vtable lookup at runtime — one level of indirection, requires Box</li>
+        <li>Use impl Trait when all types known at compile time</li>
+        <li>Use dyn Trait when you need different concrete types at runtime (e.g., Vec&lt;Box&lt;dyn Trait&gt;&gt;)</li>
+        <li>impl Trait: cannot return different types from if/else arms</li>
+        <li>dyn Trait: object-safe traits only (no generics in methods, no Self returns)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Key Standard Traits</h3>
+      <ul>
+        <li><strong>Display:</strong> {} formatting — user-facing output</li>
+        <li><strong>Debug:</strong> {:?} formatting — derive always</li>
+        <li><strong>Clone / Copy:</strong> duplication</li>
+        <li><strong>PartialEq / Eq:</strong> == and != operators</li>
+        <li><strong>PartialOrd / Ord:</strong> &lt;, &gt;, sort()</li>
+        <li><strong>Hash:</strong> use as HashMap key (requires Eq)</li>
+        <li><strong>Default:</strong> zero/empty value</li>
+        <li><strong>From / Into:</strong> type conversions</li>
+        <li><strong>Iterator:</strong> custom iteration</li>
+        <li><strong>Deref:</strong> * operator, coercions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Traits & Generics</h4>
+    <div class="quiz-q"><p>Q1. What is monomorphization in Rust generics?</p><div class="quiz-options"><label><input type="radio" name="m6q1" value="a"> All generics are erased and use dynamic dispatch at runtime</label><label><input type="radio" name="m6q1" value="b"> The compiler generates a concrete version of the function for each type it's called with — zero runtime cost</label><label><input type="radio" name="m6q1" value="c"> Generic functions are always slower than non-generic ones</label><label><input type="radio" name="m6q1" value="d"> Generics are converted to Box&lt;dyn Trait&gt; automatically</label></div></div>
+    <div class="quiz-q"><p>Q2. When should you prefer dyn Trait over impl Trait?</p><div class="quiz-options"><label><input type="radio" name="m6q2" value="a"> Always — dynamic dispatch is more flexible</label><label><input type="radio" name="m6q2" value="b"> When you need to store different concrete types at runtime (e.g., Vec of mixed types)</label><label><input type="radio" name="m6q2" value="c"> For performance-critical code</label><label><input type="radio" name="m6q2" value="d"> When the type implements Copy</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['m6q1','m6q2'],'m6r')">Check Answers</button>
+    <div class="quiz-result" id="m6r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M7 ══════════════════════ -->
+<div class="module" id="m7">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 07</span>
+    <span class="mod-title">Collections & Iterators</span>
+    <span class="mod-tag">DATA STRUCTURES</span>
+  </div>
+
+  <div class="deep">
+    <h3>Core Collections</h3>
+    <div class="cb"><span class="hl">// Vec&lt;T&gt; — growable heap array (use most often)</span>
+let mut v: Vec&lt;i32&gt; = Vec::new();
+let mut v = vec![1, 2, 3, 4, 5];  <span class="hl">// macro shorthand</span>
+v.push(6);                          <span class="hl">// O(1) amortized</span>
+v.pop();                            <span class="hl">// Option&lt;T&gt;</span>
+v.insert(1, 10);                    <span class="hl">// insert at index — O(n)</span>
+v.remove(1);                        <span class="hl">// remove at index — O(n)</span>
+v.len(); v.is_empty(); v.capacity();
+v[0];                               <span class="hl">// panics if out of bounds</span>
+v.get(0);                           <span class="hl">// Option&lt;&T&gt; — safe indexing</span>
+v.contains(&3);
+v.sort(); v.sort_by(|a,b| b.cmp(a)); v.sort_by_key(|k| k.abs());
+v.dedup();                          <span class="hl">// remove consecutive duplicates (sort first)</span>
+v.retain(|&x| x % 2 == 0);         <span class="hl">// keep only even numbers in-place</span>
+v.extend([7, 8, 9]);               <span class="hl">// append slice</span>
+v.truncate(3);                      <span class="hl">// keep only first 3</span>
+v.clear();                          <span class="hl">// remove all</span>
+
+<span class="hl">// HashMap&lt;K, V&gt; — hash table, O(1) average get/set</span>
+use std::collections::HashMap;
+let mut map: HashMap&lt;String, i32&gt; = HashMap::new();
+map.insert(String::from("Alice"), 100);
+map.insert(String::from("Bob"), 90);
+map.get("Alice");                   <span class="hl">// Option&lt;&V&gt;</span>
+map.contains_key("Bob");
+map.remove("Bob");                  <span class="hl">// Option&lt;V&gt;</span>
+map.len(); map.is_empty();
+<span class="hl">// Entry API — idiomatic insert-if-absent</span>
+map.entry(String::from("Carol")).or_insert(0);  <span class="hl">// insert 0 if absent</span>
+*map.entry(String::from("Alice")).or_insert(0) += 1;  <span class="hl">// increment or init</span>
+
+for (key, val) in &map { println!("{}: {}", key, val); }
+
+<span class="hl">// HashSet&lt;T&gt; — unique values, O(1) contains</span>
+use std::collections::HashSet;
+let mut set: HashSet&lt;i32&gt; = HashSet::new();
+set.insert(1); set.insert(2); set.insert(1);  <span class="hl">// {1, 2} — no duplicates</span>
+set.contains(&1);  set.remove(&1);
+let a: HashSet&lt;_&gt; = [1,2,3].iter().collect();
+let b: HashSet&lt;_&gt; = [2,3,4].iter().collect();
+let union:        HashSet&lt;_&gt; = a.union(&b).collect();        <span class="hl">// {1,2,3,4}</span>
+let intersection: HashSet&lt;_&gt; = a.intersection(&b).collect(); <span class="hl">// {2,3}</span>
+let difference:   HashSet&lt;_&gt; = a.difference(&b).collect();   <span class="hl">// {1}</span>
+
+<span class="hl">// Other collections:</span>
+<span class="hl">// BTreeMap&lt;K,V&gt;  — sorted map (use when iteration order matters)</span>
+<span class="hl">// VecDeque&lt;T&gt;   — double-ended queue (fast push/pop from both ends)</span>
+<span class="hl">// BinaryHeap&lt;T&gt; — max-heap priority queue</span>
+<span class="hl">// LinkedList&lt;T&gt; — rarely used — Vec is usually faster</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Iterators — Lazy & Zero-Cost</h3>
+    <div class="cb"><span class="hl">// Iterator trait — produces values lazily</span>
+<span class="hl">// trait Iterator { type Item; fn next(&mut self) -> Option&lt;Self::Item&gt;; }</span>
+
+let v = vec![1, 2, 3, 4, 5, 6];
+
+<span class="hl">// Three iteration modes</span>
+for x in v.iter()      { /* &T        — borrows */ }
+for x in v.iter_mut()  { /* &mut T    — mutable borrow */ }
+for x in v.into_iter() { /* T         — takes ownership, v unusable after */ }
+for x in &v            { /* &T        — sugar for v.iter() */ }
+for x in &mut v        { /* &mut T    — sugar for v.iter_mut() */ }
+
+<span class="hl">// Adapters — lazy, return new iterators (nothing runs yet)</span>
+let result: Vec&lt;i32&gt; = v.iter()
+    .filter(|&&x| x % 2 == 0)         <span class="hl">// keep: 2, 4, 6</span>
+    .map(|&x| x * x)                   <span class="hl">// square: 4, 16, 36</span>
+    .take(2)                           <span class="hl">// first 2: 4, 16</span>
+    .collect();                        <span class="hl">// NOW it runs! [4, 16]</span>
+
+<span class="hl">// Common adapters</span>
+iter.map(|x| transform(x))
+iter.filter(|x| predicate(x))
+iter.filter_map(|x| maybe(x))  <span class="hl">// filter + map in one — removes None</span>
+iter.take(n)                   <span class="hl">// first n elements</span>
+iter.skip(n)                   <span class="hl">// skip first n</span>
+iter.enumerate()               <span class="hl">// (usize, T) pairs</span>
+iter.zip(other)                <span class="hl">// pair with another iterator</span>
+iter.chain(other)              <span class="hl">// append another iterator</span>
+iter.flat_map(|x| iter_of(x)) <span class="hl">// map then flatten one level</span>
+iter.flatten()                 <span class="hl">// flatten one level of nesting</span>
+iter.cloned()                  <span class="hl">// &T → T by cloning</span>
+iter.copied()                  <span class="hl">// &T → T for Copy types</span>
+iter.rev()                     <span class="hl">// reverse (requires DoubleEndedIterator)</span>
+iter.peekable()                <span class="hl">// peek() without consuming</span>
+iter.step_by(n)                <span class="hl">// every nth element</span>
+iter.windows(n)                <span class="hl">// overlapping windows of size n</span>
+iter.chunks(n)                 <span class="hl">// non-overlapping chunks</span>
+
+<span class="hl">// Consumers — run the pipeline, produce a final value</span>
+iter.collect::&lt;Vec&lt;_&gt;&gt;()       <span class="hl">// into Vec, HashMap, HashSet, String, ...</span>
+iter.sum::&lt;i32&gt;()              <span class="hl">// sum all</span>
+iter.product::&lt;i32&gt;()          <span class="hl">// multiply all</span>
+iter.count()                   <span class="hl">// number of elements</span>
+iter.max(); iter.min()         <span class="hl">// Option&lt;T&gt;</span>
+iter.max_by_key(|x| key(x))   <span class="hl">// max by a derived key</span>
+iter.any(|x| condition(x))    <span class="hl">// true if any match (short-circuits)</span>
+iter.all(|x| condition(x))    <span class="hl">// true if all match (short-circuits)</span>
+iter.find(|x| condition(x))   <span class="hl">// Option&lt;&T&gt; — first match</span>
+iter.position(|x| cond(x))    <span class="hl">// Option&lt;usize&gt; — index of first match</span>
+iter.fold(init, |acc, x| f(acc, x))  <span class="hl">// general reduction</span>
+iter.for_each(|x| action(x))  <span class="hl">// run side effect on each</span>
+iter.last()                    <span class="hl">// Option&lt;T&gt; — consume all, return last</span>
+iter.nth(n)                    <span class="hl">// Option&lt;T&gt; — nth element (0-indexed)</span>
+iter.unzip()                   <span class="hl">// Vec of (A,B) → (Vec&lt;A&gt;, Vec&lt;B&gt;)</span>
+iter.partition(|x| cond(x))   <span class="hl">// split into (Vec matching, Vec not)</span>
+
+<span class="hl">// Custom iterator</span>
+struct Fibonacci { a: u64, b: u64 }
+impl Iterator for Fibonacci {
+    type Item = u64;
+    fn next(&mut self) -> Option&lt;u64&gt; {
+        let next = self.a + self.b;
+        self.a = self.b;
+        self.b = next;
+        Some(self.a)  <span class="hl">// infinite iterator — never returns None</span>
+    }
+}
+let fibs: Vec&lt;u64&gt; = Fibonacci { a: 0, b: 1 }.take(10).collect();
+<span class="hl">// Custom iterator gets ALL adapter methods for free!</span></div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Collections & Iterators</h4>
+    <div class="quiz-q"><p>Q1. What does <code>vec.get(index)</code> return that <code>vec[index]</code> does not?</p><div class="quiz-options"><label><input type="radio" name="m7q1" value="a"> A mutable reference</label><label><input type="radio" name="m7q1" value="b"> Option&lt;&T&gt; — returns None on out-of-bounds instead of panicking</label><label><input type="radio" name="m7q1" value="c"> A clone of the element</label><label><input type="radio" name="m7q1" value="d"> They are identical</label></div></div>
+    <div class="quiz-q"><p>Q2. Iterator adapters like .map() and .filter() are:</p><div class="quiz-options"><label><input type="radio" name="m7q2" value="a"> Executed eagerly as soon as they are called</label><label><input type="radio" name="m7q2" value="b"> Lazy — nothing executes until a consumer like .collect() or .sum() is called</label><label><input type="radio" name="m7q2" value="c"> Run in a background thread</label><label><input type="radio" name="m7q2" value="d"> Only available on Vec</label></div></div>
+    <div class="quiz-q"><p>Q3. <code>filter_map</code> is useful when:</p><div class="quiz-options"><label><input type="radio" name="m7q3" value="a"> You want to filter by two conditions</label><label><input type="radio" name="m7q3" value="b"> You want to both filter and transform in one step — closures return Option, None values are dropped</label><label><input type="radio" name="m7q3" value="c"> You want to map using a mutable closure</label><label><input type="radio" name="m7q3" value="d"> filter_map is just an alias for filter then map</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['m7q1','m7q2','m7q3'],'m7r')">Check Answers</button>
+    <div class="quiz-result" id="m7r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M8 ══════════════════════ -->
+<div class="module" id="m8">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 08</span>
+    <span class="mod-title">Closures & Functional Patterns</span>
+    <span class="mod-tag">FUNCTIONAL RUST</span>
+  </div>
+
+  <div class="deep">
+    <h3>Closures</h3>
+    <div class="cb"><span class="hl">// Closure syntax — | params | body</span>
+let add = |x, y| x + y;                      <span class="hl">// types inferred</span>
+let add = |x: i32, y: i32| -> i32 { x + y }; <span class="hl">// explicit types</span>
+let double = |x| x * 2;
+println!("{}", double(5));  <span class="hl">// 10</span>
+
+<span class="hl">// Closures CAPTURE their environment — functions cannot</span>
+let threshold = 10;
+let is_big = |n| n > threshold;   <span class="hl">// captures threshold by reference</span>
+println!("{}", is_big(15));       <span class="hl">// true</span>
+
+<span class="hl">// The three closure traits — how the closure uses captured values:
+//
+// Fn       — captures by reference (&T) — can call many times
+// FnMut    — captures by mutable reference (&mut T) — can call many times, may mutate
+// FnOnce   — captures by value (T) — can call only ONCE (consumes captured values)
+//
+// Every closure implements FnOnce; closures that don't move implement FnMut;
+// closures that don't mutate also implement Fn. Fn ⊂ FnMut ⊂ FnOnce</span>
+
+<span class="hl">// FnMut example</span>
+let mut count = 0;
+let mut increment = || { count += 1; count };  <span class="hl">// mutably borrows count</span>
+println!("{}", increment());  <span class="hl">// 1</span>
+println!("{}", increment());  <span class="hl">// 2</span>
+
+<span class="hl">// FnOnce example — can only call once</span>
+let name = String::from("Alice");
+let greet = move || {
+    println!("Hello, {}!", name);  <span class="hl">// name is MOVED into closure</span>
+    drop(name);                    <span class="hl">// explicitly consume — makes it FnOnce</span>
+};
+greet();  <span class="hl">// OK — consumes name</span>
+<span class="hl">// greet(); // ERROR: closure was already called and consumed name</span>
+
+<span class="hl">// move keyword — force ownership transfer into closure</span>
+let s = String::from("data");
+let f = move || println!("{}", s);  <span class="hl">// s moved into f — required for threads</span>
+<span class="hl">// s is no longer accessible here</span>
+std::thread::spawn(f);  <span class="hl">// thread may outlive s — move ensures it owns it</span>
+
+<span class="hl">// Closures as parameters — generic over Fn trait</span>
+fn apply&lt;F: Fn(i32) -&gt; i32&gt;(f: F, x: i32) -&gt; i32 { f(x) }
+fn apply_mut&lt;F: FnMut() -&gt; i32&gt;(mut f: F) -&gt; i32 { f() }
+fn apply_once&lt;F: FnOnce() -&gt; String&gt;(f: F) -&gt; String { f() }
+
+<span class="hl">// Store closure in struct — use Box&lt;dyn Fn&gt; for type erasure</span>
+struct Handler { callback: Box&lt;dyn Fn(i32) -&gt; i32&gt; }
+impl Handler {
+    fn new(f: impl Fn(i32) -&gt; i32 + 'static) -&gt; Self {
+        Self { callback: Box::new(f) }
+    }
+    fn run(&self, x: i32) -&gt; i32 { (self.callback)(x) }
+}</div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Closures</h4>
+    <div class="quiz-q"><p>Q1. A closure that is FnOnce can be called:</p><div class="quiz-options"><label><input type="radio" name="m8q1" value="a"> Any number of times</label><label><input type="radio" name="m8q1" value="b"> Only once — it consumes captured values when called</label><label><input type="radio" name="m8q1" value="c"> Only in a single thread</label><label><input type="radio" name="m8q1" value="d"> Only with move semantics</label></div></div>
+    <div class="quiz-q"><p>Q2. Why is the <code>move</code> keyword needed for closures passed to <code>std::thread::spawn</code>?</p><div class="quiz-options"><label><input type="radio" name="m8q2" value="a"> Threads require immutable data</label><label><input type="radio" name="m8q2" value="b"> The thread may outlive the current scope — move ensures the closure owns its data ('static)</label><label><input type="radio" name="m8q2" value="c"> move makes closures run faster on threads</label><label><input type="radio" name="m8q2" value="d"> It's just convention — not required</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['m8q1','m8q2'],'m8r')">Check Answers</button>
+    <div class="quiz-result" id="m8r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M9 ══════════════════════ -->
+<div class="module" id="m9">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 09</span>
+    <span class="mod-title">Lifetimes — Deep</span>
+    <span class="mod-tag">ADVANCED</span>
+  </div>
+
+  <div class="note"><strong>Lifetimes are not about duration</strong> — they are annotations that tell the compiler how long references must remain valid relative to each other. The compiler infers most lifetimes; you only annotate when it can't.</div>
+
+  <div class="deep">
+    <h3>Lifetime Annotations</h3>
+    <div class="cb"><span class="hl">// When do you need lifetime annotations?
+// When a function takes MULTIPLE references and returns a reference —
+// the compiler doesn't know which input the output is tied to.</span>
+
+<span class="hl">// 'a is a lifetime parameter — reads as "lifetime a"</span>
+fn longest&lt;'a&gt;(x: &'a str, y: &'a str) -&gt; &'a str {
+    if x.len() &gt;= y.len() { x } else { y }
+}
+<span class="hl">// 'a = the SHORTER of x and y's lifetimes — result valid as long as both inputs</span>
+
+let result;
+{
+    let s1 = String::from("long string");
+    let s2 = String::from("xyz");
+    result = longest(s1.as_str(), s2.as_str());
+    println!("{}", result);  <span class="hl">// OK — both s1 and s2 still alive</span>
+}
+<span class="hl">// println!("{}", result); // ERROR — s1, s2 dropped, result would dangle</span>
+
+<span class="hl">// Lifetime in structs — struct cannot outlive the reference it holds</span>
+struct Important&lt;'a&gt; {
+    content: &'a str,  <span class="hl">// Important holds a borrowed string slice</span>
+}
+
+impl&lt;'a&gt; Important&lt;'a&gt; {
+    fn announce(&self) -&gt; &str { self.content }  <span class="hl">// lifetime elided — OK here</span>
+}
+
+let novel = String::from("Call me Ishmael. Some years ago...");
+let first_sentence = novel.split('.').next().expect("no period");
+let i = Important { content: first_sentence };  <span class="hl">// i cannot outlive novel</span>
+
+<span class="hl">// Static lifetime — reference valid for entire program duration</span>
+let s: &'static str = "I live forever";  <span class="hl">// string literals are 'static</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Lifetime Elision Rules</h3>
+    <div class="cb"><span class="hl">// Rust infers lifetimes using 3 elision rules.
+// You only annotate when rules don't resolve all lifetimes.
+
+// Rule 1: Each reference parameter gets its own lifetime</span>
+fn foo(x: &str) -&gt; &str { x }
+<span class="hl">// Expands to: fn foo&lt;'a&gt;(x: &'a str) -&gt; &'a str</span>
+
+fn bar(x: &str, y: &str) -&gt; &str { x }  <span class="hl">// ERROR — ambiguous which input</span>
+<span class="hl">// Must write: fn bar&lt;'a&gt;(x: &'a str, y: &str) -&gt; &'a str { x }</span>
+
+<span class="hl">// Rule 2: If exactly one input reference, output gets same lifetime</span>
+fn first_word(s: &str) -&gt; &str {  <span class="hl">// no annotation needed</span>
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' { return &s[..i]; }
+    }
+    &s[..]
+}
+
+<span class="hl">// Rule 3: If &self or &mut self, output gets self's lifetime</span>
+impl Important&lt;'_&gt; {
+    fn level(&self) -> &str { self.content }  <span class="hl">// no annotation needed</span>
+}
+
+<span class="hl">// Higher-Ranked Trait Bounds (HRTB) — "for any lifetime 'a"</span>
+fn apply_to_str&lt;F&gt;(f: F) -&gt; String
+where
+    F: for&lt;'a&gt; Fn(&'a str) -&gt; &'a str,  <span class="hl">// works for any lifetime</span>
+{ f("hello").to_string() }
+
+<span class="hl">// Variance — how lifetime relationships work in subtyping:
+// Covariant:     &'long T can be used where &'short T expected (safe — longer is stricter)
+// Invariant:     &'a mut T is invariant over T — must match exactly (prevents aliasing bugs)
+// Contravariant: fn(T) — argument types are contravariant</span></div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Lifetimes</h4>
+    <div class="quiz-q"><p>Q1. Lifetime annotations in Rust tell the compiler:</p><div class="quiz-options"><label><input type="radio" name="m9q1" value="a"> How long to keep a value in memory</label><label><input type="radio" name="m9q1" value="b"> The relationship between reference lifetimes — which inputs the output reference is tied to</label><label><input type="radio" name="m9q1" value="c"> The order in which values should be dropped</label><label><input type="radio" name="m9q1" value="d"> Whether a value is on the heap or stack</label></div></div>
+    <div class="quiz-q"><p>Q2. <code>'static</code> lifetime means:</p><div class="quiz-options"><label><input type="radio" name="m9q2" value="a"> The value is immutable</label><label><input type="radio" name="m9q2" value="b"> The reference is valid for the entire program duration</label><label><input type="radio" name="m9q2" value="c"> The value is stored in a static variable only</label><label><input type="radio" name="m9q2" value="d"> The value is thread-safe</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['m9q1','m9q2'],'m9r')">Check Answers</button>
+    <div class="quiz-result" id="m9r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M10 ══════════════════════ -->
+<div class="module" id="m10">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 10</span>
+    <span class="mod-title">Async Rust & Tokio</span>
+    <span class="mod-tag">CONCURRENCY</span>
+  </div>
+
+  <div class="deep">
+    <h3>How async/await Works</h3>
+    <div class="cb"><span class="hl">// async fn returns an impl Future — a lazy state machine
+// Nothing runs until the future is polled by an executor</span>
+
+async fn fetch_data(url: &str) -&gt; Result&lt;String, reqwest::Error&gt; {
+    let response = reqwest::get(url).await?;  <span class="hl">// .await = poll until ready</span>
+    let text = response.text().await?;
+    Ok(text)
+}
+
+<span class="hl">// async fn desugars to a state machine enum:
+// State0: before first .await
+// State1: after first .await, waiting for second
+// State2: done
+// The compiler generates this automatically</span>
+
+<span class="hl">// Futures are LAZY — you must .await them or they do nothing</span>
+let f = fetch_data("https://example.com");  <span class="hl">// not executed yet!</span>
+let result = f.await;                       <span class="hl">// NOW it runs</span>
+
+<span class="hl">// Tokio — the most popular async runtime</span>
+<span class="hl">// Add to Cargo.toml: tokio = { version = "1", features = ["full"] }</span>
+
+#[tokio::main]  <span class="hl">// macro that creates the Tokio runtime and calls your async main</span>
+async fn main() {
+    let result = fetch_data("https://api.example.com/data").await;
+    match result {
+        Ok(data) => println!("{}", data),
+        Err(e)   => eprintln!("Error: {}", e),
+    }
+}
+
+<span class="hl">// Spawn a task — runs concurrently, like a goroutine</span>
+let handle = tokio::spawn(async move {
+    fetch_data("https://example.com").await
+});
+let result = handle.await?;  <span class="hl">// JoinHandle returns Result (task may panic)</span>
+
+<span class="hl">// Run multiple futures CONCURRENTLY (not parallel — same thread unless spawned)</span>
+let (r1, r2) = tokio::join!(
+    fetch_data("https://api.example.com/a"),
+    fetch_data("https://api.example.com/b"),
+);  <span class="hl">// both run concurrently, wait for both</span>
+
+<span class="hl">// Race futures — first to complete wins</span>
+tokio::select! {
+    result = fetch_data("https://fast.example.com") =&gt; println!("fast: {:?}", result),
+    result = fetch_data("https://slow.example.com") =&gt; println!("slow: {:?}", result),
+    _ = tokio::time::sleep(std::time::Duration::from_secs(5)) =&gt; println!("timeout!"),
+}</div>
+  </div>
+
+  <div class="deep">
+    <h3>Pin and the Waker System</h3>
+    <div class="cb"><span class="hl">// Why Pin exists:
+// async state machines can be self-referential (State1 holds a ref to State0's data)
+// If the future is moved in memory, internal pointers become dangling
+// Pin&lt;P&gt; guarantees the pointee will NOT be moved after pinning</span>
+
+use std::pin::Pin;
+use std::task::{Context, Poll};
+use std::future::Future;
+
+<span class="hl">// The Future trait — what the executor calls</span>
+pub trait Future {
+    type Output;
+    fn poll(self: Pin&lt;&mut Self&gt;, cx: &mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+
+<span class="hl">// Poll::Ready(value)  — done, return value
+// Poll::Pending       — not ready, future has registered a Waker</span>
+
+<span class="hl">// When a future returns Pending, it MUST register cx.waker()
+// When the event is ready (I/O, timer), Waker::wake() is called
+// The executor then re-polls the future</span>
+
+<span class="hl">// Pinning in practice:</span>
+let future = fetch_data("https://example.com");
+let pinned = Box::pin(future);   <span class="hl">// heap-pin — stable address</span>
+tokio::spawn(pinned);
+
+<span class="hl">// pin! macro — stack pinning (avoids heap allocation)</span>
+tokio::pin!(future);
+future.await;</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Tokio Primitives</h3>
+      <ul>
+        <li><strong>tokio::spawn:</strong> spawn a task — requires Send + 'static</li>
+        <li><strong>tokio::join!:</strong> run all concurrently, wait for all</li>
+        <li><strong>tokio::select!:</strong> race — first ready wins</li>
+        <li><strong>tokio::time::sleep:</strong> async sleep (never block the thread)</li>
+        <li><strong>tokio::sync::Mutex:</strong> async-aware mutex (use over std::Mutex in async)</li>
+        <li><strong>tokio::sync::mpsc:</strong> multi-producer single-consumer channel</li>
+        <li><strong>tokio::sync::broadcast:</strong> one sender, many receivers</li>
+        <li><strong>tokio::sync::oneshot:</strong> single-value channel (req/resp pattern)</li>
+        <li><strong>tokio::task::spawn_blocking:</strong> run blocking code on thread pool</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Common Async Mistakes</h3>
+      <ul>
+        <li>❌ Holding <code>std::sync::MutexGuard</code> across .await — deadlock risk</li>
+        <li>✅ Use <code>tokio::sync::Mutex</code> when locking across .await</li>
+        <li>❌ Calling blocking functions (std::fs, std::thread::sleep) in async</li>
+        <li>✅ Use <code>tokio::fs</code>, <code>tokio::time::sleep</code> async equivalents</li>
+        <li>❌ Forgetting .await — future silently does nothing</li>
+        <li>✅ tokio::spawn requires <code>Send + 'static</code> — use move closures</li>
+        <li>❌ CPU-intensive work on async executor — blocks all tasks</li>
+        <li>✅ Use <code>spawn_blocking</code> to offload CPU work to thread pool</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Async Rust</h4>
+    <div class="quiz-q"><p>Q1. What happens if you create a Future but never .await it?</p><div class="quiz-options"><label><input type="radio" name="m10q1" value="a"> It runs in the background automatically</label><label><input type="radio" name="m10q1" value="b"> It does nothing — futures are lazy and only execute when polled</label><label><input type="radio" name="m10q1" value="c"> It panics at runtime</label><label><input type="radio" name="m10q1" value="d"> It runs when it goes out of scope</label></div></div>
+    <div class="quiz-q"><p>Q2. Why does Pin exist in Rust's async system?</p><div class="quiz-options"><label><input type="radio" name="m10q2" value="a"> To improve performance of async functions</label><label><input type="radio" name="m10q2" value="b"> To prevent self-referential async state machines from being moved in memory (which would dangle internal pointers)</label><label><input type="radio" name="m10q2" value="c"> To make futures Send across threads</label><label><input type="radio" name="m10q2" value="d"> To limit the number of concurrent futures</label></div></div>
+    <div class="quiz-q"><p>Q3. You need to run CPU-intensive work inside an async Tokio task. Best approach?</p><div class="quiz-options"><label><input type="radio" name="m10q3" value="a"> Run it directly — Tokio handles it</label><label><input type="radio" name="m10q3" value="b"> Use tokio::task::spawn_blocking to offload to a dedicated blocking thread pool</label><label><input type="radio" name="m10q3" value="c"> Use tokio::time::sleep between chunks</label><label><input type="radio" name="m10q3" value="d"> Spawn a new OS thread with std::thread::spawn inside async</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['m10q1','m10q2','m10q3'],'m10r')">Check Answers</button>
+    <div class="quiz-result" id="m10r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M11 ══════════════════════ -->
+<div class="module" id="m11">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 11</span>
+    <span class="mod-title">Unsafe Rust & FFI</span>
+    <span class="mod-tag">ADVANCED</span>
+  </div>
+
+  <div class="warn"><strong>Warning:</strong> unsafe does NOT disable the borrow checker. It unlocks exactly 5 additional capabilities. Every unsafe block is a promise: "I have manually verified the invariants the compiler cannot check." Always document with // SAFETY: comments.</div>
+
+  <div class="deep">
+    <h3>The 5 Things unsafe Unlocks</h3>
+    <div class="cb"><span class="hl">// 1. Dereference raw pointers (*const T, *mut T)</span>
+let x = 42i32;
+let r1 = &x as *const i32;       <span class="hl">// creating raw pointer is safe</span>
+let r2 = &mut x as *mut i32;     <span class="hl">// creating is safe; dereferencing requires unsafe</span>
+unsafe {
+    println!("{}", *r1);          <span class="hl">// SAFETY: r1 points to valid i32 on the stack</span>
+    *r2 = 43;
+}
+
+<span class="hl">// 2. Call unsafe functions</span>
+unsafe fn dangerous() { println!("I am unsafe!"); }
+unsafe { dangerous(); }
+
+<span class="hl">// 3. Implement unsafe traits</span>
+struct MyPtr(*mut u8);
+unsafe impl Send for MyPtr {}    <span class="hl">// YOU guarantee this is safe to send across threads</span>
+unsafe impl Sync for MyPtr {}
+
+<span class="hl">// 4. Access or modify mutable static variables</span>
+static mut GLOBAL: i32 = 0;
+unsafe { GLOBAL += 1; }          <span class="hl">// data race if called from multiple threads!</span>
+
+<span class="hl">// 5. Access fields of unions</span>
+union IntOrFloat { i: i32, f: f32 }
+let u = IntOrFloat { i: 42 };
+unsafe { println!("{}", u.f); }  <span class="hl">// reinterprets bits — valid bit pattern not guaranteed</span>
+
+<span class="hl">// Safe abstraction pattern — hide unsafe behind a safe public API</span>
+pub fn split_at(slice: &[i32], mid: usize) -> (&[i32], &[i32]) {
+    assert!(mid <= slice.len());
+    let ptr = slice.as_ptr();
+    unsafe {
+        <span class="hl">// SAFETY: mid <= slice.len() guaranteed by assert above.
+        // The two halves don't overlap — safe to create two non-overlapping slices.</span>
+        (
+            std::slice::from_raw_parts(ptr, mid),
+            std::slice::from_raw_parts(ptr.add(mid), slice.len() - mid),
+        )
+    }
+}</div>
+  </div>
+
+  <div class="deep">
+    <h3>FFI — Calling C from Rust</h3>
+    <div class="cb"><span class="hl">// Declare C functions with extern "C" block</span>
+#[link(name = "c")]  <span class="hl">// link against libc</span>
+extern "C" {
+    fn abs(input: i32) -> i32;
+    fn sqrt(x: f64) -> f64;
+}
+
+unsafe {
+    println!("|{1}| = {0}", abs(-5));
+    println!("sqrt(2) = {}", sqrt(2.0));
+}
+
+<span class="hl">// Structs passed to C — must use #[repr(C)] for C-compatible layout</span>
+#[repr(C)]
+struct CPoint { x: f64, y: f64 }
+
+extern "C" {
+    fn distance(p1: *const CPoint, p2: *const CPoint) -> f64;
+}
+
+<span class="hl">// Exposing Rust functions to C</span>
+#[no_mangle]               <span class="hl">// don't mangle the name — C can find it by "add"</span>
+pub extern "C" fn add(a: i32, b: i32) -> i32 { a + b }
+
+<span class="hl">// String passing across FFI boundary</span>
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
+
+extern "C" { fn puts(s: *const c_char); }
+
+let s = CString::new("Hello from Rust!").unwrap();  <span class="hl">// Rust String → C string</span>
+unsafe { puts(s.as_ptr()); }
+
+<span class="hl">// Receive C string</span>
+extern "C" { fn get_greeting() -> *const c_char; }
+unsafe {
+    let ptr = get_greeting();
+    let s = CStr::from_ptr(ptr);   <span class="hl">// C string → Rust &CStr</span>
+    println!("{}", s.to_str().unwrap());
+}
+
+<span class="hl">// Use bindgen crate to auto-generate FFI bindings from C headers:
+// bindgen input.h -o bindings.rs</span></div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Unsafe Rust</h4>
+    <div class="quiz-q"><p>Q1. Which of the following does NOT require an unsafe block?</p><div class="quiz-options"><label><input type="radio" name="m11q1" value="a"> Dereferencing a raw pointer</label><label><input type="radio" name="m11q1" value="b"> Calling an unsafe function</label><label><input type="radio" name="m11q1" value="c"> Creating a raw pointer from a reference (<code>&x as *const i32</code>)</label><label><input type="radio" name="m11q1" value="d"> Accessing a static mut variable</label></div></div>
+    <div class="quiz-q"><p>Q2. The correct approach to using unsafe in a public library is:</p><div class="quiz-options"><label><input type="radio" name="m11q2" value="a"> Mark the entire public API as unsafe</label><label><input type="radio" name="m11q2" value="b"> Expose a safe public API that upholds all invariants; encapsulate unsafe internally with SAFETY comments</label><label><input type="radio" name="m11q2" value="c"> Avoid unsafe entirely — find a safe workaround</label><label><input type="radio" name="m11q2" value="d"> Require all callers to write their own unsafe blocks</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['c','b'],['m11q1','m11q2'],'m11r')">Check Answers</button>
+    <div class="quiz-result" id="m11r"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ M12 ══════════════════════ -->
+<div class="module" id="m12">
+  <div class="mod-header">
+    <span class="mod-num">MODULE 12</span>
+    <span class="mod-title">Memory Layout, Smart Pointers & Rust vs Go</span>
+    <span class="mod-tag">EXPERT</span>
+  </div>
+
+  <div class="deep">
+    <h3>Memory Layout</h3>
+    <div class="cb"><span class="hl">// Default repr: compiler may reorder fields for optimal alignment</span>
+struct Foo { a: u8, b: u64, c: u8 }
+<span class="hl">// compiler reorders to: b(8), a(1), c(1), padding(6) = 16 bytes
+// or keeps order: a(1)+7pad, b(8), c(1)+7pad = 24 bytes — depends on version</span>
+
+<span class="hl">// #[repr(C)] — C-compatible layout, fields in declaration order</span>
+#[repr(C)]
+struct CCompatible { a: u8, _pad: [u8; 7], b: u64, c: u8, _pad2: [u8; 7] }
+
+<span class="hl">// Enum layout: discriminant + largest variant size</span>
+enum Message {
+    Quit,                    <span class="hl">// 0 bytes payload</span>
+    Move { x: i32, y: i32 },<span class="hl">// 8 bytes payload</span>
+    Write(String),           <span class="hl">// 24 bytes (ptr+len+cap)</span>
+}
+<span class="hl">// Size: 24 bytes (largest variant) + 8 bytes (discriminant+alignment) = 32 bytes</span>
+
+<span class="hl">// Null pointer optimization — Option&lt;&T&gt; same size as &T</span>
+use std::mem::size_of;
+assert_eq!(size_of::&lt;Option&lt;&i32&gt;&gt;(), size_of::&lt;&i32&gt;());   <span class="hl">// true!</span>
+assert_eq!(size_of::&lt;Option&lt;Box&lt;i32&gt;&gt;&gt;(), size_of::&lt;Box&lt;i32&gt;&gt;()); <span class="hl">// true!</span>
+<span class="hl">// None = null pointer; Some(ptr) = non-null — no extra space needed</span>
+
+<span class="hl">// Zero-sized types (ZST) — no memory, used as markers</span>
+struct Marker;
+assert_eq!(size_of::&lt;Marker&gt;(), 0);  <span class="hl">// 0 bytes — optimized away</span>
+assert_eq!(size_of::&lt;Vec&lt;Marker&gt;&gt;(), size_of::&lt;usize&gt;() * 3);  <span class="hl">// just the vec header</span></div>
+  </div>
+
+  <div class="deep">
+    <h3>Smart Pointers</h3>
+    <div class="cb"><span class="hl">// Box&lt;T&gt; — heap allocation, single owner, zero overhead</span>
+let b = Box::new(5);         <span class="hl">// 5 lives on heap; b is stack pointer</span>
+println!("{}", *b);          <span class="hl">// auto-deref</span>
+<span class="hl">// Use Box for: recursive types, large values to avoid stack copies,
+// trait objects (Box&lt;dyn Trait&gt;)</span>
+
+<span class="hl">// Rc&lt;T&gt; — reference counted, single-threaded</span>
+use std::rc::Rc;
+let a = Rc::new(String::from("hello"));
+let b = Rc::clone(&a);       <span class="hl">// increment ref count — no heap copy</span>
+println!("{} refs", Rc::strong_count(&a));  <span class="hl">// 2</span>
+<span class="hl">// When last Rc dropped, value freed. Not Send — cannot cross thread boundary.</span>
+
+<span class="hl">// Arc&lt;T&gt; — atomic reference count, multi-threaded</span>
+use std::sync::Arc;
+let a = Arc::new(5);
+let b = Arc::clone(&a);
+std::thread::spawn(move || println!("{}", b));  <span class="hl">// Arc is Send</span>
+
+<span class="hl">// Cell&lt;T&gt; — interior mutability for Copy types (no borrowing overhead)</span>
+use std::cell::Cell;
+let cell = Cell::new(5);
+cell.set(10);
+println!("{}", cell.get());  <span class="hl">// 10</span>
+
+<span class="hl">// RefCell&lt;T&gt; — interior mutability with runtime borrow checking</span>
+use std::cell::RefCell;
+let rc = RefCell::new(vec![1, 2, 3]);
+rc.borrow().iter().for_each(|x| println!("{}", x));  <span class="hl">// immutable borrow</span>
+rc.borrow_mut().push(4);                             <span class="hl">// mutable borrow</span>
+<span class="hl">// borrow_mut panics at runtime if another borrow is active (same as compile rules, runtime)</span>
+
+<span class="hl">// Common combination: Rc&lt;RefCell&lt;T&gt;&gt; — shared mutable data, single-threaded</span>
+let shared = Rc::new(RefCell::new(vec![1, 2]));
+let clone1 = Rc::clone(&shared);
+let clone2 = Rc::clone(&shared);
+clone1.borrow_mut().push(3);
+println!("{:?}", clone2.borrow()); <span class="hl">// [1, 2, 3]</span>
+
+<span class="hl">// Multi-threaded equivalent: Arc&lt;Mutex&lt;T&gt;&gt;</span>
+use std::sync::{Arc, Mutex};
+let counter = Arc::new(Mutex::new(0));
+let c = Arc::clone(&counter);
+std::thread::spawn(move || { *c.lock().unwrap() += 1; });
+
+<span class="hl">// Cow&lt;T&gt; — clone on write: borrowed when possible, owned when needed</span>
+use std::borrow::Cow;
+fn process(s: &str) -> Cow&lt;str&gt; {
+    if s.contains(' ') { Cow::Owned(s.replace(' ', "_")) }
+    else               { Cow::Borrowed(s) }  <span class="hl">// no allocation if no spaces</span>
+}</div>
+  </div>
+
+  <div class="deep">
+    <h3>Rust vs Go — When to Use Each</h3>
     <div class="vs-grid">
       <div class="vs-box rust-col">
-        <h4>🦀 USE RUST WHEN</h4>
+        <h4>🦀 CHOOSE RUST WHEN</h4>
         <ul>
-          <li>Predictable latency (no GC pauses) — your UTXO service</li>
+          <li>Predictable latency is critical — no GC pauses ever</li>
           <li>Interfacing with C/system libraries (FFI)</li>
           <li>Memory-constrained environments (embedded, WASM)</li>
-          <li>Crypto/security code (no memory bugs)</li>
-          <li>High-throughput data processing (zero-copy)</li>
+          <li>Crypto/security code — no memory safety bugs</li>
+          <li>High-throughput data processing with zero-copy</li>
+          <li>OS kernels, device drivers, hypervisors</li>
+          <li>WebAssembly targets</li>
+          <li>When compile-time safety proofs matter more than dev speed</li>
         </ul>
       </div>
       <div class="vs-box go-col">
-        <h4>🐹 USE GO WHEN</h4>
+        <h4>🐹 CHOOSE GO WHEN</h4>
         <ul>
-          <li>Network services with concurrency (goroutines win)</li>
-          <li>Team velocity matters (simpler, faster to write)</li>
-          <li>Microservices (your CBDC bridge)</li>
-          <li>GC pauses acceptable (most web services: yes)</li>
-          <li>Ops tooling, CLIs, backends</li>
+          <li>Network services with high concurrency (goroutines shine)</li>
+          <li>Team velocity and simplicity matter more than raw perf</li>
+          <li>Microservices, APIs, CLI tools</li>
+          <li>GC pauses acceptable (&lt; 1ms in modern Go)</li>
+          <li>Fast onboarding for new engineers</li>
+          <li>DevOps tooling, infrastructure automation</li>
+          <li>When you need to ship fast and iterate</li>
+          <li>Cross-platform binaries with minimal dependencies</li>
         </ul>
       </div>
     </div>
   </div>
-</div>
 
-<div class="section">
-  <h2><span class="sn">03</span>Resources</h2>
-  <div class="resources">
-    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://doc.rust-lang.org/nomicon/" target="_blank">The Rustonomicon — Unsafe Rust</a><p>Canonical guide to unsafe Rust. Read: Chapter 1-4 (safety, lifetimes, ownership). Essential for production Rust.</p></div></div>
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=rAl-9HwD858" target="_blank">Jon Gjengset — Crust of Rust: Lifetime Annotations</a><p>90 min. The best lifetime explanation on the internet. Jon is staff-level Rust engineer.</p></div></div>
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=ThjvMReOXYM" target="_blank">Jon Gjengset — Async Rust Deep Dive</a><p>Explains Waker, Pin, and the executor contract. Watch after understanding basic async.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://tokio.rs/tokio/tutorial" target="_blank">Tokio Official Tutorial</a><p>Best async Rust practical guide. Given your service runs on Tokio — fill gaps here.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://blog.cloudflare.com/pin-and-unpin-in-rust/" target="_blank">Cloudflare — Pin and Unpin in Rust</a><p>Best explanation of why Pin exists. Real-world motivated. Short and dense.</p></div></div>
-    <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://doc.rust-lang.org/reference/type-layout.html" target="_blank">Rust Reference — Type Layout</a><p>Memory layout rules. Read this before any FFI or perf optimization work.</p></div></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">04</span>Quick Revision</h2>
-  <div class="qr">
-    <h3>RUST EXPERT FLASH CARDS</h3>
-    <div class="qg">
-      <div class="qi"><div class="q">What does Pin guarantee?</div><div class="a">The pointed-to value will not be moved in memory. Required for self-referential structs (futures). Pin&lt;Box&lt;T&gt;&gt; heap-pins, Pin&lt;&mut T&gt; stack-pins.</div></div>
-      <div class="qi"><div class="q">Send vs Sync?</div><div class="a">Send: safe to transfer ownership to another thread. Sync: safe to share reference across threads. &T: Send iff T: Sync. Rc: !Send+!Sync. Arc: Send+Sync if T: Send+Sync.</div></div>
-      <div class="qi"><div class="q">Monomorphization cost?</div><div class="a">Each generic instantiation = separate compiled function. Fast at runtime (no dispatch), larger binary. Use dyn Trait for type-erased dynamic dispatch when code size matters.</div></div>
-      <div class="qi"><div class="q">When is unsafe needed?</div><div class="a">Raw pointer deref, unsafe fn call, unsafe trait impl, static mut access, union field access. NOT for "working around the borrow checker" — that's always wrong.</div></div>
-      <div class="qi"><div class="q">Option&lt;&T&gt; size?</div><div class="a">Same as &T — null pointer optimization. None = null, Some(ptr) = non-null. Compiler exploits niche (invalid bit patterns) to avoid discriminant overhead.</div></div>
-      <div class="qi"><div class="q">thiserror vs anyhow?</div><div class="a">thiserror: derive Error macro, type-safe, for library crates. anyhow: type-erased errors with context, for application code. Use both together: library returns thiserror, app wraps with anyhow.</div></div>
+  <!-- RESOURCES -->
+  <div class="deep">
+    <h3>Best Rust Learning Resources</h3>
+    <div class="resources">
+      <div class="res"><span class="rt">BOOK · FREE</span><div class="rc"><a href="https://doc.rust-lang.org/book/" target="_blank">The Rust Programming Language (The Book)</a><p>Official book — free online. Read chapters 1-10 for basics, 13-16 for advanced. The definitive reference.</p></div></div>
+      <div class="res"><span class="rt">BOOK · FREE</span><div class="rc"><a href="https://doc.rust-lang.org/nomicon/" target="_blank">The Rustonomicon — Unsafe Rust</a><p>Official guide to unsafe Rust. Read chapters 1-5 once you're comfortable with safe Rust. Essential for systems programming.</p></div></div>
+      <div class="res"><span class="rt">INTERACTIVE</span><div class="rc"><a href="https://rustlings.cool/" target="_blank">Rustlings — Hands-on Exercises</a><p>80+ small exercises covering every concept. Best way to solidify the basics. Do every exercise.</p></div></div>
+      <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/@jonhoo" target="_blank">Jon Gjengset — Crust of Rust Series</a><p>The best advanced Rust content on YouTube. Watch: Lifetimes, Iterators, Smart Pointers, Async. Staff-level Rust engineer.</p></div></div>
+      <div class="res"><span class="rt">BOOK · FREE</span><div class="rc"><a href="https://rust-unofficial.github.io/too-many-lists/" target="_blank">Learn Rust With Entirely Too Many Linked Lists</a><p>Best way to deeply understand ownership, lifetimes, and unsafe. More practical than it sounds.</p></div></div>
+      <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://tokio.rs/tokio/tutorial" target="_blank">Tokio Official Tutorial</a><p>Best async Rust practical guide. Covers tasks, channels, I/O, and all Tokio primitives with working examples.</p></div></div>
+      <div class="res"><span class="rt">PRACTICE</span><div class="rc"><a href="https://exercism.org/tracks/rust" target="_blank">Exercism Rust Track</a><p>100+ exercises with mentor feedback. Great for practicing idiomatic Rust patterns.</p></div></div>
     </div>
+  </div>
+
+  <div class="quiz-block">
+    <h4>Quiz — Memory & Smart Pointers</h4>
+    <div class="quiz-q"><p>Q1. Why is <code>Option&lt;&T&gt;</code> the same size as <code>&T</code> in Rust?</p><div class="quiz-options"><label><input type="radio" name="m12q1" value="a"> The compiler stores the Option discriminant elsewhere</label><label><input type="radio" name="m12q1" value="b"> Null pointer optimization: None = null pointer, Some(ptr) = non-null — no extra byte needed</label><label><input type="radio" name="m12q1" value="c"> They are actually different sizes</label><label><input type="radio" name="m12q1" value="d"> Option is always heap-allocated</label></div></div>
+    <div class="quiz-q"><p>Q2. When should you use <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> vs <code>Rc&lt;RefCell&lt;T&gt;&gt;</code>?</p><div class="quiz-options"><label><input type="radio" name="m12q2" value="a"> Rc&lt;RefCell&gt; is always better — simpler API</label><label><input type="radio" name="m12q2" value="b"> Arc&lt;Mutex&gt; for multi-threaded shared mutation; Rc&lt;RefCell&gt; for single-threaded shared mutation</label><label><input type="radio" name="m12q2" value="c"> They are identical — just different names</label><label><input type="radio" name="m12q2" value="d"> Arc&lt;Mutex&gt; works on single threads; Rc&lt;RefCell&gt; works on multiple threads</label></div></div>
+    <div class="quiz-q"><p>Q3. <code>RefCell&lt;T&gt;</code> enforces borrow rules:</p><div class="quiz-options"><label><input type="radio" name="m12q3" value="a"> At compile time, same as regular references</label><label><input type="radio" name="m12q3" value="b"> At runtime — panics if you violate the borrow rules</label><label><input type="radio" name="m12q3" value="c"> Not at all — it bypasses borrow rules</label><label><input type="radio" name="m12q3" value="d"> Only in debug builds</label></div></div>
+    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['m12q1','m12q2','m12q3'],'m12r')">Check Answers</button>
+    <div class="quiz-result" id="m12r"></div>
   </div>
 </div>
 
 </main>
+
+<script>
+function checkQuiz(answers, names, resultId) {
+  let correct = 0;
+  answers.forEach((ans, i) => {
+    const sel = document.querySelector('input[name=' + names[i] + ']:checked');
+    if (sel && sel.value === ans) correct++;
+  });
+  const total = answers.length;
+  const el = document.getElementById(resultId);
+  el.className = 'quiz-result show ' + (correct === total ? 'correct' : 'wrong');
+  el.textContent = correct === total
+    ? '✓ All ' + total + '/' + total + ' correct!'
+    : correct + '/' + total + ' correct. Correct answers: ' + answers.join(', ');
+}
+</script>
 </body>
 </html>
