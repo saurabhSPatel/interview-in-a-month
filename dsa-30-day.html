@@ -138,6 +138,17 @@
         <div class="info-block">
           <h4>Core Pattern</h4>
           <p>Start pointers at both ends, move inward based on comparison. O(n) over O(n²) brute force. Key insight: sorted arrays make decisions deterministic.</p>
+          <div class="go-tip" style="margin-top:10px; background:rgba(255,255,255,0.03)">
+            <h4 style="color:var(--text)">Algorithm Logic</h4>
+            <ol style="font-size:0.75rem; color:var(--muted); padding-left:15px;">
+              <li>Initialize <code>left := 0</code>, <code>right := len(arr)-1</code>.</li>
+              <li>While <code>left < right</code>:</li>
+              <li>Calculate state (e.g., <code>sum := arr[left] + arr[right]</code>).</li>
+              <li>If state matches target, return/process.</li>
+              <li>If state < target, <code>left++</code> (increase sum).</li>
+              <li>If state > target, <code>right--</code> (decrease sum).</li>
+            </ol>
+          </div>
         </div>
         <div class="info-block">
           <h4>Why This Matters</h4>
@@ -430,6 +441,21 @@
         <div class="info-block">
           <h4>Core Pattern</h4>
           <p>Maintain stack in increasing or decreasing order. When current element breaks order → pop and record answer. Each element pushed/popped once → O(n). Store indices, not values.</p>
+          <div class="go-tip" style="margin-top:10px; background:rgba(255,255,255,0.03)">
+            <h4 style="color:var(--text)">The Stack Invariant</h4>
+            <p style="font-size:0.75rem; color:var(--muted); line-height:1.4;">
+              Think of the stack as a <strong>Line of Sight</strong>. 
+              If you use an <em>increasing</em> stack, the element below the top 
+              is always the "Nearest Smaller Value" to the left.
+            </p>
+            <ol style="font-size:0.75rem; color:var(--muted); padding-left:15px; margin-top:5px;">
+              <li>Iterate through <code>arr</code>.</li>
+              <li>While <code>stack</code> not empty AND <code>curr < arr[stack.top]</code>:</li>
+              <li>Pop <code>j</code>. The "Next Smaller Right" for <code>j</code> is the current element.</li>
+              <li>The "Next Smaller Left" for <code>j</code> is the new <code>stack.top</code>.</li>
+              <li>Push current index.</li>
+            </ol>
+          </div>
         </div>
         <div class="info-block">
           <h4>Why This Matters</h4>

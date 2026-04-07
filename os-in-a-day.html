@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OS in a Day — Senior Level</title>
+<title>Operating Systems | EngineeringOS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -58,23 +58,14 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="back">← Dashboard</a>
-  <span class="page-tag">OS IN A DAY · ~6 HOURS</span>
+  <a href="index.html" class="back">← Platform</a>
+  <span class="page-tag">OPERATING SYSTEMS</span>
 </nav>
 
 <div class="hero">
-  <div class="tag-pill">OPERATING SYSTEMS · SENIOR LEVEL · BACKEND-RELEVANT</div>
-  <h1>Operating Systems in a Day</h1>
-  <p class="sub">What your Go runtime, kernel syscalls, and Redis do under the hood. Not textbook OS — the parts that affect production performance.</p>
-  <div class="timeline">
-    <div class="tblock"><div class="time">H 0–1</div><div class="topic">Processes, Threads, Scheduling</div></div>
-    <div class="tblock"><div class="time">H 1–2</div><div class="topic">Memory: Virtual, Paging, TLB</div></div>
-    <div class="tblock"><div class="time">H 2–3</div><div class="topic">Concurrency Primitives</div></div>
-    <div class="tblock"><div class="time">H 3–4.5</div><div class="topic">I/O Models: epoll, io_uring</div></div>
-    <div class="tblock"><div class="time">H 4.5–5.5</div><div class="topic">CPU Caches + Linux Internals</div></div>
-    <div class="tblock"><div class="time">H 5.5–6</div><div class="topic">Revision + Q&A</div></div>
-  </div>
-</div>
+  <div class="tag-pill">OPERATING SYSTEMS · BACKEND-RELEVANT</div>
+  <h1>Operating Systems</h1>
+  <p class="sub">Comprehensive guide to processes, memory management, concurrency, I/O models, and system internals that impact production software performance.</p>
 
 <main>
 
@@ -146,6 +137,24 @@
 
 <div class="section">
   <h2><span class="sec-num">02</span>Must-Know Deep Dives</h2>
+
+  <div class="deep-dive">
+    <h3>🔥 The Life of a Syscall — Crossing the Boundary</h3>
+    <p>Understanding how your code talks to hardware is critical for backend performance. When you call <code>read()</code> in Go or Rust, it doesn't just run code; it triggers a CPU context switch.</p>
+    <ul>
+      <li><strong>1. Trap:</strong> The app puts the syscall ID in a register and executes a <code>SYSCALL</code> instruction.</li>
+      <li><strong>2. Mode Switch:</strong> CPU switches from User Mode (Ring 3) to Kernel Mode (Ring 0).</li>
+      <li><strong>3. Jump:</strong> Kernel looks at the <em>Syscall Table</em> and jumps to the function handling that ID.</li>
+      <li><strong>4. Execution:</strong> Kernel performs the privileged action (reading disk, writing to socket).</li>
+      <li><strong>5. Return:</strong> Kernel puts result in a register and switches back to User Mode.</li>
+    </ul>
+    <div class="code-block">
+<span class="hl">// Optimization Insight:</span>
+Syscalls are expensive because they flush CPU pipelines and can cause TLB misses.
+This is why <span class="hl">io_uring</span> is a game changer: it allows batching thousands of I/O operations 
+in a single syscall, or even zero syscalls in kernel-polling mode.
+    </div>
+  </div>
 
   <div class="deep-dive">
     <h3>🔥 epoll — How Go's Net Package Works</h3>

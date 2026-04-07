@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Go Advanced — Runtime Internals</title>
+<title>Go Runtime and Design | EngineeringOS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -53,17 +53,22 @@
   .gmp-diagram{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);line-height:2;overflow-x:auto;}
   .gmp-diagram .box{display:inline-block;border:1px solid var(--accent);padding:.15rem .5rem;border-radius:4px;color:var(--accent);margin:0 .2rem;}
   .gmp-diagram .gbox{border-color:var(--a2);color:var(--a2);}
+  .compare-table{width:100%;border-collapse:collapse;margin-top:.75rem;background:rgba(0,0,0,0.2);border-radius:8px;overflow:hidden;}
+  .compare-table th{background:rgba(0,172,215,0.1);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.6rem .8rem;text-align:left;border-bottom:1px solid var(--border);}
+  .compare-table td{font-size:0.82rem;color:var(--muted);padding:.6rem .8rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  .compare-table tr:last-child td{border-bottom:none;}
+  .compare-table strong{color:var(--text);}
 </style>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="back">← Dashboard</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);">🐹 GO EXPERT IN A DAY · 7 HOURS</span>
+  <a href="index.html" class="back">← Platform</a>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);">🐹 GO RUNTIME & DESIGN</span>
 </nav>
 <div class="hero">
-  <div class="tag-pill">GO · RUNTIME INTERNALS · EXPERT LEVEL</div>
-  <h1>Go — Runtime Internals</h1>
-  <p class="sub">You already write production Go. This day is about understanding what the runtime does: GMP scheduler, GC pauses, channel internals, interface dispatch — so you can debug and optimize at the deepest level.</p>
+  <div class="tag-pill">GO · RUNTIME INTERNALS · DESIGN PATTERNS</div>
+  <h1>Go Runtime and Design</h1>
+  <p class="sub">Comprehensive guide to Go's runtime internals, scheduler, garbage collection, concurrency primitives, and design patterns for building scalable systems.</p>
   <div class="timeline">
     <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">GMP Scheduler Deep</div></div>
     <div class="tblock"><div class="time">H 1.5–3</div><div class="topic">Garbage Collector</div></div>
@@ -172,6 +177,59 @@ GODEBUG=scheddetail=1 GODEBUG=schedtrace=100 ./yourservice  # Verbose
 
 <div class="section">
   <h2><span class="sn">03</span>Must-Know Deep Dives</h2>
+
+  <div class="deep">
+    <h3>🔥 Memory Management: Go vs Rust</h3>
+    <p>To master Go, you must understand how its memory model differs from systems languages like Rust. While both are memory-safe, they achieve it through polar opposite strategies.</p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>🐹 Go (Runtime-Driven)</th>
+          <th>🦀 Rust (Compile-Driven)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Deallocation</strong></td>
+          <td>Non-deterministic GC (Tricolor Mark & Sweep)</td>
+          <td>Deterministic RAII (Ownership & Scope)</td>
+        </tr>
+        <tr>
+          <td><strong>Strategy</strong></td>
+          <td>Escape Analysis (decides Stack vs Heap)</td>
+          <td>Explicit control (Stack by default, Heap via <code>Box</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Concurrency</strong></td>
+          <td>Memory safe, but vulnerable to Data Races</td>
+          <td>Compile-time guarantee against Data Races</td>
+        </tr>
+        <tr>
+          <td><strong>Overhead</strong></td>
+          <td>Metadata pointers in every object, GC metadata</td>
+          <td>Zero-cost abstractions (no runtime metadata)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Heap Escape Analysis — The Compiler's Secret</h3>
+    <p>Go tries to keep variables on the <strong>Stack</strong> because it's nearly free (no GC). If the compiler determines a variable must outlive its function, it "escapes" to the <strong>Heap</strong>.</p>
+    <ul>
+      <li><strong>Escapes if:</strong> The function returns a pointer to a local variable.</li>
+      <li><strong>Escapes if:</strong> The variable is too large for the stack.</li>
+      <li><strong>Escapes if:</strong> The variable is passed to a function taking an <code>interface{}</code> (like <code>fmt.Println</code>).</li>
+    </ul>
+    <div class="cb"><span class="hl">// Check escape analysis yourself:</span>
+go build -gcflags="-m" main.go
+
+<span class="hl2">// Why it matters:</span>
+Excessive heap allocation is the #1 cause of GC pressure and latency spikes. 
+Senior Go engineers minimize allocations by reusing objects with <span class="hl">sync.Pool</span> 
+and avoiding interfaces in hot paths.</div>
+  </div>
 
   <div class="deep">
     <h3>🔥 pprof — Profiling Your Go Service</h3>

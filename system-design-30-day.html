@@ -3,2268 +3,338 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Design in 30 Days</title>
+<title>System Design in a Month | EngineeringOS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 <style>
-  :root{--bg:#07090f;--surface:#0e1117;--surface2:#141820;--border:#1e2530;--accent:#5b8fff;--accent2:#ff5f40;--accent3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 80% 20%,rgba(91,143,255,0.04) 0%,transparent 55%);pointer-events:none;}
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back-link{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
-  .back-link:hover{color:var(--accent);}
-  .hero{max-width:1100px;margin:0 auto;padding:4rem 2rem 2rem;}
-  .tag{display:inline-flex;align-items:center;background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:1rem;}
-  h1 span{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  .hero-desc{color:var(--muted);font-size:.95rem;max-width:600px;margin-bottom:2rem;}
-  .meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .meta-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1.3rem;}
-  .meta-box .val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);}
-  .meta-box .key{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
-  main{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
-  .week-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);margin-top:3.5rem;}
-  .week-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);}
-  .week-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
-  .week-theme{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);color:var(--accent);padding:.2rem .6rem;border-radius:4px;margin-left:auto;}
-  .day-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;}
-  .day-card:hover{border-color:rgba(91,143,255,0.25);}
-  .day-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;cursor:pointer;}
-  .day-num-badge{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);min-width:52px;}
-  .day-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;flex:1;}
-  .day-type{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);color:var(--muted);}
-  .day-toggle{color:var(--muted);font-size:.8rem;transition:transform .3s;}
-  .day-body{padding:0 1.5rem 1.5rem;display:none;}
-  .day-body.open{display:block;}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
-  .info-block{background:var(--surface2);border-radius:8px;padding:1rem;}
-  .info-block h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase;}
-  .info-block p,.info-block li{font-size:.82rem;color:var(--muted);line-height:1.65;}
-  .info-block ul{list-style:none;display:flex;flex-direction:column;gap:.35rem;}
-  .info-block ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  .tradeoff-box{background:rgba(255,95,64,0.05);border:1px solid rgba(255,95,64,0.15);border-radius:8px;padding:1rem;margin-top:.75rem;}
-  .tradeoff-box h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.08em;margin-bottom:.6rem;text-transform:uppercase;}
-  .tradeoff-box p{font-size:.82rem;color:var(--muted);line-height:1.6;}
-  .interview-tip{background:rgba(0,229,176,0.05);border:1px solid rgba(0,229,176,0.15);border-radius:8px;padding:1rem;margin-top:.75rem;}
-  .interview-tip h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent3);letter-spacing:.08em;margin-bottom:.6rem;}
-  .interview-tip p{font-size:.82rem;color:var(--muted);line-height:1.6;}
-  .sys-diagram{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:.75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);line-height:1.8;overflow-x:auto;}
-  .sys-diagram span{color:var(--accent3);}
-  .checkpoint-card{background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.2);border-radius:10px;padding:1.5rem;margin-top:1.5rem;}
-  .checkpoint-card h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:.75rem;}
-  .checkpoint-card ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
-  .checkpoint-card li{font-size:.83rem;color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;}
-  .checkpoint-card li::before{content:'▸';color:var(--accent);}
-  @media(max-width:768px){.grid2{grid-template-columns:1fr;}}
+  .chapter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0 1rem;
+  }
+  .chapter-tab {
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.48rem 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chapter-tab:hover { border-color: var(--teal-b); color: var(--text); }
+  .chapter-tab.active {
+    color: var(--teal);
+    border-color: var(--teal);
+    background: var(--teal-d);
+  }
+
+  .chapter-panel { display: none; }
+  .chapter-panel.active { display: block; }
+
+  .module {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  .module h3 {
+    font-family: var(--font-head);
+    margin-bottom: 0.35rem;
+    font-size: 1.08rem;
+  }
+  .module p {
+    color: var(--text2);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+  .metric {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    background: var(--s2);
+  }
+  .metric .label {
+    font-family: var(--font-code);
+    font-size: 0.66rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .metric .value {
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 0.2rem;
+    font-size: 0.92rem;
+  }
+
+  .decision-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.9rem;
+    font-size: 0.84rem;
+  }
+  .decision-table th {
+    text-align: left;
+    padding: 0.58rem 0.75rem;
+    color: var(--teal);
+    background: rgba(0,229,176,0.08);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-code);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .decision-table td {
+    padding: 0.58rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .decision-table tr:last-child td { border-bottom: none; }
+
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.9rem;
+    margin-top: 1rem;
+  }
+  .pattern-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem;
+    background: var(--s2);
+  }
+  .pattern-card h4 {
+    font-family: var(--font-head);
+    font-size: 0.95rem;
+    margin-bottom: 0.45rem;
+  }
+  .pattern-card ul {
+    margin: 0;
+    padding-left: 1rem;
+    color: var(--text2);
+    font-size: 0.83rem;
+    line-height: 1.6;
+  }
+
+  .mini-tabs {
+    margin-top: 0.85rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.9rem;
+  }
+
+  .checklist {
+    margin-top: 0.8rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .check-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.84rem;
+    color: var(--text2);
+    background: var(--s2);
+  }
+
+  @media (max-width: 768px) {
+    .chapter-tabs { gap: 0.4rem; }
+    .chapter-tab { font-size: 0.68rem; }
+    .decision-table { font-size: 0.8rem; display: block; overflow-x: auto; white-space: nowrap; }
+  }
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="back-link">← Back</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent);">System Design · 30 Days</span>
-</nav>
+  <header class="top-nav">
+    <div class="site-shell">
+      <a class="back-link" href="index.html">← Platform</a>
+      <a class="brand" href="index.html">Engineering<span>OS</span></a>
+      <nav class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#curriculum">Curriculum</a>
+        <a href="#playbook">Playbook</a>
+      </nav>
+    </div>
+  </header>
 
-<div class="hero">
-  <div class="tag">HLD + LLD · API DESIGN · PATTERNS · AI AGENTS</div>
-  <h1>System Design <span>in 30 Days</span></h1>
-  <p class="hero-desc">From CAP theorem to designing WhatsApp — with API design, HLD/LLD frameworks, 12 universal patterns, and AI agent systems. Every day: one concept, one real system, real trade-offs. Interview-ready by Day 30.</p>
-  <div class="meta-row">
-    <div class="meta-box"><div class="val">36</div><div class="key">Days Total</div></div>
-    <div class="meta-box"><div class="val">~2h</div><div class="key">Per Day</div></div>
-    <div class="meta-box"><div class="val">14</div><div class="key">System Designs</div></div>
-    <div class="meta-box"><div class="val">HLD+LLD</div><div class="key">Both Covered</div></div>
-    <div class="meta-box"><div class="val">AI Agents</div><div class="key">Week 5</div></div>
-  </div>
-</div>
+  <main class="site-shell">
+    <section id="overview" class="hero">
+      <div class="eyebrow">System Design Roadmap</div>
+      <h1>System Design <em>30-Day Interactive Track</em></h1>
+      <p>Redesigned for quick navigation, clean formatting, and interview-focused learning. Use chapter tabs for weekly progression and section tabs inside each chapter for concepts, architecture, exercises, and resources.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">5</div><div class="label">Core Chapters</div></div>
+        <div class="stat"><div class="num">12</div><div class="label">Reusable Patterns</div></div>
+        <div class="stat"><div class="num">30</div><div class="label">Daily Plan</div></div>
+        <div class="stat"><div class="num">45m</div><div class="label">Interview Framework</div></div>
+      </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     PREREQUISITES & FRAMEWORKS SECTION — Tabbed Panel
-════════════════════════════════════════════════════════════════════════ -->
-<style>
-  /* ── Tab System ── */
-  .prereq-wrapper{max-width:1100px;margin:0 auto;padding:0 2rem 3rem;}
-  .prereq-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
-  .prereq-header h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
-  .prereq-badge{font-family:'JetBrains Mono',monospace;font-size:.65rem;background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);color:var(--accent);padding:.2rem .6rem;border-radius:4px;letter-spacing:.08em;}
-  .tab-nav{display:flex;gap:0;border:1px solid var(--border);border-radius:10px 10px 0 0;overflow:hidden;flex-wrap:wrap;}
-  .tab-btn{font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:.65rem 1.1rem;background:var(--surface);color:var(--muted);border:none;border-right:1px solid var(--border);cursor:pointer;transition:all .2s;letter-spacing:.04em;white-space:nowrap;}
-  .tab-btn:last-child{border-right:none;}
-  .tab-btn:hover{background:var(--surface2);color:var(--text);}
-  .tab-btn.active{background:var(--surface2);color:var(--accent);border-bottom:2px solid var(--accent);}
-  .tab-panel{display:none;border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;background:var(--surface);padding:2rem;}
-  .tab-panel.active{display:block;}
+      <div class="chapter-tabs" id="curriculum" role="tablist" aria-label="System design chapters">
+        <button class="chapter-tab active" role="tab" aria-selected="true" data-chapter="foundation">Chapter 1: Foundations</button>
+        <button class="chapter-tab" role="tab" aria-selected="false" data-chapter="patterns">Chapter 2: Core Patterns</button>
+        <button class="chapter-tab" role="tab" aria-selected="false" data-chapter="systems">Chapter 3: Case Studies</button>
+        <button class="chapter-tab" role="tab" aria-selected="false" data-chapter="scaling">Chapter 4: Scaling</button>
+        <button class="chapter-tab" role="tab" aria-selected="false" data-chapter="advanced">Chapter 5: Advanced</button>
+      </div>
+    </section>
 
-  /* ── Panel internals ── */
-  .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
-  .panel-grid.three{grid-template-columns:1fr 1fr 1fr;}
-  .panel-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
-  .panel-box h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;}
-  .panel-box ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
-  .panel-box li{font-size:.82rem;color:var(--muted);line-height:1.65;}
-  .panel-box li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  .panel-box strong{color:var(--text);}
-  .panel-box p{font-size:.82rem;color:var(--muted);line-height:1.7;}
-
-  /* ── Flow diagram ── */
-  .flow-diagram{background:rgba(0,0,0,0.45);border:1px solid var(--border);border-radius:8px;padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.95;overflow-x:auto;white-space:pre;}
-  .flow-diagram .hl{color:var(--accent3);}
-  .flow-diagram .hl2{color:var(--accent);}
-  .flow-diagram .hl3{color:#fbbf24;}
-
-  /* ── SVG diagrams ── */
-  .svg-wrap{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:1.25rem;text-align:center;}
-  .svg-wrap svg{max-width:100%;height:auto;}
-
-  /* ── Pattern cards ── */
-  .pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem;}
-  .pattern-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;}
-  .pattern-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);margin-bottom:.35rem;}
-  .pattern-name{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.35rem;}
-  .pattern-desc{font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:.4rem;}
-  .pattern-use{font-size:.72rem;color:var(--accent3);font-family:'JetBrains Mono',monospace;}
-
-  /* ── Timeline steps ── */
-  .timeline-steps{display:flex;flex-direction:column;gap:.75rem;}
-  .tstep{display:flex;gap:1rem;align-items:flex-start;}
-  .tstep-badge{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#fbbf24;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:4px;padding:.2rem .55rem;white-space:nowrap;margin-top:.1rem;flex-shrink:0;}
-  .tstep-body strong{font-size:.85rem;color:var(--text);display:block;margin-bottom:.2rem;}
-  .tstep-body p{font-size:.8rem;color:var(--muted);line-height:1.6;}
-
-  /* ── Video cards ── */
-  .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
-  .video-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s;}
-  .video-card:hover{border-color:var(--accent);}
-  .video-ch{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);}
-  .video-title{font-size:.84rem;font-weight:500;color:var(--text);}
-  .video-desc{font-size:.75rem;color:var(--muted);line-height:1.5;flex:1;}
-  .video-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent3);margin-top:.2rem;}
-
-  /* ── Decision table ── */
-  .decision-table{width:100%;border-collapse:collapse;font-size:.8rem;}
-  .decision-table th{background:rgba(91,143,255,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.67rem;padding:.55rem .75rem;text-align:left;border-bottom:1px solid var(--border);}
-  .decision-table td{padding:.5rem .75rem;border-bottom:1px solid rgba(30,37,48,0.5);color:var(--muted);vertical-align:top;}
-  .decision-table td:first-child{color:var(--text);font-weight:500;}
-  .decision-table tr:last-child td{border-bottom:none;}
-
-  @media(max-width:768px){.panel-grid,.panel-grid.three{grid-template-columns:1fr;}.tab-btn{font-size:.65rem;padding:.55rem .75rem;}}
-</style>
-
-<div class="prereq-wrapper">
-  <div class="prereq-header">
-    <h2>Prerequisites & Frameworks</h2>
-    <span class="prereq-badge">READ BEFORE WEEK 1</span>
-  </div>
-
-  <div class="tab-nav">
-    <button class="tab-btn active" onclick="switchTab(this,'tab-hld')">📐 HLD Diagrams</button>
-    <button class="tab-btn" onclick="switchTab(this,'tab-lld')">🗂 LLD Diagrams</button>
-    <button class="tab-btn" onclick="switchTab(this,'tab-patterns')">⚡ 12 Patterns</button>
-    <button class="tab-btn" onclick="switchTab(this,'tab-approach')">🎯 45-Min Framework</button>
-    <button class="tab-btn" onclick="switchTab(this,'tab-api')">🔌 API Design</button>
-    <button class="tab-btn" onclick="switchTab(this,'tab-videos')">▶ Video Resources</button>
-  </div>
-
-  <!-- ══════════════ TAB 1: HLD ══════════════ -->
-  <div class="tab-panel active" id="tab-hld">
-    <div class="panel-grid" style="margin-bottom:1.5rem;">
-      <div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem;">The 5-Layer HLD Architecture</h3>
-        <!-- SVG HLD Flow Diagram -->
-        <div class="svg-wrap">
-          <svg viewBox="0 0 480 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;">
-            <defs>
-              <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                <path d="M0,0 L0,6 L8,3 z" fill="#00e5b0"/>
-              </marker>
-              <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                <path d="M0,0 L0,6 L8,3 z" fill="#5b8fff"/>
-              </marker>
-            </defs>
-            <!-- Layer 1: Client -->
-            <rect x="140" y="10" width="200" height="44" rx="8" fill="rgba(91,143,255,0.12)" stroke="#5b8fff" stroke-width="1.5"/>
-            <text x="240" y="28" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">LAYER 1 — CLIENT</text>
-            <text x="240" y="44" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="10">Mobile / Web / 3rd Party</text>
-            <!-- Arrow 1 -->
-            <line x1="240" y1="54" x2="240" y2="78" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,2"/>
-            <text x="255" y="70" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">HTTPS</text>
-            <!-- Layer 2: Edge -->
-            <rect x="80" y="80" width="320" height="60" rx="8" fill="rgba(91,143,255,0.07)" stroke="#5b8fff" stroke-width="1.5"/>
-            <text x="240" y="100" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">LAYER 2 — EDGE</text>
-            <text x="240" y="116" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="10">CDN · GeoDNS · Load Balancer · API Gateway</text>
-            <text x="240" y="132" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">(auth · rate limit · SSL termination)</text>
-            <!-- Arrow 2 -->
-            <line x1="240" y1="142" x2="240" y2="166" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrow)"/>
-            <text x="255" y="158" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">internal</text>
-            <!-- Layer 3: Services -->
-            <rect x="60" y="168" width="360" height="60" rx="8" fill="rgba(0,229,176,0.07)" stroke="#00e5b0" stroke-width="1.5"/>
-            <text x="240" y="188" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">LAYER 3 — SERVICES</text>
-            <text x="240" y="204" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="10">Stateless Microservices / Monolith</text>
-            <text x="240" y="220" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">(each service owns its domain — independently scalable)</text>
-            <!-- Arrow 3 -->
-            <line x1="240" y1="230" x2="240" y2="254" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,2"/>
-            <text x="255" y="246" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">async</text>
-            <!-- Layer 4: Messaging -->
-            <rect x="80" y="256" width="320" height="52" rx="8" fill="rgba(255,95,64,0.07)" stroke="#ff5f40" stroke-width="1.5"/>
-            <text x="240" y="276" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">LAYER 4 — MESSAGING</text>
-            <text x="240" y="293" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="10">Message Queue · Kafka · SQS</text>
-            <text x="240" y="308" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">(event bus · async decoupling · backpressure)</text>
-            <!-- Arrow 4 -->
-            <line x1="240" y1="310" x2="240" y2="334" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrow)"/>
-            <text x="255" y="326" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">read/write</text>
-            <!-- Layer 5: Data — split boxes -->
-            <rect x="20" y="336" width="432" height="64" rx="8" fill="rgba(251,191,36,0.06)" stroke="#fbbf24" stroke-width="1.5"/>
-            <text x="236" y="355" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">LAYER 5 — DATA</text>
-            <!-- Data boxes -->
-            <rect x="30" y="363" width="85" height="28" rx="4" fill="rgba(91,143,255,0.1)" stroke="#5b8fff" stroke-width="1"/>
-            <text x="72" y="373" text-anchor="middle" fill="#5b8fff" font-family="'JetBrains Mono',monospace" font-size="9">Primary DB</text>
-            <text x="72" y="385" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="8">SQL / NoSQL</text>
-            <rect x="126" y="363" width="75" height="28" rx="4" fill="rgba(0,229,176,0.1)" stroke="#00e5b0" stroke-width="1"/>
-            <text x="163" y="373" text-anchor="middle" fill="#00e5b0" font-family="'JetBrains Mono',monospace" font-size="9">Cache</text>
-            <text x="163" y="385" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="8">Redis / Memcached</text>
-            <rect x="212" y="363" width="75" height="28" rx="4" fill="rgba(168,85,247,0.1)" stroke="#a855f7" stroke-width="1"/>
-            <text x="249" y="373" text-anchor="middle" fill="#a855f7" font-family="'JetBrains Mono',monospace" font-size="9">Search</text>
-            <text x="249" y="385" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="8">Elasticsearch</text>
-            <rect x="298" y="363" width="75" height="28" rx="4" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" stroke-width="1"/>
-            <text x="335" y="373" text-anchor="middle" fill="#fbbf24" font-family="'JetBrains Mono',monospace" font-size="9">Object Store</text>
-            <text x="335" y="385" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="8">S3 / GCS</text>
-            <rect x="384" y="363" width="58" height="28" rx="4" fill="rgba(255,95,64,0.1)" stroke="#ff5f40" stroke-width="1"/>
-            <text x="413" y="373" text-anchor="middle" fill="#ff5f40" font-family="'JetBrains Mono',monospace" font-size="9">CDN</text>
-            <text x="413" y="385" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="8">Edge Cache</text>
-            <!-- Latency annotations -->
-            <text x="240" y="425" text-anchor="middle" fill="#fbbf24" font-family="'JetBrains Mono',monospace" font-size="9">Latency per hop: DNS ~30ms · CDN hit ~5ms · Redis ~1ms · DB ~5–20ms</text>
-            <text x="240" y="440" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="9">p50 end-to-end: 50–100ms · p99 bottleneck: almost always DB or missing cache</text>
-          </svg>
+    <section class="chapter-panel active" data-chapter="foundation">
+      <div class="section-head"><div class="n">01</div><h2>Foundations & Mental Models</h2></div>
+      <div class="tabs mini-tabs">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="f-concepts">Core Concepts</button>
+          <button class="tab-btn" data-tab="f-architecture">Architecture</button>
+          <button class="tab-btn" data-tab="f-exercises">Exercises</button>
         </div>
-      </div>
-      <div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem;">HLD Drawing Rules</h3>
-        <div style="display:flex;flex-direction:column;gap:.6rem;">
-          <div style="padding:.6rem .8rem;background:rgba(0,229,176,0.05);border-left:2px solid var(--accent3);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">1. APIs before boxes</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Define 2–3 key API endpoints before drawing any component. What does the outside world call? API-first thinking reveals the data flow.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(0,229,176,0.05);border-left:2px solid var(--accent3);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">2. One level of abstraction</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">HLD shows components and connections — NOT class fields or method signatures. Each box = independently deployable unit.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(0,229,176,0.05);border-left:2px solid var(--accent3);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">3. Label every arrow</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">HTTP/REST, gRPC, Kafka topic name, SQL. Unlabelled arrows = undefined contracts. Show direction: sync (→) vs async (⇢ dashed).</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(0,229,176,0.05);border-left:2px solid var(--accent3);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">4. Annotate with numbers</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">"10K RPS", "50ms p99", "3 replicas". Numbers make diagrams credible and show you've thought about scale.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(0,229,176,0.05);border-left:2px solid var(--accent3);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">5. Separate read and write paths</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Draw write path first (the harder one), then read path. Different paths often use different storage or caching strategies.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(0,229,176,0.05);border-left:2px solid var(--accent3);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">6. Box what scales independently</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Each component box should be able to scale independently. If two things always scale together, they might be one service.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Full request flow diagram -->
-    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;">Full Request Flow — Memorize This</h3>
-    <div class="svg-wrap" style="padding:1.5rem;">
-      <svg viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
-        <defs>
-          <marker id="arrowH" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-            <path d="M0,0 L7,3.5 L0,7 z" fill="#00e5b0"/>
-          </marker>
-        </defs>
-        <!-- Boxes -->
-        <rect x="5" y="25" width="70" height="32" rx="5" fill="rgba(91,143,255,0.12)" stroke="#5b8fff" stroke-width="1.5"/>
-        <text x="40" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">CLIENT</text>
-        <text x="40" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">browser/app</text>
-
-        <line x1="75" y1="41" x2="103" y2="41" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrowH)"/>
-        <text x="89" y="35" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">DNS</text>
-
-        <rect x="104" y="25" width="65" height="32" rx="5" fill="rgba(0,229,176,0.08)" stroke="#00e5b0" stroke-width="1.5"/>
-        <text x="136" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">CDN</text>
-        <text x="136" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">~5ms hit</text>
-
-        <line x1="169" y1="41" x2="197" y2="41" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrowH)" stroke-dasharray="3,2"/>
-        <text x="183" y="35" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">miss</text>
-
-        <rect x="198" y="25" width="65" height="32" rx="5" fill="rgba(91,143,255,0.08)" stroke="#5b8fff" stroke-width="1.5"/>
-        <text x="230" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">LB</text>
-        <text x="230" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">~1ms</text>
-
-        <line x1="263" y1="41" x2="291" y2="41" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrowH)"/>
-
-        <rect x="292" y="25" width="80" height="32" rx="5" fill="rgba(255,95,64,0.08)" stroke="#ff5f40" stroke-width="1.5"/>
-        <text x="332" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">API GATEWAY</text>
-        <text x="332" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">auth · rate-limit ~5ms</text>
-
-        <line x1="372" y1="41" x2="400" y2="41" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrowH)"/>
-
-        <rect x="401" y="25" width="75" height="32" rx="5" fill="rgba(0,229,176,0.08)" stroke="#00e5b0" stroke-width="1.5"/>
-        <text x="438" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">SERVICE</text>
-        <text x="438" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">business logic</text>
-
-        <line x1="476" y1="41" x2="504" y2="41" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrowH)"/>
-
-        <rect x="505" y="25" width="70" height="32" rx="5" fill="rgba(251,191,36,0.08)" stroke="#fbbf24" stroke-width="1.5"/>
-        <text x="540" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">CACHE</text>
-        <text x="540" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">Redis ~1ms hit</text>
-
-        <line x1="575" y1="41" x2="603" y2="41" stroke="#00e5b0" stroke-width="1.5" marker-end="url(#arrowH)" stroke-dasharray="3,2"/>
-        <text x="589" y="35" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">miss</text>
-
-        <rect x="604" y="25" width="70" height="32" rx="5" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-width="1.5"/>
-        <text x="639" y="38" text-anchor="middle" fill="#e8eaf0" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="600">DATABASE</text>
-        <text x="639" y="50" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="7">~5–20ms</text>
-
-        <!-- Labels below -->
-        <text x="450" y="90" text-anchor="middle" fill="#6b7385" font-family="'JetBrains Mono',monospace" font-size="8">p50: 50–100ms total  ·  p99 bottleneck = DB miss or missing cache layer  ·  CDN hit = ~5ms total</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- ══════════════ TAB 2: LLD ══════════════ -->
-  <div class="tab-panel" id="tab-lld">
-    <div class="panel-grid" style="margin-bottom:1.5rem;">
-      <div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem;">LLD = Entities + Relationships + State + Concurrency</h3>
-        <div class="flow-diagram"><span class="hl2">// Example LLD: Ride Booking (Uber)</span>
-
-<span class="hl">[ ENTITIES ]</span>
-
-┌─────────────────┐        ┌─────────────────┐
-│     Rider        │        │     Driver       │
-├─────────────────┤        ├─────────────────┤
-│ id: UUID  (PK)  │        │ id: UUID  (PK)  │
-│ name: String    │        │ name: String    │
-│ phone: String   │        │ location: GeoPoint│
-│ rating: Float   │        │ rating: Float   │
-│ created_at: TS  │        │ vehicle: FK     │
-└────────┬────────┘        └────────┬────────┘
-         │ creates                  │ accepts
-         ▼                          ▼
-    ┌─────────────────────────────────┐
-    │              Ride               │
-    ├─────────────────────────────────┤
-    │ id: UUID           (PK)        │
-    │ rider_id: UUID     (FK→Rider)  │
-    │ driver_id: UUID    (FK→Driver) │
-    │ status: ENUM  ←── state machine│
-    │ pickup: GeoPoint               │
-    │ dropoff: GeoPoint              │
-    │ fare: Decimal                  │
-    │ version: Int  ←── optimistic   │
-    │ created_at: Timestamp          │
-    └─────────────────────────────────┘
-
-<span class="hl">[ STATE MACHINE — Ride.status ]</span>
-
- REQUESTED ──accept──▶ MATCHED ──pickup──▶ IN_PROGRESS
-     │                                           │
-   cancel                                     complete
-     │                                           │
-     ▼                                           ▼
- CANCELLED                                  COMPLETED
-
-<span class="hl">[ DESIGN PATTERNS USED ]</span>
-Strategy:  PricingStrategy { standardFare(), surgeFare() }
-Factory:   VehicleFactory.create(type) → Car | Bike | Truck
-Observer:  RideStatusBoard.onStatusChange(ride)
-State:     Ride itself implements state transitions</div>
-      </div>
-      <div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem;">LLD Drawing Rules</h3>
-        <div style="display:flex;flex-direction:column;gap:.6rem;">
-          <div style="padding:.6rem .8rem;background:rgba(255,95,64,0.05);border-left:2px solid var(--accent2);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">1. Entities first (nouns)</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Identify nouns in the problem: User, Order, Product, Ride. Each noun → a class + a DB table. List fields with types and PKs.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(255,95,64,0.05);border-left:2px solid var(--accent2);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">2. Relationships with cardinality</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Label every relationship: 1:1, 1:N, M:N. M:N needs a junction table. Show foreign keys.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(255,95,64,0.05);border-left:2px solid var(--accent2);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">3. State machines for status fields</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Any entity with a status field needs a state diagram. Show valid transitions and which events trigger them.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(255,95,64,0.05);border-left:2px solid var(--accent2);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">4. Indexes — which queries does this serve?</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">For each query pattern, show the index: <code>rides_by_rider (rider_id, created_at DESC)</code>. Missing index = table scan at scale.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(255,95,64,0.05);border-left:2px solid var(--accent2);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">5. Name the design patterns</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Call out Strategy, Observer, Factory, State. Names show architectural literacy and prevent over-explanation.</p>
-          </div>
-          <div style="padding:.6rem .8rem;background:rgba(255,95,64,0.05);border-left:2px solid var(--accent2);border-radius:0 6px 6px 0;">
-            <strong style="color:var(--text);font-size:.84rem;">6. Address concurrency explicitly</strong>
-            <p style="font-size:.79rem;color:var(--muted);margin-top:.2rem;">Where can race conditions occur? Show the fix: optimistic locking (version field + CAS), pessimistic locking (SELECT FOR UPDATE), or distributed lock (Redis SETNX). This is the senior/staff differentiator in LLD rounds.</p>
-          </div>
-        </div>
-        <!-- Common LLD design patterns mini table -->
-        <div class="panel-box" style="margin-top:1rem;">
-          <h4>Common LLD Design Patterns</h4>
-          <table class="decision-table">
-            <tr><th>Pattern</th><th>Use When</th><th>Example</th></tr>
-            <tr><td>Strategy</td><td>Multiple interchangeable algorithms</td><td>PricingStrategy, SortStrategy</td></tr>
-            <tr><td>Observer</td><td>State change must notify multiple subscribers</td><td>OrderStatus → notify email/SMS/push</td></tr>
-            <tr><td>Factory</td><td>Create objects without specifying concrete class</td><td>NotificationFactory.create(type)</td></tr>
-            <tr><td>Singleton</td><td>Exactly one instance needed globally</td><td>DB connection pool, config</td></tr>
-            <tr><td>Decorator</td><td>Add behaviour without subclassing</td><td>LoggingCoffee wraps SimpleCoffee</td></tr>
-            <tr><td>Repository</td><td>Abstract data access layer</td><td>UserRepository.findById()</td></tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════ TAB 3: 12 PATTERNS ══════════════ -->
-  <div class="tab-panel" id="tab-patterns">
-    <p style="font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.7;">Every system design question maps to one or more of these 12 patterns. Identify the pattern first — then fill in the specifics. Knowing the pattern unlocks the right trade-offs automatically.</p>
-    <div class="pattern-grid">
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 01 · READ HEAVY</div>
-        <div class="pattern-name">Cache-Aside + Read Replicas</div>
-        <div class="pattern-desc">App checks Redis first → miss → read DB → populate cache. Add read replicas to fanout query load. Key question: what's the invalidation strategy?</div>
-        <div class="pattern-use">→ Social feeds · Product pages · YouTube view counts</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 02 · WRITE HEAVY</div>
-        <div class="pattern-name">Write-Ahead Queue + Async Workers</div>
-        <div class="pattern-desc">Writes go to Kafka/SQS first, workers process async. Decouples ingestion from processing. Backpressure = queue depth. Key: exactly-once semantics?</div>
-        <div class="pattern-use">→ Analytics events · IoT telemetry · Email queue · Logs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 03 · REAL-TIME</div>
-        <div class="pattern-name">WebSocket + Pub-Sub Backend</div>
-        <div class="pattern-desc">Clients hold persistent WebSocket connections. Backend pub-sub (Redis/Kafka) fans out to all connection servers. Key: reconnect + replay from offset.</div>
-        <div class="pattern-use">→ Chat · Live scores · Collaborative editing · Dashboards</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 04 · GLOBAL SCALE</div>
-        <div class="pattern-name">CDN + GeoDNS + Edge Caching</div>
-        <div class="pattern-desc">Static assets from CDN edge. GeoDNS routes to nearest PoP. Origin shield collapses cache misses. Key: cache invalidation at edge, data residency laws.</div>
-        <div class="pattern-use">→ Netflix · YouTube delivery · Cloudflare · Global APIs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 05 · DISTRIBUTED TX</div>
-        <div class="pattern-name">Saga Pattern (Choreography / Orchestration)</div>
-        <div class="pattern-desc">Break multi-service transaction into steps. Each step publishes event. On failure: compensating transactions roll back in reverse. Key: idempotent compensations.</div>
-        <div class="pattern-use">→ E-commerce checkout · Flight booking · Bank transfer</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 06 · DUAL WRITE</div>
-        <div class="pattern-name">Outbox Pattern + CDC (Debezium)</div>
-        <div class="pattern-desc">Write to DB + Outbox table in same transaction. Debezium reads WAL → publishes to Kafka. Atomicity in DB, eventual delivery to bus. Eliminates dual-write failure.</div>
-        <div class="pattern-use">→ Any service writing to DB AND publishing events</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 07 · SEARCH</div>
-        <div class="pattern-name">Inverted Index + ES Sync via CDC</div>
-        <div class="pattern-desc">Primary DB = source of truth. ES = read-optimized search replica synced via Kafka CDC. Hybrid search: ANN (semantic) + BM25 (keyword) + RRF fusion.</div>
-        <div class="pattern-use">→ Airbnb search · LinkedIn · Product catalog · Legal docs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 08 · GEO PROXIMITY</div>
-        <div class="pattern-name">Geohash Grid + Redis GEO</div>
-        <div class="pattern-desc">Encode lat/lng as geohash string. Query neighboring cells. Redis GEOSEARCH for radius. Update moving objects via WebSocket stream. Key: precision vs cell size.</div>
-        <div class="pattern-use">→ Uber driver matching · Yelp nearby · Tinder radius</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 09 · RATE LIMITING</div>
-        <div class="pattern-name">Token Bucket / Sliding Window at Gateway</div>
-        <div class="pattern-desc">API Gateway checks Redis before forwarding. Token bucket for burst-friendly limiting. Sliding window counter for precise limits. Return 429 + Retry-After.</div>
-        <div class="pattern-use">→ API platform · Payment gateway · SMS OTP service</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 10 · UNIQUE IDS</div>
-        <div class="pattern-name">Snowflake ID / UUID v7</div>
-        <div class="pattern-desc">Snowflake: 64-bit = 41-bit timestamp + 10-bit machine + 12-bit seq. Sortable, ~4096 IDs/ms/node, no coordination. UUID v7: time-ordered + universally unique.</div>
-        <div class="pattern-use">→ Tweet IDs · Instagram media IDs · Order IDs · Message IDs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 11 · CQRS</div>
-        <div class="pattern-name">Command Query Responsibility Segregation</div>
-        <div class="pattern-desc">Separate write model (normalized DB) from read model (denormalized read store). Commands produce events → update multiple read models optimized for each query.</div>
-        <div class="pattern-use">→ E-commerce (orders write, catalog read) · Banking ledger</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-num">PATTERN 12 · RESILIENCE</div>
-        <div class="pattern-name">Circuit Breaker + Bulkhead + Retry</div>
-        <div class="pattern-desc">Circuit breaker opens on failure threshold → fail fast. Bulkhead: isolate thread pools per dependency. Retry with exponential backoff + jitter. Timeout on every call.</div>
-        <div class="pattern-use">→ Any service with downstream dependencies. Always add this.</div>
-      </div>
-    </div>
-
-    <div style="margin-top:1.5rem;background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.2);border-radius:8px;padding:1.25rem;">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Pattern Recognition Decision Tree</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Read:write &gt; 5:1 → <strong style="color:var(--text);">Pattern 01</strong> (cache)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Write-heavy, &gt;50K/s → <strong style="color:var(--text);">Pattern 02</strong> (queue)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Server must push to client → <strong style="color:var(--text);">Pattern 03</strong> (WS)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Global &lt;100ms latency → <strong style="color:var(--text);">Pattern 04</strong> (CDN)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Spans multiple services → <strong style="color:var(--text);">Pattern 05</strong> (saga)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">DB write + publish event → <strong style="color:var(--text);">Pattern 06</strong> (outbox)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Full-text search needed → <strong style="color:var(--text);">Pattern 07</strong> (ES)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Location / proximity → <strong style="color:var(--text);">Pattern 08</strong> (geo)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">API abuse prevention → <strong style="color:var(--text);">Pattern 09</strong> (rate limit)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Unique IDs at scale → <strong style="color:var(--text);">Pattern 10</strong> (snowflake)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Different read/write models → <strong style="color:var(--text);">Pattern 11</strong> (CQRS)</div>
-        <div style="font-size:.8rem;color:var(--muted);padding:.35rem .5rem;background:rgba(0,0,0,0.2);border-radius:4px;">Has downstream deps → <strong style="color:var(--text);">Pattern 12</strong> (circuit)</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════ TAB 4: 45-MIN FRAMEWORK ══════════════ -->
-  <div class="tab-panel" id="tab-approach">
-    <div class="panel-grid">
-      <div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1.25rem;">The Universal 45-Minute Structure</h3>
-        <div class="timeline-steps">
-          <div class="tstep">
-            <span class="tstep-badge">MIN 0–5</span>
-            <div class="tstep-body">
-              <strong>Clarify Requirements — You Drive This</strong>
-              <p>Ask before drawing. "Who are the users? Scale — DAU, req/sec? Read vs write ratio? Latency SLA — p50 or p99? Consistency requirements? Global or single region? Mobile or web?" Never design before you know this. Interviewers reward engineers who discover requirements.</p>
+        <div class="tab-content">
+          <div class="tab-panel active" data-tab="f-concepts">
+            <div class="module">
+              <h3>CAP, Consistency, and Latency Budgeting</h3>
+              <p>Distributed systems always trade consistency, availability, and partition tolerance. Your design quality improves when you specify the consistency contract per API and map each request into a clear latency budget.</p>
+              <div class="metrics-grid">
+                <div class="metric"><div class="label">Cache Hit</div><div class="value">~1-5 ms</div></div>
+                <div class="metric"><div class="label">DB Read</div><div class="value">~5-25 ms</div></div>
+                <div class="metric"><div class="label">Cross Region RTT</div><div class="value">~80-200 ms</div></div>
+                <div class="metric"><div class="label">SLO Target</div><div class="value">P95 under 250 ms</div></div>
+              </div>
             </div>
           </div>
-          <div class="tstep">
-            <span class="tstep-badge">MIN 5–10</span>
-            <div class="tstep-body">
-              <strong>Capacity Estimation + Bottleneck ID</strong>
-              <p>Back-of-envelope math shows engineering judgment. "100M users, 10% DAU = 10M/day. 1 post each = 115 writes/sec. 20× read:write = 2300 reads/sec." Then ask: is this CPU-bound, memory-bound, I/O-bound, or network-bound? That determines the architecture.</p>
+          <div class="tab-panel" data-tab="f-architecture">
+            <div class="module">
+              <h3>5-Layer Service Model</h3>
+              <table class="decision-table">
+                <thead><tr><th>Layer</th><th>Purpose</th><th>Examples</th></tr></thead>
+                <tbody>
+                  <tr><td>Client</td><td>Initiates requests and renders results</td><td>Web app, mobile app, partner API</td></tr>
+                  <tr><td>Edge</td><td>Routing, auth, TLS, static acceleration</td><td>CDN, API Gateway, WAF</td></tr>
+                  <tr><td>Services</td><td>Business logic and policy execution</td><td>User service, feed service, checkout service</td></tr>
+                  <tr><td>Messaging</td><td>Async fan-out and decoupling</td><td>Kafka, RabbitMQ, SQS</td></tr>
+                  <tr><td>Data</td><td>Durability and query workloads</td><td>Postgres, Redis, Elasticsearch, S3</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="tstep">
-            <span class="tstep-badge">MIN 10–20</span>
-            <div class="tstep-body">
-              <strong>High-Level Design — APIs + Core Flow</strong>
-              <p>Define 2–3 key APIs first. Draw the 5-layer diagram. Identify which of the 12 patterns this maps to. Stay at one abstraction level — no class fields yet. Explicitly state what you're skipping: "I'll skip auth for now and focus on the write path."</p>
-            </div>
-          </div>
-          <div class="tstep">
-            <span class="tstep-badge">MIN 20–35</span>
-            <div class="tstep-body">
-              <strong>Deep Dive — The Hardest Component</strong>
-              <p>Ask "Where should I go deep?" or pick it yourself. Show internals: why Cassandra for messages (LSM-tree, write-optimized), why Redis ZSET for feeds (sorted by score, O(log n) insert), why Kafka for fan-out (durable, replay). This is where you differentiate.</p>
-            </div>
-          </div>
-          <div class="tstep">
-            <span class="tstep-badge">MIN 35–45</span>
-            <div class="tstep-body">
-              <strong>Trade-offs + Bottlenecks + Wrap-Up</strong>
-              <p>Proactively surface limitations before being asked. "One bottleneck here is celebrity fan-out — I'd handle it with hybrid push/pull." State trade-offs clearly. End: "What aspect would you like me to go deeper on?" — shows you're comfortable driving.</p>
+          <div class="tab-panel" data-tab="f-exercises">
+            <div class="module">
+              <h3>Daily Drills (Days 1-6)</h3>
+              <div class="checklist">
+                <div class="check-item">Write one CAP trade-off analysis for chat, payments, and metrics systems.</div>
+                <div class="check-item">Draft latency budget for one request path with explicit P50/P95 targets.</div>
+                <div class="check-item">Draw 5-layer architecture for a URL shortener and identify first bottleneck.</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1.25rem;">Pattern Recognition Questions</h3>
-        <div style="display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.5rem;">
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Is it <strong style="color:var(--text);">read-heavy</strong>? → Cache-aside, read replicas, CDN</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Is it <strong style="color:var(--text);">write-heavy</strong>? → Queue + async, LSM-tree DB, sharding</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Does it need <strong style="color:var(--text);">real-time push</strong>? → WebSocket + pub-sub</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Does it span <strong style="color:var(--text);">multiple services</strong>? → Saga + Outbox</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Does it need <strong style="color:var(--text);">full-text search</strong>? → ES sync + inverted index</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Does it need <strong style="color:var(--text);">location queries</strong>? → Geohash + Redis GEO</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Does it need <strong style="color:var(--text);">global low latency</strong>? → CDN + GeoDNS + multi-region</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Separate read/write models needed? → CQRS</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Downstream dependency risk? → Circuit breaker + bulkhead</div>
-          <div style="padding:.45rem .7rem;background:rgba(0,0,0,0.2);border-radius:4px;font-size:.81rem;color:var(--muted);">Unique IDs at massive scale? → Snowflake ID or UUID v7</div>
+    </section>
+
+    <section class="chapter-panel" data-chapter="patterns">
+      <div class="section-head"><div class="n">02</div><h2>Pattern Library (Days 7-14)</h2></div>
+      <div class="pattern-grid">
+        <div class="pattern-card"><h4>Read-Heavy Caching</h4><ul><li>Cache-aside + TTL</li><li>Hot key replication</li><li>Staleness budget</li></ul></div>
+        <div class="pattern-card"><h4>Write-Log First</h4><ul><li>Event log as buffer</li><li>Async consumers</li><li>Replay and DLQ</li></ul></div>
+        <div class="pattern-card"><h4>Outbox + CDC</h4><ul><li>Atomic write + event intent</li><li>Debezium/Kafka pipeline</li><li>Idempotent consumer contract</li></ul></div>
+        <div class="pattern-card"><h4>Saga</h4><ul><li>Local transactions</li><li>Compensation paths</li><li>Failure state tracking</li></ul></div>
+        <div class="pattern-card"><h4>CQRS</h4><ul><li>Command/read split</li><li>Projection pipelines</li><li>Denormalized read models</li></ul></div>
+        <div class="pattern-card"><h4>Resilience Envelope</h4><ul><li>Timeouts per hop</li><li>Retries with jitter</li><li>Circuit breaker + bulkhead</li></ul></div>
+      </div>
+    </section>
+
+    <section class="chapter-panel" data-chapter="systems">
+      <div class="section-head"><div class="n">03</div><h2>System Case Studies (Days 15-21)</h2></div>
+      <div class="module">
+        <h3>Case Study Matrix</h3>
+        <table class="decision-table">
+          <thead><tr><th>System</th><th>Primary Concern</th><th>Key Patterns</th><th>What Interviewers Probe</th></tr></thead>
+          <tbody>
+            <tr><td>URL Shortener</td><td>Write burst + redirect latency</td><td>Ordered IDs, cache-aside</td><td>Keyspace sizing, collision policy</td></tr>
+            <tr><td>News Feed</td><td>Fan-out at scale</td><td>Pub-sub, ranking cache</td><td>Push vs pull trade-off</td></tr>
+            <tr><td>Chat System</td><td>Realtime delivery and ordering</td><td>WebSocket gateway, replay log</td><td>Offline sync, exactly-once myths</td></tr>
+            <tr><td>File Storage</td><td>Durability + distribution</td><td>Object storage, CDN</td><td>Multipart uploads, signed URLs</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="chapter-panel" data-chapter="scaling">
+      <div class="section-head"><div class="n">04</div><h2>Scaling & Operations (Days 22-27)</h2></div>
+      <div class="module">
+        <h3>Scaling Decisions</h3>
+        <table class="decision-table">
+          <thead><tr><th>Decision</th><th>Choose A</th><th>Choose B</th><th>Rule of Thumb</th></tr></thead>
+          <tbody>
+            <tr><td>SQL vs NoSQL</td><td>Strong joins, ACID</td><td>High write throughput, flexible schema</td><td>Start SQL unless access pattern forces NoSQL</td></tr>
+            <tr><td>Sync vs Async</td><td>Immediate correctness</td><td>Throughput and resilience</td><td>Keep user-facing path short, offload side effects</td></tr>
+            <tr><td>Sharding</td><td>Range shard</td><td>Hash shard</td><td>Hash for balance, range for scans</td></tr>
+            <tr><td>Cache Strategy</td><td>TTL-only</td><td>Event invalidation</td><td>TTL first, event-based for strict freshness needs</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="playbook" class="chapter-panel" data-chapter="advanced">
+      <div class="section-head"><div class="n">05</div><h2>Advanced + Interview Playbook (Days 28-30)</h2></div>
+      <div class="module">
+        <h3>45-Minute Interview Structure</h3>
+        <div class="checklist">
+          <div class="check-item"><strong>0-5 min:</strong> Clarify requirements, constraints, and SLOs.</div>
+          <div class="check-item"><strong>5-12 min:</strong> Estimate scale and identify first-order bottlenecks.</div>
+          <div class="check-item"><strong>12-25 min:</strong> Present high-level design with APIs and data model.</div>
+          <div class="check-item"><strong>25-38 min:</strong> Deep dive on hardest component (consistency, partitioning, backpressure).</div>
+          <div class="check-item"><strong>38-45 min:</strong> Failure modes, observability, and phased evolution plan.</div>
         </div>
-
-        <div class="panel-box">
-          <h4>Numbers Every Engineer Memorizes</h4>
-          <table class="decision-table">
-            <tr><th>Operation</th><th>Latency</th></tr>
-            <tr><td>L1 cache hit</td><td>~0.5 ns</td></tr>
-            <tr><td>L2 cache hit</td><td>~5 ns</td></tr>
-            <tr><td>RAM read</td><td>~100 ns</td></tr>
-            <tr><td>SSD read</td><td>~16 μs</td></tr>
-            <tr><td>Redis GET</td><td>~0.5 ms</td></tr>
-            <tr><td>DB query (indexed)</td><td>~5–20 ms</td></tr>
-            <tr><td>CDN cache hit</td><td>~5 ms</td></tr>
-            <tr><td>Network (same DC)</td><td>~500 μs</td></tr>
-            <tr><td>Network (cross-region)</td><td>~80–150 ms</td></tr>
-            <tr><td>1B req/day</td><td>~11,500 req/sec</td></tr>
-          </table>
-        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ══════════════ TAB 5: API DESIGN ══════════════ -->
-  <div class="tab-panel" id="tab-api">
-    <div class="panel-grid" style="margin-bottom:1.5rem;">
-      <div class="panel-box">
-        <h4>REST — Core Rules</h4>
-        <ul>
-          <li><strong>Resource URLs, not verbs:</strong> <code>/users/42/orders</code> not <code>/getUserOrders</code></li>
-          <li><strong>HTTP verbs:</strong> GET (read), POST (create), PUT (replace), PATCH (partial), DELETE (remove)</li>
-          <li><strong>Idempotent:</strong> GET, PUT, DELETE are idempotent. POST is not.</li>
-          <li><strong>Status codes:</strong> 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauth, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable, 429 Rate Limited, 500 Server Error</li>
-          <li><strong>Versioning:</strong> <code>/api/v1/users</code> — URL versioning is most visible and easiest to route</li>
-          <li><strong>HATEOAS:</strong> include links to related actions in responses — reduces client coupling</li>
-        </ul>
-      </div>
-      <div class="panel-box">
-        <h4>Pagination Strategies</h4>
-        <ul>
-          <li><strong>Offset:</strong> <code>?page=2&limit=20</code> — simple but inconsistent when records are inserted/deleted during pagination</li>
-          <li><strong>Cursor:</strong> <code>?cursor=eyJpZCI6NDJ9&limit=20</code> — stable, works with real-time data. Cursor = opaque encoded value (base64 of last-seen ID)</li>
-          <li><strong>Keyset:</strong> <code>?after_id=42&limit=20</code> — fastest for indexed columns, no OFFSET skip cost</li>
-          <li>Use cursor/keyset for any feed or list that receives new items while paginating</li>
-          <li>Always include: <code>has_more: bool</code>, <code>next_cursor</code>, <code>total_count</code> (optional — expensive)</li>
-        </ul>
-      </div>
-      <div class="panel-box">
-        <h4>Idempotency for Payments</h4>
-        <ul>
-          <li>Client sends unique key with every POST: <code>Idempotency-Key: uuid-v4</code></li>
-          <li>Server: check Redis for key → if exists, return cached response → else process + cache</li>
-          <li>Cache response in Redis with 24h TTL keyed by idempotency key</li>
-          <li>On retry: return identical cached response — no duplicate charge</li>
-          <li>Used by: Stripe, PayPal, Braintree for all payment mutations</li>
-        </ul>
-      </div>
-      <div class="panel-box">
-        <h4>Auth Patterns</h4>
-        <ul>
-          <li><strong>API Key:</strong> server-side secret, no expiry mechanism — best for server-to-server</li>
-          <li><strong>JWT Bearer:</strong> stateless, self-contained claims, verify without DB. Short expiry (15min) + refresh token (7 days).</li>
-          <li><strong>OAuth 2.0:</strong> delegated authorization — user grants app access to their data on another service</li>
-          <li><strong>mTLS:</strong> both client and server present certs — zero-trust internal service mesh</li>
-          <li><strong>HMAC:</strong> sign request body with shared secret — webhooks, S3 presigned URLs</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- API comparison table -->
-    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;">REST vs GraphQL vs gRPC vs WebSocket</h3>
-    <div style="overflow-x:auto;">
-      <table class="decision-table" style="min-width:700px;">
-        <tr><th>Criterion</th><th>REST</th><th>GraphQL</th><th>gRPC</th><th>WebSocket</th></tr>
-        <tr><td>Protocol</td><td>HTTP/1.1–2</td><td>HTTP/1.1–2</td><td>HTTP/2</td><td>TCP (WS upgrade)</td></tr>
-        <tr><td>Format</td><td>JSON/XML</td><td>JSON</td><td>Protobuf (binary)</td><td>Any (JSON/binary)</td></tr>
-        <tr><td>Performance</td><td>Good</td><td>Good</td><td>Excellent (5-10× REST)</td><td>Excellent (persistent)</td></tr>
-        <tr><td>Caching</td><td>Native HTTP cache</td><td>Complex (POST)</td><td>No HTTP cache</td><td>No</td></tr>
-        <tr><td>Type safety</td><td>OpenAPI/Swagger</td><td>Schema enforced</td><td>Protobuf — compile-time</td><td>None by default</td></tr>
-        <tr><td>Streaming</td><td>SSE only</td><td>Subscriptions</td><td>Native bidirectional</td><td>Native full-duplex</td></tr>
-        <tr><td>Browser support</td><td>Universal</td><td>Universal</td><td>Needs grpc-web proxy</td><td>Universal</td></tr>
-        <tr><td>Best for</td><td>Public APIs, CRUD</td><td>Mobile, multi-client apps</td><td>Internal microservices</td><td>Real-time bidirectional</td></tr>
-      </table>
-    </div>
-
-    <div class="flow-diagram" style="margin-top:1.25rem;"><span class="hl2">// gRPC Service Definition (Protobuf)</span>
-syntax = "proto3";
-
-service UserService {
-  rpc GetUser(GetUserRequest) returns (User);                       <span class="hl">// unary</span>
-  rpc ListUsers(ListRequest)  returns (stream User);                <span class="hl">// server streaming</span>
-  rpc BulkCreate(stream CreateReq) returns (BatchResult);          <span class="hl">// client streaming</span>
-  rpc Chat(stream ChatMsg)    returns (stream ChatMsg);             <span class="hl">// bidirectional</span>
-}
-
-message User {
-  string id    = 1;    <span class="hl">// field numbers must NEVER change (wire format)</span>
-  string name  = 2;
-  string email = 3;
-  google.protobuf.Timestamp created_at = 4;
-}
-<span class="hl">// Auto-generates typed client + server code in Go, Java, Python, Rust, Node...
-// 5-10× faster than REST/JSON. Use for internal microservices.
-// REST for public APIs — universal client support + HTTP caching.</span></div>
-  </div>
-
-  <!-- ══════════════ TAB 6: VIDEOS ══════════════ -->
-  <div class="tab-panel" id="tab-videos">
-    <p style="font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;">These now point to topic-matched resources instead of generic or mismapped videos. Watch in this order for the fastest ramp from framework → core primitives → real designs.</p>
-    <div class="video-grid">
-      <a href="https://www.youtube.com/watch?v=i7twT3x5yv8" target="_blank" class="video-card">
-        <div class="video-ch">ByteByteGo · Alex Xu</div>
-        <div class="video-title">System Design Interview — Step By Step Guide</div>
-        <div class="video-desc">The exact framework used in real interviews: requirements → estimation → HLD → deep dive → wrap-up. Watch this before any specific design.</div>
-        <div class="video-tag">START HERE · 12 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=zaRkONvyGr8" target="_blank" class="video-card">
-        <div class="video-ch">Gaurav Sen · ex-Google</div>
-        <div class="video-title">Consistent Hashing | System Design</div>
-        <div class="video-desc">The best consistent hashing explanation on YouTube. Ring, virtual nodes, why it matters for sharding and CDN routing. Essential concept.</div>
-        <div class="video-tag">MUST WATCH · 12 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=vvhC64hQZMk" target="_blank" class="video-card">
-        <div class="video-ch">Gaurav Sen · ex-Google</div>
-        <div class="video-title">Design WhatsApp — System Design</div>
-        <div class="video-desc">Full HLD walkthrough: WebSockets, message queue, Cassandra for messages, presence system. See how trade-offs are articulated verbally.</div>
-        <div class="video-tag">FULL DESIGN · 20 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=wYk0xPP_P_8" target="_blank" class="video-card">
-        <div class="video-ch">Gaurav Sen · ex-Google</div>
-        <div class="video-title">Design Twitter — Timelines at Scale</div>
-        <div class="video-desc">Fan-out on write vs fan-out on read. The hybrid approach for celebrities vs regular users. The definitive fan-out explanation on YouTube.</div>
-        <div class="video-tag">FAN-OUT · 22 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=tndzLznxq40" target="_blank" class="video-card">
-        <div class="video-ch">Gaurav Sen · ex-Google</div>
-        <div class="video-title">Design Tinder — Geospatial Matching</div>
-        <div class="video-desc">A strong geospatial systems walkthrough. Useful for location indexing, candidate generation, ranking constraints, and realtime updates.</div>
-        <div class="video-tag">GEO + MATCHING · 18 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=umWABit-wbk" target="_blank" class="video-card">
-        <div class="video-ch">codeKarle</div>
-        <div class="video-title">Design Uber — System Design Interview</div>
-        <div class="video-desc">Realtime location updates, dispatch, geohash-style proximity search, trip state machine, and pricing. Good for both HLD and verbal communication style.</div>
-        <div class="video-tag">REAL-TIME SYSTEMS · 35 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=jPKTo1iGQiE" target="_blank" class="video-card">
-        <div class="video-ch">Gaurav Sen · ex-Google</div>
-        <div class="video-title">Design YouTube — Video Platform at Scale</div>
-        <div class="video-desc">Use this for the storage + upload + CDN mental model: ingestion path, transcoding, chunking, and edge delivery. Pair it with Day 23 in this roadmap.</div>
-        <div class="video-tag">MEDIA PIPELINE · 20 min ↗</div>
-      </a>
-      <a href="https://www.youtube.com/watch?v=psQzyFfsUGU" target="_blank" class="video-card">
-        <div class="video-ch">Gaurav Sen · ex-Google</div>
-        <div class="video-title">Design Netflix / Hotstar — Video Streaming</div>
-        <div class="video-desc">A better companion for CDN-heavy streaming systems: edge caching, segment delivery, bandwidth adaptation, and global read-heavy architecture.</div>
-        <div class="video-tag">STREAMING + CDN · 20 min ↗</div>
-      </a>
-      <a href="https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction" target="_blank" class="video-card">
-        <div class="video-ch">HelloInterview · Free Written Course</div>
-        <div class="video-title">System Design in a Hurry — Full Guide</div>
-        <div class="video-desc">Built by FAANG hiring managers. Covers every topic in this 30-day roadmap with interview rubric context. The best written companion to the videos.</div>
-        <div class="video-tag">FREE GUIDE — BOOKMARK ↗</div>
-      </a>
-    </div>
-  </div>
-
-</div><!-- end prereq-wrapper -->
+    </section>
+  </main>
 
 <script>
-function switchTab(btn, tabId) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(tabId).classList.add('active');
-}
-</script>
-
-<div class="prereq-wrapper" style="padding-top:0;">
-  <div class="prereq-header">
-    <h2>How To Study This Like A Senior Engineer</h2>
-    <span class="prereq-badge">DON'T JUST MEMORIZE BOXES</span>
-  </div>
-  <div class="panel-grid three" style="margin-bottom:1rem;">
-    <div class="panel-box">
-      <h4>Daily Study Loop</h4>
-      <ul>
-        <li><strong>Pass 1:</strong> understand the user journey and write path before any component names.</li>
-        <li><strong>Pass 2:</strong> estimate scale: QPS, peak traffic, data growth, latency target, read:write ratio.</li>
-        <li><strong>Pass 3:</strong> draw the minimum viable architecture that works for day-1 scale.</li>
-        <li><strong>Pass 4:</strong> harden it with cache, queue, partitioning, retry, idempotency, and observability.</li>
-        <li><strong>Pass 5:</strong> say what fails first and what you would scale next.</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>What Interviewers Actually Score</h4>
-      <ul>
-        <li><strong>Requirement clarity:</strong> did you separate must-have from nice-to-have?</li>
-        <li><strong>Prioritization:</strong> did you solve the hardest path first instead of drawing everything equally?</li>
-        <li><strong>Trade-offs:</strong> did you explain why a queue, cache, shard key, or datastore is justified?</li>
-        <li><strong>Failure awareness:</strong> did you mention hot keys, retries, duplicate events, partial writes, and cache inconsistency?</li>
-        <li><strong>Communication:</strong> can a teammate implement your design without guessing your intent?</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>Staff-Level Signal</h4>
-      <ul>
-        <li>Start with <strong>what can go wrong</strong>, not only what works in the happy path.</li>
-        <li>Name the <strong>operational knobs</strong>: TTL, partition count, batch size, retry budget, timeout budget.</li>
-        <li>Call out <strong>migration strategy</strong>: how you would move from monolith to queue, single DB to sharded DB, sync to async.</li>
-        <li>Tie design to <strong>business constraints</strong>: cost, compliance, latency, regional isolation, consistency tolerance.</li>
-        <li>End with <strong>observability</strong>: metrics, logs, traces, dashboards, and alerts for the critical path.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="panel-grid" style="margin-bottom:1rem;">
-    <div class="panel-box">
-      <h4>Capacity Estimation Shortcuts</h4>
-      <ul>
-        <li><strong>RPS:</strong> daily requests / 86400, then multiply by 3-5 for peak.</li>
-        <li><strong>Storage:</strong> writes per day × object size × retention period.</li>
-        <li><strong>Bandwidth:</strong> RPS × response size. This usually exposes CDN and cache needs quickly.</li>
-        <li><strong>Memory for cache:</strong> hot working set × object size × overhead factor.</li>
-        <li><strong>Partitions:</strong> choose based on write throughput, ordering boundaries, and rebalancing blast radius.</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>Answer Template For Full Designs</h4>
-      <p><strong>1.</strong> Clarify scope and non-functionals. <strong>2.</strong> Estimate scale and traffic shape. <strong>3.</strong> Define APIs and core entities. <strong>4.</strong> Draw the write path. <strong>5.</strong> Draw the read path. <strong>6.</strong> Deep dive into the bottleneck component. <strong>7.</strong> Cover failure modes, data consistency, and scaling plan. <strong>8.</strong> Wrap with trade-offs and what you would ship first.</p>
-      <p style="margin-top:.75rem;">If you practice every day using this sequence, your answers stop sounding memorized and start sounding like engineering judgment.</p>
-    </div>
-  </div>
-</div>
-
-<div class="prereq-wrapper" style="padding-top:0;">
-  <div class="prereq-header">
-    <h2>Fast Understanding Hub</h2>
-    <span class="prereq-badge">LEARN FLOWS, NOT BOXES</span>
-  </div>
-
-  <div class="panel-grid three" style="margin-bottom:1rem;">
-    <div class="panel-box">
-      <h4>The 7 Flows To Master</h4>
-      <ul>
-        <li><strong>Read flow:</strong> client → edge → cache → DB → response</li>
-        <li><strong>Write flow:</strong> client → validation → primary DB → cache invalidation → async fan-out</li>
-        <li><strong>Realtime flow:</strong> client connects → state tracked → events fan out → replay on reconnect</li>
-        <li><strong>Search flow:</strong> primary write → outbox/CDC → search index sync → query + rank</li>
-        <li><strong>Media flow:</strong> upload → object store → async processing → CDN distribution</li>
-        <li><strong>Analytics flow:</strong> event ingest → queue/log → stream/batch aggregation → OLAP store</li>
-        <li><strong>Failure flow:</strong> timeout → retry/backoff → circuit breaker → fallback/degrade gracefully</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>How Good Engineers Read A Design</h4>
-      <ul>
-        <li><strong>Start at the user action:</strong> what exact request kicked off this system path?</li>
-        <li><strong>Follow state changes:</strong> where is truth stored, cached, replicated, and replayed?</li>
-        <li><strong>Ask where ordering matters:</strong> globally, per user, per chat, per partition?</li>
-        <li><strong>Ask where duplication happens:</strong> retries, queues, consumers, webhooks, payments.</li>
-        <li><strong>Ask where backpressure appears:</strong> queues, DB pool, worker pool, cache miss storms.</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>What To Memorize vs Understand</h4>
-      <ul>
-        <li><strong>Memorize:</strong> common patterns, latency orders of magnitude, core datastore trade-offs.</li>
-        <li><strong>Understand:</strong> why each component exists and what breaks if removed.</li>
-        <li><strong>Memorize:</strong> standard request/read/write/replay flows.</li>
-        <li><strong>Understand:</strong> consistency, scaling, partitioning, and operational failure modes.</li>
-        <li><strong>Goal:</strong> explain any diagram left-to-right in plain English without staring at notes.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="panel-grid" style="margin-bottom:1rem;">
-    <div class="panel-box">
-      <h4>Universal Read / Write / Async Model</h4>
-      <div class="flow-diagram">READ PATH
-Client → CDN/Edge → LB/Gateway → Service → Redis
-                                     ↓ miss
-                                   Primary DB
-                                     ↓
-                              populate cache → respond
-
-WRITE PATH
-Client → Gateway → Service → Primary DB commit
-                               ↓
-                        invalidate/update cache
-                               ↓
-                         publish event to queue
-
-ASYNC PATH
-Queue/Log → Consumer → side effects
-                    → search index
-                    → notifications
-                    → analytics
-                    → downstream services</div>
-      <p>Almost every design in this course is some variation of these three paths. Once this clicks, system design stops feeling like 100 unrelated problems.</p>
-    </div>
-    <div class="panel-box">
-      <h4>The 10 Questions To Ask For Any Design</h4>
-      <ul>
-        <li>What is the write path?</li>
-        <li>What is the read path?</li>
-        <li>What is the source of truth?</li>
-        <li>What can be stale, and for how long?</li>
-        <li>Where do we cache, and how do we invalidate?</li>
-        <li>What must be synchronous vs asynchronous?</li>
-        <li>How do we partition data and traffic?</li>
-        <li>Where can duplicates happen, and how do we make operations idempotent?</li>
-        <li>What fails first at 10x traffic?</li>
-        <li>What metric would wake you up at 3 AM?</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="panel-grid three">
-    <div class="panel-box">
-      <h4>System Families</h4>
-      <ul>
-        <li><strong>CRUD systems:</strong> user/account/order management</li>
-        <li><strong>Feed systems:</strong> timelines, notifications, recommendations</li>
-        <li><strong>Realtime systems:</strong> chat, presence, dispatch, collaboration</li>
-        <li><strong>Search systems:</strong> query + retrieval + ranking</li>
-        <li><strong>Pipeline systems:</strong> upload, transcode, ETL, ML inference</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>Primary Bottlenecks</h4>
-      <ul>
-        <li><strong>Read-heavy:</strong> cache misses, DB fan-out, replication lag</li>
-        <li><strong>Write-heavy:</strong> WAL/compaction pressure, lock contention, queue depth</li>
-        <li><strong>Realtime:</strong> connection fan-out, state tracking, replay on reconnect</li>
-        <li><strong>Global:</strong> cross-region latency, consistency, data residency</li>
-        <li><strong>Burst traffic:</strong> thundering herd, hot partitions, token starvation</li>
-      </ul>
-    </div>
-    <div class="panel-box">
-      <h4>Fast-Learning Sequence</h4>
-      <ul>
-        <li>Study the flow first</li>
-        <li>Name the pattern second</li>
-        <li>Choose storage third</li>
-        <li>Add failure handling fourth</li>
-        <li>Add observability last</li>
-      </ul>
-      <p style="margin-top:.5rem;">This order makes designs easier to remember because it follows causality, not tool categories.</p>
-    </div>
-  </div>
-</div>
-
-<main>
-
-<!-- ═══════════════════════ WEEK 1 ═══════════════════════ -->
-<div class="week-header" id="week1">
-  <span class="week-num">WEEK 01</span>
-  <span class="week-title">Foundations — Scaling, Caching, API Design, CAP</span>
-  <span class="week-theme">FIRST PRINCIPLES</span>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 01</span>
-    <span class="day-name">Scaling Fundamentals — Vertical, Horizontal, Scale Cube</span>
-    <span class="day-type">Concept</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Core Concepts</h4>
-        <ul>
-          <li><strong>Vertical scaling:</strong> add CPU/RAM to one machine. Simple, no code change. Hard ceiling ~96 cores. SPOF.</li>
-          <li><strong>Horizontal scaling:</strong> add more machines. Requires stateless design, service discovery, load balancing.</li>
-          <li><strong>Stateless services:</strong> no local session — store state in Redis/DB so any instance can serve any request.</li>
-          <li><strong>Scale Cube (AKF):</strong> X=clone (horizontal), Y=functional decompose (microservices), Z=data partition (sharding)</li>
-          <li><strong>Bottleneck first:</strong> before scaling, profile — CPU, memory, I/O, or network? Scale the actual bottleneck.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>When to Scale What</h4>
-        <ul>
-          <li>CPU bound → vertical first, then horizontal with load balancer</li>
-          <li>Memory bound → vertical or offload to Redis/external cache</li>
-          <li>I/O bound → read replicas, caching, async processing</li>
-          <li>Network bound → CDN, edge caching, compression</li>
-          <li>DB bound → connection pooling, read replicas, sharding</li>
-          <li>Stateful service → externalize state first, then scale horizontally</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Key Trade-offs</h4>
-      <p>Vertical: operationally simple, no distributed system complexity, but hard ceiling and SPOF. Horizontal: theoretically unlimited, fault tolerant, but requires distributed consensus, session externalization, consistent hashing for data locality. Most production systems do both: vertical for the database, horizontal for stateless API tiers.</p>
-    </div>
-    <div class="interview-tip">
-      <h4>Interview Approach</h4>
-      <p>When asked "how do you scale X?": first identify the bottleneck. Don't say "add more servers" — say "I'd first profile to identify whether we're CPU, memory, or I/O bound. For the stateless API tier I'd scale horizontally behind an ALB. For the database I'd start with read replicas and connection pooling, escalating to sharding only when reads on replicas saturate."</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 02</span>
-    <span class="day-name">Load Balancing — Algorithms, Layers, Health Checks</span>
-    <span class="day-type">Infra</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>L4 vs L7 Load Balancing</h4>
-        <ul>
-          <li><strong>L4 (Transport):</strong> routes by IP + TCP port, no packet inspection — fastest, no TLS termination</li>
-          <li><strong>L7 (Application):</strong> routes by HTTP headers, path, cookie — enables path-based routing, A/B testing, auth</li>
-          <li>AWS NLB = L4. AWS ALB = L7. HAProxy does both. Nginx = L7 (can do L4 with stream module).</li>
-          <li><strong>TLS termination at LB:</strong> offloads crypto from app servers, enables header inspection</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Algorithms</h4>
-        <ul>
-          <li><strong>Round Robin:</strong> simple, equal distribution. Bad if requests vary in cost.</li>
-          <li><strong>Least Connections:</strong> send to server with fewest active connections. Best for variable-cost requests.</li>
-          <li><strong>IP Hash:</strong> same client → same server (sticky). Breaks with proxies/NAT.</li>
-          <li><strong>Consistent Hashing:</strong> minimize reshuffling when servers added/removed. Best for cache locality.</li>
-          <li><strong>Weighted:</strong> canary deployments — send 5% to new version.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Health Checks + Connection Draining</h4>
-      <p>Active health checks: LB polls /health endpoint every 5s. Passive: detect failures from response codes. Connection draining: when removing a server, LB stops sending new connections but lets in-flight requests finish (30–60s grace period). Critical for zero-downtime deployments.</p>
-    </div>
-    <div class="interview-tip">
-      <h4>Common Interview Gotcha</h4>
-      <p>Sticky sessions (session affinity) break horizontal scaling — if a server dies, all its sessions are lost. The correct answer: externalize sessions to Redis, make the service stateless, and use round-robin or least-connections. Only use sticky sessions when you can't externalize state (legacy systems).</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 03</span>
-    <span class="day-name">Caching — Strategies, Invalidation, Redis Internals</span>
-    <span class="day-type">Caching</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Caching Strategies</h4>
-        <ul>
-          <li><strong>Cache-aside (Lazy):</strong> app checks cache first → miss → read DB → populate cache. Most common.</li>
-          <li><strong>Read-through:</strong> cache fetches from DB on miss automatically. App only talks to cache.</li>
-          <li><strong>Write-through:</strong> write to cache AND DB synchronously. Consistent, but doubles write latency.</li>
-          <li><strong>Write-behind (Write-back):</strong> write to cache only, flush to DB async. Fast writes, risk of data loss on crash.</li>
-          <li><strong>Refresh-ahead:</strong> proactively refresh cache before TTL expires on popular keys.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Redis Data Structures</h4>
-        <ul>
-          <li><strong>String:</strong> counters, session tokens, simple cache values</li>
-          <li><strong>Hash:</strong> user profile fields — partial updates without fetching all</li>
-          <li><strong>List:</strong> message queues, activity feeds (LPUSH/RPOP)</li>
-          <li><strong>Set:</strong> unique visitors, tags, friend lists (union/intersection)</li>
-          <li><strong>Sorted Set (ZSET):</strong> leaderboards, rate limiting, priority queues</li>
-          <li><strong>HyperLogLog:</strong> approximate unique count — 12KB for billions of items</li>
-          <li><strong>Streams:</strong> durable event log — lighter-weight Kafka alternative</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Cache Invalidation — "Two Hard Problems"</h4>
-      <p>TTL-based: simple, eventual consistency acceptable. Event-driven: write → Kafka event → cache invalidation consumers. More consistent but complex. Versioned keys: <code>user:42:v3</code> — change version on update, old key orphans and expires. Cache stampede (thundering herd): many requests miss simultaneously and hammer DB. Solutions: mutex lock (only one request rebuilds), probabilistic early expiry (PER algorithm), request coalescing.</p>
-    </div>
-    <div class="interview-tip">
-      <h4>Multilevel Caching</h4>
-      <p>L1 = in-process memory (microseconds, limited size, per-instance). L2 = Redis cluster (milliseconds, shared, bounded). L3 = DB read replica. Mention hot keys: a single extremely popular key (celebrity post) can overwhelm one Redis shard — solutions: local replica per app server, key sharding by appending suffix.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 04</span>
-    <span class="day-name">CAP Theorem + Consistency Models + PACELC</span>
-    <span class="day-type">Theory</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>CAP Theorem</h4>
-        <ul>
-          <li><strong>Consistency:</strong> every read sees the most recent write</li>
-          <li><strong>Availability:</strong> every request gets a (non-error) response</li>
-          <li><strong>Partition Tolerance:</strong> system continues despite network splits</li>
-          <li>Reality: P always occurs in distributed systems → choose C or A during partition</li>
-          <li><strong>CP systems:</strong> HBase, ZooKeeper, etcd, MongoDB (strong mode)</li>
-          <li><strong>AP systems:</strong> Cassandra, DynamoDB, CouchDB, Redis (default)</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Consistency Models (Spectrum)</h4>
-        <ul>
-          <li><strong>Linearizability:</strong> single-node illusion — reads always see latest write</li>
-          <li><strong>Sequential:</strong> all ops appear in some consistent order</li>
-          <li><strong>Causal:</strong> causally related operations appear in order</li>
-          <li><strong>Read-your-writes:</strong> you always see your own writes (session)</li>
-          <li><strong>Monotonic reads:</strong> once you read a value, you won't see older values</li>
-          <li><strong>Eventual:</strong> all replicas converge if no new writes — lowest consistency</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>PACELC — More Practical Than CAP</h4>
-      <p>PACELC extends CAP: "If Partition (P), choose between Availability (A) and Consistency (C). Else (E) — even without partition — choose between Latency (L) and Consistency (C)." Most distributed systems trade off latency vs consistency ALL the time, not just during partitions. DynamoDB: PA/EL (available, low latency). Spanner: PC/EC (consistent, higher latency). Understanding PACELC shows deeper distributed systems thinking.</p>
-    </div>
-    <div class="interview-tip">
-      <h4>Interview Signal</h4>
-      <p>Never just say "I'd use CAP theorem." Say: "For a payment system, I need CP — a failed transaction is better than a duplicate credit. I'd accept reduced availability during network partitions and use circuit breakers to fail fast. For a social media feed, AP is fine — showing a slightly stale post is acceptable, and I'd use eventual consistency with short TTLs."</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 05</span>
-    <span class="day-name">Rate Limiting — Algorithms, Distributed Implementation</span>
-    <span class="day-type">Resilience</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Algorithms Compared</h4>
-        <ul>
-          <li><strong>Fixed Window:</strong> count resets at interval boundary. Simple. Burst attack possible at boundary edges.</li>
-          <li><strong>Sliding Window Log:</strong> log timestamps of each request in Redis sorted set. Precise. Memory = O(requests in window).</li>
-          <li><strong>Sliding Window Counter:</strong> interpolate between current and previous window counts. Memory efficient, ~0.003% error rate.</li>
-          <li><strong>Token Bucket:</strong> bucket refills at rate R, max burst = bucket size. Allows controlled bursting. AWS API Gateway uses this.</li>
-          <li><strong>Leaky Bucket:</strong> requests queued, processed at constant rate. Smooths traffic. Queue fills under burst — requests dropped.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Distributed Rate Limiting</h4>
-        <ul>
-          <li>Single Redis node: atomic Lua script — INCR + EXPIRE in one round-trip</li>
-          <li>Redis Cluster: consistent hash user_id to shard — same user always hits same node</li>
-          <li>Sliding window with ZSET: ZADD + ZREMRANGEBYSCORE + ZCARD atomically</li>
-          <li>Response headers: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>Retry-After</code></li>
-          <li>Return HTTP 429 Too Many Requests with Retry-After header</li>
-          <li>Different limits by tier: free (100/min), pro (1000/min), enterprise (unlimited)</li>
-        </ul>
-      </div>
-    </div>
-    <div class="sys-diagram">
-<span>Distributed Rate Limiter Architecture:</span>
-Client → [API Gateway] → [Rate Limiter Middleware]
-                                   ↓
-                    [Redis Cluster — keyed by user_id:endpoint:window]
-                    MULTI
-                      INCR  rate:user123:POST/api/v1/posts:1706745600
-                      EXPIRE rate:user123:POST/api/v1/posts:1706745600 60
-                    EXEC
-                    if count > limit → return 429 + Retry-After: 47
-                    else → forward to service
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 06</span>
-    <span class="day-name">CDN, DNS, Proxies — Full Request Flow</span>
-    <span class="day-type">Networking</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>CDN Internals</h4>
-        <ul>
-          <li><strong>Edge PoPs:</strong> globally distributed cache nodes — serve content from nearest geography</li>
-          <li><strong>Cache-Control headers:</strong> <code>public, max-age=86400</code> tells CDN to cache for 1 day</li>
-          <li><strong>Pull CDN:</strong> first request goes to origin, CDN caches response. Most common.</li>
-          <li><strong>Push CDN:</strong> upload assets proactively to CDN edge nodes. Better for static files that don't change.</li>
-          <li><strong>Origin Shield:</strong> intermediate layer between CDN edges and origin — collapses cache misses from multiple PoPs into one origin request. Reduces origin load ~90%.</li>
-          <li><strong>Cache invalidation:</strong> URL versioning (<code>app.v3.js</code>) or API purge (CDN purge API on deploy).</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>DNS + Proxies</h4>
-        <ul>
-          <li><strong>DNS resolution chain:</strong> Browser cache → OS cache → Recursive resolver → Root NS → TLD NS → Authoritative NS</li>
-          <li><strong>TTL strategy:</strong> low TTL (60s) before blue-green switch, high TTL (3600s) normal operation</li>
-          <li><strong>GeoDNS:</strong> return different IP based on client region — Route53 latency-based routing</li>
-          <li><strong>Forward proxy:</strong> client-side (corp proxy, VPN) — client knows about it</li>
-          <li><strong>Reverse proxy:</strong> server-side (Nginx, Cloudflare) — client doesn't know</li>
-          <li><strong>API Gateway:</strong> reverse proxy + auth + rate limiting + routing + observability</li>
-        </ul>
-      </div>
-    </div>
-    <div class="interview-tip">
-      <h4>Full Request Flow — Memorize This</h4>
-      <p>Client → DNS lookup (~30ms first time, cached after) → CDN edge (cache HIT → ~5ms, done). If MISS → Load Balancer (~1ms) → API Gateway (auth, rate limit, ~5ms) → Service → Cache check (Redis HIT ~1ms, done). If MISS → Database query (~5–20ms) → populate cache → respond. Total p50: 50–100ms. p99 bottleneck is almost always the DB or a missing cache layer.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════ DAY 07: API DESIGN — NEW ═══════ -->
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 07</span>
-    <span class="day-name">API Design — REST, GraphQL, gRPC, WebSocket, Best Practices</span>
-    <span class="day-type">API Design</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-
-    <div class="grid2">
-      <div class="info-block">
-        <h4>REST — Principles & Best Practices</h4>
-        <ul>
-          <li><strong>Resource-based URLs:</strong> nouns not verbs — <code>/users/42/orders</code> not <code>/getUserOrders</code></li>
-          <li><strong>HTTP verbs:</strong> GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE (remove)</li>
-          <li><strong>Status codes:</strong> 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauth, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable, 429 Too Many, 500 Server Error</li>
-          <li><strong>Idempotency:</strong> GET/PUT/DELETE are idempotent. POST is not. Use idempotency keys for POST payments.</li>
-          <li><strong>HATEOAS:</strong> responses include links to related actions — reduces client coupling</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>GraphQL vs REST vs gRPC</h4>
-        <ul>
-          <li><strong>REST:</strong> simple, cacheable, universal client support. Overfetch/underfetch problem.</li>
-          <li><strong>GraphQL:</strong> client specifies exact fields needed — eliminates over/under-fetch. Single endpoint. Complex queries, no HTTP caching by default. Best for: frontend-heavy apps, mobile (save bandwidth), multiple clients with different data needs.</li>
-          <li><strong>gRPC:</strong> binary protocol (Protobuf), strongly typed, bidirectional streaming, HTTP/2. 5-10x faster than REST/JSON. Best for: internal microservice-to-microservice, streaming data, polyglot services.</li>
-          <li><strong>WebSocket:</strong> persistent full-duplex. Use when server must push to client in real time.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="sys-diagram">
-<span>REST API Design — URL Structure</span>
-GET    /api/v1/users              → list users (paginated)
-POST   /api/v1/users              → create user
-GET    /api/v1/users/{id}         → get user by ID
-PATCH  /api/v1/users/{id}         → partial update
-DELETE /api/v1/users/{id}         → delete user
-GET    /api/v1/users/{id}/orders  → get user's orders (nested resource)
-POST   /api/v1/orders             → create order
-GET    /api/v1/orders?status=pending&limit=20&cursor=abc123  → filtered + paginated
-
-<span>Pagination strategies:</span>
-Offset: ?page=2&limit=20       → simple but inconsistent on inserts/deletes
-Cursor: ?cursor=eyJpZCI6NDJ9   → stable, works with real-time data changes
-Keyset: ?after_id=42&limit=20  → fast for indexed columns, no skip
-    </div>
-
-    <div class="grid2">
-      <div class="info-block">
-        <h4>API Versioning Strategies</h4>
-        <ul>
-          <li><strong>URL versioning:</strong> <code>/api/v1/users</code> — most visible, easy to route. Industry default.</li>
-          <li><strong>Header versioning:</strong> <code>Accept: application/vnd.api+json;version=2</code> — cleaner URLs, harder to test in browser</li>
-          <li><strong>Query param:</strong> <code>/api/users?version=2</code> — simple but pollutes query space</li>
-          <li>Never break existing clients — add fields, never remove/rename</li>
-          <li>Deprecation: return <code>Sunset</code> header with deprecation date</li>
-          <li>Maintain N-1 versions minimum. Remove after migration period.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Idempotency & Safety</h4>
-        <ul>
-          <li><strong>Idempotency key:</strong> client sends unique key with POST request (UUID)</li>
-          <li>Server caches response keyed by idempotency key for 24h</li>
-          <li>On retry: return cached response — no duplicate charge/order</li>
-          <li>Stripe, PayPal, Braintree all use this pattern for payments</li>
-          <li>Key header: <code>Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000</code></li>
-          <li>Store key → response in Redis with TTL. Check before processing.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="grid2">
-      <div class="info-block">
-        <h4>API Authentication & Authorization</h4>
-        <ul>
-          <li><strong>API Key:</strong> simple, server-side secret. No expiry mechanism. Best for server-to-server.</li>
-          <li><strong>JWT (Bearer token):</strong> stateless, self-contained claims. Verify signature without DB call. Short expiry (15min) + refresh token (7 days).</li>
-          <li><strong>OAuth 2.0:</strong> delegated authorization. User grants app access to their data on another service. Authorization Code flow for web, PKCE for mobile/SPA.</li>
-          <li><strong>mTLS:</strong> mutual TLS — both client and server present certificates. For internal service-to-service in zero-trust networks.</li>
-          <li><strong>HMAC signatures:</strong> sign request body with shared secret — webhooks, S3 presigned URLs.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>API Error Design</h4>
-        <ul>
-          <li>Return structured errors — not just HTTP status code</li>
-          <li>Include: error code (machine-readable), message (human), details array, request_id for tracing</li>
-          <li>Never expose stack traces or internal DB errors to clients</li>
-          <li>Use RFC 7807 Problem Details standard for REST APIs</li>
-          <li>Consistent envelope: <code>{"error":{"code":"RATE_LIMITED","message":"...","retry_after":47}}</code></li>
-          <li>Distinguish client errors (4xx) from server errors (5xx) — client errors are caller's fault</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="sys-diagram">
-<span>gRPC Service Definition (Protobuf):</span>
-syntax = "proto3";
-
-service UserService {
-  rpc GetUser(GetUserRequest) returns (User);                      // unary
-  rpc ListUsers(ListUsersRequest) returns (stream User);           // server streaming
-  rpc CreateUsers(stream CreateUserRequest) returns (BatchResult); // client streaming
-  rpc Chat(stream ChatMessage) returns (stream ChatMessage);       // bidirectional
-}
-
-message User {
-  string id = 1;
-  string name = 2;
-  string email = 3;
-  google.protobuf.Timestamp created_at = 4;
-}
-<span>// gRPC: HTTP/2 + Protobuf = 5-10x faster than REST/JSON
-// Auto-generates client/server code in Go, Java, Python, Rust, etc.
-// Use for: internal microservices. REST for: public APIs.</span>
-    </div>
-
-    <div class="tradeoff-box">
-      <h4>API Design Decision Framework</h4>
-      <p><strong>Public API or 3rd party developers?</strong> → REST. Universally understood, easy to test with curl, HTTP caching works naturally.<br>
-      <strong>Mobile app with bandwidth concerns?</strong> → GraphQL. Client specifies exactly what fields it needs — no over-fetching.<br>
-      <strong>Internal microservices, high throughput?</strong> → gRPC. Binary protocol, streaming support, strongly typed contracts catch breaking changes at compile time.<br>
-      <strong>Real-time bidirectional?</strong> → WebSocket (full-duplex persistent) or SSE (server-push only, simpler).<br>
-      <strong>Multiple frontend clients (web, mobile, IoT) with different data needs?</strong> → GraphQL with a BFF (Backend for Frontend) layer.</p>
-    </div>
-
-    <div class="interview-tip">
-      <h4>API Design Interview Tips</h4>
-      <p>Always define the API before drawing the architecture. Walk through: (1) What are the key resources? (2) What operations does each resource support? (3) What are the access patterns — who calls what, how often? (4) What are the consistency requirements for each endpoint? Showing API-first thinking is a strong signal — it means you think about contracts and client usability, not just internal implementation.</p>
-    </div>
-  </div>
-</div>
-
-<div class="checkpoint-card">
-  <h3>🎯 Week 1 Checkpoint</h3>
-  <ul>
-    <li>Draw the full request flow (Client → CDN → LB → Gateway → Service → Cache → DB) from memory with latency at each hop</li>
-    <li>Design a REST API for a ride-booking app — define 5 endpoints with correct verbs, status codes, and pagination</li>
-    <li>Explain when you'd choose gRPC over REST and vice versa</li>
-    <li>Design a distributed rate limiter for 50K RPS — which algorithm and why?</li>
-    <li>Given a payment system, which CAP trade-off do you make and why?</li>
-  </ul>
-</div>
-
-<!-- ═══════════════════════ WEEK 2 ═══════════════════════ -->
-<div class="week-header" id="week2">
-  <span class="week-num">WEEK 02</span>
-  <span class="week-title">Storage Deep Dives — SQL, NoSQL, Sharding, Replication</span>
-  <span class="week-theme">DATA LAYER</span>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 08</span>
-    <span class="day-name">SQL vs NoSQL — Decision Framework</span>
-    <span class="day-type">Storage</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>SQL Strengths</h4>
-        <ul>
-          <li>ACID transactions — critical for financial systems, inventory, reservations</li>
-          <li>Complex joins and aggregations across normalized data</li>
-          <li>Schema enforcement = data integrity at DB level</li>
-          <li>Mature tooling: EXPLAIN plans, index advisors, migrations</li>
-          <li>Strong consistency by default</li>
-          <li>Best for: payments, e-commerce orders, user accounts, ERP, anything relational</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>NoSQL Categories</h4>
-        <ul>
-          <li><strong>Key-Value (Redis, DynamoDB):</strong> O(1) get/set, simple access patterns, no joins. Best for: sessions, cache, counters.</li>
-          <li><strong>Document (MongoDB, Firestore):</strong> flexible schema, nested JSON. Best for: catalogs, CMS, user profiles.</li>
-          <li><strong>Wide-Column (Cassandra, HBase):</strong> write-optimized LSM tree, massive scale, tunable consistency. Best for: time-series, IoT, audit logs.</li>
-          <li><strong>Graph (Neo4j, Amazon Neptune):</strong> relationship traversal. Best for: social networks, fraud detection, recommendations.</li>
-          <li><strong>Search (Elasticsearch, OpenSearch):</strong> inverted index, full-text + faceted search.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Decision Framework — Never "I'd use MongoDB because it's flexible"</h4>
-      <p>Ask: (1) Do I need multi-entity ACID transactions? → PostgreSQL. (2) Do I need complex multi-table joins? → SQL. (3) Is write throughput &gt; 50K/s with simple access patterns? → Cassandra/DynamoDB. (4) Flexible schema, document-centric reads, no complex joins? → MongoDB. (5) Cache or session? → Redis. (6) Full-text search? → Elasticsearch alongside primary DB. (7) Graph traversal? → Neo4j. The key signal: which queries will this DB serve, and can it serve them efficiently?</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 09</span>
-    <span class="day-name">Database Internals — B-Tree, LSM Tree, MVCC, WAL</span>
-    <span class="day-type">Internals</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>B-Tree (PostgreSQL, MySQL)</h4>
-        <ul>
-          <li>Self-balancing tree, O(log n) reads and writes</li>
-          <li>Pages: typically 8KB, tuned for disk block size</li>
-          <li>Good for mixed read/write workloads</li>
-          <li>Random writes cause write amplification (update internal nodes)</li>
-          <li>In-place updates — good for read-heavy workloads</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>LSM Tree (Cassandra, RocksDB, LevelDB)</h4>
-        <ul>
-          <li>Write to in-memory MemTable first — O(1) sequential write</li>
-          <li>MemTable flushed to immutable SSTable on disk when full</li>
-          <li>Compaction merges SSTables — removes tombstones, sorts keys</li>
-          <li>Bloom filter per SSTable: skip SSTables that don't contain key</li>
-          <li>O(1) writes, O(log n) reads. Better for write-heavy workloads.</li>
-          <li>Write amplification during compaction. Read amplification without bloom filter.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="info-block" style="margin-top:.75rem;">
-      <h4>MVCC + WAL — How PostgreSQL Works</h4>
-      <p style="margin-bottom:.5rem;"><strong>MVCC (Multi-Version Concurrency Control):</strong> each write creates a new row version with a transaction timestamp. Readers see a snapshot at their transaction start time — no blocking. Old versions cleaned up by VACUUM. Enables non-blocking reads alongside concurrent writes.</p>
-      <p><strong>WAL (Write-Ahead Log):</strong> every change is written to the WAL log before it's applied to data pages. On crash: replay WAL to recover. Also enables streaming replication — ship WAL segments to replicas. PostgreSQL logical replication: replays WAL as SQL changes, enabling cross-version replication and CDC (Debezium).</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 10</span>
-    <span class="day-name">Sharding — Strategies, Hotspot Prevention, Consistent Hashing</span>
-    <span class="day-type">Scalability</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Sharding Strategies</h4>
-        <ul>
-          <li><strong>Hash sharding:</strong> hash(key) % N → shard. Uniform distribution, no range queries across shards.</li>
-          <li><strong>Range sharding:</strong> shard by key range (A-M, N-Z). Range queries efficient. Hotspot risk if data is skewed.</li>
-          <li><strong>Directory sharding:</strong> lookup table maps key → shard. Most flexible, single point of failure.</li>
-          <li><strong>Geo sharding:</strong> shard by region/country. Data locality, GDPR compliance.</li>
-          <li><strong>Consistent hashing:</strong> hash ring — adding/removing nodes minimizes key movement. Used by DynamoDB, Cassandra.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Consistent Hashing Deep Dive</h4>
-        <ul>
-          <li>Place nodes on hash ring (0 to 2³²)</li>
-          <li>Key → hash → find nearest node clockwise on ring</li>
-          <li>Add node: only neighbors' keys move (≈ k/n keys)</li>
-          <li>Remove node: only that node's keys move to next node</li>
-          <li><strong>Virtual nodes (vnodes):</strong> each physical node = 100-200 points on ring → better, even distribution even with heterogeneous hardware</li>
-          <li>Used by: DynamoDB, Cassandra, Redis Cluster, CDN cache routing</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Shard Key Selection — The Most Critical Decision</h4>
-      <p>Bad shard key = hotspots = one shard does all work while others are idle. For social network: user_id hash works for regular users but celebrities cause hot shards. Solution: celebrity detection + separate handling (fan-out on read for celebrities). For time-series: time-based shard key causes write hotspot on current time shard. Solution: composite key (time + device_id). Rule: choose a key with high cardinality AND even distribution across your access patterns. Avoid sequential keys (auto-increment IDs) — they create monotonic hotspots.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 11</span>
-    <span class="day-name">Replication — Sync vs Async, Leader Election, Quorums</span>
-    <span class="day-type">Availability</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Replication Models</h4>
-        <ul>
-          <li><strong>Single-leader:</strong> all writes to primary, replicated to read replicas. Simple. Primary is write bottleneck.</li>
-          <li><strong>Multi-leader:</strong> writes accepted at multiple nodes. Conflict resolution required. Useful for multi-datacenter active-active.</li>
-          <li><strong>Leaderless (Dynamo-style):</strong> any node accepts writes. Quorum-based consistency.</li>
-          <li><strong>Sync replication:</strong> write confirmed only after replica ACKs. Durable but adds latency.</li>
-          <li><strong>Async replication:</strong> write confirmed immediately, replica catches up. Low latency but possible data loss on primary crash.</li>
-          <li><strong>Semi-sync:</strong> at least one replica must ACK. Balance between durability and latency. MySQL default.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Quorum Reads/Writes</h4>
-        <ul>
-          <li>n = total replicas, w = write quorum, r = read quorum</li>
-          <li><strong>Strong consistency:</strong> w + r &gt; n (overlap guarantees you read the latest write)</li>
-          <li>Typical: n=3, w=2, r=2 — tolerates 1 failure, strongly consistent</li>
-          <li>Write-heavy: w=1, r=3 (fast writes, consistent reads)</li>
-          <li>Read-heavy: w=3, r=1 (durable writes, fast reads)</li>
-          <li>Availability-first: w=1, r=1 (AP system — eventual consistency)</li>
-          <li>Cassandra: tunable per query — LOCAL_QUORUM for multi-DC consistency</li>
-        </ul>
-      </div>
-    </div>
-    <div class="interview-tip">
-      <h4>Leader Election — How etcd/ZooKeeper Handle It</h4>
-      <p>Raft consensus: nodes time out waiting for heartbeat → become candidate → request votes → win majority → become leader. Election timeout is randomized (150–300ms) to prevent split votes. Fencing tokens prevent split-brain: new leader issues higher token; storage layer rejects writes with lower token. PostgreSQL failover (Patroni): uses etcd/Consul for leader election, switches DNS/VIP to new primary. Zero-downtime failover in ~30s.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 12–13</span>
-    <span class="day-name">Indexing Deep Dive + Query Optimization</span>
-    <span class="day-type">Performance</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Index Types</h4>
-        <ul>
-          <li><strong>B-Tree (default):</strong> equality + range queries. Works with LIKE 'prefix%'.</li>
-          <li><strong>Hash:</strong> equality only — slightly faster for exact match, no range support</li>
-          <li><strong>Composite:</strong> (col_a, col_b, col_c). Leftmost-prefix rule: must include leading columns in query to use index.</li>
-          <li><strong>Covering index:</strong> query fully served from index without table fetch (index includes all selected columns)</li>
-          <li><strong>Partial index:</strong> index on subset of rows. <code>WHERE active = true</code> — smaller, faster for frequent filtered queries.</li>
-          <li><strong>Full-text:</strong> inverted index with TF-IDF ranking. Use Elasticsearch for serious full-text search.</li>
-          <li><strong>GIN / GiST:</strong> PostgreSQL indexes for arrays, JSONB, full-text, geometric types.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Query Optimization Signals</h4>
-        <ul>
-          <li>EXPLAIN ANALYZE: look for Seq Scan on large tables → missing index</li>
-          <li>Index selectivity: high cardinality columns make better indexes (email &gt; gender)</li>
-          <li>N+1 query problem: 1 query for list + N queries for each item. Fix with JOIN or batch load.</li>
-          <li>Connection pooling: PgBouncer in transaction mode — 10K app connections → 100 real DB connections</li>
-          <li>Read replicas for analytics/reporting — separate from OLTP primary</li>
-          <li>Avoid SELECT * — select only needed columns (reduces I/O, enables covering indexes)</li>
-          <li>Pagination: use keyset pagination (<code>WHERE id &gt; last_id</code>) not OFFSET for large tables</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="checkpoint-card">
-  <h3>🎯 Week 2 Checkpoint</h3>
-  <ul>
-    <li>When would you choose LSM tree over B-Tree? Articulate write amplification trade-off.</li>
-    <li>Design a sharding strategy for a payment system with high-value accounts — what's your shard key and why?</li>
-    <li>Explain MVCC and why it enables non-blocking reads without SELECT FOR SHARE locks</li>
-    <li>w=2, r=2, n=3 — is this strongly consistent? What about w=1, r=1, n=3?</li>
-    <li>What's the N+1 problem? Show the fix with a query example.</li>
-  </ul>
-</div>
-
-<!-- ═══════════════════════ WEEK 3 ═══════════════════════ -->
-<div class="week-header" id="week3">
-  <span class="week-num">WEEK 03</span>
-  <span class="week-title">Messaging, Event-Driven Architecture, Real-Time Systems</span>
-  <span class="week-theme">EVENT-DRIVEN</span>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 15</span>
-    <span class="day-name">Kafka Internals — Partitions, Offsets, Consumer Groups, EOS</span>
-    <span class="day-type">Messaging</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Kafka Architecture</h4>
-        <ul>
-          <li>Topic → Partitions (ordered, immutable append-only log)</li>
-          <li>Offset: per-partition monotonic counter. Consumer tracks its position.</li>
-          <li>Consumer Group: each partition consumed by exactly one consumer in the group</li>
-          <li>Replication factor: ISR (In-Sync Replicas) — leader + N replicas</li>
-          <li>Leader election via KRaft (Kafka Raft — replaces ZooKeeper since Kafka 3.3)</li>
-          <li>Retention: time-based (7 days default) or size-based</li>
-          <li>Log compaction: keep only latest value per key — good for state stores</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Performance Tuning Knobs</h4>
-        <ul>
-          <li>Partition count: parallelism ceiling for consumers — can't have more consumers than partitions</li>
-          <li>acks=0: fire and forget (fastest, data loss). acks=1: leader ack. acks=all: all ISR ack (slowest, most durable).</li>
-          <li>linger.ms + batch.size: batch small messages — increases throughput, adds latency</li>
-          <li>compression.type: lz4 (speed) or zstd (ratio). Apply at producer level.</li>
-          <li>max.poll.interval.ms: if consumer doesn't poll in time → rebalance triggered</li>
-          <li>Partition key: determines which partition a message lands on — use user_id for ordering per user</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Exactly-Once Semantics (EOS)</h4>
-      <p>Kafka guarantees: at-least-once by default (consumer may process duplicate on crash). For exactly-once: (1) Idempotent producer: enable.idempotence=true — sequence numbers deduplicate retries at broker. (2) Transactional API: atomic produce to multiple topics + consumer offset commit in one transaction. In practice: idempotent consumers (dedup on DB side using unique constraint on idempotency key) are simpler and more resilient than Kafka EOS transactions.</p>
-    </div>
-    <div class="interview-tip">
-      <h4>Ordering Nuance</h4>
-      <p>Kafka guarantees ordering per partition only — not across partitions. For strict ordering of all events for a user: partition by user_id → all events for that user land in same partition in order. Cross-user ordering is not guaranteed. For globally ordered events (rare): use a single partition (loses parallelism) or use application-level sequence numbers.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 16</span>
-    <span class="day-name">Distributed Transactions — 2PC, Saga, Outbox Pattern</span>
-    <span class="day-type">Consistency</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>2-Phase Commit (2PC)</h4>
-        <ul>
-          <li>Coordinator: send PREPARE → all participants vote YES/NO</li>
-          <li>If all YES → send COMMIT to all. If any NO → send ABORT.</li>
-          <li>Blocking protocol: if coordinator crashes after PREPARE, participants are stuck (holding locks)</li>
-          <li>Used in distributed SQL (Spanner uses 2PC + Paxos). Avoid in microservices — too much coupling.</li>
-          <li>3-Phase Commit (3PC) adds pre-commit phase to reduce blocking — rarely used in practice</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Saga Pattern</h4>
-        <ul>
-          <li>Break distributed transaction into sequence of local transactions</li>
-          <li>Each step publishes an event that triggers the next service</li>
-          <li>On failure: compensating transactions undo previous steps in reverse order</li>
-          <li><strong>Choreography:</strong> services react to events autonomously — no central coordinator. Simple, but harder to track overall state.</li>
-          <li><strong>Orchestration:</strong> central saga orchestrator sends commands to each service. Easier to monitor and debug. Coupling to orchestrator.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Outbox Pattern — The Production-Grade Dual-Write Fix</h4>
-      <p><strong>Problem:</strong> write to DB and publish to Kafka — if Kafka publish fails after DB commit, event is lost. If you roll back on Kafka failure, you lose the DB write. This is the dual-write problem.<br><strong>Solution — Outbox pattern:</strong> write to DB + Outbox table in same transaction (atomic). Debezium watches the WAL for Outbox table inserts and publishes to Kafka. Atomicity guaranteed by DB transaction. Eventual delivery guaranteed by CDC. This is the correct production approach for any service that writes to DB AND publishes events.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 17</span>
-    <span class="day-name">Real-Time Systems — WebSockets, SSE, Long Polling at Scale</span>
-    <span class="day-type">Real-Time</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Protocol Comparison</h4>
-        <ul>
-          <li><strong>Long Polling:</strong> client sends request → server holds until event or timeout → client immediately re-requests. Latency = server hold time. High connection overhead. Use only for legacy clients.</li>
-          <li><strong>SSE (Server-Sent Events):</strong> persistent HTTP connection, server streams events to client. One-way (server → client only). HTTP/1.1 compatible. Good for: live feeds, notifications, progress bars.</li>
-          <li><strong>WebSocket:</strong> full-duplex persistent TCP connection. Both sides can send at any time. Best for: chat, collaborative editing, gaming, live dashboards. Uses HTTP Upgrade handshake.</li>
-          <li><strong>WebTransport (QUIC):</strong> emerging standard. Datagrams + streams over HTTP/3. Better for real-time gaming, video conferencing.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>WebSocket at Scale</h4>
-        <ul>
-          <li>Go handles 100K+ concurrent WS connections per server with goroutines</li>
-          <li>Connection server is stateful — can't naively load balance (sticky sessions needed at WS tier)</li>
-          <li>Pub-sub backend: connection servers subscribe to Redis Pub-Sub or Kafka topics</li>
-          <li>Fan-out: message → Redis Pub-Sub → all connection servers for recipient's room/channel → push to client</li>
-          <li>Presence tracking: heartbeat every 15s → Redis key with 30s TTL. Key expiry = user offline.</li>
-          <li>Reconnect: client tracks last received sequence number → reconnect with offset → server replays missed messages</li>
-        </ul>
-      </div>
-    </div>
-    <div class="sys-diagram">
-<span>WebSocket Fan-Out Architecture:</span>
-Client A ←→ [WS Server 1] ←→ [Redis Pub-Sub: room:123]
-Client B ←→ [WS Server 2] ←→ [Redis Pub-Sub: room:123]
-Client C ←→ [WS Server 1] ←→ [Redis Pub-Sub: room:123]
-
-Message from A → WS Server 1 → publish to Redis topic "room:123"
-Redis Pub-Sub → fan out to all WS servers subscribed to "room:123"
-WS Server 1 → push to Client C. WS Server 2 → push to Client B.
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 18–19</span>
-    <span class="day-name">Observability — Metrics, Logs, Traces (The Three Pillars)</span>
-    <span class="day-type">Production</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Metrics (Prometheus + Grafana)</h4>
-        <ul>
-          <li><strong>RED method:</strong> Rate (requests/sec), Errors (error rate %), Duration (latency p50/p99)</li>
-          <li><strong>USE method:</strong> Utilization, Saturation, Errors — for infrastructure resources</li>
-          <li><strong>Histogram:</strong> p50, p90, p99 latency. Never use averages — they hide outliers.</li>
-          <li><strong>Cardinality trap:</strong> avoid high-cardinality labels (user_id, request_id) — explodes Prometheus memory</li>
-          <li>SLI/SLO/SLA: SLI=measure (p99 latency), SLO=target (p99 &lt; 200ms 99.9% of time), SLA=contractual guarantee</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Distributed Tracing (Jaeger, Tempo)</h4>
-        <ul>
-          <li><strong>Trace:</strong> tree of spans across services for one request</li>
-          <li><strong>Span:</strong> single operation with start/end time, service name, tags</li>
-          <li>Propagate: W3C TraceContext header (<code>traceparent</code>) across service calls</li>
-          <li>Sampling: head-based (random %) vs tail-based (on error/slow). Tail-based catches all slow/error requests.</li>
-          <li>OpenTelemetry: vendor-neutral instrumentation standard. Collect once, export to Jaeger/Tempo/Datadog.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="info-block" style="margin-top:.75rem;">
-      <h4>Structured Logging Best Practices</h4>
-      <p style="font-size:.82rem;color:var(--muted);">Always log JSON in production. Include: timestamp, level, service, trace_id, span_id, user_id (when applicable), message, and relevant context fields. Never log PII (emails, passwords, payment cards). Use log levels correctly: DEBUG (dev only), INFO (normal ops), WARN (unexpected but handled), ERROR (needs attention), FATAL (crash). Centralize with ELK (Elasticsearch + Logstash + Kibana) or Loki + Grafana. Correlate logs with traces via trace_id for end-to-end debugging.</p>
-    </div>
-  </div>
-</div>
-
-<div class="checkpoint-card">
-  <h3>🎯 Week 3 Checkpoint</h3>
-  <ul>
-    <li>Explain the Outbox pattern to a junior engineer — why is it needed and how does it work?</li>
-    <li>When does Kafka guarantee ordering? When does it not?</li>
-    <li>Design a presence system for a chat app with 10M concurrent users — connection tracking, heartbeat, fan-out</li>
-    <li>Saga choreography vs orchestration — what are the debugging trade-offs?</li>
-    <li>What's the difference between p50 and p99 latency? Why does p99 matter more for user experience?</li>
-  </ul>
-</div>
-
-<div class="checkpoint-card" style="background:rgba(255,95,64,0.04);border-color:rgba(255,95,64,0.2);">
-  <h3 style="color:var(--accent2);">Before Week 4 — How To Read Any Full System Design</h3>
-  <ul>
-    <li><strong>Step 1:</strong> identify the user action. "Send message", "watch video", "request ride", "open feed".</li>
-    <li><strong>Step 2:</strong> draw the write path first. This is usually where durability, ordering, and fan-out decisions live.</li>
-    <li><strong>Step 3:</strong> draw the read path separately. Reads often use different stores, caches, or denormalized views.</li>
-    <li><strong>Step 4:</strong> find the state owner. For each entity, say which component is the source of truth.</li>
-    <li><strong>Step 5:</strong> ask what is synchronous vs asynchronous. This reveals latency and coupling trade-offs.</li>
-    <li><strong>Step 6:</strong> find the hottest key, shard, queue, or celebrity-case bottleneck.</li>
-    <li><strong>Step 7:</strong> end with failure handling: retries, dedup, replay, reconciliation, observability.</li>
-  </ul>
-</div>
-
-<!-- ═══════════════════════ WEEK 4 ═══════════════════════ -->
-<div class="week-header" id="week4">
-  <span class="week-num">WEEK 04</span>
-  <span class="week-title">Real System Designs — HLD + LLD Full Walkthroughs</span>
-  <span class="week-theme">FULL DESIGNS</span>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 22</span>
-    <span class="day-name">Design WhatsApp — Messaging at Scale</span>
-    <span class="day-type">Full HLD+LLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="sys-diagram">
-<span>HLD:</span>
-Client → [WebSocket Server Cluster] → [Message Service]
-                                              ↓
-                                 [Kafka: msg-events topic]
-                                       ↓           ↓
-                           [Delivery Service]  [Persistence Service]
-                                       ↓           ↓
-                           [Recipient WS conn]  [Cassandra: messages by chat_id + timestamp]
-
-<span>Presence:</span>  Redis SET user:{id}:online → 30s TTL, heartbeat every 15s
-<span>Push Notif:</span> if recipient offline → FCM/APNs via [Notification Service]
-<span>Media:</span>     Client uploads to S3 directly → CDN URL stored in message
-    </div>
-    <div class="grid2" style="margin-top:.75rem;">
-      <div class="info-block">
-        <h4>Key Design Decisions</h4>
-        <ul>
-          <li>Cassandra: partition by chat_id, cluster by timestamp DESC — efficient time-ordered reads per chat</li>
-          <li>Message ID: Snowflake (timestamp + server + seq) — globally unique, sortable, no coordination</li>
-          <li>E2E encryption: Signal Protocol — keys exchanged out-of-band, server stores only ciphertext</li>
-          <li>WebSocket server → stateful, use consistent hashing to route user's connections to same server</li>
-          <li>Message state machine: SENT → DELIVERED (ACK from recipient device) → READ (read receipt)</li>
-          <li>Offline delivery: store in Cassandra + push notification. On reconnect, fetch unread since last_seen_timestamp.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Group Messages — Fan-Out Strategy</h4>
-        <ul>
-          <li>Small groups (&lt;100 members): fan-out on write — write message to each member's inbox</li>
-          <li>Large groups: fan-out on read — members pull from shared group inbox on open</li>
-          <li>Bounded fan-out: limit group size (WhatsApp: 1024) to cap write amplification</li>
-          <li>Group membership: cached in Redis, backed by PostgreSQL</li>
-          <li>Delivery receipt for groups: message delivered when ALL members receive (complex)</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 23</span>
-    <span class="day-name">Design YouTube — Video Storage, Transcoding, CDN</span>
-    <span class="day-type">Full HLD+LLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="sys-diagram">
-<span>Upload Flow:</span>
-Client → [Upload Service] → S3 (raw video)
-                                 ↓
-                   [Kafka: video-uploaded topic]
-                                 ↓
-                   [Transcoding Job Queue]
-                                 ↓
-                   [Worker Farm: FFmpeg containers (auto-scale)]
-                                 ↓
-                   [S3: segments in HLS format — 360p, 720p, 1080p, 4K]
-                                 ↓
-                   [CDN: distribute segments globally]
-
-<span>View Flow:</span>
-Client → CDN (HLS manifest .m3u8) → Adaptive Bitrate: pick quality based on bandwidth
-    </div>
-    <div class="grid2" style="margin-top:.75rem;">
-      <div class="info-block">
-        <h4>Scale Numbers to Reason With</h4>
-        <ul>
-          <li>500 hours of video uploaded per minute</li>
-          <li>1 hour of video → ~5GB raw → ~1.5GB after compression across qualities</li>
-          <li>Transcoding: parallelize per video segment (5s chunks) — 1 hour video → 720 chunks → 720 parallel jobs</li>
-          <li>CDN: 95%+ of views served from edge — origin only serves cache misses</li>
-          <li>View count: approximate with Redis INCR per shard, aggregate periodically. Exact count: HyperLogLog for unique viewers.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Recommendation System (Offline ML)</h4>
-        <ul>
-          <li>Watch history + clicks → feature store → ML training pipeline (Spark)</li>
-          <li>Pre-compute recommendations per user nightly → store in Redis/DynamoDB</li>
-          <li>Real-time signals: last 10 watch actions → re-score with lightweight model</li>
-          <li>Cold start: new users get popular videos by category until enough signal</li>
-          <li>Candidate generation → ranking → filtering (already watched, policy) → serve</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 24</span>
-    <span class="day-name">Design Uber — Real-Time Location, Matching, Surge</span>
-    <span class="day-type">Full HLD+LLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Location Service</h4>
-        <ul>
-          <li>Driver sends location every 4 seconds via WebSocket</li>
-          <li>Geohash: encode lat/lng as string prefix (shorter string = larger cell)</li>
-          <li>Redis: GEOADD key lng lat driver_id. GEOSEARCH for radius queries.</li>
-          <li>Or: geohash prefix → Redis SET of driver IDs in that cell. Query neighboring cells.</li>
-          <li>Location history: write to Cassandra for trip replay and billing</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Matching Service</h4>
-        <ul>
-          <li>Rider requests → query nearby available drivers (geosearch)</li>
-          <li>Score drivers: distance + rating + vehicle type + surge zone</li>
-          <li>Dispatch to top N drivers simultaneously (first to accept wins)</li>
-          <li>Distributed lock on driver during dispatch window (Redis SET NX PX 30000)</li>
-          <li>ETA: precomputed road graph (OSRM or Google Maps Platform)</li>
-          <li>Surge pricing: supply/demand ratio per geohash cell, multiplier applied at pricing service</li>
-        </ul>
-      </div>
-    </div>
-    <div class="sys-diagram">
-<span>Ride Request Flow:</span>
-Rider app → POST /rides → [Ride Service]
-                                ↓
-                    [Location Service: find nearby drivers via Redis GEO]
-                                ↓
-                    [Matching Service: score + dispatch]
-                                ↓ (send offer to top 3 drivers)
-                    [Driver apps via WebSocket push]
-                                ↓ (first driver accepts)
-                    [Ride Service: create ride, lock driver, notify rider]
-                                ↓
-                    [Kafka: ride-accepted → ETA service, billing service]
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 25</span>
-    <span class="day-name">Design URL Shortener + Rate-Limited API Service</span>
-    <span class="day-type">HLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>URL Shortener</h4>
-        <ul>
-          <li>Short code generation: base62(auto-increment ID) — simple, unique, sortable</li>
-          <li>Alternative: MD5(url)[0:7] — collision check required, no guarantee of uniqueness</li>
-          <li>Redirect: 301 (permanent — browser caches, saves future requests) vs 302 (temporary — allows analytics tracking)</li>
-          <li>Storage: DynamoDB (short_code → long_url + metadata). 100M URLs/day → Cassandra for write throughput.</li>
-          <li>Cache hot redirects in Redis: top 10% of links → 90%+ of traffic</li>
-          <li>Analytics: log redirect events to Kafka → Spark/Flink pipeline → ClickHouse for querying</li>
-          <li>Custom domains: DNS CNAME to CDN → CDN routes to redirect service</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Redis Cluster Architecture</h4>
-        <ul>
-          <li>Hash slots: 16384 slots distributed across nodes. CRC16(key) % 16384 → slot → node.</li>
-          <li>Each master has N replicas. Failure: replica auto-promotes (Sentinel or Cluster mode).</li>
-          <li>Hot key problem: single key too popular → one slot hot. Solution: replicate hot key across shards with suffix (user:42:0, user:42:1).</li>
-          <li>CLUSTER KEYSLOT cmd: check which slot a key maps to</li>
-          <li>Cross-slot transactions: not supported — redesign if needed (use Lua scripts within same slot)</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 26</span>
-    <span class="day-name">Design Twitter/X Feed — Fan-Out Strategies</span>
-    <span class="day-type">Full HLD+LLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Fan-Out on Write (Push)</h4>
-        <ul>
-          <li>On tweet: push tweet_id to all followers' feed caches (Redis ZSET, score=timestamp)</li>
-          <li>O(followers) work at write time. Read is O(1) — just fetch pre-built feed.</li>
-          <li>Celebrity problem: user with 50M followers = 50M Redis writes per tweet</li>
-          <li>Good for: regular users (&lt;1M followers) — fast feed reads</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Fan-Out on Read (Pull)</h4>
-        <ul>
-          <li>On feed load: fetch recent tweets from all followed users, merge + sort</li>
-          <li>Heavy reads but no write amplification for celebrities</li>
-          <li>N followed users → N DB queries → merge sort → paginate. Slow for users following many accounts.</li>
-          <li>Good for: celebrities — read cost is shared across followers, not pushed to write</li>
-        </ul>
-      </div>
-    </div>
-    <div class="interview-tip">
-      <h4>Hybrid Approach — The Actual Twitter Answer</h4>
-      <p>Classify users by follower count. Regular users (&lt;1M followers): fan-out on write to Redis ZSET (score=timestamp). Celebrity users (&gt;1M): on read, merge their recent tweets with the user's pre-built feed from Redis. This is what Twitter actually did. When you mention this unprompted, it signals you understand real production trade-offs, not just textbook patterns. Also discuss: feed truncation (keep only last 800 tweets in cache), backfill on first load, and how promoted tweets are injected.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge">DAY 27–28</span>
-    <span class="day-name">LLD Deep Dives — Design Patterns + Concurrency</span>
-    <span class="day-type">LLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>LLD: Parking Lot System</h4>
-        <ul>
-          <li>Entities: ParkingLot, Level, Slot, Ticket, Vehicle (abstract), Car/Bike/Truck (concrete)</li>
-          <li><strong>Strategy pattern:</strong> PricingStrategy interface — HourlyPricing, FlatRatePricing. Swap without changing Ticket.</li>
-          <li><strong>Factory pattern:</strong> VehicleFactory.create(type) — returns correct Vehicle subclass</li>
-          <li><strong>Observer pattern:</strong> SlotAvailabilityBoard subscribes to slot state changes</li>
-          <li><strong>Concurrency:</strong> booking a slot → check availability + assign must be atomic. Use optimistic locking: slot has version field, CAS update fails if version changed.</li>
-          <li>State machine: AVAILABLE → RESERVED → OCCUPIED → AVAILABLE</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>LLD: Notification System</h4>
-        <ul>
-          <li>Entities: Notification, NotificationChannel (abstract), EmailChannel, SMSChannel, PushChannel</li>
-          <li><strong>Strategy pattern:</strong> each channel implements send(notification). Plug in new channels without changing core.</li>
-          <li><strong>Template method:</strong> BaseNotification.send() calls format() + deliver() — subclasses override format()</li>
-          <li>Queue-based delivery: write to Kafka topic per channel → consumers retry with exponential backoff</li>
-          <li>Idempotency: idempotency_key per notification → dedup on delivery side</li>
-          <li>Rate limiting per user per channel: prevent spam — max 10 emails/day per user</li>
-        </ul>
-      </div>
-    </div>
-    <div class="interview-tip">
-      <h4>LLD Interview Signal</h4>
-      <p>The gap between senior and mid-level in LLD is concurrency awareness. Don't just draw classes — say "this slot booking has a TOCTOU (time-of-check-time-of-use) race condition between the availability check and the reservation write. I'd handle this with optimistic locking — add a version field to the Slot entity. The update only succeeds if version matches what we read. On conflict, retry with fresh read." Proactively naming race conditions and their solutions is the signal interviewers are looking for.</p>
-    </div>
-  </div>
-</div>
-
-<div class="checkpoint-card" style="background:rgba(0,229,176,0.04);border-color:rgba(0,229,176,0.2);">
-  <h3 style="color:var(--accent3);">🏆 Day 29–30: Full Mock System Design Sessions</h3>
-  <ul>
-    <li><strong>Day 29:</strong> 45-min mock — Design a real-time gaming leaderboard for 10M players. Cover: storage (Redis ZSET), real-time updates, global ranking, weekly/monthly resets, top-K queries. Time yourself strictly.</li>
-    <li><strong>Day 30:</strong> 45-min mock — Design a distributed job scheduler (cron at scale). Cover: exactly-once execution guarantee, failure recovery, priority queues, worker assignment, monitoring.</li>
-    <li>Standard: HLD complete in first 10 min, deep dive on hardest component, trade-offs raised unprompted before interviewer asks</li>
-    <li>Signal: You should be driving the conversation — proposing alternatives, naming limitations, asking clarifying questions proactively. Not answering reactively.</li>
-  </ul>
-</div>
-
-<!-- ═══════════════════════ WEEK 5 — OPTIONAL ═══════════════════════ -->
-<div class="week-header" id="week5" style="margin-top:5rem;border-top:2px dashed rgba(255,95,64,0.3);padding-top:2.5rem;">
-  <span class="week-num" style="color:var(--accent2);">WEEK 05 · OPTIONAL</span>
-  <span class="week-title">AI Agent System Design — The 2025 Frontier</span>
-  <span class="week-theme" style="background:rgba(255,95,64,0.08);color:var(--accent2);border-color:rgba(255,95,64,0.3);">AI SYSTEMS</span>
-</div>
-<p style="color:var(--muted);font-size:.83rem;margin-bottom:2rem;max-width:680px;line-height:1.7;">
-  This week is <strong style="color:var(--text);">bonus / no time pressure</strong> — every concept here builds on your existing system design foundation. AI agent design is now appearing at companies building AI products. All prior weeks remain fully intact.
-</p>
-
-<div class="day-card" style="border-color:rgba(255,95,64,0.15);">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge" style="color:var(--accent2);">DAY 31</span>
-    <span class="day-name">AI Agent Patterns — ReAct, Plan-Execute, Reflection</span>
-    <span class="day-type" style="color:var(--accent2);border-color:rgba(255,95,64,0.2);">Architecture</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>ReAct Pattern (Reason + Act)</h4>
-        <ul>
-          <li>LLM alternates: Thought → Action (tool call) → Observation → repeat until done</li>
-          <li>Handles ambiguity well — can discover information dynamically</li>
-          <li>Risk: error compounds over long chains. Add max_steps hard limit.</li>
-          <li>Best for: research tasks, open-ended exploration, web navigation</li>
-          <li>Frameworks: LangGraph, LlamaIndex Agents</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Plan-and-Execute Pattern</h4>
-        <ul>
-          <li>Planner LLM: generates full step-by-step task list upfront</li>
-          <li>Executor: smaller/cheaper model runs each step one at a time</li>
-          <li>Dramatically reduces cost — expensive Planner called once</li>
-          <li>More auditable — plan is a visible, loggable artifact</li>
-          <li>Best for: financial workflows, structured data pipelines, known task shapes</li>
-          <li>Add re-planning step if a step fails unexpectedly</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>ReAct vs Plan-Execute Trade-off</h4>
-      <p>ReAct: flexible, handles unknown task shapes, discovers information dynamically. But error compounds — step 3 failure based on wrong step 1 reasoning can cascade. Plan-Execute: auditable, cost-efficient (Executor = small/cheap model), predictable — but brittle if plan is wrong at step 1. Production guideline (Anthropic): start with the simplest approach. Most production agent failures come from over-engineering, not under-engineering. Add complexity only when needed.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card" style="border-color:rgba(255,95,64,0.15);">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge" style="color:var(--accent2);">DAY 32</span>
-    <span class="day-name">Agent Components — Memory, Tools, Context Engineering</span>
-    <span class="day-type" style="color:var(--accent2);border-color:rgba(255,95,64,0.2);">Deep Dive</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Memory Architecture</h4>
-        <ul>
-          <li><strong>In-context (working):</strong> current conversation + tool results in prompt window — fast but bounded (~128K tokens)</li>
-          <li><strong>External long-term:</strong> vector DB (pgvector, Pinecone) — embed past interactions, retrieve relevant on each turn</li>
-          <li><strong>Episodic:</strong> summarize older conversation chunks → write summary back to context. Google ADK compaction approach.</li>
-          <li><strong>Semantic cache:</strong> embed user query → cosine match recent Q&A pairs → return cached if similarity &gt; threshold. Saves 30–60% LLM costs.</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Tool Design for Agents</h4>
-        <ul>
-          <li>Every tool = JSON schema: name, description, parameters, return type</li>
-          <li>Description quality matters enormously — LLM uses it to decide when and how to call</li>
-          <li>Tools must be idempotent where possible — agents retry on failure</li>
-          <li>MCP (Model Context Protocol): Anthropic's standard for plug-and-play tool integrations</li>
-          <li>Always validate + sanitize tool outputs before feeding back to LLM — prevent prompt injection from tool results</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Context Engineering — The Real Production Bottleneck</h4>
-      <p>Long-running agents exhaust their context window. Naive solution: bigger context window. Real solution: treat context as a compiled artifact. Separate durable state (DB) from per-call working context (prompt). Apply compaction: summarize old events, keep recent N turns verbatim, inject only relevant memory chunks retrieved from vector store. This is the difference between an agent that works for 3 turns and one that works for 300 turns in production.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card" style="border-color:rgba(255,95,64,0.15);">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge" style="color:var(--accent2);">DAY 33</span>
-    <span class="day-name">Multi-Agent Systems — Supervisor, Specialist Agents, Orchestration</span>
-    <span class="day-type" style="color:var(--accent2);border-color:rgba(255,95,64,0.2);">Architecture</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="sys-diagram">
-<span>Supervisor Multi-Agent Pattern:</span>
-User Request → [Supervisor Agent: classify + route task]
-                    ↓              ↓               ↓
-         [Research Agent]  [Code Agent]  [QA Agent]
-         (web search tools) (shell tools)  (test tools)
-                    ↓              ↓               ↓
-              [Results aggregated by Supervisor]
-                              ↓
-                    [Final Response to User]
-
-<span>Key:</span> Each specialist runs its own ReAct loop internally.
-Supervisor only sees the final output of each agent — not intermediate steps.
-Each agent has bounded tool access (least privilege).
-    </div>
-    <div class="tradeoff-box">
-      <h4>Single vs Multi-Agent — When to Escalate</h4>
-      <p><strong>Start single agent + many tools.</strong> Add multi-agent only when: (1) tasks are genuinely parallel and independent, (2) specialist isolation prevents error contamination between domains, (3) different agents need different tool permissions (security boundary). Don't add multi-agent for complexity's sake. Production lesson from Anthropic: "The most successful implementations consistently used simple, composable patterns rather than complex frameworks." Debugging multi-agent race conditions and message passing failures is brutal.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card" style="border-color:rgba(255,95,64,0.15);">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge" style="color:var(--accent2);">DAY 34</span>
-    <span class="day-name">Design a Production LLM Platform — AI Gateway + RAG at Scale</span>
-    <span class="day-type" style="color:var(--accent2);border-color:rgba(255,95,64,0.2);">Full HLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="sys-diagram">
-<span>LLM Platform HLD:</span>
-Client → [AI Gateway: auth, TPM rate-limit, cost tracking, model routing]
-                ↓                              ↓
-       [Semantic Cache]              [Model Router]
-       (Redis + pgvector)            ↓          ↓          ↓
-       similarity &gt; 0.95 → hit  [GPT-4o] [Claude] [Llama-70B on GPU]
-                                               ↓
-                               [Response Logger + Cost Aggregator]
-
-<span>RAG Pipeline:</span>
-Docs → [Chunker (semantic boundaries)] → [Embedder: text-embedding-3]
-     → [pgvector / Pinecone]
-Query → [Embed query] → [ANN top-20] → [Cross-encoder reranker: top-3]
-      → [Budget-aware prompt builder] → [LLM] → [Streamed response]
-    </div>
-    <div class="grid2" style="margin-top:.75rem;">
-      <div class="info-block">
-        <h4>AI Gateway Key Decisions</h4>
-        <ul>
-          <li><strong>Rate limit in tokens (TPM), not requests:</strong> one request can cost 100 or 100K tokens</li>
-          <li><strong>Model routing:</strong> classify query complexity → route simple to small/cheap model, complex to GPT-4o. 60-80% cost reduction.</li>
-          <li><strong>Semantic cache:</strong> embed prompt → cosine search → return cached if similarity &gt; 0.95. Massive savings on repeated queries.</li>
-          <li><strong>Fallback chain:</strong> primary model timeout → retry secondary → hardcoded fallback response</li>
-          <li><strong>Streaming:</strong> SSE for token-by-token output — reduces perceived latency dramatically</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>RAG Production Trade-offs</h4>
-        <ul>
-          <li><strong>Chunking:</strong> fixed-size (fast) vs semantic (better recall). Parent-child: retrieve small chunk, return larger parent for context.</li>
-          <li><strong>Hybrid search:</strong> ANN (semantic) + BM25 (keyword) combined with RRF scoring. Best precision.</li>
-          <li><strong>Reranker:</strong> cross-encoder re-scores top-20 → return top-3. Expensive but dramatically improves answer quality.</li>
-          <li><strong>Context budget:</strong> dynamically allocate tokens: system prompt + examples + retrieved chunks + answer reserve. Hard cap on chunk injection.</li>
-          <li><strong>Eval:</strong> RAGAS metrics: faithfulness, answer relevance, context recall. Run on golden dataset per deploy.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="day-card" style="border-color:rgba(255,95,64,0.15);">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge" style="color:var(--accent2);">DAY 35</span>
-    <span class="day-name">Design an AI Coding Assistant (Copilot / Claude Code Style)</span>
-    <span class="day-type" style="color:var(--accent2);border-color:rgba(255,95,64,0.2);">Full HLD+LLD</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="sys-diagram">
-<span>AI Coding Assistant — Full System:</span>
-IDE Plugin → [LSP Server] → [Context Assembler]
-                                    ↓
-    [Repo Indexer: AST-chunked embeddings → pgvector (incremental, file-watcher)]
-    [Current file + open tabs + cursor position + git diff + test results]
-                                    ↓
-                    [Retrieval: top-k relevant code chunks by semantic + BM25]
-                                    ↓
-              [Prompt builder: system + repo context + user intent — 8K token budget]
-                                    ↓
-                     [LLM Gateway → streaming response]
-                                    ↓
-               [Output Validator: AST parse, lint, run existing tests]
-                                    ↓
-                     [Streamed diff shown in IDE — user approves before apply]
-    </div>
-    <div class="tradeoff-box">
-      <h4>The Three Hard Problems</h4>
-      <p><strong>1. Context assembly:</strong> what code do you put in the prompt and how do you rank relevance? AST-based chunking preserves function/class boundaries. Retrieve by semantic similarity + recency + call-graph proximity. Budget: 8K tokens for context, 4K for completion.<br>
-      <strong>2. Latency:</strong> inline completions need &lt;200ms p50. Use smaller/cached model for inline autocomplete; larger for chat and complex refactoring. Pre-warm model for active files.<br>
-      <strong>3. Safety:</strong> LLM-generated code runs on your machine. Sandbox every tool call (file write, shell exec) in a container. Never auto-apply diffs — always require user approval. Cost cap per session: abort if token spend exceeds budget.</p>
-    </div>
-  </div>
-</div>
-
-<div class="day-card" style="border-color:rgba(255,95,64,0.15);">
-  <div class="day-header" onclick="toggle(this)">
-    <span class="day-num-badge" style="color:var(--accent2);">DAY 36</span>
-    <span class="day-name">Agent Observability, Safety & Production Checklist</span>
-    <span class="day-type" style="color:var(--accent2);border-color:rgba(255,95,64,0.2);">Production</span>
-    <span class="day-toggle">▼</span>
-  </div>
-  <div class="day-body">
-    <div class="grid2">
-      <div class="info-block">
-        <h4>Observability for Agents</h4>
-        <ul>
-          <li>Trace every tool call: span ID, tool name, input, output, latency, token cost</li>
-          <li>Agent run trace: full Thought → Action → Observation tree per run_id — stored in persistent log</li>
-          <li>Token cost per step: attribute cost to each LLM call — find expensive steps to optimize</li>
-          <li>Eval pipeline: RAGAS / custom golden dataset — run on every deploy, catch regressions</li>
-          <li>Tools: LangSmith, Langfuse, Helicone, Arize Phoenix — purpose-built for LLM tracing</li>
-        </ul>
-      </div>
-      <div class="info-block">
-        <h4>Safety Layers</h4>
-        <ul>
-          <li>Input validation: prompt injection detection, PII scrubbing before LLM</li>
-          <li>Output validation: structured output schemas (JSON Schema/Pydantic) — reject malformed</li>
-          <li>Tool permission scoping: each agent gets only tools it needs — least privilege</li>
-          <li>Sandboxed execution: code-running agents in network-isolated containers with CPU/mem limits</li>
-          <li>Human-in-the-loop gates: for irreversible actions (send email, deploy, delete data) — explicit approval required</li>
-          <li>Max iterations + cost cap: hard stop prevents runaway loops</li>
-        </ul>
-      </div>
-    </div>
-    <div class="tradeoff-box">
-      <h4>Real Production Failure Modes</h4>
-      <p>(1) <strong>Compounding hallucination:</strong> wrong tool call → wrong observation → wrong next step → cascades. Fix: validate tool output schema, add reflection on unexpected results. (2) <strong>Context poisoning / prompt injection:</strong> malicious content in RAG retrieval injects instructions. Fix: separate retrieved content from instruction sections structurally. (3) <strong>Cost explosion:</strong> agent loops without progress. Fix: max_steps + cost budget hard cap + loop detection (hash of recent states). (4) <strong>No audit trail:</strong> impossible to debug what the agent did. Fix: persistent trace log from day one — non-negotiable.</p>
-    </div>
-  </div>
-</div>
-
-<div class="checkpoint-card" style="background:rgba(255,95,64,0.04);border-color:rgba(255,95,64,0.25);margin-top:2rem;">
-  <h3 style="color:var(--accent2);">🤖 Week 5 Checkpoint — AI Agent Design</h3>
-  <ul>
-    <li><strong>Mock 1:</strong> "Design an AI research agent that browses the web and summarizes findings." Draw the ReAct loop, tool registry, memory strategy. What breaks at 100 concurrent users?</li>
-    <li><strong>Mock 2:</strong> "Design a RAG system for a 10M document legal corpus." Cover chunking strategy, hybrid search, reranking, context budget, latency SLA, eval pipeline.</li>
-    <li><strong>Mock 3:</strong> "Design GitHub Copilot." Cover AST indexing, context assembly, latency budget, sandboxed execution, cost control. Time yourself: 45 mins, drive the hard problems proactively.</li>
-    <li><strong>The signal:</strong> In every agent design, proactively raise observability, cost caps, safety guardrails, and what happens when the agent takes a wrong turn on iteration 3 of 10. Raising these unprompted is the interview signal.</li>
-  </ul>
-</div>
-
-</main>
-
-<script>
-function toggle(header) {
-  const body = header.nextElementSibling;
-  const arrow = header.querySelector('.day-toggle');
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-}
-document.querySelectorAll('.day-card:first-of-type .day-header').forEach(h => h.click());
+  const chapterTabs = document.querySelectorAll('.chapter-tab');
+  const chapterPanels = document.querySelectorAll('.chapter-panel');
+
+  chapterTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-chapter');
+
+      chapterTabs.forEach((t) => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      chapterPanels.forEach((panel) => panel.classList.remove('active'));
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      document.querySelector(`.chapter-panel[data-chapter="${target}"]`)?.classList.add('active');
+    });
+  });
+
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  tabButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const wrap = btn.closest('.tabs');
+      if (!wrap) return;
+
+      const target = btn.getAttribute('data-tab');
+      wrap.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+      wrap.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      wrap.querySelector(`.tab-panel[data-tab="${target}"]`)?.classList.add('active');
+    });
+  });
 </script>
 </body>
 </html>

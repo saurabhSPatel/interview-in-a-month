@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Pattern Atlas | EngineeringOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav">
+    <div class="site-shell">
+      <a class="back-link" href="index.html">← Platform</a>
+      <a class="brand" href="index.html">Engineering<span>OS</span></a>
+      <nav class="nav-links">
+        <a href="#index">Pattern Index</a>
+        <a href="#core">Core Patterns</a>
+        <a href="#advanced">Advanced Patterns</a>
+        <a href="#machine">Machine Coding</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-shell">
+    <section class="hero">
+      <div class="eyebrow">Algorithmic Thinking Track</div>
+      <h1>DSA Pattern Atlas <em>32 Reusable Patterns</em></h1>
+      <p>This is a self-contained learning page. Each pattern includes when to use it, recognition trigger, complexity guidance, and a compact solved-problem sketch. No external links required.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">32</div><div class="label">Patterns</div></div>
+        <div class="stat"><div class="num">120+</div><div class="label">Problem Prompts</div></div>
+        <div class="stat"><div class="num">6</div><div class="label">Machine Coding Themes</div></div>
+        <div class="stat"><div class="num">3</div><div class="label">Difficulty Levels</div></div>
+      </div>
+      <div class="note-panel">
+        This page is a self-contained DSA reference. Use the pattern index and grouped learn flow to recognize problem types, choose the right approach, and implement efficient solutions without relying on outside resources.
+      </div>
+      <div class="pattern-group">
+        <h3>Core pattern families</h3>
+        <p>Learn by grouping the problems you see: linear scans and windows, monotonic structures, binary search transforms, tree and graph traversal, dynamic programming, and state-space search. That structure helps you choose the right pattern faster.</p>
+      </div>
+    </section>
+
+    <section id="index" class="section">
+      <div class="section-head"><div class="n">01</div><h2>Pattern Index</h2></div>
+      <div class="pattern-index">
+        <a class="pattern-link" href="#p01"><div class="k">P01</div><div class="t">Two Pointers</div></a>
+        <a class="pattern-link" href="#p02"><div class="k">P02</div><div class="t">Sliding Window</div></a>
+        <a class="pattern-link" href="#p03"><div class="k">P03</div><div class="t">Prefix Sum</div></a>
+        <a class="pattern-link" href="#p04"><div class="k">P04</div><div class="t">Binary Search</div></a>
+        <a class="pattern-link" href="#p05"><div class="k">P05</div><div class="t">Binary Search on Answer</div></a>
+        <a class="pattern-link" href="#p06"><div class="k">P06</div><div class="t">Hashing + Frequency</div></a>
+        <a class="pattern-link" href="#p07"><div class="k">P07</div><div class="t">Fast/Slow Pointers</div></a>
+        <a class="pattern-link" href="#p08"><div class="k">P08</div><div class="t">Stack Basics</div></a>
+        <a class="pattern-link" href="#p09"><div class="k">P09</div><div class="t">Monotonic Stack</div></a>
+        <a class="pattern-link" href="#p10"><div class="k">P10</div><div class="t">Deque / Monotonic Queue</div></a>
+        <a class="pattern-link" href="#p11"><div class="k">P11</div><div class="t">Heap / Priority Queue</div></a>
+        <a class="pattern-link" href="#p12"><div class="k">P12</div><div class="t">Intervals + Sorting</div></a>
+        <a class="pattern-link" href="#p13"><div class="k">P13</div><div class="t">Sweep Line</div></a>
+        <a class="pattern-link" href="#p14"><div class="k">P14</div><div class="t">Difference Array</div></a>
+        <a class="pattern-link" href="#p15"><div class="k">P15</div><div class="t">Linked List Ops</div></a>
+        <a class="pattern-link" href="#p16"><div class="k">P16</div><div class="t">Recursion + Backtracking</div></a>
+        <a class="pattern-link" href="#p17"><div class="k">P17</div><div class="t">Tree DFS</div></a>
+        <a class="pattern-link" href="#p18"><div class="k">P18</div><div class="t">Tree BFS</div></a>
+        <a class="pattern-link" href="#p19"><div class="k">P19</div><div class="t">Trie</div></a>
+        <a class="pattern-link" href="#p20"><div class="k">P20</div><div class="t">Bitmask + Bit Tricks</div></a>
+        <a class="pattern-link" href="#p21"><div class="k">P21</div><div class="t">Union-Find</div></a>
+        <a class="pattern-link" href="#p22"><div class="k">P22</div><div class="t">Graph DFS/BFS</div></a>
+        <a class="pattern-link" href="#p23"><div class="k">P23</div><div class="t">Topological Sort</div></a>
+        <a class="pattern-link" href="#p24"><div class="k">P24</div><div class="t">Shortest Path</div></a>
+        <a class="pattern-link" href="#p25"><div class="k">P25</div><div class="t">MST</div></a>
+        <a class="pattern-link" href="#p26"><div class="k">P26</div><div class="t">Greedy</div></a>
+        <a class="pattern-link" href="#p27"><div class="k">P27</div><div class="t">DP 1D/2D</div></a>
+        <a class="pattern-link" href="#p28"><div class="k">P28</div><div class="t">State-Machine DP</div></a>
+        <a class="pattern-link" href="#p29"><div class="k">P29</div><div class="t">Interval DP + Memo Search</div></a>
+        <a class="pattern-link" href="#p30"><div class="k">P30</div><div class="t">Segment / Fenwick Tree</div></a>
+        <a class="pattern-link" href="#p31"><div class="k">P31</div><div class="t">Rolling Hash / String Fingerprint</div></a>
+        <a class="pattern-link" href="#p32"><div class="k">P32</div><div class="t">State Graph Search</div></a>
+      </div>
+    </section>
+
+    <section id="core" class="section">
+      <div class="section-head"><div class="n">02</div><h2>Core Patterns</h2></div>
+
+      <div class="panel" id="p01"><h3>P01 Two Pointers</h3><p><span class="difficulty easy">Easy</span>Use when searching ordered pairs or narrowing from both ends.</p><ul><li>Trigger: sorted array and pair/triple constraints.</li><li>Time: O(n) after sorting.</li><li>Prompt: find pair with target sum, max area, 3-number zero sum.</li></ul><h4>Why Use This Pattern</h4><p>Two pointers allow efficient scanning of arrays with constraints on pairs or subarrays, avoiding brute-force O(n²) checks by moving pointers based on conditions.</p><h4>Implementation Sketch</h4><pre><code>def two_sum(nums, target):
+    nums.sort()
+    left, right = 0, len(nums) - 1
+    while left < right:
+        current_sum = nums[left] + nums[right]
+        if current_sum == target:
+            return [left, right]
+        elif current_sum < target:
+            left += 1
+        else:
+            right -= 1
+    return []</code></pre><h4>Example Problem</h4><p><strong>Problem:</strong> Given a sorted array, find two numbers that sum to a target.<br><strong>Solution:</strong> Use two pointers from start and end, move based on sum comparison.</p><h4>Common Pitfalls</h4><ul><li>Forget to sort if array isn't sorted.</li><li>Off-by-one errors in pointer movement.</li></ul></div>
+      <div class="panel" id="p02"><h3>P02 Sliding Window</h3><p><span class="difficulty medium">Medium</span>Use for contiguous subarray/substring constraints.</p><ul><li>Trigger: longest/shortest/maximum under condition.</li><li>Time: usually O(n).</li><li>Prompt: minimum window, at-most-k distinct, max sum length-k.</li></ul></div>
+      <div class="panel" id="p03"><h3>P03 Prefix Sum</h3><p><span class="difficulty easy">Easy</span>Turn many range queries into O(1) lookups.</p><ul><li>Trigger: repeated sum in [l..r].</li><li>Time: build O(n), query O(1).</li><li>Prompt: subarray sum equals k, equilibrium index, range updates.</li></ul></div>
+      <div class="panel" id="p04"><h3>P04 Binary Search</h3><p><span class="difficulty easy">Easy</span>Search over sorted data or monotonic predicate.</p><ul><li>Trigger: first/last occurrence, lower/upper bound.</li><li>Time: O(log n).</li><li>Prompt: rotated array search, insertion point, peak element.</li></ul></div>
+      <div class="panel" id="p05"><h3>P05 Binary Search on Answer</h3><p><span class="difficulty medium">Medium</span>Search the feasible value space, not array index.</p><ul><li>Trigger: minimum capacity/time/rate with monotonic checker.</li><li>Time: O(n log range).</li><li>Prompt: ship packages, eating speed, split array largest sum.</li></ul></div>
+      <div class="panel" id="p06"><h3>P06 Hashing + Frequency Maps</h3><p><span class="difficulty easy">Easy</span>Count occurrences and detect duplicates/constraints fast.</p><ul><li>Trigger: frequency, distinct count, anagrams.</li><li>Time: O(n), space O(n).</li><li>Prompt: top-k frequent, valid anagram, happy number variants.</li></ul></div>
+      <div class="panel" id="p07"><h3>P07 Fast/Slow Pointers</h3><p><span class="difficulty medium">Medium</span>Find cycles/midpoint without extra memory.</p><ul><li>Trigger: linked-list cycle or runner strategy.</li><li>Time: O(n), space O(1).</li><li>Prompt: cycle start, middle node, duplicate number mapping.</li></ul></div>
+      <div class="panel" id="p08"><h3>P08 Stack Basics</h3><p><span class="difficulty easy">Easy</span>LIFO for matching, undoing, and expression processing.</p><ul><li>Trigger: parentheses matching, expression eval.</li><li>Time: O(n).</li><li>Prompt: valid parentheses, simplify path, decode string.</li></ul></div>
+      <div class="panel" id="p09"><h3>P09 Monotonic Stack</h3><p><span class="difficulty medium">Medium</span>Track nearest greater/smaller efficiently.</p><ul><li>Trigger: nearest boundary and contribution counting.</li><li>Time: O(n) amortized.</li><li>Prompt: histogram area, daily temperatures, subarray minimum sum.</li></ul></div>
+      <div class="panel" id="p10"><h3>P10 Deque / Monotonic Queue</h3><p><span class="difficulty medium">Medium</span>Maintain window min/max in O(1) amortized updates.</p><ul><li>Trigger: sliding window extrema or shortest feasible window with prefix sums.</li><li>Prompt: sliding max, shortest subarray with sum >= k.</li></ul></div>
+      <div class="panel" id="p11"><h3>P11 Heap / Priority Queue</h3><p><span class="difficulty medium">Medium</span>Pick next best candidate repeatedly.</p><ul><li>Trigger: top-k, merge sorted streams, shortest path frontier.</li><li>Prompt: kth largest, merge k lists, task scheduler.</li></ul></div>
+      <div class="panel" id="p12"><h3>P12 Intervals + Sorting</h3><p><span class="difficulty medium">Medium</span>Sort by start/end then merge/select.</p><ul><li>Trigger: overlap, coverage, schedule conflict.</li><li>Prompt: merge intervals, insert interval, non-overlap erase.</li></ul></div>
+      <div class="panel" id="p13"><h3>P13 Sweep Line</h3><p><span class="difficulty hard">Hard</span>Transform interval problem into event processing.</p><ul><li>Trigger: active set over time/position.</li><li>Prompt: skyline, calendar overlap count, resource timeline.</li></ul></div>
+      <div class="panel" id="p14"><h3>P14 Difference Array</h3><p><span class="difficulty medium">Medium</span>Do many range updates cheaply.</p><ul><li>Trigger: add value to many [l..r] updates.</li><li>Prompt: car pooling capacity, range addition, flight booking counters.</li></ul></div>
+      <div class="panel" id="p15"><h3>P15 Linked List Operations</h3><p><span class="difficulty medium">Medium</span>Pointer choreography with sentinel nodes.</p><ul><li>Trigger: reverse, merge, reorder, partition.</li><li>Prompt: reverse k-group, merge two sorted lists, LRU primitives.</li></ul></div>
+      <div class="panel" id="p16"><h3>P16 Recursion + Backtracking</h3><p><span class="difficulty medium">Medium</span>Enumerate choices and prune invalid branches.</p><ul><li>Trigger: combinations, permutations, board-search.</li><li>Prompt: N-Queens, subset sum, word search.</li></ul></div>
+      <div class="panel" id="p17"><h3>P17 Tree DFS</h3><p><span class="difficulty medium">Medium</span>Post-order for DP, pre-order for path generation.</p><ul><li>Trigger: subtree result aggregation.</li><li>Prompt: max path sum, diameter, lowest common ancestor.</li></ul></div>
+      <div class="panel" id="p18"><h3>P18 Tree BFS</h3><p><span class="difficulty easy">Easy</span>Level-wise traversal for shortest edges and layer features.</p><ul><li>Trigger: level order, nearest target by hops.</li><li>Prompt: right-side view, min depth, zigzag order.</li></ul></div>
+      <div class="panel" id="p19"><h3>P19 Trie</h3><p><span class="difficulty medium">Medium</span>Prefix search and incremental dictionary operations.</p><ul><li>Trigger: autocomplete, prefix match, word dictionary.</li><li>Prompt: insert/search prefix, wildcard word search, suggestion engine.</li></ul></div>
+      <div class="panel" id="p20"><h3>P20 Bitmask + Bit Tricks</h3><p><span class="difficulty medium">Medium</span>Compact state representation and fast toggles.</p><ul><li>Trigger: subsets, parity, small-state DP.</li><li>Prompt: subset generation, single number, maximum xor.</li></ul></div>
+    </section>
+
+    <section id="advanced" class="section">
+      <div class="section-head"><div class="n">03</div><h2>Advanced Patterns</h2></div>
+      <div class="panel" id="p21"><h3>P21 Union-Find</h3><p><span class="difficulty medium">Medium</span>Dynamic connectivity with path compression and union by size.</p><ul><li>Trigger: merging groups and checking connectedness quickly.</li><li>Prompt: redundant edge, network connectivity operations, account merging.</li></ul></div>
+      <div class="panel" id="p22"><h3>P22 Graph DFS/BFS</h3><p><span class="difficulty medium">Medium</span>Traversal over adjacency lists for reachability and components.</p><ul><li>Trigger: islands/components/path existence.</li><li>Prompt: number of islands, clone graph, bipartite check.</li></ul></div>
+      <div class="panel" id="p23"><h3>P23 Topological Sort</h3><p><span class="difficulty medium">Medium</span>DAG ordering via indegree or DFS states.</p><ul><li>Trigger: prerequisite dependency resolution.</li><li>Prompt: course schedule, alien dictionary, safe states.</li></ul></div>
+      <div class="panel" id="p24"><h3>P24 Shortest Path</h3><p><span class="difficulty hard">Hard</span>Dijkstra for non-negative edges, Bellman-Ford for negative edge allowances.</p><ul><li>Trigger: minimum cost/path under weighted edges.</li><li>Prompt: network delay, cheapest flights with constraints, min effort path.</li></ul></div>
+      <div class="panel" id="p25"><h3>P25 Minimum Spanning Tree</h3><p><span class="difficulty hard">Hard</span>Kruskal/Prim for minimum total connection cost.</p><ul><li>Trigger: connect all nodes with least total weight.</li><li>Prompt: connect cities cheaply, min cost to connect points.</li></ul></div>
+      <div class="panel" id="p26"><h3>P26 Greedy + Proofs</h3><p><span class="difficulty medium">Medium</span>Pick local best only when exchange argument holds.</p><ul><li>Trigger: interval selection, task ordering, minimum operations.</li><li>Prompt: jump game, partition labels, gas station loop.</li></ul></div>
+      <div class="panel" id="p27"><h3>P27 DP 1D/2D</h3><p><span class="difficulty medium">Medium</span>Overlapping subproblems + optimal substructure.</p><ul><li>Trigger: count ways, min cost, longest relation in sequence/grid.</li><li>Prompt: coin change, LCS, edit distance, house robber.</li></ul></div>
+      <div class="panel" id="p28"><h3>P28 State-Machine DP</h3><p><span class="difficulty hard">Hard</span>Model finite states and transitions over steps/time.</p><ul><li>Trigger: stock with cooldown/fee/transactions, process lifecycle constraints.</li><li>Prompt: buy/sell stock variants, holding/not-holding transitions.</li></ul></div>
+      <div class="panel" id="p29"><h3>P29 Interval DP + Memo Search</h3><p><span class="difficulty hard">Hard</span>Optimize over subranges with split-point transitions.</p><ul><li>Trigger: "choose k split in range i..j".</li><li>Prompt: burst balloons, strange printer, matrix chain-style optimization.</li></ul></div>
+      <div class="panel" id="p30"><h3>P30 Segment Tree / Fenwick Tree</h3><p><span class="difficulty hard">Hard</span>Support range queries and updates over an array with logarithmic performance.</p><ul><li>Trigger: multiple range sum/min/max queries with updates.</li><li>Prompt: range sum query, range min query, dynamic order statistics.</li></ul></div>
+      <div class="panel" id="p31"><h3>P31 Rolling Hash / String Fingerprint</h3><p><span class="difficulty hard">Hard</span>Compare substrings quickly and detect repeated patterns without brute-force checks.</p><ul><li>Trigger: substring matching, palindrome checks, duplicate subarrays.</li><li>Prompt: string search, repeated substring, longest duplicate substring.</li></ul></div>
+      <div class="panel" id="p32"><h3>P32 State Graph Search</h3><p><span class="difficulty hard">Hard</span>Model complex problem states as graph nodes and search with BFS/DFS/A* over the state space.</p><ul><li>Trigger: puzzles, shortest sequence of transformations, dynamic move systems.</li><li>Prompt: sliding puzzle, word ladder, minimum operations to reach target state.</li></ul></div>
+    </section>
+
+    <section id="machine" class="section">
+      <div class="section-head"><div class="n">04</div><h2>Machine Coding Add-on</h2></div>
+      <div class="split">
+        <div class="panel">
+          <h3>Core Prompt Families</h3>
+          <ul>
+            <li>Rate limiter (token bucket, sliding window)</li>
+            <li>Thread-safe cache with TTL and eviction</li>
+            <li>Worker pool with backpressure and graceful shutdown</li>
+            <li>Pub-sub event bus and retry queue</li>
+            <li>Leaderboard with top-k + rank window</li>
+            <li>Mini key-value store with expiration</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Evaluation Rubric</h3>
+          <ul>
+            <li>API clarity and extensibility</li>
+            <li>Concurrency safety and lock strategy</li>
+            <li>Failure handling and idempotency</li>
+            <li>Testability and separation of concerns</li>
+            <li>Complexity awareness and bottleneck identification</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flow">Machine Coding Flow
+1) Clarify API contracts and constraints
+2) Define structs/interfaces and invariants
+3) Implement happy path
+4) Add concurrency safety + failure behavior
+5) Add test hooks and extension points</div>
+      <div class="footer">DSA Atlas is designed to be self-contained for fast, repeated revision.</div>
+    </section>
+  </main>
+</body>
+</html>

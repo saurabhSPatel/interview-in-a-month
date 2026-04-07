@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design Pattern Atlas | EngineeringOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav">
+    <div class="site-shell">
+      <a class="back-link" href="index.html">← Platform</a>
+      <a class="brand" href="index.html">Engineering<span>OS</span></a>
+      <nav class="nav-links">
+        <a href="#flows">Fast Flows</a>
+        <a href="#patterns">12 Patterns</a>
+        <a href="#playbook">Interview Playbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-shell">
+    <section class="hero">
+      <div class="eyebrow">System Architecture Track</div>
+      <h1>System Design Pattern Atlas <em>12 Deep Patterns</em></h1>
+      <p>This redesigned page is optimized for fast understanding: one flow-first mental model, one decision layer, and one deep pattern library you can reuse across most design problems.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">12</div><div class="label">Primary Patterns</div></div>
+        <div class="stat"><div class="num">7</div><div class="label">Universal Flows</div></div>
+        <div class="stat"><div class="num">45m</div><div class="label">Interview Structure</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">Trade-off Oriented</div></div>
+      </div>
+    </section>
+
+    <section id="flows" class="section">
+      <div class="section-head"><div class="n">01</div><h2>Fast Understanding Flows</h2></div>
+      <div class="split">
+        <div class="panel">
+          <h3>The 7 Flows</h3>
+          <ul>
+            <li>Read flow: edge -> cache -> source of truth</li>
+            <li>Write flow: validate -> commit -> invalidate -> fan-out</li>
+            <li>Realtime flow: connect -> publish -> deliver -> replay</li>
+            <li>Search flow: write -> CDC -> index -> rank -> return</li>
+            <li>Media flow: ingest -> process -> store -> distribute</li>
+            <li>Analytics flow: event -> stream/batch -> aggregate -> serve</li>
+            <li>Failure flow: timeout -> retry -> circuit -> fallback</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>10 Questions For Any Design</h3>
+          <ul>
+            <li>What is the exact write path?</li>
+            <li>What is the exact read path?</li>
+            <li>What is source of truth per entity?</li>
+            <li>Where can data be stale?</li>
+            <li>Where can duplicates happen?</li>
+            <li>What is synchronous vs asynchronous?</li>
+            <li>Where will backpressure appear first?</li>
+            <li>How is partitioning done?</li>
+            <li>What is retry + idempotency strategy?</li>
+            <li>What metrics define health?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flow">Universal Request Model
+Client -> Edge/CDN -> Gateway -> Service -> Cache -> Database
+                                  |            |
+                                  |            +-> miss fallback
+                                  +-> Queue/Event Log -> async consumers
+
+Failure Envelope
+timeout -> bounded retry + jitter -> circuit breaker -> degrade gracefully</div>
+    </section>
+
+    <section id="patterns" class="section">
+      <div class="section-head"><div class="n">02</div><h2>12 Reusable System Design Patterns</h2></div>
+
+      <div class="panel"><h3>Pattern 01: Read-Heavy Caching</h3><h4>When to use</h4><p>Read volume is high and data can tolerate bounded staleness.</p><h4>Core design</h4><ul><li>Cache-aside with bounded TTL</li><li>Read replicas for source-of-truth DB</li><li>Hot-key mitigation with replication/local cache</li></ul><h4>Example scenario</h4><ul><li>Product catalog pages, user profile reads, or feed retrieval where read latency matters more than strict freshness.</li></ul><h4>Decision Flow</h4><ul><li>Check read/write ratio (>10:1 favors caching)</li><li>Assess staleness tolerance (seconds/minutes ok?)</li><li>Evaluate cache hit rate potential</li><li>Choose cache type: in-memory (Redis), CDN, or local</li></ul><h4>Trade-off Analysis</h4><ul><li>Pros: Dramatic latency reduction, reduced DB load</li><li>Cons: Cache invalidation complexity, potential stale data issues</li><li>Mitigations: TTL, write-through, cache-aside patterns</li></ul><h4>Trade-off</h4><p>Latency drops dramatically but invalidation complexity rises.</p></div>
+      <div class="panel"><h3>Pattern 02: Write-Heavy Log First</h3><h4>When to use</h4><p>Ingestion is bursty and downstream processing can be async.</p><h4>Core design</h4><ul><li>Write-ahead event log (Kafka/Pulsar)</li><li>Consumer groups for fan-out workloads</li><li>Dead-letter + replay controls</li></ul><h4>Trade-off</h4><p>Higher eventual consistency complexity, much better durability and burst absorption.</p></div>
+      <div class="panel"><h3>Pattern 03: Realtime Push</h3><h4>When to use</h4><p>Client state must update instantly (chat/presence/live ops).</p><h4>Core design</h4><ul><li>WebSocket/SSE gateway tier</li><li>Pub-sub backbone</li><li>Reconnect + offset replay</li></ul><h4>Trade-off</h4><p>Connection state management becomes primary operational challenge.</p></div>
+      <div class="panel"><h3>Pattern 04: Global Distribution</h3><h4>When to use</h4><p>Worldwide latency and edge delivery matter.</p><h4>Core design</h4><ul><li>CDN + GeoDNS</li><li>Regional compute, local cache</li><li>Data residency strategy per region</li></ul><h4>Trade-off</h4><p>Lower user latency, higher consistency and governance complexity.</p></div>
+      <div class="panel"><h3>Pattern 05: Distributed Transaction via Saga</h3><h4>When to use</h4><p>Business operation spans multiple services and DBs.</p><h4>Core design</h4><ul><li>Local commit per service</li><li>Compensating actions for rollback</li><li>Orchestrated or choreographed coordination</li></ul><h4>Trade-off</h4><p>No global lock, but compensation correctness is critical.</p></div>
+      <div class="panel"><h3>Pattern 06: Outbox + CDC</h3><h4>When to use</h4><p>Need reliable DB commit plus event publication without dual-write loss.</p><h4>Core design</h4><ul><li>Write domain row + outbox row in same transaction</li><li>CDC publishes outbox rows to event bus</li><li>Idempotent consumers downstream</li></ul><h4>Trade-off</h4><p>More moving parts, removes silent event loss class.</p></div>
+      <div class="panel"><h3>Pattern 07: Search-Optimized Replica</h3><h4>When to use</h4><p>Need full-text and faceted retrieval beyond OLTP capability.</p><h4>Core design</h4><ul><li>Primary DB for truth</li><li>Search index sync via CDC/events</li><li>Query ranking + filtering pipeline</li></ul><h4>Trade-off</h4><p>Search freshness lags source slightly; retrieval speed improves massively.</p></div>
+      <div class="panel"><h3>Pattern 08: Geo-Spatial Matching</h3><h4>When to use</h4><p>Proximity and dynamic locations drive matching.</p><h4>Core design</h4><ul><li>Geohash/quadkey indexing</li><li>Nearby candidate fetch + score ranking</li><li>Frequent location updates with bounded staleness</li></ul><h4>Trade-off</h4><p>Accuracy and freshness compete with update throughput.</p></div>
+      <div class="panel"><h3>Pattern 09: API Protection Layer</h3><h4>When to use</h4><p>Public APIs or shared gateways need abuse resistance.</p><h4>Core design</h4><ul><li>Token bucket/sliding window limits</li><li>Tier-aware quotas</li><li>Circuit protection and graceful backpressure</li></ul><h4>Trade-off</h4><p>Higher reliability but extra state and policy surface.</p></div>
+      <div class="panel"><h3>Pattern 10: Ordered ID Generation</h3><h4>When to use</h4><p>Need scalable sortable unique IDs without central bottleneck.</p><h4>Core design</h4><ul><li>Snowflake/UUIDv7 identifiers</li><li>Shard-aware uniqueness</li><li>Clock skew handling</li></ul><h4>Trade-off</h4><p>Simplifies partitioning and pagination; requires clock discipline.</p></div>
+      <div class="panel"><h3>Pattern 11: CQRS Read/Write Split</h3><h4>When to use</h4><p>Read model and write model have very different shapes.</p><h4>Core design</h4><ul><li>Command model for writes</li><li>Projection pipeline for read views</li><li>Event-driven denormalized stores</li></ul><h4>Trade-off</h4><p>Read speed and flexibility improve, consistency becomes eventual by design.</p></div>
+      <div class="panel"><h3>Pattern 12: Resilience Envelope</h3><h4>When to use</h4><p>Any distributed call graph with partial failure risk.</p><h4>Core design</h4><ul><li>Timeout budget per hop</li><li>Retry policy with jitter and cap</li><li>Circuit breaker + bulkhead isolation</li></ul><h4>Trade-off</h4><p>Protects system under failure but requires careful calibration to avoid retry storms.</p></div>
+    </section>
+
+    <section id="playbook" class="section">
+      <div class="section-head"><div class="n">03</div><h2>45-Minute Interview Playbook</h2></div>
+      <div class="split">
+        <div class="panel">
+          <h3>Execution Timeline</h3>
+          <ul>
+            <li>0-5 min: scope and constraints</li>
+            <li>5-10 min: rough sizing and bottleneck hypothesis</li>
+            <li>10-20 min: HLD with APIs and core data model</li>
+            <li>20-35 min: deep dive hardest component</li>
+            <li>35-45 min: failure modes, trade-offs, evolution path</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Staff-Level Signals</h3>
+          <ul>
+            <li>Name assumptions early and validate them</li>
+            <li>Separate correctness from latency concerns</li>
+            <li>State consistency boundaries explicitly</li>
+            <li>Mention idempotency before retries</li>
+            <li>Close with observability and rollout strategy</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flow">Closeout Template
+1) Primary bottleneck: _____
+2) First scaling move: _____
+3) Consistency contract: _____
+4) Failure behavior: _____
+5) Observable SLO metric: _____</div>
+      <div class="footer">System Design Atlas is flow-first for fast recall and strong decision quality.</div>
+    </section>
+  </main>
+</body>
+</html>

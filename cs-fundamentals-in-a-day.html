@@ -157,6 +157,22 @@ O(n) total / n appends = <span class="hl2">O(1) amortized</span>
 <div class="section">
   <h2><span class="sn">02</span>Distributed Consensus — Raft & Paxos</h2>
   <div class="deep">
+    <h3>The CAP Theorem & PACELC</h3>
+    <p>To study distributed systems without external resources, you must understand the fundamental constraints:</p>
+    <ul>
+      <li><strong>CAP Theorem:</strong> In the presence of a <strong>P</strong>artition (network failure), you must choose between <strong>C</strong>onsistency (all nodes see same data) or <strong>A</strong>vailability (every request gets a response).</li>
+      <li><strong>PACELC:</strong> An extension of CAP. <strong>P</strong>artition ? (<strong>A</strong> vs <strong>C</strong>) : <strong>E</strong>lse (<strong>L</strong>atency vs <strong>C</strong>onsistency).</li>
+    </ul>
+    <div class="cb"><span class="hl">// Tradeoff Examples</span>
+<span class="hl2">Raft (etcd/CockroachDB):</span> Chooses Consistency over Availability (CP).
+If a majority can't be reached, the system stops accepting writes to prevent data corruption.
+
+<span class="hl2">DynamoDB/Cassandra:</span> Chooses Availability over Consistency (AP).
+Allows writes during a partition, resolving conflicts later using Vector Clocks or LWW.</div>
+    <p><strong>Linearizability:</strong> This is the "Gold Standard" of consistency. It makes the distributed system appear as if there is only one copy of the data, and all operations are atomic.</p>
+  </div>
+
+  <div class="deep">
     <h3>Raft Consensus Algorithm</h3>
     <p>Raft is designed for understandability. It decomposes consensus into: <strong>leader election</strong>, <strong>log replication</strong>, and <strong>safety</strong>. Used by etcd (Kubernetes state store), CockroachDB, Consul, and TiKV.</p>
     <div class="cb"><span class="hl">// LEADER ELECTION</span>
@@ -237,6 +253,15 @@ Term number ensures no split-brain: higher term = newer leader</div>
   <h2><span class="sn">03</span>Networking — TCP, TLS, HTTP</h2>
   <div class="deep">
     <h3>TCP Deep Dive</h3>
+    <p>To study networking as a self-contained book, you must master <strong>Congestion Control</strong>. This is why internet speed fluctuates.</p>
+    <ul>
+      <li><strong>Slow Start:</strong> Start with a small window. Double size every RTT. (Exponential growth).</li>
+      <li><strong>Congestion Avoidance:</strong> After reaching a threshold, increase window by 1 per RTT. (Linear growth).</li>
+      <li><strong>Multiplicative Decrease:</strong> On packet loss, cut the window by half immediately.</li>
+    </ul>
+    <div class="note">
+      <strong>Senior Insight:</strong> This is <em>AIMD</em> (Additive Increase, Multiplicative Decrease). It is designed to be "polite"—it tries to grab bandwidth quickly but backs off aggressively to avoid crashing the network.
+    </div>
     <div class="cb"><span class="hl">// TCP 3-Way Handshake (1.5 RTT before data)</span>
 Client → Server: SYN (seq=x)
 Server → Client: SYN-ACK (seq=y, ack=x+1)

@@ -166,6 +166,33 @@
 <div class="section">
   <h2><span class="sn">03</span>Must-Know Deep Dives</h2>
   <div class="deep">
+    <h3>🔥 The Cost of Storage: Amplification</h3>
+    <p>Every database choice is a trade-off between three types of <strong>Amplification</strong>. Mastering this allows you to choose storage without external docs:</p>
+    <ul>
+      <li><strong>Write Amplification:</strong> Ratio of data written to disk vs data requested by the app. High in B-Trees due to page splits.</li>
+      <li><strong>Read Amplification:</strong> Number of disk reads required to find one record. High in LSM Trees due to scanning multiple levels.</li>
+      <li><strong>Space Amplification:</strong> Ratio of physical disk space used vs logical data size. High in MVCC systems due to dead row versions.</li>
+    </ul>
+    <div class="cb"><span class="hl">// Trade-off Summary</span>
+<span class="hl2">B-Tree (Postgres):</span> Low Read Amp, High Write Amp.
+<span class="hl2">LSM Tree (Cassandra):</span> Low Write Amp, High Read Amp.</div>
+  </div>
+
+  <div class="deep">
+    <h3>🔥 Index-Only Scans & The Visibility Map</h3>
+    <p>If you have an index on <code>(user_id, status)</code>, and run <code>SELECT status FROM users WHERE user_id = 1</code>, Postgres can often return the data <em>without touching the table at all</em>. This is an <strong>Index-Only Scan</strong>.</p>
+    <ul>
+      <li><strong>The Catch:</strong> Postgres needs to know if the version in the index is actually "visible" to your transaction (MVCC).</li>
+      <li><strong>The Solution:</strong> The <em>Visibility Map</em>. It tracks which pages contain only committed, non-dead tuples.</li>
+      <li><strong>Performance Tip:</strong> If your Index-Only Scans are slow, it's usually because the table needs a <code>VACUUM</code> to update the visibility map.</li>
+    </ul>
+    <div class="code-block"><span class="hl">-- Check if your index is truly effective</span>
+EXPLAIN (ANALYZE, BUFFERS) SELECT ...
+-- Look for "Heap Fetches: 0". 
+-- If Heap Fetches > 0, the visibility map is out of date.</div>
+  </div>
+
+  <div class="deep">
     <h3>🔥 Query Planning — What EXPLAIN ANALYZE Tells You</h3>
     <div class="code-block"><span class="hl">-- Seq Scan: reading entire table. Index missing or not selective enough.</span>
 EXPLAIN ANALYZE SELECT * FROM transactions WHERE user_id = 123;

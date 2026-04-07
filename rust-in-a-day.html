@@ -307,6 +307,19 @@ while let Some(top) = stack.pop() { println!("{}", top); }</div>
     <span class="mod-tag">CORE CONCEPT</span>
   </div>
 
+  <div class="deep">
+    <h3>The Mental Model: Memory as a Book</h3>
+    <p>To understand Ownership without external docs, imagine memory as a library book:</p>
+    <ul>
+      <li><strong>Ownership:</strong> You own the book. You decide when it's thrown away. You can give it to someone else (Move), but then you don't have it anymore.</li>
+      <li><strong>Immutable Borrowing (&T):</strong> You let many people read the book at once. No one can write in it or change the pages while others are reading.</li>
+      <li><strong>Mutable Borrowing (&mut T):</strong> You let exactly one person have the book to edit it. While they are editing, no one else can even look at it.</li>
+    </ul>
+    <div class="note">
+      <strong>Why this matters:</strong> This prevents <em>Data Races</em>. A data race happens when two threads access the same memory at the same time, and at least one is writing. Rust makes this impossible to compile.
+    </div>
+  </div>
+
   <div class="note"><strong>Key insight:</strong> Ownership is Rust's solution to memory safety without a garbage collector. All checks happen at compile time — zero runtime cost. Once you internalize the 3 rules, everything else follows.</div>
 
   <div class="deep">
@@ -1175,7 +1188,27 @@ where
 
   <div class="deep">
     <h3>How async/await Works</h3>
-    <div class="cb"><span class="hl">// async fn returns an impl Future — a lazy state machine
+    <div class="cb"><span class="hl">// The Mental Model: The State Machine Transformation</span>
+<span class="cm">// When you write:</span>
+async fn example() {
+    let a = step_one().await;
+    let b = step_two(a).await;
+}
+
+<span class="cm">// The compiler transforms it into an internal Enum:</span>
+enum ExampleFuture {
+    State0,                          <span class="hl2">// Initial state</span>
+    State1 { a: ResultType },        <span class="hl2">// Waiting for step_one</span>
+    State2 { b: FinalType },         <span class="hl2">// Waiting for step_two</span>
+    Done,                            <span class="hl2">// Completed</span>
+}
+
+<span class="hl">// Why this matters:</span>
+<span class="cm">// 1. No stack frames: Unlike OS threads, futures don't need a massive stack.
+// 2. Cooperative: The task gives up control (yields) at every .await point.
+// 3. Lazy: If you don't poll the state machine, it never moves.</span>
+
+<span class="hl">// async fn returns an impl Future — a lazy state machine
 // Nothing runs until the future is polled by an executor</span>
 
 async fn fetch_data(url: &str) -&gt; Result&lt;String, reqwest::Error&gt; {
