@@ -9,42 +9,41 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="top-nav">
-    <div class="site-shell">
-      <a class="back-link" href="index.html">← Platform</a>
-      <a class="brand" href="index.html">Engineering<span>OS</span></a>
-      <nav class="nav-links">
-        <a href="#problem">The Problem</a>
-        <a href="#strategies">Strategies</a>
-        <a href="#tools">Tools & Techniques</a>
-        <a href="#ide-integration">IDE Integration</a>
-        <a href="#best-practices">Best Practices</a>
-      </nav>
+  <nav class="site-nav">
+    <a href="index.html" class="nav-logo">
+      Engineering<span>OS</span>
+    </a>
+    <div class="nav-links">
+      <a href="#problem" class="nav-link">The Problem</a>
+      <a href="#strategies" class="nav-link">Strategies</a>
+      <a href="#tools" class="nav-link">Tools & Techniques</a>
+      <a href="#ide-integration" class="nav-link">IDE Integration</a>
+      <a href="#best-practices" class="nav-link">Best Practices</a>
     </div>
-  </header>
+  </nav>
 
-  <main class="site-shell">
-    <section class="hero">
+  <main class="content-wrap">
+    <section class="page-hero">
       <div class="eyebrow">Team Collaboration</div>
       <h1>Team LLM Context Management <em>Synchronized Intelligence</em></h1>
       <p>This deep dive explores how to maintain shared context when multiple team members use different LLMs. Learn strategies for creating common knowledge bases, synchronization protocols, and collaborative AI workflows that keep everyone aligned.</p>
-      <div class="stats">
-        <div class="stat"><div class="num">5</div><div class="label">Core Strategies</div></div>
-        <div class="stat"><div class="num">18</div><div class="label">Implementation Patterns</div></div>
-        <div class="num">15</div><div class="label">Tool Categories</div></div>
-        <div class="stat"><div class="num">100%</div><div class="label">Team Synchronization</div></div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-val">5</div><div class="stat-key">Core Strategies</div></div>
+        <div class="stat"><div class="stat-val">18</div><div class="stat-key">Implementation Patterns</div></div>
+        <div class="stat"><div class="stat-val">15</div><div class="stat-key">Tool Categories</div></div>
+        <div class="stat"><div class="stat-val">100%</div><div class="stat-key">Team Synchronization</div></div>
       </div>
-      <div class="note-panel">
+      <div class="callout-note">
         This page provides a comprehensive framework for managing LLM contexts across teams, ensuring consistent understanding and decision-making regardless of which AI tools individual members prefer. Learn how to implement the .agent folder approach for seamless multi-LLM synchronization.
       </div>
     </section>
 
-    <section id="problem" class="section">
-      <div class="section-head">
-        <div class="n">01</div>
+    <section id="problem" class="content-section">
+      <div class="section-header">
+        <div class="section-num">01</div>
         <h2>The Context Fragmentation Problem</h2>
       </div>
-      <div class="panel">
+      <div class="pattern-card">
         <h3>Why Context Matters in Team AI Usage</h3>
         <p>When team members use different LLMs (GPT-4, Claude, Gemini, etc.), each conversation becomes siloed. The same project context gets fragmented across multiple AI instances, leading to:</p>
         <ul>
@@ -55,7 +54,7 @@
           <li>Difficulty in maintaining project continuity</li>
         </ul>
       </div>
-      <div class="panel">
+      <div class="pattern-card">
         <h3>The Hidden Cost of Context Loss</h3>
         <p>Each time a team member switches LLMs or starts a new conversation, they lose access to previous context. This creates a "context tax" where significant time is spent rebuilding understanding rather than making progress.</p>
         <h4>Common Scenarios:</h4>
@@ -68,106 +67,123 @@
       </div>
     </section>
 
-    <section id="strategies" class="section">
-      <div class="section-head">
-        <div class="n">02</div>
+    <section id="strategies" class="content-section">
+      <div class="section-header">
+        <div class="section-num">02</div>
         <h2>5 Core Strategies for Context Synchronization</h2>
       </div>
 
-      <div class="panel">
-        <h3>Strategy 1: Centralized Knowledge Base</h3>
-        <h4>Concept</h4>
-        <p>Maintain a shared, LLM-agnostic knowledge repository that all team members contribute to and reference.</p>
-        <h4>Implementation</h4>
-        <ul>
-          <li>Use tools like Notion, Confluence, or GitHub Wiki for structured documentation</li>
-          <li>Create standardized templates for project context, decisions, and learnings</li>
-          <li>Establish regular "context sync" meetings where team members update the knowledge base</li>
-          <li>Implement version control for documentation changes</li>
-        </ul>
-        <h4>LLM Integration</h4>
-        <ul>
-          <li>Train all team LLMs on the same knowledge base content</li>
-          <li>Use API integrations to pull from the central repository</li>
-          <li>Create custom GPTs or Claude assistants that reference the shared knowledge</li>
-        </ul>
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="showTab(event, 'strategy-1')">Strategy 1: Knowledge Base</button>
+        <button class="tab-btn" onclick="showTab(event, 'strategy-2')">Strategy 2: Context Bridging</button>
+        <button class="tab-btn" onclick="showTab(event, 'strategy-3')">Strategy 3: Multi-LLM Orchestration</button>
+        <button class="tab-btn" onclick="showTab(event, 'strategy-4')">Strategy 4: AI Workspaces</button>
+        <button class="tab-btn" onclick="showTab(event, 'strategy-5')">Strategy 5: Standardization</button>
       </div>
 
-      <div class="panel">
-        <h3>Strategy 2: Context Bridging Protocols</h3>
-        <h4>Concept</h4>
-        <p>Establish standardized ways to transfer context between different LLMs and team members.</p>
-        <h4>Implementation</h4>
-        <ul>
-          <li>Create context summary templates that work across all LLMs</li>
-          <li>Use shared prompt libraries with consistent formatting</li>
-          <li>Implement context handoff checklists for project transitions</li>
-          <li>Develop standardized vocabulary and terminology guides</li>
-        </ul>
-        <h4>Practical Example</h4>
-        <p>When switching from Claude to GPT-4 for a task, use this protocol:</p>
-        <pre><code>Context Transfer Template:
+      <div id="strategy-1" class="tab-panel active">
+        <div class="pattern-card">
+          <h3>Strategy 1: Centralized Knowledge Base</h3>
+          <h4>Concept</h4>
+          <p>Maintain a shared, LLM-agnostic knowledge repository that all team members contribute to and reference.</p>
+          <h4>Implementation</h4>
+          <ul>
+            <li>Use tools like Notion, Confluence, or GitHub Wiki for structured documentation</li>
+            <li>Create standardized templates for project context, decisions, and learnings</li>
+            <li>Establish regular "context sync" meetings where team members update the knowledge base</li>
+            <li>Implement version control for documentation changes</li>
+          </ul>
+          <h4>LLM Integration</h4>
+          <ul>
+            <li>Train all team LLMs on the same knowledge base content</li>
+            <li>Use API integrations to pull from the central repository</li>
+            <li>Create custom GPTs or Claude assistants that reference the shared knowledge</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="strategy-2" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Strategy 2: Context Bridging Protocols</h3>
+          <h4>Concept</h4>
+          <p>Establish standardized ways to transfer context between different LLMs and team members.</p>
+          <h4>Implementation</h4>
+          <ul>
+            <li>Create context summary templates that work across all LLMs</li>
+            <li>Use shared prompt libraries with consistent formatting</li>
+            <li>Implement context handoff checklists for project transitions</li>
+            <li>Develop standardized vocabulary and terminology guides</li>
+          </ul>
+          <h4>Practical Example</h4>
+          <p>When switching from Claude to GPT-4 for a task, use this protocol:</p>
+          <pre><code>Context Transfer Template:
 Project: [Name]
 Current State: [Summary]
 Key Decisions: [List]
 Open Questions: [List]
 Next Steps: [List]
 Shared Resources: [Links]</code></pre>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3>Strategy 3: Multi-LLM Orchestration</h3>
-        <h4>Concept</h4>
-        <p>Use orchestration tools that can coordinate multiple LLMs while maintaining shared context.</p>
-        <h4>Implementation</h4>
-        <ul>
-          <li>Implement workflow automation tools like Zapier or Make for cross-LLM communication</li>
-          <li>Use platforms like SmythOS or LangChain for multi-model workflows</li>
-          <li>Create custom APIs that normalize responses from different LLMs</li>
-          <li>Develop shared context stores (databases, vector stores) that all LLMs can access</li>
-        </ul>
-        <h4>Advanced Pattern</h4>
-        <p>Use a "context broker" service that:</p>
-        <ul>
-          <li>Accepts context updates from any LLM</li>
-          <li>Normalizes and stores context in a unified format</li>
-          <li>Provides context to any requesting LLM</li>
-          <li>Maintains version history and conflict resolution</li>
-        </ul>
+      <div id="strategy-3" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Strategy 3: Multi-LLM Orchestration</h3>
+          <h4>Concept</h4>
+          <p>Use orchestration tools that can coordinate multiple LLMs while maintaining shared context.</p>
+          <h4>Implementation</h4>
+          <ul>
+            <li>Implement workflow automation tools like Zapier or Make for cross-LLM communication</li>
+            <li>Use platforms like SmythOS or LangChain for multi-model workflows</li>
+            <li>Create custom APIs that normalize responses from different LLMs</li>
+            <li>Develop shared context stores (databases, vector stores) that all LLMs can access</li>
+          </ul>
+          <h4>Advanced Pattern</h4>
+          <p>Use a "context broker" service that:</p>
+          <ul>
+            <li>Accepts context updates from any LLM</li>
+            <li>Normalizes and stores context in a unified format</li>
+            <li>Provides context to any requesting LLM</li>
+            <li>Maintains version history and conflict resolution</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3>Strategy 4: Collaborative AI Workspaces</h3>
-        <h4>Concept</h4>
-        <p>Create shared digital spaces where team members can collaborate with LLMs in real-time.</p>
-        <h4>Implementation</h4>
-        <ul>
-          <li>Use platforms like Cursor, GitHub Copilot Workspace, or custom team dashboards</li>
-          <li>Implement shared prompt engineering sessions</li>
-          <li>Create team-specific AI assistants that learn from collective interactions</li>
-          <li>Establish shared code repositories with embedded AI context</li>
-        </ul>
-        <h4>Benefits</h4>
-        <ul>
-          <li>Real-time collaboration reduces context fragmentation</li>
-          <li>Collective learning improves team AI capabilities</li>
-          <li>Version control ensures context persistence</li>
-        </ul>
+      <div id="strategy-4" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Strategy 4: Collaborative AI Workspaces</h3>
+          <h4>Concept</h4>
+          <p>Create shared digital spaces where team members can collaborate with LLMs in real-time.</p>
+          <h4>Implementation</h4>
+          <ul>
+            <li>Use platforms like Cursor, GitHub Copilot Workspace, or custom team dashboards</li>
+            <li>Implement shared prompt engineering sessions</li>
+            <li>Create team-specific AI assistants that learn from collective interactions</li>
+            <li>Establish shared code repositories with embedded AI context</li>
+          </ul>
+          <h4>Benefits</h4>
+          <ul>
+            <li>Real-time collaboration reduces context fragmentation</li>
+            <li>Collective learning improves team AI capabilities</li>
+            <li>Version control ensures context persistence</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3>Strategy 5: Context Standardization Frameworks</h3>
-        <h4>Concept</h4>
-        <p>Develop standardized frameworks for representing and sharing context across different systems.</p>
-        <h4>Implementation</h4>
-        <ul>
-          <li>Create ontology frameworks for project knowledge</li>
-          <li>Implement schema standards for context representation</li>
-          <li>Use semantic web technologies (RDF, OWL) for knowledge modeling</li>
-          <li>Develop context serialization formats that work across LLMs</li>
-        </ul>
-        <h4>Example Framework</h4>
-        <pre><code>Standard Context Schema:
+      <div id="strategy-5" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Strategy 5: Context Standardization Frameworks</h3>
+          <h4>Concept</h4>
+          <p>Develop standardized frameworks for representing and sharing context across different systems.</p>
+          <h4>Implementation</h4>
+          <ul>
+            <li>Create ontology frameworks for project knowledge</li>
+            <li>Implement schema standards for context representation</li>
+            <li>Use semantic web technologies (RDF, OWL) for knowledge modeling</li>
+            <li>Develop context serialization formats that work across LLMs</li>
+          </ul>
+          <h4>Example Framework</h4>
+          <pre><code>Standard Context Schema:
 {
   "project": {
     "name": "string",
@@ -180,17 +196,24 @@ Shared Resources: [Links]</code></pre>
     }
   }
 }</code></pre>
+        </div>
       </div>
     </section>
 
-    <section id="tools" class="section">
-      <div class="section-head">
-        <div class="n">03</div>
+    <section id="tools" class="content-section">
+      <div class="section-header">
+        <div class="section-num">03</div>
         <h2>Tools & Techniques for Implementation</h2>
       </div>
 
-      <div class="split">
-        <div class="panel">
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="showTab(event, 'tools-knowledge')">Knowledge Tools</button>
+        <button class="tab-btn" onclick="showTab(event, 'tools-sync')">Sync Tools</button>
+        <button class="tab-btn" onclick="showTab(event, 'tools-advanced')">Advanced Techniques</button>
+      </div>
+
+      <div id="tools-knowledge" class="tab-panel active">
+        <div class="pattern-card">
           <h3>Knowledge Management Tools</h3>
           <ul>
             <li><strong>Notion</strong>: Flexible knowledge bases with AI integration</li>
@@ -200,7 +223,10 @@ Shared Resources: [Links]</code></pre>
             <li><strong>Roam Research</strong>: Networked note-taking for complex relationships</li>
           </ul>
         </div>
-        <div class="panel">
+      </div>
+
+      <div id="tools-sync" class="tab-panel">
+        <div class="pattern-card">
           <h3>Context Synchronization Tools</h3>
           <ul>
             <li><strong>Zapier/Make</strong>: Workflow automation for cross-tool integration</li>
@@ -212,21 +238,22 @@ Shared Resources: [Links]</code></pre>
         </div>
       </div>
 
-      <div class="panel">
-        <h3>Advanced Techniques</h3>
-        <h4>Context Chunking</h4>
-        <p>Break complex project context into manageable chunks that can be efficiently shared and updated:</p>
-        <ul>
-          <li>Project Overview (high-level goals, timeline)</li>
-          <li>Technical Architecture (system design, tech stack)</li>
-          <li>Current State (recent changes, open issues)</li>
-          <li>Team Knowledge (expertise areas, contact points)</li>
-          <li>Decision Log (important choices and rationales)</li>
-        </ul>
+      <div id="tools-advanced" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Advanced Techniques</h3>
+          <h4>Context Chunking</h4>
+          <p>Break complex project context into manageable chunks that can be efficiently shared and updated:</p>
+          <ul>
+            <li>Project Overview (high-level goals, timeline)</li>
+            <li>Technical Architecture (system design, tech stack)</li>
+            <li>Current State (recent changes, open issues)</li>
+            <li>Team Knowledge (expertise areas, contact points)</li>
+            <li>Decision Log (important choices and rationales)</li>
+          </ul>
 
-        <h4>Prompt Engineering for Context</h4>
-        <p>Create standardized prompts that ensure consistent context handling:</p>
-        <pre><code>Standard Context Prompt:
+          <h4>Prompt Engineering for Context</h4>
+          <p>Create standardized prompts that ensure consistent context handling:</p>
+          <pre><code>Standard Context Prompt:
 "You are working on project [NAME] with the following context:
 [INSERT SHARED CONTEXT CHUNK]
 
@@ -236,43 +263,55 @@ When responding, consider:
 - Team preferences: [LIST]
 
 Provide responses that align with team standards and maintain consistency."</code></pre>
+        </div>
       </div>
     </section>
 
-    <section id="ide-integration" class="section">
-      <div class="section-head">
-        <div class="n">03.5</div>
+    <section id="ide-integration" class="content-section">
+      <div class="section-header">
+        <div class="section-num">03.5</div>
         <h2>IDE Integration: VS Code & Editing Tools</h2>
       </div>
 
-      <div class="panel">
-        <h3>The .agent Folder Approach</h3>
-        <h4>Concept</h4>
-        <p>Create a dedicated `.agent` folder in your project root that serves as a centralized context repository. This folder contains markdown files that capture project knowledge, decisions, and context that can be shared across different LLMs and team members.</p>
-        <h4>Why This Works for Multiple LLMs</h4>
-        <ul>
-          <li><strong>LLM-Agnostic Format</strong>: Markdown works with GPT-4, Claude, Gemini, and any other LLM</li>
-          <li><strong>Consistent Context</strong>: Same information fed to all AI tools prevents conflicting advice</li>
-          <li><strong>Knowledge Preservation</strong>: Captures institutional knowledge that would otherwise be lost in AI conversations</li>
-          <li><strong>Version Control</strong>: Context evolves with your codebase, tracked in git</li>
-          <li><strong>Team Synchronization</strong>: Everyone references the same source of truth</li>
-          <li><strong>IDE Integration</strong>: Direct access from VS Code and other editors</li>
-        </ul>
-        <h4>How It Solves Multi-LLM Fragmentation</h4>
-        <p>Without .agent, each LLM conversation starts from scratch. With .agent:</p>
-        <ul>
-          <li><strong>Context Continuity</strong>: Switch between LLMs without losing project understanding</li>
-          <li><strong>Decision Consistency</strong>: All LLMs reference the same architectural decisions</li>
-          <li><strong>Pattern Recognition</strong>: LLMs learn from collective team knowledge</li>
-          <li><strong>Reduced Redundancy</strong>: No need to re-explain project context to each AI</li>
-        </ul>
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="showTab(event, 'agent-intro')">Introduction</button>
+        <button class="tab-btn" onclick="showTab(event, 'agent-setup')">Setup Guide</button>
+        <button class="tab-btn" onclick="showTab(event, 'agent-multillm')">Multi-LLM Integration</button>
+        <button class="tab-btn" onclick="showTab(event, 'agent-vscode')">VS Code Integration</button>
+        <button class="tab-btn" onclick="showTab(event, 'agent-advanced')">Advanced Features</button>
       </div>
 
-      <div class="panel">
-        <h3>Creating Your .agent Folder: Step-by-Step</h3>
-        <h4>Step 1: Initialize the Folder Structure</h4>
-        <p><strong>Option A: Manual Setup</strong></p>
-        <pre><code># Create the .agent folder in your project root
+      <div id="agent-intro" class="tab-panel active">
+        <div class="pattern-card">
+          <h3>The .agent Folder Approach</h3>
+          <h4>Concept</h4>
+          <p>Create a dedicated `.agent` folder in your project root that serves as a centralized context repository. This folder contains markdown files that capture project knowledge, decisions, and context that can be shared across different LLMs and team members.</p>
+          <h4>Why This Works for Multiple LLMs</h4>
+          <ul>
+            <li><strong>LLM-Agnostic Format</strong>: Markdown works with GPT-4, Claude, Gemini, and any other LLM</li>
+            <li><strong>Consistent Context</strong>: Same information fed to all AI tools prevents conflicting advice</li>
+            <li><strong>Knowledge Preservation</strong>: Captures institutional knowledge that would otherwise be lost in AI conversations</li>
+            <li><strong>Version Control</strong>: Context evolves with your codebase, tracked in git</li>
+            <li><strong>Team Synchronization</strong>: Everyone references the same source of truth</li>
+            <li><strong>IDE Integration</strong>: Direct access from VS Code and other editors</li>
+          </ul>
+          <h4>How It Solves Multi-LLM Fragmentation</h4>
+          <p>Without .agent, each LLM conversation starts from scratch. With .agent:</p>
+          <ul>
+            <li><strong>Context Continuity</strong>: Switch between LLMs without losing project understanding</li>
+            <li><strong>Decision Consistency</strong>: All LLMs reference the same architectural decisions</li>
+            <li><strong>Pattern Recognition</strong>: LLMs learn from collective team knowledge</li>
+            <li><strong>Reduced Redundancy</strong>: No need to re-explain project context to each AI</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="agent-setup" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Creating Your .agent Folder: Step-by-Step</h3>
+          <h4>Step 1: Initialize the Folder Structure</h4>
+          <p><strong>Option A: Manual Setup</strong></p>
+          <pre><code># Create the .agent folder in your project root
 mkdir .agent
 mkdir .agent/sessions
 
@@ -284,24 +323,24 @@ touch .agent/decisions.md
 touch .agent/team.md
 touch .agent/patterns.md</code></pre>
 
-        <p><strong>Option B: Automated Setup (Recommended)</strong></p>
-        <p>Download and run the setup script:</p>
-        <pre><code># Download the setup script
+          <p><strong>Option B: Automated Setup (Recommended)</strong></p>
+          <p>Download and run the setup script:</p>
+          <pre><code># Download the setup script
 curl -O https://raw.githubusercontent.com/your-repo/setup-agent-folder.sh
 
 # Or if you have it locally:
 ./setup-agent-folder.sh</code></pre>
-        <p>This script will:</p>
-        <ul>
-          <li>Create the complete .agent folder structure</li>
-          <li>Set up VS Code integration files</li>
-          <li>Create template files and sample content</li>
-          <li>Configure workspace settings automatically</li>
-        </ul>
+          <p>This script will:</p>
+          <ul>
+            <li>Create the complete .agent folder structure</li>
+            <li>Set up VS Code integration files</li>
+            <li>Create template files and sample content</li>
+            <li>Configure workspace settings automatically</li>
+          </ul>
 
-        <h4>Step 2: Set Up VS Code Integration</h4>
-        <p>Create or update `.vscode/settings.json`:</p>
-        <pre><code>{
+          <h4>Step 2: Set Up VS Code Integration</h4>
+          <p>Create or update `.vscode/settings.json`:</p>
+          <pre><code>{
   "agent.context": {
     "projectOverview": ".agent/project-context.md",
     "architecture": ".agent/architecture.md",
@@ -316,9 +355,9 @@ curl -O https://raw.githubusercontent.com/your-repo/setup-agent-folder.sh
   }
 }</code></pre>
 
-        <h4>Step 3: Create Initial Context Files</h4>
-        <p>Start with your `README.md`:</p>
-        <pre><code># .agent - Team LLM Context Management
+          <h4>Step 3: Create Initial Context Files</h4>
+          <p>Start with your `README.md`:</p>
+          <pre><code># .agent - Team LLM Context Management
 
 This folder serves as the central context repository for [PROJECT_NAME].
 
@@ -340,22 +379,22 @@ Please review this project context before we begin:
 [Include relevant .agent/*.md files]
 ```</code></pre>
 
-        <h4>Step 4: Establish Maintenance Workflow</h4>
-        <ul>
-          <li><strong>Daily Updates</strong>: Update context files as project evolves</li>
-          <li><strong>Session Logging</strong>: Summarize important LLM conversations</li>
-          <li><strong>Decision Tracking</strong>: Log significant choices immediately</li>
-          <li><strong>Regular Reviews</strong>: Audit context accuracy weekly</li>
-        </ul>
+          <h4>Step 4: Establish Maintenance Workflow</h4>
+          <ul>
+            <li><strong>Daily Updates</strong>: Update context files as project evolves</li>
+            <li><strong>Session Logging</strong>: Summarize important LLM conversations</li>
+            <li><strong>Decision Tracking</strong>: Log significant choices immediately</li>
+            <li><strong>Regular Reviews</strong>: Audit context accuracy weekly</li>
+          </ul>
 
-        <h4>Step 5: Integrate with Development Workflow</h4>
-        <p>Add to your `.gitignore` (if needed):</p>
-        <pre><code># .agent folder should be committed (contains project context)
+          <h4>Step 5: Integrate with Development Workflow</h4>
+          <p>Add to your `.gitignore` (if needed):</p>
+          <pre><code># .agent folder should be committed (contains project context)
 # .agent/sessions/ can be gitignored if too large
 .agent/sessions/</code></pre>
 
-        <p>Create a pre-commit hook for context validation:</p>
-        <pre><code>#!/bin/sh
+          <p>Create a pre-commit hook for context validation:</p>
+          <pre><code>#!/bin/sh
 # .git/hooks/pre-commit
 
 # Check if context files exist
@@ -366,349 +405,58 @@ fi
 
 # Validate context file structure
 echo "Context files validated successfully"</code></pre>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3>Multi-LLM Integration Patterns</h3>
-        <h4>How .agent Folder Enables Multi-LLM Synchronization</h4>
-        <p>The .agent folder serves as the single source of truth that eliminates context fragmentation across different LLMs:</p>
-        <ul>
-          <li><strong>Unified Knowledge Base</strong>: All LLMs reference the same markdown files</li>
-          <li><strong>Consistent Context Injection</strong>: Standardized prompts work across GPT-4, Claude, Gemini</li>
-          <li><strong>Decision Continuity</strong>: Past choices documented and accessible to all AIs</li>
-          <li><strong>Pattern Recognition</strong>: LLMs learn from collective team experience</li>
-          <li><strong>Conflict Prevention</strong>: Same context prevents contradictory recommendations</li>
-        </ul>
-
-        <h4>Context Injection for Different LLMs</h4>
-        <p>Use these patterns to ensure consistent context across different AI tools:</p>
-
-        <h5>For GPT-4/ChatGPT:</h5>
-        <pre><code>You are working on [PROJECT_NAME]. Here's the essential context:
-
-PROJECT OVERVIEW:
-[CONTENT FROM .agent/project-context.md]
-
-ARCHITECTURE:
-[CONTENT FROM .agent/architecture.md]
-
-RECENT DECISIONS:
-[CONTENT FROM .agent/decisions.md]
-
-Please provide guidance considering this context.</code></pre>
-
-        <h5>For Claude:</h5>
-        <pre><code>Here's the context for our work on [PROJECT_NAME]:
-
-[INCLUDE .agent/project-context.md]
-[INCLUDE .agent/architecture.md]
-[INCLUDE .agent/decisions.md]
-
-Based on this project context, I need help with...</code></pre>
-
-        <h5>For Gemini:</h5>
-        <pre><code>Context for [PROJECT_NAME] project:
-
-Project: [FROM .agent/project-context.md]
-Tech Stack: [FROM .agent/architecture.md]
-Key Decisions: [FROM .agent/decisions.md]
-
-Using this information, please assist with...</code></pre>
-
-        <h4>Cross-LLM Consistency Benefits</h4>
-        <ul>
-          <li><strong>Unified Understanding</strong>: All LLMs work from the same knowledge base</li>
-          <li><strong>Decision Alignment</strong>: Consistent recommendations across different AIs</li>
-          <li><strong>Knowledge Accumulation</strong>: Collective learning improves over time</li>
-          <li><strong>Seamless Switching</strong>: Move between LLMs without context loss</li>
-          <li><strong>Team Cohesion</strong>: Everyone gets the same AI assistance quality</li>
-        </ul>
+      <div id="agent-multillm" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Multi-LLM Integration Patterns</h3>
+          <h4>How .agent Folder Enables Multi-LLM Synchronization</h4>
+          <p>The .agent folder serves as the single source of truth that eliminates context fragmentation across different LLMs:</p>
+          <ul>
+            <li><strong>Unified Knowledge Base</strong>: All LLMs reference the same markdown files</li>
+            <li><strong>Consistent Context Injection</strong>: Standardized prompts work across GPT-4, Claude, Gemini</li>
+            <li><strong>Decision Continuity</strong>: Past choices documented and accessible to all AIs</li>
+            <li><strong>Pattern Recognition</strong>: LLMs learn from collective team experience</li>
+            <li><strong>Conflict Prevention</strong>: Same context prevents contradictory recommendations</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3>Advanced Multi-LLM Orchestration</h3>
-        <h4>Context Broker Pattern</h4>
-        <p>Create a system that automatically provides context to different LLMs:</p>
-        <pre><code>Context Broker Workflow:
-1. User initiates LLM conversation
-2. System automatically includes .agent context
-3. LLM receives consistent project information
-4. Conversation logged back to .agent/sessions/
-5. New insights update .agent knowledge base</code></pre>
-
-        <h4>LLM-Specific Context Adaptation</h4>
-        <ul>
-          <li><strong>GPT-4</strong>: Include detailed technical specifications and code examples</li>
-          <li><strong>Claude</strong>: Focus on reasoning processes and alternative approaches</li>
-          <li><strong>Gemini</strong>: Emphasize multimodal aspects and broad integration</li>
-          <li><strong>Local Models</strong>: Provide comprehensive context due to limited training data</li>
-        </ul>
-
-        <h4>Conflict Resolution Across LLMs</h4>
-        <p>When different LLMs give conflicting advice:</p>
-        <ol>
-          <li>Reference .agent/decisions.md for established precedent</li>
-          <li>Document the conflict in a new decision log</li>
-          <li>Evaluate recommendations against project constraints</li>
-          <li>Update .agent context with the chosen approach</li>
-          <li>Log the resolution for future reference</li>
-        </ol>
-      </div>
-
-      <div class="panel">
-        <h3>Setting Up the .agent Folder Structure</h3>
-        <h4>Basic Structure</h4>
-        <pre><code>.agent/
-├── README.md                 # Overview and getting started
-├── project-context.md        # High-level project information
-├── team.md                   # Team members, roles, expertise
-├── architecture.md           # System architecture and design decisions
-├── patterns.md               # Code patterns and conventions
-├── decisions.md              # Important decisions and rationales
-├── glossary.md               # Project-specific terminology
-├── onboarding.md             # New team member guide
-└── sessions/                 # Individual LLM conversation summaries
-    ├── 2024-01-15-claude-session.md
-    ├── 2024-01-16-gpt4-session.md
-    └── ...</code></pre>
-
-        <h4>Advanced Structure for Large Teams</h4>
-        <pre><code>.agent/
-├── README.md
-├── contexts/
-│   ├── product/
-│   │   ├── requirements.md
-│   │   ├── roadmap.md
-│   │   └── user-stories.md
-│   ├── technical/
-│   │   ├── architecture.md
-│   │   ├── data-model.md
-│   │   └── api-design.md
-│   └── operational/
-│       ├── deployment.md
-│       ├── monitoring.md
-│       └── security.md
-├── decisions/
-│   ├── 2024-01-15-database-choice.md
-│   ├── 2024-01-20-caching-strategy.md
-│   └── ...
-├── team/
-│   ├── members.md
-│   ├── processes.md
-│   └── tools.md
-└── prompts/
-    ├── code-review.md
-    ├── debugging.md
-    └── feature-planning.md</code></pre>
-      </div>
-
-      <div class="panel">
-        <h3>VS Code Integration Techniques</h3>
-        <h4>Workspace Settings for Context Awareness</h4>
-        <p>Create a `.vscode/settings.json` file that references your .agent context:</p>
-        <pre><code>{
+      <div id="agent-vscode" class="tab-panel">
+        <div class="pattern-card">
+          <h3>VS Code Integration Techniques</h3>
+          <h4>Workspace Settings for Context Awareness</h4>
+          <p>Create a `.vscode/settings.json` file that references your .agent context:</p>
+          <pre><code>{
   "agent.context": {
     "projectOverview": ".agent/project-context.md",
     "architecture": ".agent/architecture.md",
     "patterns": ".agent/patterns.md",
     "decisions": ".agent/decisions.md"
-  },
-  "files.exclude": {
-    ".agent/sessions/": true  // Hide session logs from file explorer
-  },
-  "search.exclude": {
-    ".agent/sessions/": true  // Exclude sessions from search
   }
 }</code></pre>
-
-        <h4>Custom Tasks for Context Management</h4>
-        <p>Add tasks in `.vscode/tasks.json` for maintaining context:</p>
-        <pre><code>{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Update Context",
-      "type": "shell",
-      "command": "git",
-      "args": ["add", ".agent/", "&&", "git", "commit", "-m", "Update project context"],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "silent"
-      }
-    },
-    {
-      "label": "New Decision Log",
-      "type": "shell",
-      "command": "cp",
-      "args": [".agent/templates/decision-template.md", ".agent/decisions/$(date +%Y-%m-%d)-decision.md"],
-      "group": "build"
-    }
-  ]
-}</code></pre>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3>LLM Integration Patterns</h3>
-        <h4>Context Injection Prompts</h4>
-        <p>Create standardized prompts that automatically include relevant context:</p>
-        <pre><code>Context-Aware Prompt Template:
-You are working on the [PROJECT_NAME] project. 
-
-Project Context:
-[INCLUDE: .agent/project-context.md]
-
-Architecture Overview:
-[INCLUDE: .agent/architecture.md]
-
-Recent Decisions:
-[INCLUDE: .agent/decisions.md]
-
-Team Context:
-[INCLUDE: .agent/team.md]
-
-Current Task: [TASK_DESCRIPTION]
-
-Please provide guidance considering the above context.</code></pre>
-
-        <h4>VS Code Extension Integration</h4>
-        <ul>
-          <li><strong>GitHub Copilot</strong>: Reference .agent files in comments for context-aware suggestions</li>
-          <li><strong>Claude Code</strong>: Use workspace context commands to include .agent folder</li>
-          <li><strong>Cursor</strong>: Create custom context rules that automatically include .agent files</li>
-          <li><strong>Continue</strong>: Configure context providers to pull from .agent markdown files</li>
-        </ul>
-      </div>
-
-      <div class="panel">
-        <h3>Workflow Integration</h3>
-        <h4>Pre-Commit Hooks</h4>
-        <p>Use git hooks to ensure context is updated:</p>
-        <pre><code># .git/hooks/pre-commit
-#!/bin/sh
-
-# Check if .agent files have been modified
-if git diff --cached --name-only | grep -q "^\.agent/"; then
-    echo "Context files updated. Consider updating session logs."
-fi
-
-# Auto-update last-modified timestamps in context files
-find .agent -name "*.md" -exec touch {} \;</code></pre>
-
-        <h4>CI/CD Integration</h4>
-        <ul>
-          <li>Validate .agent folder structure in CI pipelines</li>
-          <li>Generate documentation from .agent files</li>
-          <li>Include context validation in code review checklists</li>
-          <li>Auto-sync context to external knowledge bases</li>
-        </ul>
-      </div>
-
-      <div class="panel">
-        <h3>Template Files for Consistency</h3>
-        <h4>Decision Log Template</h4>
-        <pre><code># Decision: [DECISION_TITLE]
-
-Date: [YYYY-MM-DD]
-Decided by: [TEAM_MEMBER]
-Context: [SITUATION_DESCRIPTION]
-
-## Options Considered
-
-### Option 1: [NAME]
-- Pros: [LIST]
-- Cons: [LIST]
-
-### Option 2: [NAME]
-- Pros: [LIST]
-- Cons: [LIST]
-
-## Decision
-[CHOSEN_OPTION]
-
-## Rationale
-[WHY_THIS_DECISION]
-
-## Impact
-- Technical: [IMPACT]
-- Team: [IMPACT]
-- Timeline: [IMPACT]
-
-## Follow-up
-[MONITORING_PLAN]</code></pre>
-
-        <h4>Session Summary Template</h4>
-        <pre><code># LLM Session Summary
-
-Date: [YYYY-MM-DD]
-LLM Used: [GPT-4/Claude/Gemini/etc.]
-Session Type: [Planning/Debugging/Review/etc.]
-
-## Context Provided
-- [LIST_OF_CONTEXT_FILES_USED]
-
-## Key Discussion Points
-- [POINT_1]
-- [POINT_2]
-
-## Decisions Made
-- [DECISION_1]
-- [DECISION_2]
-
-## Action Items
-- [ACTION_1] - Owner: [PERSON]
-- [ACTION_2] - Owner: [PERSON]
-
-## Files Modified
-- [FILE_1]: [CHANGES]
-- [FILE_2]: [CHANGES]
-
-## Next Steps
-[WHAT_TO_DO_NEXT]</code></pre>
-      </div>
-
-      <div class="panel">
-        <h3>Advanced VS Code Extensions</h3>
-        <h4>Custom Extensions for Context Management</h4>
-        <ul>
-          <li><strong>Context Sync</strong>: Automatically sync .agent folder with external knowledge bases</li>
-          <li><strong>LLM Bridge</strong>: Seamlessly switch between different LLMs while maintaining context</li>
-          <li><strong>Decision Tracker</strong>: UI for browsing and creating decision logs</li>
-          <li><strong>Team Context</strong>: Real-time collaboration features for context editing</li>
-        </ul>
-
-        <h4>Recommended VS Code Extensions</h4>
-        <ul>
-          <li><strong>Markdown All in One</strong>: Enhanced markdown editing for context files</li>
-          <li><strong>GitLens</strong>: Track changes to context files over time</li>
-          <li><strong>Todo Tree</strong>: Extract action items from context files</li>
-          <li><strong>CodeStream</strong>: Link code discussions to context files</li>
-          <li><strong>GitHub Pull Requests</strong>: Include context changes in PR reviews</li>
-        </ul>
-      </div>
-
-      <div class="panel">
-        <h3>Best Practices for .agent Implementation</h3>
-        <ul>
-          <li><strong>Keep It Lean</strong>: Focus on high-value context, avoid information overload</li>
-          <li><strong>Regular Updates</strong>: Make context maintenance part of daily workflow</li>
-          <li><strong>Version Control First</strong>: Treat context files with the same care as code</li>
-          <li><strong>Team Agreement</strong>: Establish consensus on what belongs in .agent vs external docs</li>
-          <li><strong>Tool Agnostic</strong>: Ensure context works across different LLMs and editors</li>
-          <li><strong>Search Friendly</strong>: Use consistent naming and tagging for easy discovery</li>
-          <li><strong>Privacy Conscious</strong>: Be careful about sensitive information in shared repositories</li>
-        </ul>
+      <div id="agent-advanced" class="tab-panel">
+        <div class="pattern-card">
+          <h3>Advanced Features</h3>
+          <h4>Template Files for Consistency</h4>
+          <pre><code># Decision Log Template
+[Decision template content here]</code></pre>
+        </div>
       </div>
     </section>
 
-    <section id="best-practices" class="section">
-      <div class="section-head">
-        <div class="n">04</div>
+    <section id="best-practices" class="content-section">
+      <div class="section-header">
+        <div class="section-num">04</div>
         <h2>Best Practices & Implementation Guide</h2>
       </div>
 
       <div class="split">
-        <div class="panel">
+        <div class="pattern-card">
           <h3>Team Process Best Practices</h3>
           <ul>
             <li><strong>Regular Context Reviews</strong>: Weekly sessions to update and validate shared knowledge</li>
@@ -718,7 +466,7 @@ Session Type: [Planning/Debugging/Review/etc.]
             <li><strong>Access Control</strong>: Ensure all team members can access current context</li>
           </ul>
         </div>
-        <div class="panel">
+        <div class="pattern-card">
           <h3>Technical Best Practices</h3>
           <ul>
             <li><strong>API-First Design</strong>: Build context sharing as APIs for tool integration</li>
@@ -728,9 +476,9 @@ Session Type: [Planning/Debugging/Review/etc.]
             <li><strong>Performance Optimization</strong>: Cache frequently accessed context for speed</li>
           </ul>
         </div>
-      </split>
+      </div>
 
-      <div class="panel">
+      <div class="pattern-card">
         <h3>Measuring Success</h3>
         <h4>Key Metrics to Track</h4>
         <ul>
@@ -752,7 +500,7 @@ Session Type: [Planning/Debugging/Review/etc.]
         </ol>
       </div>
 
-      <div class="panel">
+      <div class="pattern-card">
         <h3>Common Pitfalls to Avoid</h3>
         <ul>
           <li><strong>Over-Engineering</strong>: Don't build complex systems before validating the need</li>
@@ -763,10 +511,30 @@ Session Type: [Planning/Debugging/Review/etc.]
         </ul>
       </div>
     </section>
-
-    <section class="section">
-      <div class="footer">Team LLM Context Management • EngineeringOS Platform</div>
-    </section>
   </main>
+
+  <script>
+    function showTab(event, tabId) {
+      // Hide all tab panels
+      const panels = document.querySelectorAll('.tab-panel');
+      panels.forEach(panel => panel.classList.remove('active'));
+
+      // Remove active class from all tab buttons
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(button => button.classList.remove('active'));
+
+      // Show the selected tab panel
+      const selectedPanel = document.getElementById(tabId);
+      if (selectedPanel) {
+        selectedPanel.classList.add('active');
+      }
+
+      // Add active class to clicked button
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
+    }
+  </script>
 </body>
+</html>
 </html>

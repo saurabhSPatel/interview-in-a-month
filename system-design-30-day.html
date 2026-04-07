@@ -56,6 +56,14 @@
   .checkpoint-card ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
   .checkpoint-card li{font-size:.83rem;color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;}
   .checkpoint-card li::before{content:'▸';color:var(--accent);}
+  .real-world-box{background:rgba(91,143,255,0.06);border:1px solid rgba(91,143,255,0.2);border-radius:8px;padding:1rem;margin-top:.75rem;}
+  .real-world-box h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.5rem;text-transform:uppercase;}
+  .real-world-box p{font-size:.81rem;color:var(--muted);line-height:1.65;margin:.35rem 0;}
+  .real-world-box p strong{color:var(--text);}
+  .real-world-box h5{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--accent3);letter-spacing:.08em;margin:.7rem 0 .35rem;text-transform:uppercase;}
+  .real-world-box ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;margin-top:.35rem;}
+  .real-world-box li{font-size:.8rem;color:var(--muted);line-height:1.6;}
+  .real-world-box li::before{content:'▸ ';color:var(--accent);}
   @media(max-width:768px){.grid2{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -2264,12 +2272,123 @@ function toggle(header) {
   body.classList.toggle('open', !isOpen);
   arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
 }
+
+const dayEnrichment = {
+  1:{context:"Identify bottleneck by metrics, then apply targeted fixes: CPU-bound -> profile hotspots, optimize code paths, add worker parallelism, then horizontal scale; memory-bound -> reduce object churn, fix leaks, tune GC, move large state to external cache; I/O-bound -> async/non-blocking calls, batching, queueing, and connection pooling; network-bound -> compress payloads, reduce chatty calls, add CDN/edge caching, and optimize serialization; DB-bound -> proper indexes, query optimization, read replicas, caching, and only then sharding. Always scale the constrained resource first.",example:"Instagram started on a monolith, scaled reads with aggressive caching and replicas before deeper service decomposition.",focus:"Produce a scaling decision tree: bottleneck -> short-term fix -> long-term architecture move."},
+  2:{context:"Load balancing is more than distribution; it is failure isolation + graceful drain + rollout control.",example:"Netflix and AWS ALB setups use weighted routing for canary releases and health-based auto failover.",focus:"Specify LB algorithm per workload and exact health-check policy (interval, threshold, timeout)."},
+  3:{context:"Caching is a correctness-latency trade. Define stale tolerance explicitly per endpoint.",example:"Amazon product pages rely heavily on cache layers; inventory and checkout stay strongly consistent in origin stores.",focus:"Document TTL strategy, invalidation trigger, and stampede mitigation for one critical key."},
+  4:{context:"CAP answers behavior under partitions; PACELC answers latency vs consistency during normal operation.",example:"DynamoDB favors low latency/eventual consistency; Spanner favors strong consistency with higher coordination cost.",focus:"Map APIs to consistency levels (strong, session, eventual) with business rationale."},
+  5:{context:"Rate limiting is product policy + platform safety. Design per-identity, per-endpoint, and burst controls.",example:"Stripe-style APIs combine idempotency keys and layered limits to prevent duplicate operations and abuse.",focus:"Define free/pro/enterprise quotas and 429 behavior with Retry-After semantics."},
+  6:{context:"End-to-end request flow thinking helps debug real latency and cache-miss cascades.",example:"Cloudflare/Akamai deployments reduce origin load massively by caching static and semi-static assets at edge PoPs.",focus:"Draw DNS -> CDN -> gateway -> service -> cache -> DB path with expected latency each hop."},
+  7:{context:"API contracts decide long-term velocity. Versioning and error envelopes prevent client breakage.",example:"Stripe and GitHub APIs succeed through backward-compatible evolution and consistent error design.",focus:"Define one API spec with pagination, versioning, auth, idempotency, and errors."},
+  8:{context:"Databases are chosen by access pattern: write/read ratio, transaction needs, and query shape.",example:"Uber uses different stores by workload: transactional data in relational systems, high-volume events in append/log systems.",focus:"Provide datastore choice matrix with trade-offs for at least 3 entities."},
+  9:{context:"Index design often gives bigger gains than infrastructure upgrades.",example:"E-commerce search/filter pages depend on composite indexes and denormalized read models to keep p95 stable.",focus:"For one table, list primary queries and matching indexes (including sort order)."},
+  10:{context:"Partitioning is a lifecycle choice; poor keys create hotspots and re-sharding pain.",example:"Messaging systems shard by conversation/user keys to keep order local and scale fan-out safely.",focus:"Choose shard key, hotspot mitigation, and rebalancing plan."},
+  11:{context:"Read replicas improve scale but introduce replica lag semantics that product teams must understand.",example:"Feed systems often read from replicas while writes go primary, with session-level read-your-write fallback.",focus:"Define stale-read policy and failover behavior when primary is unavailable."},
+  12:{context:"Event systems decouple services and absorb spikes, but contract design and idempotency are mandatory.",example:"Order platforms publish events for analytics, fulfillment, and notifications from a shared event backbone.",focus:"Specify topic schema, partition key, retry policy, and dead-letter handling."},
+  13:{context:"Outbox pattern removes dual-write inconsistency by making DB commit and event intent atomic.",example:"Fintech workflows commonly use outbox+CDC to ensure ledger updates and downstream processing stay aligned.",focus:"Draw transaction timeline from write -> outbox row -> CDC publish -> consumer dedupe."},
+  14:{context:"CQRS is useful when write and read models diverge heavily in shape and scaling needs.",example:"Dashboard/reporting workloads often use projection stores built asynchronously from command-side events.",focus:"Define command model, projection lag tolerance, and replay strategy."},
+  15:{context:"URL shortener tests keyspace sizing, redirect latency, and abuse handling.",example:"Bitly-like systems optimize hot redirects with cache and globally distributed edge delivery.",focus:"Provide collision strategy, custom alias rules, and analytics collection pipeline."},
+  16:{context:"Paste/doc sharing introduces retention, security scanning, and controlled visibility.",example:"Gist-like systems balance public sharing and private access with expiration and access-token links.",focus:"Specify retention policy, private link auth model, and moderation hooks."},
+  17:{context:"Rate limiter as a platform service needs multi-tenant fairness and low-latency checks.",example:"API gateways in SaaS products centralize quota policy so product teams don’t reimplement enforcement.",focus:"Design service API for quota checks and global policy rollout."},
+  18:{context:"Notification systems require channel orchestration and user preference guarantees.",example:"Ride-hailing apps prioritize push, then SMS fallback for critical trip-state changes.",focus:"Define priority routing per event severity and dedupe strategy across channels."},
+  19:{context:"Metrics/log pipelines are data products: ingestion, retention, query performance, and cost control.",example:"Observability stacks use hot/warm storage tiers to keep recent data fast and historical data affordable.",focus:"Set sampling, retention, and cardinality guardrails."},
+  20:{context:"File/media architecture hinges on upload reliability and global content delivery.",example:"Video/photo platforms rely on object storage + signed URLs + CDN cache-control for scale.",focus:"Design multipart upload retry flow and secure download URL lifecycle."},
+  21:{context:"Mock day should focus on clarity, prioritization, and explicit assumptions.",example:"Strong candidates narrate constraints first, then show evolution path instead of overbuilding v1.",focus:"Run one full timed mock and record gaps by category (scaling, consistency, failure, communication)."},
+  22:{context:"DB scaling includes schema, connection management, and partition-aware query discipline.",example:"Large multi-tenant apps avoid cross-shard joins and move analytics to separate pipelines.",focus:"Create migration plan from single DB to sharded topology with minimal downtime."},
+  23:{context:"Cache hierarchy prevents origin overload and improves p95, but coherence becomes harder.",example:"Streaming/news apps combine edge CDN, Redis, and local in-process caches for layered hits.",focus:"Define L1/L2/L3 roles and cache-key versioning scheme."},
+  24:{context:"Resilience patterns must be calibrated together; retries without budgets can amplify outages.",example:"Payment/order paths commonly use strict timeout budgets + jitter retries + circuit breakers to contain incidents.",focus:"Set per-hop timeout budget and retry cap for one critical call chain."},
+  25:{context:"Consistency UX decisions are product decisions: when stale data is acceptable and when it is not.",example:"Banking balances need stricter semantics than social feed like-counts.",focus:"Write endpoint-level consistency contract and conflict resolution policy."},
+  26:{context:"Cost-aware design is senior-level signal: optimize for $/request, not only latency.",example:"Model routing and semantic caching in AI systems can cut inference spend dramatically.",focus:"Estimate monthly cost and list top 3 levers to reduce it without hurting SLO."},
+  27:{context:"Observability should be designed, not bolted on. Traceability shortens MTTR during incidents.",example:"Teams using request IDs + distributed tracing isolate regressions much faster during release windows.",focus:"Define service SLI/SLOs and alert policies tied to user impact."},
+  28:{context:"Consensus appears when correctness must survive partial failure and leader changes.",example:"etcd/raft-backed control planes keep cluster state consistent under node failures.",focus:"Explain leader election, quorum write, and stale-read protection."},
+  29:{context:"Deep-dive day proves implementation maturity: data structures, failure states, and backpressure choices.",example:"Scheduler/indexer components often fail from retry loops and queue growth, not core logic.",focus:"Write LLD for one component including state machine and error handling."},
+  30:{context:"Final mock should connect all dimensions: API, data, scale, consistency, failure, observability, and rollout.",example:"Distributed job schedulers in production must solve dedupe, retries, lease expiry, and at-least-once execution realities.",focus:"Deliver a 45-minute end-to-end design with trade-offs and phased evolution plan."}
+};
+
+function getDeepPoints(day) {
+  if (day <= 7) {
+    return [
+      "Map the request path hop-by-hop and assign rough latency budget per hop (edge, gateway, service, cache, DB).",
+      "State clear consistency expectations for each operation: strict correctness paths vs eventually consistent paths.",
+      "Identify the first bottleneck and explicitly mention the next scaling move after the immediate fix."
+    ];
+  }
+  if (day <= 14) {
+    return [
+      "Define the write path and failure behavior first, then add async fan-out and retry semantics.",
+      "Document idempotency boundaries so retries do not create duplicate business actions.",
+      "Show where ordering matters and where parallel processing is safe."
+    ];
+  }
+  if (day <= 21) {
+    return [
+      "Translate business requirements into concrete APIs, data model, and storage/index decisions.",
+      "Separate v1 design from future optimizations; explain why each component exists now.",
+      "Call out abuse vectors, noisy-neighbor effects, and operational controls early."
+    ];
+  }
+  if (day <= 27) {
+    return [
+      "Quantify trade-offs with SLO, throughput, storage growth, and rough monthly cost assumptions.",
+      "Design failure envelopes: timeout, bounded retries, circuit-breakers, and fallback behavior.",
+      "Specify observability signals tied to user impact, not only infrastructure metrics."
+    ];
+  }
+  return [
+    "Go beyond HLD and explain internals: leader election, state transitions, replay, and recovery.",
+    "Discuss rollout strategy: staged deploys, shadow traffic, canary, and automated rollback conditions.",
+    "Explain exactly how you would debug this system during a high-severity incident."
+  ];
+}
+
+function getPitfalls(day) {
+  if (day <= 10) return ["Jumping to tools before clarifying constraints and traffic profile.", "Ignoring cache/replica staleness behavior in user-visible flows."];
+  if (day <= 20) return ["Designing async flows without idempotency and deduplication keys.", "Treating happy-path architecture as complete without failure mode handling."];
+  return ["Adding complexity without proving the bottleneck justifies it.", "Missing measurable SLOs and clear on-call diagnostics for critical paths."];
+}
+
+function getInterviewNarrative(day) {
+  if (day <= 7) return "Start with assumptions, draw the minimal viable architecture, then show one clear evolution path when traffic grows 10x.";
+  if (day <= 14) return "Explain write/read paths separately, mention consistency and idempotency explicitly, then discuss replay/failure recovery.";
+  if (day <= 21) return "Anchor your solution in user-facing requirements, API contracts, and concrete data access patterns.";
+  if (day <= 27) return "Lead with bottlenecks, quantify impact, and justify each scaling decision with cost and reliability trade-offs.";
+  return "Demonstrate senior signal: correctness under failure, rollout safety, and observability-first operations.";
+}
+
+function addDayEnrichment() {
+  document.querySelectorAll('.day-card').forEach((card) => {
+    const badge = card.querySelector('.day-num-badge');
+    const body = card.querySelector('.day-body');
+    if (!badge || !body || body.querySelector('.real-world-box')) return;
+    const m = badge.textContent.match(/DAY\s*0*([0-9]+)/i);
+    if (!m) return;
+    const day = Number(m[1]);
+    const info = dayEnrichment[day];
+    if (!info) return;
+    const box = document.createElement('div');
+    box.className = 'real-world-box';
+    const deepPoints = getDeepPoints(day).map((x) => `<li>${x}</li>`).join('');
+    const pitfalls = getPitfalls(day).map((x) => `<li>${x}</li>`).join('');
+    box.innerHTML = `
+      <h4>Expanded Topic Explanation</h4>
+      <p><strong>Concept Deep Dive:</strong> ${info.context}</p>
+      <h5>What To Focus On</h5>
+      <ul>${deepPoints}</ul>
+      <h5>Real-World Example</h5>
+      <p>${info.example}</p>
+      <h5>Common Mistakes To Avoid</h5>
+      <ul>${pitfalls}</ul>
+      <h5>Interview Framing</h5>
+      <p>${getInterviewNarrative(day)}</p>
+      <p><strong>Practice Target:</strong> ${info.focus}</p>
+    `;
+    body.appendChild(box);
+  });
+}
+
+addDayEnrichment();
 document.querySelectorAll('.day-card:first-of-type .day-header').forEach(h => h.click());
 </script>
 </body>
 </html>
-
-
-
-
-
