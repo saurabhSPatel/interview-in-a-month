@@ -68,7 +68,7 @@
     <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">GMP Scheduler Deep</div></div>
     <div class="tblock"><div class="time">H 1.5–3</div><div class="topic">Garbage Collector</div></div>
     <div class="tblock"><div class="time">H 3–4</div><div class="topic">Channel + Sync Internals</div></div>
-    <div class="tblock"><div class="time">H 4–5</div><div class="topic">Interface + Reflection</div></div>
+    <div class="tblock"><div class="time">H 4–5</div><div class="topic">Interfaces + Go OOP</div></div>
     <div class="tblock"><div class="time">H 5–6.5</div><div class="topic">pprof + trace Profiling</div></div>
     <div class="tblock"><div class="time">H 6.5–7</div><div class="topic">Generics + Patterns</div></div>
   </div>
@@ -281,19 +281,156 @@ func doSomething() error {
 </div>
 
 <div class="section">
-  <h2><span class="sn">04</span>Resources</h2>
+  <h2><span class="sn">04</span>Go Design — OOP, Interfaces, Composition</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>How Go Does OOP</h3>
+      <ul>
+        <li>No classes, inheritance hierarchy, or method overloading</li>
+        <li>State lives in <code>struct</code>, behavior in methods</li>
+        <li>Polymorphism comes from small interfaces</li>
+        <li>Reuse comes from composition, not inheritance</li>
+        <li>Encapsulation is package-level: exported vs unexported names</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Interfaces — Idiomatic Rule</h3>
+      <ul>
+        <li>Define interfaces where they are consumed, not where they are implemented</li>
+        <li>Prefer tiny interfaces: <code>io.Reader</code>, <code>io.Writer</code></li>
+        <li>Accept interfaces, return concrete types</li>
+        <li>Do not create an interface just because one implementation exists today</li>
+        <li>Use interface to model behavior boundary: storage, clock, notifier, queue</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Composition Over Inheritance</h3>
+      <ul>
+        <li>Embed a struct to reuse fields/methods</li>
+        <li>Think in capabilities, not parent-child class trees</li>
+        <li>Decorator-style wrapping is natural in Go middleware</li>
+        <li>Explicit dependencies are easier to test and reason about</li>
+        <li>Best fit for handlers, repositories, service objects, adapters</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="deep" style="margin-top:1rem;">
+    <h3>Struct + Methods + Interfaces = Go's OOP Model</h3>
+    <div class="cb"><span class="hl">// Behavior contract defined at the consumer boundary</span>
+type Store interface {
+    Save(ctx context.Context, u User) error
+    ByID(ctx context.Context, id string) (User, error)
+}
+
+type UserService struct {
+    store Store
+}
+
+func NewUserService(store Store) *UserService {
+    return &UserService{store: store}
+}
+
+func (s *UserService) Register(ctx context.Context, u User) error {
+    if u.Email == "" {
+        return errors.New("email required")
+    }
+    return s.store.Save(ctx, u)
+}</div>
+    <p>This is the standard Go answer to "how do we do OOP?" Data in structs. Behavior in methods. Polymorphism through interfaces. Dependency injection through constructors. No base class needed.</p>
+  </div>
+
+  <div class="deep">
+    <h3>Method Sets + Pointer vs Value Receivers</h3>
+    <div class="cb"><span class="hl">// Value receiver: works on a copy</span>
+func (u User) FullName() string { return u.First + " " + u.Last }
+
+<span class="hl">// Pointer receiver: can mutate, avoids copying</span>
+func (u *User) Rename(first, last string) {
+    u.First, u.Last = first, last
+}
+
+<span class="hl">// Method set rule</span>
+// type User has methods with receiver (User)
+// type *User has methods with receiver (User) and (*User)
+
+type Renamer interface {
+    Rename(first, last string)
+}
+
+var _ Renamer = (*User)(nil) <span class="hl">// OK</span>
+// var _ Renamer = User{}        <span class="hl">// NOT OK: value type lacks pointer-receiver method</span></div>
+    <p>Interview rule: if the method mutates state, contains a mutex, or the struct is large, use a pointer receiver. If the type is small and immutable-like, value receiver is fine. What matters is consistency across the type.</p>
+  </div>
+
+  <div class="deep">
+    <h3>Struct Embedding and Composition</h3>
+    <div class="cb"><span class="hl">// Reuse behavior without inheritance</span>
+type Logger struct{}
+func (Logger) Info(msg string) {}
+
+type Metrics struct{}
+func (Metrics) Inc(name string) {}
+
+type PaymentService struct {
+    Logger
+    Metrics
+    repo PaymentRepo
+}
+
+func (s *PaymentService) Charge(ctx context.Context, req ChargeRequest) error {
+    s.Info("charge started")
+    s.Inc("payment.charge.attempt")
+    return s.repo.Save(ctx, req)
+}</div>
+    <p>Embedding promotes methods, but don't treat it like Java inheritance. Use it sparingly for shared capability. For most business code, explicit named fields are clearer than deep embedding chains.</p>
+  </div>
+
+  <div class="deep">
+    <h3>What Senior Engineers Watch For In Go Design</h3>
+    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-top:.5rem;">
+      <div class="card">
+        <h3>Interface Size</h3>
+        <p>Large "god interfaces" usually mean weak boundaries. Split by use case, not by entity.</p>
+      </div>
+      <div class="card">
+        <h3>Error Design</h3>
+        <p>Prefer sentinel errors or wrapped errors with <code>errors.Is</code>/<code>errors.As</code>, not giant exception-like hierarchies.</p>
+      </div>
+      <div class="card">
+        <h3>Package Design</h3>
+        <p>Encapsulation in Go is package-first. Keep invariants behind unexported fields and constructors.</p>
+      </div>
+      <div class="card">
+        <h3>Testing</h3>
+        <p>Mock behavior boundaries, not everything. Small interfaces make fake implementations trivial.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="deep">
+    <h3>Interview Language — How To Explain OOP in Go</h3>
+    <p>If someone asks "does Go support OOP?", the strongest answer is: <strong>Go supports object-oriented design, but not classical inheritance-based OOP.</strong> It gives you encapsulation via packages, polymorphism via interfaces, and reuse via composition. In practice this produces flatter, more explicit designs that are easier to test and refactor.</p>
+    <p>That is the staff-level framing: explain the trade-off, not just the syntax.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2><span class="sn">05</span>Resources</h2>
   <div class="resources">
     <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://go.dev/blog/ismmkeynote" target="_blank">Go GC: Prioritizing Low Latency and Simplicity — Official</a><p>The Go team explains GC design goals. How they reduced STW from seconds to sub-millisecond. Essential context.</p></div></div>
     <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html" target="_blank">Ardan Labs — Scheduling in Go (3-part series)</a><p>Bill Kennedy's deep dive on GMP. Best external scheduler resource. Read all 3 parts.</p></div></div>
     <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=2557w0qsDV0" target="_blank">Kavya Joshi — Understanding Channels</a><p>25-min deep dive on hchan internals. Watch this if you use channels heavily (your notification service).</p></div></div>
     <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://pkg.go.dev/runtime/pprof" target="_blank">Go pprof — Official Docs</a><p>Complete profiling API. Integrate into your services — not just for debugging, for performance SLOs.</p></div></div>
     <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://go.dev/doc/faq#nil_error" target="_blank">Go FAQ — Why is my nil error value not equal to nil?</a><p>Official explanation of the nil interface trap. Short, authoritative.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://go.dev/doc/effective_go#interfaces_and_types" target="_blank">Effective Go — Interfaces and Types</a><p>The official reference for idiomatic interface design, receivers, embedding, and method sets.</p></div></div>
+    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://go.dev/blog/laws-of-reflection" target="_blank">The Laws of Reflection — Official</a><p>Reflection is where interface values, concrete types, and method sets really click together.</p></div></div>
     <div class="res"><span class="rt">CODE</span><div class="rc"><a href="https://go.dev/src/runtime/proc.go" target="_blank">Go Runtime Source: runtime/proc.go</a><p>Read the schedule() and findRunnable() functions. 1000 lines. Best GMP doc.</p></div></div>
   </div>
 </div>
 
 <div class="section">
-  <h2><span class="sn">05</span>Quick Revision</h2>
+  <h2><span class="sn">06</span>Quick Revision</h2>
   <div class="qr">
     <h3>GO INTERNALS FLASH CARDS</h3>
     <div class="qg">
@@ -301,6 +438,8 @@ func doSomething() error {
       <div class="qi"><div class="q">How does Go prevent goroutine starvation?</div><div class="a">Signal-based preemption (Go 1.14+). SIGURG sent to thread, goroutine preempted at next safe point. Global queue checked every 61 scheduler cycles.</div></div>
       <div class="qi"><div class="q">GOGC vs GOMEMLIMIT?</div><div class="a">GOGC: ratio-based, triggers when heap grows by GOGC%. GOMEMLIMIT (Go 1.19+): absolute limit, GC aggressive near limit. Use GOMEMLIMIT for K8s memory.limit alignment.</div></div>
       <div class="qi"><div class="q">Interface equality trap?</div><div class="a">Interface nil only if BOTH type and value are nil. Typed nil pointer converted to interface = non-nil interface. Always return bare nil for error.</div></div>
+      <div class="qi"><div class="q">How does Go do OOP?</div><div class="a">Structs + methods + interfaces + composition. No inheritance tree. Encapsulation is package-level, polymorphism is interface-based.</div></div>
+      <div class="qi"><div class="q">Pointer vs value receiver?</div><div class="a">Pointer if mutating, avoiding copies, or struct contains sync primitives. Value if small and immutable-like. Be consistent across the type.</div></div>
       <div class="qi"><div class="q">sync.Pool guarantee?</div><div class="a">Pooled objects may be evicted at any GC. Pool is a cache, not a free list. Always call Reset() before use. Zero-allocation pattern for hot path.</div></div>
       <div class="qi"><div class="q">When does goroutine stack grow?</div><div class="a">On function call: stack guard check. If exceeded: new larger stack allocated, old contents copied, all pointers updated. Expensive — avoid deep recursion in hot path.</div></div>
     </div>

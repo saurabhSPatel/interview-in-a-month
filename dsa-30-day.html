@@ -101,7 +101,7 @@
   <div class="meta-row">
     <div class="meta-box"><div class="val">30</div><div class="key">Days Total</div></div>
     <div class="meta-box"><div class="val">~2h</div><div class="key">Per Day</div></div>
-    <div class="meta-box"><div class="val">180+</div><div class="key">Problems</div></div>
+    <div class="meta-box"><div class="val">230+</div><div class="key">Problems</div></div>
     <div class="meta-box"><div class="val">6</div><div class="key">MC Solutions</div></div>
   </div>
 </div>
@@ -910,6 +910,39 @@
   </div>
   <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;">Problems repeatedly reported by engineers at 5-year level across Google, Meta, Stripe, Uber, Coinbase, and top Indian unicorns. Grouped by category. These go beyond patterns — they test judgment and edge-case thinking.</p>
 
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">MAP 00</span>
+      <span class="day-name">Advanced Pattern Atlas — What Senior Loops Keep Reusing</span>
+      <span class="day-pattern">Pattern Map</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>Pattern Recognition Ladder</h4>
+          <ul>
+            <li><strong>Binary search on answer:</strong> if "can we do it with X?" is monotonic, search X not the raw solution.</li>
+            <li><strong>Monotonic stack/deque:</strong> nearest greater/smaller, sliding maximum, contribution counting.</li>
+            <li><strong>Union-Find:</strong> dynamic connectivity, grouping, offline merges, redundant edges.</li>
+            <li><strong>Sweep line:</strong> sort events and process state changes over time or position.</li>
+            <li><strong>Trie / bitwise trie:</strong> prefix lookup, autocomplete, max XOR, string indexing.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Interview Conversion Rule</h4>
+          <ul>
+            <li>If brute force compares many candidates, ask: <strong>can I sort, precompute, or maintain state incrementally?</strong></li>
+            <li>If the array answer depends on nearest boundaries, ask: <strong>can a monotonic stack expose contribution ranges?</strong></li>
+            <li>If the graph mutates by adding edges, ask: <strong>can DSU replace repeated BFS/DFS?</strong></li>
+            <li>If the question asks minimum feasible capacity/time/rate, ask: <strong>is the predicate monotonic?</strong></li>
+            <li>If the question mixes intervals and overlaps, ask: <strong>should I sort events and sweep?</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Arrays / Strings Hard -->
   <div class="day-card">
     <div class="day-header" onclick="toggle(this)">
@@ -955,6 +988,236 @@
       <div class="go-tip">
         <h4>Go Tip — Median of Two Arrays</h4>
         <p>Binary search on the smaller array. Partition both arrays such that left half ≤ right half. <code>maxLeft := max(nums1[p1-1], nums2[p2-1])</code>. Watch out: when <code>p1 == 0</code>, left1 = math.MinInt. When <code>p1 == m</code>, right1 = math.MaxInt. Always binary search on the shorter array to guarantee O(log(min(m,n))).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">PAT 01</span>
+      <span class="day-name">Binary Search on Answer + Greedy Feasibility</span>
+      <span class="day-pattern">Optimization</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>When This Pattern Appears</h4>
+          <ul>
+            <li>Question asks for minimum capacity, speed, days, distance, or maximum feasible value.</li>
+            <li>There is a <strong>yes/no predicate</strong> that becomes permanently true or false past some boundary.</li>
+            <li>Greedy check runs in O(n) or O(n log n), making total O(n log answer-range).</li>
+            <li>Senior signal: state the monotonic predicate before writing code.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Common Mistakes</h4>
+          <ul>
+            <li>Binary searching the array index instead of the solution space.</li>
+            <li>Using <code>mid := (l+r)/2</code> without thinking about overflow or integer rounding.</li>
+            <li>Greedy checker is subtly wrong on edge cases, so the binary search converges to garbage.</li>
+            <li>Forgetting whether the answer should bias leftmost true or rightmost true.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block" style="margin-bottom:.75rem;">
+        <h4>Problems</h4>
+        <div class="problems-list">
+          <div class="problem-item"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank">#875 Koko Eating Bananas</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/" target="_blank">#1011 Capacity To Ship Packages Within D Days</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank">#410 Split Array Largest Sum</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/minimize-max-distance-to-gas-station/" target="_blank">#774 Minimize Max Distance to Gas Station</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-running-time-of-n-computers/" target="_blank">#2141 Maximum Running Time of N Computers</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/" target="_blank">#1283 Smallest Divisor Given a Threshold</a><span class="difficulty medium">Med</span></div>
+        </div>
+      </div>
+      <div class="go-tip">
+        <h4>Go Tip</h4>
+        <p>Template: <code>for l &lt; r { mid := l + (r-l)/2; if feasible(mid) { r = mid } else { l = mid + 1 } }</code>. Keep <code>feasible</code> pure and side-effect free so you can unit test it separately.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">PAT 02</span>
+      <span class="day-name">Monotonic Stack / Deque + Contribution Technique</span>
+      <span class="day-pattern">Range Reasoning</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>Core Insight</h4>
+          <ul>
+            <li>Each element contributes to some range where it is minimum, maximum, or first blocker.</li>
+            <li>Monotonic stack gives previous/next smaller or greater in O(n).</li>
+            <li>Deque handles sliding window extrema while keeping candidates ordered.</li>
+            <li>This pattern shows up far more often than candidates expect.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>What Good Explanations Sound Like</h4>
+          <ul>
+            <li>"I am not computing every subarray. I am counting each index's contribution."</li>
+            <li>"The stack stores unresolved candidates whose boundary hasn't been discovered yet."</li>
+            <li>"Each index is pushed and popped once, so this is amortized O(n)."</li>
+            <li>"I need strict vs non-strict inequality to avoid double counting duplicates."</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block" style="margin-bottom:.75rem;">
+        <h4>Problems</h4>
+        <div class="problems-list">
+          <div class="problem-item"><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">#84 Largest Rectangle in Histogram</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank">#239 Sliding Window Maximum</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank">#907 Sum of Subarray Minimums</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/online-stock-span/" target="_blank">#901 Online Stock Span</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank">#862 Shortest Subarray With Sum At Least K</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">#739 Daily Temperatures</a><span class="difficulty medium">Med</span></div>
+        </div>
+      </div>
+      <div class="go-tip">
+        <h4>Go Tip</h4>
+        <p>Use a plain <code>[]int</code> slice as stack for indices. For deque, keep head index instead of repeatedly slicing from the front to avoid hidden reallocations.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">PAT 03</span>
+      <span class="day-name">Union-Find + Offline Query Thinking</span>
+      <span class="day-pattern">Connectivity</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>Why This Matters</h4>
+          <ul>
+            <li>DSU turns repeated graph connectivity checks into near O(1) unions and finds.</li>
+            <li>Offline sorting by weight/time/value often unlocks much simpler solutions.</li>
+            <li>Shows maturity: you know when not to rerun BFS/DFS from scratch.</li>
+            <li>Very common in infra-style interview questions about connectivity and partitioning.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Implementation Notes</h4>
+          <ul>
+            <li>Always use path compression + union by size/rank.</li>
+            <li>Model components count explicitly when the question asks "how many groups remain?"</li>
+            <li>For offline queries, sort both edges and queries by threshold, then sweep once.</li>
+            <li>Good candidates explain why DSU cannot handle arbitrary deletions without rollback tricks.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block" style="margin-bottom:.75rem;">
+        <h4>Problems</h4>
+        <div class="problems-list">
+          <div class="problem-item"><a href="https://leetcode.com/problems/redundant-connection/" target="_blank">#684 Redundant Connection</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/number-of-operations-to-make-network-connected/" target="_blank">#1319 Number of Operations to Make Network Connected</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/checking-existence-of-edge-length-limited-paths/" target="_blank">#1697 Edge Length Limited Paths</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/" target="_blank">#947 Most Stones Removed</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/satisfiability-of-equality-equations/" target="_blank">#990 Satisfiability of Equality Equations</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/regions-cut-by-slashes/" target="_blank">#959 Regions Cut By Slashes</a><span class="difficulty medium">Med</span></div>
+        </div>
+      </div>
+      <div class="go-tip">
+        <h4>Go Tip</h4>
+        <p>Represent DSU as two slices: <code>parent []int</code> and <code>size []int</code>. Make <code>find</code> iterative if you want to avoid recursion depth concerns in very large inputs.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">PAT 04</span>
+      <span class="day-name">Trie / Bitwise Trie / Indexed Strings</span>
+      <span class="day-pattern">String + XOR</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>When To Reach For It</h4>
+          <ul>
+            <li>Prefix search, autocomplete, dictionary segmentation, wildcard expansion.</li>
+            <li>Bitwise trie when maximizing XOR or answering bounded XOR queries.</li>
+            <li>Senior signal: pick trie only when it simplifies repeated prefix work, not by habit.</li>
+            <li>Memory trade-off matters; say it out loud.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Design Judgment</h4>
+          <ul>
+            <li>Trie is fast but memory-hungry; hashmap may win for sparse datasets.</li>
+            <li>Compressed trie / radix tree is often the production answer.</li>
+            <li>For autocomplete, combine trie prefix lookup with heap/top-k ranking metadata.</li>
+            <li>For XOR trie, iterate bits from high to low and greedily choose the opposite branch.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block" style="margin-bottom:.75rem;">
+        <h4>Problems</h4>
+        <div class="problems-list">
+          <div class="problem-item"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">#208 Implement Trie</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank">#211 Add and Search Word</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/word-search-ii/" target="_blank">#212 Word Search II</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/" target="_blank">#421 Maximum XOR of Two Numbers</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-with-an-element-from-array/" target="_blank">#1707 Maximum XOR With an Element From Array</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/search-suggestions-system/" target="_blank">#1268 Search Suggestions System</a><span class="difficulty medium">Med</span></div>
+        </div>
+      </div>
+      <div class="go-tip">
+        <h4>Go Tip</h4>
+        <p>For lowercase-only trie, <code>[26]*Node</code> is much faster than <code>map[byte]*Node</code>. Use maps only when the alphabet is sparse or dynamic.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">PAT 05</span>
+      <span class="day-name">Intervals / Sweep Line / Difference Array</span>
+      <span class="day-pattern">Events</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>Pattern Summary</h4>
+          <ul>
+            <li>Sort starts/ends or build event points and process them in order.</li>
+            <li>Difference arrays turn repeated range updates into two boundary writes.</li>
+            <li>Heap often appears when you need "currently active" intervals.</li>
+            <li>This pattern is common in scheduling, meeting rooms, booking, and traffic analytics.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>What Strong Candidates Say</h4>
+          <ul>
+            <li>"I only care when state changes, so I can compress work into events."</li>
+            <li>"Tie-breaking start vs end events changes correctness; I need to define it explicitly."</li>
+            <li>"Difference array works because each query updates a contiguous range."</li>
+            <li>"Heap stores the active intervals by the one attribute I need next."</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-block" style="margin-bottom:.75rem;">
+        <h4>Problems</h4>
+        <div class="problems-list">
+          <div class="problem-item"><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">#253 Meeting Rooms II</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/the-skyline-problem/" target="_blank">#218 The Skyline Problem</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/my-calendar-iii/" target="_blank">#732 My Calendar III</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/car-pooling/" target="_blank">#1094 Car Pooling</a><span class="difficulty medium">Med</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/employee-free-time/" target="_blank">#759 Employee Free Time</a><span class="difficulty hard">Hard</span></div>
+          <div class="problem-item"><a href="https://leetcode.com/problems/range-addition/" target="_blank">#370 Range Addition</a><span class="difficulty medium">Med</span></div>
+        </div>
+      </div>
+      <div class="go-tip">
+        <h4>Go Tip</h4>
+        <p>For sweep line event sorting, define a small struct and use <code>sort.Slice</code> with explicit tie-break rules. Hidden tie-break bugs are the main reason these solutions fail.</p>
       </div>
     </div>
   </div>
@@ -1159,7 +1422,42 @@
     <span class="week-title">Machine Coding Round — Go Solutions</span>
     <span class="week-theme" style="background:rgba(91,143,255,0.1);border-color:rgba(91,143,255,0.3);color:var(--accent3);">FULL SOLUTIONS</span>
   </div>
-  <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;">Complete, production-quality Go solutions for the most frequently asked machine coding problems at 5-year experience level. Each includes design decisions, edge cases, and follow-up extensions. Code is copy-paste runnable.</p>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;">This section is intentionally outside the 30-day timeline. Use it when you want machine-coding depth, not calendar discipline. Complete, production-quality Go solutions for the most frequently asked machine coding problems at 5-year experience level. Each includes design decisions, edge cases, and follow-up extensions.</p>
+
+  <div class="day-card">
+    <div class="day-header" onclick="toggle(this)">
+      <span class="day-num">MC MAP</span>
+      <span class="day-name">Machine Coding Round — What To Practice First</span>
+      <span class="day-pattern">Strategy</span>
+      <span class="day-toggle">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-grid">
+        <div class="info-block">
+          <h4>Round Structure</h4>
+          <ul>
+            <li>First 5-10 min: clarify API, concurrency needs, error behavior, and extensibility requirements.</li>
+            <li>Next 10 min: design interfaces + structs before full implementation.</li>
+            <li>Middle 25-35 min: build the happy path and one strong invariant.</li>
+            <li>Final 10 min: edge cases, thread safety, tests you would write, and follow-up extensions.</li>
+          </ul>
+        </div>
+        <div class="info-block">
+          <h4>Prompt Families To Cover</h4>
+          <ul>
+            <li>Caches, rate limiters, key-value stores, and schedulers.</li>
+            <li>Pub-sub, worker pools, retry queues, and job executors.</li>
+            <li>Elevator, parking lot, splitwise, snake-ladder, and book-my-show style object models.</li>
+            <li>Leaderboard, autocomplete, notification service, and in-memory databases.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="go-tip">
+        <h4>Interview Signal</h4>
+        <p>The machine-coding differentiator is not writing the most code. It is choosing the right abstractions early, naming invariants, and being explicit about concurrency, cleanup, and testability.</p>
+      </div>
+    </div>
+  </div>
 
   <!-- Rate Limiter -->
   <div class="day-card">
@@ -1190,6 +1488,7 @@
           </ul>
         </div>
       </div>
+
       <div class="info-block" style="margin-bottom:.75rem;">
         <h4>Complete Go Solution</h4>
         <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;margin-top:.5rem;"><code><span style="color:#6b7385;">// ── Token Bucket Rate Limiter ────────────────────────────</span>
@@ -1881,6 +2180,22 @@
         <p>Mention Redis does <strong>both</strong> lazy expiry (check on access) AND active expiry (periodic scan of 20 random keys with TTL). Your cleanupLoop mirrors that. For scale, mention sharding: <code>N shards = N separate maps each with own RWMutex</code> — shard by <code>hash(key) % N</code>. This is how BigCache and groupcache work in Go production.</p>
       </div>
     </div>
+  </div>
+
+  <div class="checkpoint-card" style="background:rgba(91,143,255,0.05);border-color:rgba(91,143,255,0.18);margin-top:1.25rem;">
+    <h3 style="color:var(--accent3);">More Machine Coding Prompts To Add To Your Rotation</h3>
+    <ul>
+      <li><strong>Scheduler:</strong> delayed job queue with retry, backoff, and idempotency key support.</li>
+      <li><strong>Leaderboard:</strong> top-K, surrounding rank, seasonal reset, tie handling.</li>
+      <li><strong>Autocomplete:</strong> top suggestions by prefix with incremental updates.</li>
+      <li><strong>Splitwise:</strong> balance graph, minimize cash flow, expense settlement rules.</li>
+      <li><strong>Parking Lot:</strong> slot allocation strategy, concurrency-safe entry/exit, pricing policy.</li>
+      <li><strong>BookMyShow:</strong> seat locking with TTL, payment success/failure flow, race prevention.</li>
+      <li><strong>Snake and Ladder / Tic-Tac-Toe:</strong> low-level design, move validation, state machine.</li>
+      <li><strong>File System:</strong> path trie, create/list/delete, metadata cache, permission hooks.</li>
+      <li><strong>Notification Service:</strong> channel abstraction, retries, dedup, user preferences.</li>
+      <li><strong>Mini Redis:</strong> strings + lists + expiry + append-only persistence.</li>
+    </ul>
   </div>
 
 </div>
