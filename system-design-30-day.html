@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
+/* ── SITE DESIGN SYSTEM ────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 :root{
@@ -20,14 +21,14 @@ html{scroll-behavior:smooth}
   --r:6px;--r-lg:12px;
 }
 body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
-nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+nav{position:sticky;top:0;z-index:200;background:var(--paper);border-bottom:1px solid var(--rule)}
 .nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}
 .nav-back:hover{color:var(--ink)}
 .nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
 .wrap{max-width:1060px;margin:0 auto;padding:0 32px}
 @media(max-width:700px){.wrap{padding:0 20px}}
-.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 0}
 @media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
 .toc{position:sticky;top:72px}
 @media(max-width:900px){.toc{display:none}}
@@ -53,25 +54,73 @@ h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;disp
 h3.sub-h::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
 p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
 p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+p.body strong{color:var(--ink);font-weight:500}
 .callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
 .callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
 .callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
 .code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
 .code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
 .code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
-.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
-.code-copy:hover{color:var(--ink)}
-pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
-.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.code-copy-btn{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
+.code-copy-btn:hover{color:var(--ink)}
+pre.site-pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}
+.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
 .table-wrap{overflow-x:auto;margin:16px 0}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{border-bottom:2px solid var(--rule)}
-thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
-tbody tr{border-bottom:1px solid var(--rule)}
-tbody tr:last-child{border-bottom:none}
-tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
-tbody td:first-child{font-weight:500;color:var(--ink)}
-tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+table.site-table{width:100%;border-collapse:collapse;font-size:13px}
+table.site-table thead tr{border-bottom:2px solid var(--rule)}
+table.site-table thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+table.site-table tbody tr{border-bottom:1px solid var(--rule)}
+table.site-table tbody tr:last-child{border-bottom:none}
+table.site-table tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+table.site-table tbody td:first-child{font-weight:500;color:var(--ink)}
+table.site-table tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.design-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:24px;margin:12px 0}
+.dc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.dc-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:12px}
+.dc-body{font-size:13px;color:var(--ink-2);line-height:1.7}
+.dc-body strong{color:var(--ink);font-weight:500}
+.dc-body p{margin-bottom:8px}
+.dc-body p:last-child{margin-bottom:0}
+.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:32px;margin:32px 0}
+.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.cp-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--paper);margin-bottom:16px}
+.cp-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
+.cp-item::before{content:'→';color:var(--lime);flex-shrink:0;font-family:var(--mono)}
+.latency-table{display:grid;grid-template-columns:1fr auto;gap:0;border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;margin:16px 0}
+.lt-row{display:contents}
+.lt-name{font-size:13px;color:var(--ink-2);padding:9px 16px;border-bottom:1px solid var(--rule)}
+.lt-val{font-family:var(--mono);font-size:12px;color:var(--ink);padding:9px 16px;border-bottom:1px solid var(--rule);text-align:right;background:var(--paper-2)}
+.lt-row:last-child .lt-name,.lt-row:last-child .lt-val{border-bottom:none}
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
+
+/* ── PATTERNS WIDGET EMBED ─────────────────────────────────────────── */
+.patterns-section{
+  background:var(--paper);
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  margin:0;
+  padding:48px 0 0;
+}
+.patterns-section-head{
+  max-width:1060px;margin:0 auto;padding:0 32px 32px;
+}
+.patterns-embed{
+  width:100%;
+  height:680px;
+  border:none;
+  display:block;
+  border-top:1px solid var(--rule);
+}
+@media(max-width:700px){.patterns-embed{height:100vh}}
+
+/* ── PATTERN GRID (fallback inline cards) ──────────────────────────── */
 .pattern-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
 @media(max-width:600px){.pattern-grid{grid-template-columns:1fr}}
 .pattern-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
@@ -80,26 +129,10 @@ tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);p
 .pc-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px}
 .pc-desc{font-size:12px;color:var(--ink-3);line-height:1.6;margin-bottom:8px}
 .pc-usecase{font-family:var(--mono);font-size:10px;color:var(--ink-4)}
-.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:32px;margin:32px 0}
-.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
-.cp-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--paper);margin-bottom:16px}
-.cp-list{list-style:none;display:flex;flex-direction:column;gap:8px}
-.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
-.cp-item::before{content:'→';color:var(--lime);flex-shrink:0;font-family:var(--mono)}
-.design-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:24px;margin:12px 0}
-.dc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
-.dc-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:12px}
-.dc-body{font-size:13px;color:var(--ink-2);line-height:1.7}
-.dc-body strong{color:var(--ink);font-weight:500}
-.latency-table{display:grid;grid-template-columns:1fr auto;gap:0;border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;margin:16px 0}
-.lt-row{display:contents}
-.lt-name{font-size:13px;color:var(--ink-2);padding:9px 16px;border-bottom:1px solid var(--rule);font-family:var(--sans)}
-.lt-val{font-family:var(--mono);font-size:12px;color:var(--ink);padding:9px 16px;border-bottom:1px solid var(--rule);text-align:right;background:var(--paper-2)}
-.lt-row:last-child .lt-name,.lt-row:last-child .lt-val{border-bottom:none}
-footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-back">← Platform</a>
@@ -107,13 +140,15 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
   </div>
 </nav>
 
+<!-- ── MAIN ARTICLE ──────────────────────────────────────────────── -->
 <div class="wrap">
 <div class="doc-layout">
+
   <aside class="toc">
     <div class="toc-label">Contents</div>
     <ul class="toc-list">
       <li class="toc-item"><a href="#framework">45-Min Framework</a></li>
-      <li class="toc-item"><a href="#patterns">12 Patterns</a></li>
+      <li class="toc-item"><a href="#patterns">12 Patterns — Live App</a></li>
       <li class="toc-item"><a href="#api">API Design</a></li>
       <li class="toc-item"><a href="#numbers">Numbers to Know</a></li>
       <li class="toc-item"><a href="#week1">Week 1 · Foundations</a></li>
@@ -121,6 +156,7 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <li class="toc-item"><a href="#week3">Week 3 · Messaging</a></li>
       <li class="toc-item"><a href="#week4">Week 4 · Full Designs</a></li>
       <li class="toc-item"><a href="#week5">Week 5 · AI Systems</a></li>
+      <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
     </ul>
   </aside>
 
@@ -128,15 +164,15 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     <div class="article-header">
       <div class="art-eyebrow">
         <span class="art-badge">Flagship</span>
-        HLD + LLD · API Design · 12 Patterns · AI Agents
+        HLD + LLD · 12 Patterns · API Design · AI Agents
       </div>
       <h1 class="art-title">System Design<br><em>in 30 Days</em></h1>
-      <p class="art-subtitle">From CAP theorem to designing WhatsApp, YouTube, Uber, and Twitter at scale — with HLD frameworks, LLD concurrency patterns, 12 universal patterns, full API design, and a complete Week 5 on AI agent systems. Interview-ready by Day 30.</p>
+      <p class="art-subtitle">From CAP theorem to designing WhatsApp, YouTube, Uber, and Twitter at scale. HLD frameworks, LLD concurrency patterns, 12 universal patterns with live Go code, full API design, and Week 5 on AI agent systems.</p>
       <div class="art-meta">
         <div class="meta-pill"><div class="meta-pill-dot"></div>36 days total</div>
         <div class="meta-pill"><div class="meta-pill-dot"></div>~2h per day</div>
         <div class="meta-pill"><div class="meta-pill-dot"></div>14 full system designs</div>
-        <div class="meta-pill"><div class="meta-pill-dot"></div>HLD + LLD covered</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>12 patterns with Go code</div>
       </div>
     </div>
 
@@ -146,17 +182,17 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <h2 class="section-h">The Universal 45-Minute Framework</h2>
     </div>
 
-    <p class="body">Every system design interview has the same structure underneath the specific problem. The candidate who controls the room doesn't answer questions — they drive through a structure that makes their thinking legible. Here's the framework, minute by minute.</p>
+    <p class="body">Every system design interview has the same structure underneath the specific problem. The candidate who controls the room doesn't answer questions — they drive a structure that makes their thinking legible. Here's the framework, minute by minute.</p>
 
     <div class="table-wrap">
-      <table>
+      <table class="site-table">
         <thead><tr><th>Time</th><th>Phase</th><th>What to do</th></tr></thead>
         <tbody>
-          <tr><td>0–5 min</td><td>Clarify requirements</td><td>Ask before drawing anything. Users, scale (DAU, RPS), read:write ratio, latency SLA, consistency requirements, global or single region. You drive this — don't wait to be asked.</td></tr>
-          <tr><td>5–10 min</td><td>Capacity estimation</td><td>Back-of-envelope math. "100M users, 10% DAU = 10M/day, 1 post each = 115 writes/sec, 20× read:write = 2.3K reads/sec." Then: CPU-bound, memory-bound, I/O-bound, or network-bound? That determines the architecture.</td></tr>
-          <tr><td>10–20 min</td><td>HLD — APIs + core flow</td><td>Define 2–3 key API endpoints first. Draw the 5-layer diagram. Identify which of the 12 patterns this maps to. Stay at one abstraction level — no class fields yet. State what you're skipping: "I'll skip auth for now and focus on the write path."</td></tr>
-          <tr><td>20–35 min</td><td>Deep dive — hardest component</td><td>Ask "Where should I go deep?" or pick it yourself. Show internals: why Cassandra for messages (LSM-tree, write-optimized), why Redis ZSET for feeds (O(log n) insert, sorted by score), why Kafka for fan-out (durable, replayable). This is where you differentiate from mid-level.</td></tr>
-          <tr><td>35–45 min</td><td>Trade-offs + wrap-up</td><td>Surface limitations proactively. "One bottleneck is celebrity fan-out — I'd handle it with hybrid push/pull." End with: "What aspect would you like me to go deeper on?" — shows you're comfortable driving the conversation.</td></tr>
+          <tr><td>0–5 min</td><td>Clarify requirements</td><td>Ask before drawing. Users, scale (DAU, RPS), read:write ratio, latency SLA, consistency requirement, global or single region. You drive this — don't wait to be asked.</td></tr>
+          <tr><td>5–10 min</td><td>Capacity estimation</td><td>"100M users, 10% DAU = 10M/day, 1 post each = 115 writes/sec, 20× read:write = 2.3K reads/sec." Then: CPU-bound, memory-bound, I/O-bound? That determines the architecture.</td></tr>
+          <tr><td>10–20 min</td><td>HLD — APIs + core flow</td><td>Define 2–3 key API endpoints first. Draw the 5-layer diagram. Identify which of the 12 patterns this maps to. Stay at one abstraction level — no class fields yet.</td></tr>
+          <tr><td>20–35 min</td><td>Deep dive — hardest component</td><td>Ask "Where should I go deep?" or pick it yourself. Show internals: why Cassandra (LSM-tree, write-optimized), why Redis ZSET (O(log n), sorted by score), why Kafka (durable, replayable). This is where senior separates from mid.</td></tr>
+          <tr><td>35–45 min</td><td>Trade-offs + wrap-up</td><td>Surface limitations proactively. "One bottleneck is celebrity fan-out — I'd handle it with hybrid push/pull." End with: "What aspect would you like me to go deeper on?"</td></tr>
         </tbody>
       </table>
     </div>
@@ -167,137 +203,721 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     </div>
 
     <h3 class="sub-h">The 5-Layer HLD Architecture</h3>
-    <p class="body">Every system maps to this structure. The skill is knowing which components go in each layer for your specific design, and being able to annotate every arrow with the protocol and every box with the scale number.</p>
-
     <div class="code-wrap">
-      <div class="code-head"><span class="code-lang">architecture — 5-layer template</span><button class="code-copy">copy</button></div>
-      <pre><span class="t-c">LAYER 1 — CLIENT</span>
-<span class="t-r">  Mobile / Web / 3rd Party  [HTTPS]</span>
+      <div class="code-head"><span class="code-lang">architecture — 5-layer template</span><button class="code-copy-btn">copy</button></div>
+      <pre class="site-pre"><span class="t-c">LAYER 1 — CLIENT</span>
+<span class="t-r">  Mobile / Web / 3rd Party  [HTTPS/gRPC]</span>
     <span class="t-p">↓</span>
 <span class="t-c">LAYER 2 — EDGE</span>
 <span class="t-r">  CDN · GeoDNS · Load Balancer · API Gateway</span>
 <span class="t-r">  (auth · rate limit · SSL termination · routing)</span>
     <span class="t-p">↓</span>
 <span class="t-c">LAYER 3 — SERVICES</span>
-<span class="t-r">  Stateless Microservices (each owns its domain,</span>
-<span class="t-r">  independently deployable, independently scalable)</span>
-    <span class="t-p">↓ async</span>
+<span class="t-r">  Stateless Microservices — each owns its domain</span>
+    <span class="t-p">↓ async via Kafka</span>
 <span class="t-c">LAYER 4 — MESSAGING</span>
-<span class="t-r">  Kafka · SQS · RabbitMQ</span>
-<span class="t-r">  (async decoupling, backpressure, event replay)</span>
-    <span class="t-p">↓ read/write</span>
+<span class="t-r">  Kafka · SQS · (async decoupling, backpressure, replay)</span>
+    <span class="t-p">↓</span>
 <span class="t-c">LAYER 5 — DATA</span>
-<span class="t-r">  Primary DB (SQL / NoSQL) · Cache (Redis)</span>
-<span class="t-r">  Search (Elasticsearch) · Object Store (S3)</span>
+<span class="t-r">  Primary DB (SQL/NoSQL) · Cache (Redis) · Search (ES) · Object Store (S3)</span>
 
-<span class="t-c">Latency per hop (memorise these):</span>
-<span class="t-r">  DNS lookup    ~30ms (first; cached after)</span>
-<span class="t-r">  CDN hit       ~5ms</span>
-<span class="t-r">  Redis GET     ~0.5ms</span>
-<span class="t-r">  DB query      ~5–20ms (indexed)</span>
-<span class="t-r">  p50 end-to-end: 50–100ms</span>
+<span class="t-c">Latency per hop (know these cold):</span>
+<span class="t-r">  Redis GET        ~0.5ms   |  CDN hit         ~5ms</span>
+<span class="t-r">  DB query (index) ~5–20ms  |  Cross-region    ~80–150ms</span>
 <span class="t-r">  p99 bottleneck: almost always DB miss or missing cache</span></pre>
     </div>
 
-    <!-- 12 PATTERNS -->
+    <!-- PATTERNS ANCHOR — the widget is below the article, full-width -->
     <div id="patterns" class="section-anchor">
       <span class="section-num">01</span>
-      <h2 class="section-h">The 12 Universal Patterns</h2>
+      <h2 class="section-h">12 Universal Patterns — Interactive Deep Dive</h2>
     </div>
 
-    <p class="body">Every system design question maps to one or more of these 12 patterns. Identify the pattern first — the specific trade-offs follow automatically. The decision tree at the bottom is what you run through in the first 2 minutes after clarifying requirements.</p>
-
-    <div class="pattern-grid">
-      <div class="pattern-card">
-        <div class="pc-num">01 · Read Heavy</div>
-        <div class="pc-tag" style="background:#e0f7f0;color:#0a7060;border:1px solid #a0e0d0">Cache-Aside + Read Replicas</div>
-        <div class="pc-title">Cache-Aside + Read Replicas</div>
-        <div class="pc-desc">App checks Redis first → miss → read DB → populate cache. Add read replicas to distribute query load. Critical question: what's the invalidation strategy? TTL vs event-driven.</div>
-        <div class="pc-usecase">Social feeds · Product pages · YouTube view counts</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">02 · Write Heavy</div>
-        <div class="pc-tag" style="background:#fff8e0;color:#a06000;border:1px solid #ffd880">Write-Ahead Queue + Async</div>
-        <div class="pc-title">Queue + Async Workers</div>
-        <div class="pc-desc">Writes go to Kafka/SQS first, workers process async. Decouples ingestion from processing. Backpressure = queue depth. Key: exactly-once semantics? Idempotency key on each message.</div>
-        <div class="pc-usecase">Analytics events · IoT telemetry · Email queue · Logs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">03 · Real-Time</div>
-        <div class="pc-tag" style="background:#edf2ff;color:#2060c8;border:1px solid #c5d8ff">WebSocket + Pub-Sub</div>
-        <div class="pc-title">WebSocket + Pub-Sub Backend</div>
-        <div class="pc-desc">Persistent WebSocket connections, backend pub-sub (Redis/Kafka) fans out to all connection servers. Key: reconnect + replay from last received sequence number. Presence via heartbeat TTL.</div>
-        <div class="pc-usecase">Chat · Live scores · Collaborative editing · Dashboards</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">04 · Global Scale</div>
-        <div class="pc-tag" style="background:#f3eeff;color:#6030a0;border:1px solid #d8c0f8">CDN + GeoDNS</div>
-        <div class="pc-title">CDN + GeoDNS + Edge Cache</div>
-        <div class="pc-desc">Static assets from CDN edge. GeoDNS routes to nearest PoP. Origin shield collapses cache misses. Key: invalidation at edge, data residency laws, cache-control header strategy.</div>
-        <div class="pc-usecase">Netflix · YouTube delivery · Global APIs · Static assets</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">05 · Distributed Tx</div>
-        <div class="pc-tag" style="background:#ffeee0;color:#b04010;border:1px solid #ffccaa">Saga Pattern</div>
-        <div class="pc-title">Saga (Choreography / Orchestration)</div>
-        <div class="pc-desc">Break multi-service transaction into steps. Each step publishes an event. On failure: compensating transactions roll back in reverse order. Key: idempotent compensations. Orchestration = easier to debug.</div>
-        <div class="pc-usecase">E-commerce checkout · Flight booking · Bank transfer</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">06 · Dual Write</div>
-        <div class="pc-tag" style="background:#e0f7f0;color:#0a7060;border:1px solid #a0e0d0">Outbox + CDC</div>
-        <div class="pc-title">Outbox Pattern + CDC (Debezium)</div>
-        <div class="pc-desc">Write to DB + Outbox table in the same transaction. Debezium reads WAL → publishes to Kafka. Atomicity in DB, eventual delivery to bus. Eliminates the dual-write failure mode entirely.</div>
-        <div class="pc-usecase">Any service writing to DB AND publishing events</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">07 · Search</div>
-        <div class="pc-tag" style="background:#fff8e0;color:#a06000;border:1px solid #ffd880">Inverted Index + ES</div>
-        <div class="pc-title">Inverted Index + ES Sync via CDC</div>
-        <div class="pc-desc">Primary DB = source of truth. Elasticsearch = read-optimized search replica, synced via Kafka CDC. Hybrid search: ANN (semantic) + BM25 (keyword) + RRF fusion for best precision.</div>
-        <div class="pc-usecase">Airbnb search · LinkedIn · Product catalog · Legal docs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">08 · Geo Proximity</div>
-        <div class="pc-tag" style="background:#edf2ff;color:#2060c8;border:1px solid #c5d8ff">Geohash + Redis GEO</div>
-        <div class="pc-title">Geohash Grid + Redis GEOSEARCH</div>
-        <div class="pc-desc">Encode lat/lng as geohash string. Query neighboring cells. Redis GEOSEARCH for radius. Update moving objects via WebSocket. Key: precision vs cell size — shorter hash = larger cell = less precision.</div>
-        <div class="pc-usecase">Uber driver matching · Yelp nearby · Tinder radius</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">09 · Rate Limiting</div>
-        <div class="pc-tag" style="background:#f3eeff;color:#6030a0;border:1px solid #d8c0f8">Token Bucket</div>
-        <div class="pc-title">Token Bucket / Sliding Window</div>
-        <div class="pc-desc">API Gateway checks Redis before forwarding. Token bucket for burst-friendly limiting. Sliding window counter for precise limits. Return 429 + Retry-After. Distributed: consistent hash user_id to Redis shard.</div>
-        <div class="pc-usecase">API platform · Payment gateway · SMS OTP</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">10 · Unique IDs</div>
-        <div class="pc-tag" style="background:#ffeee0;color:#b04010;border:1px solid #ffccaa">Snowflake ID</div>
-        <div class="pc-title">Snowflake ID / UUID v7</div>
-        <div class="pc-desc">Snowflake: 64-bit = 41-bit timestamp + 10-bit machine + 12-bit seq. Sortable, ~4096 IDs/ms/node, no coordination needed. UUID v7: time-ordered + universally unique. Both enable index locality.</div>
-        <div class="pc-usecase">Tweet IDs · Order IDs · Message IDs · Media IDs</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">11 · CQRS</div>
-        <div class="pc-tag" style="background:#e0f7f0;color:#0a7060;border:1px solid #a0e0d0">Command Query Separation</div>
-        <div class="pc-title">CQRS — Separate Read/Write Models</div>
-        <div class="pc-desc">Write model: normalized DB for consistency. Read model: denormalized store (Redis, Cassandra) optimised for each query pattern. Commands produce events that update multiple read models. Eventual consistency.</div>
-        <div class="pc-usecase">E-commerce (orders write, catalog read) · Banking ledger</div>
-      </div>
-      <div class="pattern-card">
-        <div class="pc-num">12 · Resilience</div>
-        <div class="pc-tag" style="background:#fff8e0;color:#a06000;border:1px solid #ffd880">Circuit Breaker</div>
-        <div class="pc-title">Circuit Breaker + Bulkhead + Retry</div>
-        <div class="pc-desc">Circuit breaker opens on failure threshold → fail fast. Bulkhead: isolate thread pools per dependency. Retry with exponential backoff + jitter. Timeout on every downstream call. Add this to every design.</div>
-        <div class="pc-usecase">Any service with downstream dependencies — always add this</div>
-      </div>
-    </div>
+    <p class="body">Every system design question maps to one or more of these 12 patterns. The interactive app below covers each pattern with: request flow diagram, production Go code, full trade-off analysis, and a staff-level insight. Use keyboard shortcuts — arrow keys to navigate, <code>q/w/e/r</code> to switch tabs.</p>
 
     <div class="callout" style="--callout-color:var(--amber);--callout-bg:#fff8e0">
-      <div class="callout-label">Pattern Decision Tree</div>
-      <p>Read:write &gt; 5:1 → Pattern 01 (cache). Write &gt; 50K/s → Pattern 02 (queue). Server must push → Pattern 03 (WebSocket). Global &lt;100ms → Pattern 04 (CDN). Multiple services in one tx → Pattern 05 (saga). DB write + publish event → Pattern 06 (outbox). Full-text search → Pattern 07. Location queries → Pattern 08. API abuse → Pattern 09. Unique IDs at scale → Pattern 10. Different read/write models → Pattern 11. Has downstream deps → Pattern 12 (always).</p>
+      <div class="callout-label">Pattern decision tree — run this in the first 2 minutes</div>
+      <p>Read:write &gt;5:1 → P01 (cache). Writes &gt;50K/s → P02 (queue). Server must push → P03 (WebSocket). Global &lt;100ms → P04 (CDN). Multi-service tx → P05 (saga). DB write + event → P06 (outbox). Full-text search → P07. Location queries → P08. API abuse → P09 (rate limit). Unique IDs at scale → P10. Read/write models differ → P11 (CQRS). Has downstream deps → P12 (always).</p>
     </div>
+
+  </article>
+</div>
+</div>
+
+<!-- ── FULL-WIDTH PATTERNS INTERACTIVE APP ──────────────────────────── -->
+<div class="patterns-section" id="patterns-app">
+  <div class="patterns-section-head">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Interactive · Go Code · Trade-offs · Staff Insights</div>
+    <div style="font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink)">12 System Design Patterns</div>
+    <div style="font-size:13px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)">← → arrow keys to navigate · q/w/e/r to switch tabs · t to toggle theme</div>
+  </div>
+</div>
+
+<!-- ── PATTERNS APP INLINE (full fidelity, no iframe) ──────────────── -->
+<div id="patternsApp" style="background:#07070E;border-top:2px solid var(--rule);font-family:'JetBrains Mono',monospace">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Scoped to #patternsApp */
+#patternsApp{--bg:#07070E;--surface:#0F0F1A;--surface2:#13131F;--border:#1C1C2E;--ptext:#E4E4F0;--muted:#5A5A7A;--code-bg:#09090F;--code-text:#C8C8E8;--hero-text:#A0A0C0;--tradeoff-text:#C0C0D8;--insight-text:#D0D0E8;--legend-text:#8888A8;--mono2:'JetBrains Mono',monospace;--sans2:'Syne',sans-serif}
+#patternsApp *{box-sizing:border-box;margin:0;padding:0}
+#pApp-body{display:flex;height:600px;overflow:hidden}
+#pApp-sidebar{width:230px;flex-shrink:0;border-right:1px solid #1C1C2E;background:#0F0F1A;display:flex;flex-direction:column;overflow:hidden}
+#pApp-search{padding:10px 8px 6px}
+#pApp-search input{width:100%;background:#07070E;border:1px solid #1C1C2E;border-radius:6px;padding:6px 10px;color:#E4E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;outline:none}
+#pApp-search input:focus{border-color:#333}
+#pApp-sidebar-list{flex:1;overflow-y:auto;padding:0 8px 8px}
+#pApp-sidebar-list::-webkit-scrollbar{width:4px}
+#pApp-sidebar-list::-webkit-scrollbar-thumb{background:#1C1C2E;border-radius:2px}
+.pApp-pbtn{width:100%;background:#13131F;border:1px solid #1C1C2E;border-radius:7px;padding:9px 11px;cursor:pointer;text-align:left;margin-bottom:4px;transition:all .15s}
+.pApp-pbtn:hover{border-color:#333;background:#171725}
+.pApp-pb-row{display:flex;align-items:center;gap:8px}
+.pApp-pb-icon{font-size:15px}
+.pApp-pb-info{flex:1;min-width:0}
+.pApp-pb-tag{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:.1em}
+.pApp-pb-title{font-size:12px;font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#E4E4F0}
+#pApp-dtree{margin:8px;padding:10px;background:#07070E;border:1px solid #1C1C2E;border-radius:8px}
+.pApp-dt-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:6px}
+.pApp-di{display:flex;gap:5px;margin-bottom:3px;align-items:flex-start}
+.pApp-di .arr{font-size:10px;flex-shrink:0;margin-top:1px}
+.pApp-di .txt{font-size:10px;color:#5A5A7A;line-height:1.4}
+#pApp-detail{flex:1;overflow-y:auto;padding:20px 24px;background:#07070E}
+#pApp-detail::-webkit-scrollbar{width:5px}
+#pApp-detail::-webkit-scrollbar-thumb{background:#1C1C2E;border-radius:2px}
+.pApp-hero{border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid transparent}
+.pApp-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.pApp-badges{display:flex;gap:6px;margin-bottom:10px}
+.pApp-badge{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:.12em;padding:3px 8px;border-radius:4px;border:1px solid transparent}
+.pApp-title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;line-height:1.2;font-family:'Syne',sans-serif;color:#E4E4F0}
+.pApp-tldr{font-size:13px;color:#A0A0C0;line-height:1.65;max-width:580px}
+.pApp-kq{margin-top:12px;padding:8px 12px;border-radius:6px;display:inline-block}
+.pApp-kq-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace}
+.pApp-kq-text{font-size:12px;font-weight:600;margin-top:1px}
+.pApp-uc{flex-shrink:0}
+.pApp-uc-label{font-size:10px;color:#5A5A7A;margin-bottom:5px;font-family:'JetBrains Mono',monospace;text-align:right}
+.pApp-uc-tag{font-size:11px;padding:3px 8px;border-radius:4px;margin-bottom:4px;text-align:right;display:block;font-family:'JetBrains Mono',monospace;border:1px solid transparent}
+.pApp-tabs{display:flex;gap:2px;border-bottom:1px solid #1C1C2E;margin-bottom:16px}
+.pApp-tab{background:transparent;border:none;border-bottom:2px solid transparent;color:#5A5A7A;padding:8px 15px;font-size:12px;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s;margin-bottom:-1px}
+.pApp-tab:hover{color:#E4E4F0}
+.pApp-tab.active{font-weight:700}
+.pApp-panel{display:none}
+.pApp-panel.active{display:block}
+.pApp-flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pApp-card{background:#0F0F1A;border:1px solid #1C1C2E;border-radius:10px;padding:16px}
+.pApp-card-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:12px}
+.pApp-flow-steps{display:flex;flex-direction:column}
+.pApp-fstep{display:flex;align-items:stretch}
+.pApp-fstep-line{display:flex;flex-direction:column;align-items:center;width:22px;flex-shrink:0}
+.pApp-fdot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pApp-fconn{width:2px;flex:1;opacity:.35}
+.pApp-fcontent{margin-left:8px;padding-bottom:10px;flex:1}
+.pApp-fname{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.pApp-fdetail{font-size:11px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;margin-top:2px;line-height:1.4}
+.pApp-legend-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pApp-ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.pApp-llabel{font-size:12px;color:#8888A8;font-family:'JetBrains Mono',monospace}
+.pApp-trigger{margin-top:14px;padding:10px 12px;border-radius:6px;border:1px solid transparent}
+.pApp-trig-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.pApp-trig-val{font-size:13px;font-weight:700}
+.pApp-to-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1C1C2E}
+.pApp-to-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.pApp-to-icon{font-size:14px;flex-shrink:0;margin-top:1px;font-weight:900}
+.pApp-to-text{font-size:13px;color:#C0C0D8;line-height:1.6}
+.pApp-code-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:6px}
+.pApp-code-wrap{position:relative}
+.pApp-copy-btn{position:absolute;top:8px;right:8px;background:#13131F;border:1px solid #1C1C2E;color:#5A5A7A;font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;z-index:1;font-family:'JetBrains Mono',monospace;transition:all .2s}
+.pApp-copy-btn:hover{border-color:#5A5A7A}
+.pApp-pre{background:#09090F;border:1px solid #1C1C2E;border-radius:8px;padding:16px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#C8C8E8;overflow:auto;max-height:340px;line-height:1.65;tab-size:2}
+.pApp-insight{border-radius:10px;padding:20px;border:1px solid transparent}
+.pApp-insight-hd{display:flex;gap:12px;align-items:flex-start}
+.pApp-insight-star{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#000;font-weight:900}
+.pApp-insight-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:8px}
+.pApp-insight-text{font-size:14px;color:#D0D0E8;line-height:1.75}
+.pApp-navbar{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid #1C1C2E}
+.pApp-navbtn{background:transparent;border:1px solid #1C1C2E;color:#E4E4F0;padding:8px 16px;border-radius:6px;font-size:12px;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s}
+.pApp-navbtn:hover:not(:disabled){border-color:#444}
+.pApp-navbtn:disabled{color:#5A5A7A;cursor:not-allowed}
+.pApp-navbtn.next{font-weight:600}
+.pApp-counter{font-size:11px;color:#5A5A7A;font-family:'JetBrains Mono',monospace}
+</style>
+
+<div id="pApp-body">
+  <aside id="pApp-sidebar">
+    <div id="pApp-search"><input type="text" id="pApp-searchInput" placeholder="Filter patterns…"></div>
+    <div id="pApp-sidebar-list"></div>
+    <div id="pApp-dtree"></div>
+  </aside>
+  <main id="pApp-detail"></main>
+</div>
+
+<script>
+(function(){
+const PATTERNS=[{id:1,tag:"READ HEAVY",title:"Cache-Aside + Read Replicas",color:"#00D4FF",accent:"#001D2A",icon:"⚡",tldr:"App checks Redis first → miss → read DB → populate cache. Add read replicas to fanout query load. Critical question: what's the cache invalidation strategy?",keyQuestion:"What's the cache invalidation strategy?",useCases:["Social feeds","Product pages","YouTube view counts"],decision:"Read:write > 5:1",flow:[{step:"Client Request",detail:"GET /product/42",type:"client"},{step:"Redis Check",detail:"GET product:42 → HIT (~1ms) or MISS",type:"cache"},{step:"DB Read (on miss)",detail:"SELECT * FROM products WHERE id=42 (~5–20ms)",type:"db"},{step:"Cache Populate",detail:"SET product:42 <data> EX 300 + jitter",type:"cache"},{step:"Read Replica",detail:"Route reads to replicas, writes to primary only",type:"db"}],tradeoffs:[{pro:true,text:"Dramatically reduces DB load — cache hit rate ~95% for hot data"},{pro:true,text:"Read replicas multiply read throughput linearly at low cost"},{pro:false,text:"Cache invalidation is hard — stale reads possible during TTL window"},{pro:false,text:"Thundering herd: many requests miss simultaneously on cold start or TTL expiry"}],code:`// Go: Cache-Aside with singleflight (thundering herd prevention)
+func (s *ProductService) GetProduct(ctx context.Context, id string) (*Product, error) {
+  cacheKey := fmt.Sprintf("product:%s", id)
+
+  // 1. Check cache first
+  cached, err := s.redis.Get(ctx, cacheKey).Bytes()
+  if err == nil {
+    var p Product
+    return &p, json.Unmarshal(cached, &p)
+  }
+
+  // 2. singleflight: only ONE goroutine fetches from DB
+  //    all concurrent callers for same key wait and share result
+  mu := s.sfGroup.DoChan(cacheKey, func() (interface{}, error) {
+    p, err := s.db.GetProduct(ctx, id) // reads from READ REPLICA
+    if err != nil { return nil, err }
+    data, _ := json.Marshal(p)
+    // TTL jitter prevents mass expiry stampede
+    ttl := 5*time.Minute + time.Duration(rand.Intn(30))*time.Second
+    s.redis.Set(ctx, cacheKey, data, ttl)
+    return p, nil
+  })
+  result := <-mu
+  return result.Val.(*Product), result.Err
+}
+
+// Write path: update DB then invalidate cache (delete, not update)
+func (s *ProductService) UpdateProduct(ctx context.Context, p *Product) error {
+  if err := s.db.UpdateProduct(ctx, p); err != nil { return err }
+  return s.redis.Del(ctx, fmt.Sprintf("product:%s", p.ID)).Err()
+}`,insight:"Hot keys are the silent killer. A celebrity product or viral post creates a single Redis key that saturates one shard. Solution: local in-process L1 cache (sync.Map with 1s TTL) before Redis L2, or key sharding by appending random suffix (product:42:0…3) and reading from a random shard. Also: probabilistic early expiry (PER) prevents the thundering herd without singleflight — recalculate with probability proportional to how close to TTL expiry."},{id:2,tag:"WRITE HEAVY",title:"Write-Ahead Queue + Async Workers",color:"#FF6B35",accent:"#2A0D00",icon:"📨",tldr:"Writes go to Kafka/SQS first, workers process async. Decouples ingestion rate from processing rate. Backpressure = consumer lag depth.",keyQuestion:"How do you guarantee exactly-once semantics?",useCases:["Analytics events","IoT telemetry","Email queue","Audit logs"],decision:"Write-heavy, >50K/s",flow:[{step:"Client Write",detail:"POST /events — validated & serialized",type:"client"},{step:"Kafka Produce",detail:"Partition by user_id, acks=all, linger.ms=5",type:"queue"},{step:"Immediate ACK",detail:"Return 202 Accepted — don't wait for processing",type:"client"},{step:"Consumer Group",detail:"Workers poll, process batch of 100 msgs",type:"worker"},{step:"DB Write + Commit",detail:"Batch upsert + commit offset atomically after write",type:"db"}],tradeoffs:[{pro:true,text:"Ingestion is O(1) regardless of downstream processing time"},{pro:true,text:"Backpressure is visible: consumer lag = how far behind you are"},{pro:false,text:"At-least-once delivery default — consumers MUST be idempotent"},{pro:false,text:"Added latency: data available after processing, not immediately on write"}],code:`// Go: Idempotent Kafka consumer — commit AFTER processing
+type EventConsumer struct {
+  kafka  *kafka.Reader
+  db     *pgxpool.Pool
+  redis  *redis.Client
+}
+
+func (c *EventConsumer) ProcessBatch(ctx context.Context) error {
+  msgs := make([]kafka.Message, 0, 100)
+  for len(msgs) < 100 {
+    m, err := c.kafka.FetchMessage(ctx)
+    if err != nil { break }
+    msgs = append(msgs, m)
+  }
+
+  // Dedup: check which event IDs already processed (Redis SET)
+  keys := make([]interface{}, len(msgs))
+  for i, m := range msgs { keys[i] = string(m.Key) }
+  existing, _ := c.redis.SMIsMember(ctx, "processed_events", keys...).Result()
+
+  var toProcess []Event
+  for i, m := range msgs {
+    if !existing[i].(bool) {
+      var e Event
+      json.Unmarshal(m.Value, &e)
+      toProcess = append(toProcess, e)
+    }
+  }
+
+  if err := c.db.BulkInsert(ctx, toProcess); err != nil { return err }
+
+  // Mark as processed atomically
+  pipe := c.redis.Pipeline()
+  pipe.SAdd(ctx, "processed_events", keys...)
+  pipe.Expire(ctx, "processed_events", 24*time.Hour)
+  pipe.Exec(ctx)
+
+  // CRITICAL: commit offsets AFTER durable write, never before
+  return c.kafka.CommitMessages(ctx, msgs...)
+}`,insight:"Commit offsets AFTER you've durably processed the message — never before. If you commit first and crash, those messages are lost (at-most-once). Backpressure strategy: monitor consumer lag (kafka_consumer_group_lag metric in Grafana). Alert at 100K messages, page at 1M. Auto-scale consumers by lag depth, not CPU. Partition count = parallelism ceiling — set it correctly at topic creation, adding partitions later breaks key ordering guarantees."},{id:3,tag:"REAL-TIME",title:"WebSocket + Pub-Sub Backend",color:"#00FF88",accent:"#001A0D",icon:"🔴",tldr:"Clients hold persistent WebSocket connections. Backend pub-sub fans out to all connection servers. State lives in Redis/Kafka, not on the WS server.",keyQuestion:"How do you handle reconnect + replay from last received offset?",useCases:["Chat","Live scores","Collaborative editing","Dashboards"],decision:"Server must push to client",flow:[{step:"WS Handshake",detail:"HTTP Upgrade → TCP persistent connection established",type:"client"},{step:"Connection Registry",detail:"Redis: HSET conn:user42 serverID timestamp",type:"cache"},{step:"Event Arrives",detail:"Any service: PUBLISH room:123 <serialized msg>",type:"queue"},{step:"Fan-out",detail:"All WS servers subscribed to room:123 receive it",type:"worker"},{step:"Push to Client",detail:"WS server writes to socket; replays missed msgs on reconnect",type:"client"}],tradeoffs:[{pro:true,text:"True server-push — zero client polling overhead, sub-100ms delivery"},{pro:true,text:"Full-duplex: client and server send simultaneously"},{pro:false,text:"WS servers hold connection state — sticky sessions needed at LB"},{pro:false,text:"Redis Pub-Sub has no persistence — use Kafka Streams for replay guarantees"}],code:`// Go: WebSocket hub with Redis pub-sub fan-out
+type Hub struct {
+  clients   sync.Map // userID → *websocket.Conn
+  rdb       *redis.Client
+  msgStore  MessageStore // Kafka-backed for replay
+}
+
+func (h *Hub) Subscribe(ctx context.Context, roomID string) {
+  sub := h.rdb.Subscribe(ctx, "room:"+roomID)
+  go func() {
+    for msg := range sub.Channel() {
+      var event Event
+      json.Unmarshal([]byte(msg.Payload), &event)
+      h.broadcast(roomID, event)
+    }
+  }()
+}
+
+// Reconnect: client sends last received sequence number
+func (h *Hub) HandleReconnect(ctx context.Context, userID, roomID string, lastSeq int64) {
+  // 1. Replay missed messages from durable store
+  missed, _ := h.msgStore.GetSince(ctx, roomID, lastSeq)
+  if conn, ok := h.clients.Load(userID); ok {
+    for _, m := range missed {
+      conn.(*websocket.Conn).WriteJSON(m)
+    }
+  }
+  // 2. Switch to live Redis pub-sub
+  h.Subscribe(ctx, roomID)
+}
+
+// Presence: heartbeat TTL keeps user "online"
+func (h *Hub) TrackPresence(ctx context.Context, userID string) {
+  ticker := time.NewTicker(15 * time.Second)
+  for range ticker.C {
+    h.rdb.Set(ctx, "presence:"+userID, "online", 30*time.Second)
+  }
+}`,insight:"Sticky sessions at the WS tier break stateless scaling. The correct model: WS servers are interchangeable because ALL state lives in Redis/Kafka. Any server can serve any user. Consistent hashing on user_id at the LB just reduces cross-server pub-sub fan-out for efficiency — it's an optimization, not a requirement. For 10M concurrent users: use Kafka consumer groups per WS server cluster, not Redis pub-sub — Redis can't handle fan-out at that scale without becoming a bottleneck."},{id:4,tag:"GLOBAL SCALE",title:"CDN + GeoDNS + Edge Caching",color:"#FFD700",accent:"#2A2000",icon:"🌍",tldr:"Static assets from CDN edge. GeoDNS routes to nearest PoP. Origin shield collapses cache misses. Tag-based purging on deploy.",keyQuestion:"How do you handle cache invalidation at edge + data residency laws?",useCases:["Netflix/YouTube delivery","Cloudflare","Global APIs","Static assets"],decision:"Global <100ms latency",flow:[{step:"GeoDNS",detail:"Route53 returns nearest PoP IP based on client geo",type:"client"},{step:"CDN Edge",detail:"Cache HIT → ~5ms. MISS → forward to Origin Shield",type:"cache"},{step:"Origin Shield",detail:"Collapses multiple PoP misses into 1 origin request",type:"cache"},{step:"Origin",detail:"Generates response, streams to Shield → Edge → Client",type:"db"},{step:"Cache Headers",detail:"Cache-Control: public, max-age=86400, s-maxage=3600",type:"worker"}],tradeoffs:[{pro:true,text:"CDN hit = ~5ms globally vs 80–150ms cross-region origin"},{pro:true,text:"Origin Shield reduces origin load ~90% during miss storms"},{pro:false,text:"Stale content until TTL expires or manual purge — purge APIs have eventual consistency"},{pro:false,text:"GDPR/data residency: EU PII must not be cached at certain PoP locations"}],code:`// Go: Cache-Control strategy per content type
+func setCacheHeaders(w http.ResponseWriter, contentType string) {
+  switch contentType {
+  case "static-asset":
+    // URL-versioned (/app.v3.1.2.js) → immutable forever
+    w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
+  case "api-response":
+    // CDN caches 1hr, client 5min, serve stale while revalidating
+    w.Header().Set("Cache-Control",
+      "public, max-age=300, s-maxage=3600, stale-while-revalidate=60")
+    w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+
+  case "user-specific":
+    // NEVER cache at CDN — private user data
+    w.Header().Set("Cache-Control", "private, no-store")
+
+  case "media-segment": // HLS video chunks
+    w.Header().Set("Cache-Control", "public, max-age=86400")
+    w.Header().Set("CDN-Cache-Control", "max-age=604800")
+  }
+}
+
+// Tag-based purge on deploy (Cloudflare)
+// Cache-Tag: product-42 on all pages that render product 42
+// One API call purges ALL pages referencing that product
+func purgeByTag(token, zoneID, tag string) error {
+  body, _ := json.Marshal(map[string][]string{"tags": {tag}})
+  req, _ := http.NewRequest("POST",
+    fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/purge_cache", zoneID),
+    bytes.NewReader(body))
+  req.Header.Set("Authorization", "Bearer "+token)
+  _, err := http.DefaultClient.Do(req)
+  return err
+}`,insight:"Never rely on TTL alone for cache invalidation at scale. Tag-based purging (Cloudflare Cache Tags, Fastly Surrogate-Key) lets you invalidate ALL pages related to 'product:42' with a single API call when you update that product. Design your cache keys with invalidation in mind from day one — it's far harder to retrofit. Also: stale-while-revalidate is underused. It serves the cached version immediately (zero latency) while asynchronously fetching a fresh copy — better UX than waiting for a 20ms origin request."},{id:5,tag:"DISTRIBUTED TX",title:"Saga Pattern (Choreography / Orchestration)",color:"#FF4D8B",accent:"#2A0015",icon:"🔄",tldr:"Break multi-service transaction into steps. Each step publishes an event. On failure: compensating transactions roll back in reverse order.",keyQuestion:"Are all compensating transactions idempotent?",useCases:["E-commerce checkout","Flight booking","Bank transfer"],decision:"Spans multiple services",flow:[{step:"Order Created",detail:"OrderService → publishes OrderPlaced event",type:"worker"},{step:"Reserve Inventory",detail:"InventoryService → reserves stock, publishes InventoryReserved",type:"worker"},{step:"Process Payment",detail:"PaymentService → charges card, publishes PaymentProcessed",type:"worker"},{step:"Ship Order",detail:"ShippingService → creates shipment, completes saga",type:"worker"},{step:"Compensate on Fail",detail:"Payment fails → Release Inventory → Cancel Order (reverse)",type:"queue"}],tradeoffs:[{pro:true,text:"No distributed 2PC lock — services loosely coupled via events"},{pro:true,text:"Orchestration makes saga state visible & debuggable in one place"},{pro:false,text:"Compensating transactions must be idempotent — they may run multiple times"},{pro:false,text:"Choreography debugging is brutal — events fly across services with no central view"}],code:`// Go: Orchestrated Saga with persistent state
+type SagaState string
+const (
+  SagaStarted           SagaState = "STARTED"
+  SagaInventoryReserved SagaState = "INVENTORY_RESERVED"
+  SagaPaymentProcessed  SagaState = "PAYMENT_PROCESSED"
+  SagaCompleted         SagaState = "COMPLETED"
+)
+
+type OrderSaga struct {
+  ID            uuid.UUID
+  State         SagaState
+  ReservationID string
+  PaymentID     string
+}
+
+func (s *Orchestrator) Execute(ctx context.Context, order Order) error {
+  saga := &OrderSaga{ID: uuid.New(), State: SagaStarted}
+  s.db.SaveSaga(ctx, saga) // persist for crash recovery
+
+  resID, err := s.inventory.Reserve(ctx, order.Items)
+  if err != nil { return s.compensate(ctx, saga) }
+  saga.State = SagaInventoryReserved
+  saga.ReservationID = resID
+  s.db.SaveSaga(ctx, saga)
+
+  payID, err := s.payment.Charge(ctx, order.PaymentID, order.Total)
+  if err != nil { return s.compensate(ctx, saga) }
+  saga.State = SagaPaymentProcessed
+  saga.PaymentID = payID
+  s.db.SaveSaga(ctx, saga)
+
+  if err := s.shipping.Create(ctx, order); err != nil {
+    return s.compensate(ctx, saga)
+  }
+  saga.State = SagaCompleted
+  return s.db.SaveSaga(ctx, saga)
+}
+
+func (s *Orchestrator) compensate(ctx context.Context, saga *OrderSaga) error {
+  // Compensations MUST be idempotent — check before acting
+  switch saga.State {
+  case SagaPaymentProcessed:
+    s.payment.RefundIfNotRefunded(ctx, saga.PaymentID)
+    fallthrough
+  case SagaInventoryReserved:
+    s.inventory.ReleaseIfNotReleased(ctx, saga.ReservationID)
+  }
+  return ErrSagaFailed
+}`,insight:"The hardest part of Sagas isn't the happy path — it's ensuring every compensation is idempotent AND handles partial failure where compensation itself fails. Use a Saga log table (saga_id, step, status, payload) persisted in your DB. On service restart, replay from the last committed step. This is the Outbox pattern applied recursively to Saga compensation events. Also: 2PC is a blocking protocol — if the coordinator crashes after PREPARE, participants hold locks indefinitely. That's why Sagas win in microservices despite the added complexity."},{id:6,tag:"DUAL WRITE",title:"Outbox Pattern + CDC (Debezium)",color:"#9B59B6",accent:"#150020",icon:"📤",tldr:"Write to DB + Outbox table in same DB transaction. Debezium reads WAL → publishes to Kafka. Atomicity guaranteed — no dual-write failure mode.",keyQuestion:"What happens if Debezium restarts — are consumers idempotent?",useCases:["Any service writing to DB AND publishing events"],decision:"DB write + publish event atomically",flow:[{step:"Business Write",detail:"INSERT INTO orders + INSERT INTO outbox — same TX",type:"db"},{step:"TX Commit",detail:"DB commits both atomically — no split-brain possible",type:"db"},{step:"Debezium Reads WAL",detail:"Postgres WAL → Debezium connector reads outbox changes",type:"worker"},{step:"Publish to Kafka",detail:"Debezium produces to Kafka with at-least-once guarantee",type:"queue"},{step:"Outbox Cleanup",detail:"After publish confirmed, rows deleted or tombstoned",type:"db"}],tradeoffs:[{pro:true,text:"Atomic: business write + event guaranteed to both happen or neither"},{pro:true,text:"No dual-write code — Debezium handles DB→Kafka bridge transparently"},{pro:false,text:"Small latency: event published after DB commit + CDC polling interval (~100ms)"},{pro:false,text:"Outbox table grows unboundedly — need cleanup job or TTL + partitioning"}],code:`// Go: Transactional outbox write
+type OutboxEvent struct {
+  ID          uuid.UUID       \`db:"id"\`
+  AggregateID string          \`db:"aggregate_id"\`
+  EventType   string          \`db:"event_type"\`
+  Payload     json.RawMessage \`db:"payload"\`
+  CreatedAt   time.Time       \`db:"created_at"\`
+}
+
+func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+  return s.db.WithTx(ctx, func(tx pgx.Tx) error {
+    // 1. Business write
+    if _, err := tx.Exec(ctx,
+      "INSERT INTO orders(id,user_id,total,status) VALUES($1,$2,$3,$4)",
+      order.ID, order.UserID, order.Total, "PENDING",
+    ); err != nil { return err }
+
+    // 2. Outbox write — SAME transaction = atomic guarantee
+    payload, _ := json.Marshal(OrderCreatedEvent{
+      OrderID: order.ID, UserID: order.UserID, Total: order.Total,
+    })
+    if _, err := tx.Exec(ctx,
+      "INSERT INTO outbox(id,aggregate_id,event_type,payload) VALUES($1,$2,$3,$4)",
+      uuid.New(), order.ID, "order.created", payload,
+    ); err != nil { return err }
+
+    return nil // Both committed or both rolled back
+  })
+}
+
+// Debezium connector config:
+// "table.include.list": "public.outbox"
+// "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter"
+// "transforms.outbox.route.by.field": "event_type"`,insight:"Debezium restart replays from its last committed Kafka offset — consumers will see duplicate events. Your consumers MUST be idempotent. Pattern: unique DB constraint on event_id, or Redis SET 'already-processed' with 24h TTL. The Outbox guarantees delivery (at-least-once), not exactly-once processing — that's the consumer's responsibility. For outbox cleanup: partition the outbox table by created_at and drop old partitions instead of DELETEs — far cheaper at scale and avoids table bloat."},{id:7,tag:"SEARCH",title:"Inverted Index + ES Sync via CDC",color:"#1ABC9C",accent:"#001A15",icon:"🔍",tldr:"Primary DB = source of truth. ES = read-optimized search replica synced via Kafka CDC. Hybrid ANN+BM25 ranking for best precision.",keyQuestion:"How do you handle index lag vs freshness SLA?",useCases:["Airbnb search","LinkedIn","Product catalog","Legal docs"],decision:"Full-text search needed",flow:[{step:"Write to Primary DB",detail:"Source of truth: Postgres/MySQL with normalized schema",type:"db"},{step:"CDC via Debezium",detail:"WAL → Kafka topic per table → search indexer consumer",type:"queue"},{step:"ES Indexer",detail:"Transform DB row → ES document, upsert by primary ID",type:"worker"},{step:"Hybrid Search Query",detail:"ANN (semantic) + BM25 (keyword) → RRF fusion ranking",type:"cache"},{step:"Results + Facets",detail:"ES returns ranked hits + aggregation facets",type:"client"}],tradeoffs:[{pro:true,text:"ES: full-text, fuzzy, geo, range, aggregations in one query"},{pro:true,text:"Hybrid ANN+BM25 dramatically outperforms either alone (BEIR benchmark data)"},{pro:false,text:"Eventual consistency: index lag ~1-5s behind primary DB"},{pro:false,text:"ES schema changes require full re-index — expensive for billion-doc corpora"}],code:`// Go: Hybrid search — BM25 + KNN with RRF fusion
+func (s *SearchService) Search(ctx context.Context, query string, f Filters) ([]Product, error) {
+  embedding, err := s.embedder.Embed(ctx, query)
+  if err != nil { return nil, err }
+
+  esQuery := map[string]any{
+    "retriever": map[string]any{
+      "rrf": map[string]any{
+        "retrievers": []any{
+          // BM25 keyword leg
+          map[string]any{"standard": map[string]any{
+            "query": map[string]any{
+              "multi_match": map[string]any{
+                "query":  query,
+                "fields": []string{"title^3","description","tags"},
+              },
+            },
+          }},
+          // KNN semantic leg
+          map[string]any{"knn": map[string]any{
+            "field":          "embedding",
+            "query_vector":   embedding,
+            "num_candidates": 100,
+          }},
+        },
+        "rank_window_size": 50,
+        "rank_constant":    20,
+      },
+    },
+    // post_filter: AFTER retrieval (better recall than pre-filter)
+    "post_filter": map[string]any{
+      "range": map[string]any{
+        "price": map[string]any{"gte": f.MinPrice, "lte": f.MaxPrice},
+      },
+    },
+  }
+  // execute and parse hits
+}`,insight:"Pre-filter vs post-filter in hybrid search matters. Pre-filter reduces the candidate pool BEFORE ANN vector search — hurts recall because semantic similarity across a smaller set is less meaningful. Post-filter applies after retrieval — better recall but you may get fewer results than requested. Rule: pre-filter for hard constraints (user_id, tenant_id, deleted=false), post-filter for soft constraints (price range, category). For re-indexing without downtime: index to a new index alias, run parallel queries against both, cut over when new index is warm."},{id:8,tag:"GEO PROXIMITY",title:"Geohash Grid + Redis GEO",color:"#E67E22",accent:"#2A1000",icon:"📍",tldr:"Encode lat/lng as geohash string. Query neighboring cells. Redis GEOSEARCH for radius queries. Shard by coarse geohash at Uber scale.",keyQuestion:"How do you balance geohash precision vs cell size vs query boundary coverage?",useCases:["Uber driver matching","Yelp nearby","Tinder radius"],decision:"Location / proximity queries",flow:[{step:"Location Update",detail:"WebSocket → GEOADD drivers:active lng lat driver_id",type:"client"},{step:"Geohash Encode",detail:"lat/lng → 12-char string (precision 6 = ~1.2km cell)",type:"worker"},{step:"Radius Query",detail:"GEOSEARCH drivers:active FROMLONLAT … BYRADIUS 5 km",type:"cache"},{step:"Score & Rank",detail:"Distance + rating + vehicle type → scoring function",type:"worker"},{step:"Dispatch + Lock",detail:"Redis SET NX PX 30000 on top N drivers, send offers",type:"db"}],tradeoffs:[{pro:true,text:"Redis GEOSEARCH in-memory: O(N+log M) for N results in radius"},{pro:true,text:"Geohash prefix = natural bounding box — neighbor cells share prefix string"},{pro:false,text:"Geohash edge effect: nearby points in adjacent cells may be missed"},{pro:false,text:"High-frequency GPS updates (4s) saturate one Redis key in dense cities"}],code:`// Go: Location service — Redis GEO + geohash neighbor cells
+import "github.com/mmcloughlin/geohash"
+
+func (s *LocationService) UpdateDriver(ctx context.Context, id string, lat, lng float64) error {
+  pipe := s.redis.Pipeline()
+
+  // Primary GEO index for radius queries
+  pipe.GeoAdd(ctx, "drivers:active", &redis.GeoLocation{
+    Name: id, Latitude: lat, Longitude: lng,
+  })
+
+  // Coarse geohash buckets for city-level sharding
+  hash := geohash.EncodeWithPrecision(lat, lng, 6) // ~1.2km
+  pipe.SAdd(ctx, "geohash:"+hash, id)
+  pipe.Expire(ctx, "geohash:"+hash, 30*time.Second)
+
+  // TTL-based staleness — auto-removes inactive drivers
+  pipe.Set(ctx, "driver:active:"+id, "1", 15*time.Second)
+  _, err := pipe.Exec(ctx)
+  return err
+}
+
+func (s *LocationService) FindNearby(ctx context.Context, lat, lng, radiusKm float64) ([]*Driver, error) {
+  results, err := s.redis.GeoSearch(ctx, "drivers:active", &redis.GeoSearchQuery{
+    Longitude: lng, Latitude: lat,
+    Radius: radiusKm, RadiusUnit: "km",
+    Sort: "ASC", Count: 20,
+  }).Result()
+
+  // Edge fix: check neighboring geohash cells
+  center := geohash.EncodeWithPrecision(lat, lng, 6)
+  neighbors := geohash.Neighbors(center)
+  _ = neighbors // query each neighbor, merge, deduplicate
+  return s.enrichAndFilter(ctx, results)
+}`,insight:"At Uber scale (100K+ active drivers per city), a single Redis ZSET becomes a hotspot. Shard by coarse geohash prefix — drivers:active:9q (SF), drivers:active:dr (NYC). Each city-level shard lives on a different Redis node. The shard key is precision-3 geohash (~156km cell), fine GEOSEARCH runs within that shard. For driver dispatch locking: Redis SET NX with 30s TTL claims a driver atomically across all gateway pods without a DB round-trip. If the offer expires without acceptance, the TTL releases the lock automatically."},{id:9,tag:"RATE LIMITING",title:"Token Bucket / Sliding Window at Gateway",color:"#E74C3C",accent:"#2A0000",icon:"🚦",tldr:"API Gateway checks Redis before forwarding. Token bucket for burst-friendly. Sliding window counter for precise. Return 429 + Retry-After. Lua for atomicity.",keyQuestion:"How do you prevent the boundary burst attack on fixed windows?",useCases:["API platform","Payment gateway","SMS OTP service"],decision:"API abuse prevention",flow:[{step:"Request Arrives",detail:"API Gateway intercepts before routing to service",type:"client"},{step:"Redis Atomic Check",detail:"Lua script: sliding window counter in one round-trip",type:"cache"},{step:"Limit Decision",detail:"count > limit → 429 + Retry-After. Else → forward.",type:"worker"},{step:"Service Processes",detail:"Rate-limited requests never reach the service",type:"worker"},{step:"Response Headers",detail:"X-RateLimit-Limit, -Remaining, -Reset on every response",type:"client"}],tradeoffs:[{pro:true,text:"Token bucket: allows controlled bursting — user-friendly for APIs with bursty patterns"},{pro:true,text:"Sliding window counter: ~0.003% error rate, O(1) memory per user"},{pro:false,text:"Fixed window: boundary attack — 2× rate in 1ms straddling the reset time"},{pro:false,text:"Distributed across regions: Redis cross-region adds ~80ms latency — use local Redis per region"}],code:`-- Lua: Atomic sliding window counter (executes atomically on Redis)
+-- KEYS[1]=rate_key  ARGV[1]=window_ms  ARGV[2]=limit  ARGV[3]=now_ms
+local window_ms  = tonumber(ARGV[1])
+local limit      = tonumber(ARGV[2])
+local now_ms     = tonumber(ARGV[3])
+
+local curr_window = math.floor(now_ms / window_ms)
+local prev_window = curr_window - 1
+local curr_key = KEYS[1] .. ":" .. curr_window
+local prev_key = KEYS[1] .. ":" .. prev_window
+
+local curr_count = tonumber(redis.call("GET", curr_key) or 0)
+local prev_count = tonumber(redis.call("GET", prev_key) or 0)
+
+-- Weight previous window by elapsed ratio — smooth boundary
+local elapsed_ratio = (now_ms % window_ms) / window_ms
+local weighted = math.floor(prev_count * (1 - elapsed_ratio) + curr_count)
+
+if weighted >= limit then
+  local retry_after = math.ceil(window_ms - (now_ms % window_ms))
+  return {0, weighted, retry_after}  -- 0=blocked
+end
+
+redis.call("INCR", curr_key)
+redis.call("EXPIRE", curr_key, math.ceil(window_ms / 1000) * 2)
+return {1, weighted + 1, 0}  -- 1=allowed
+
+-- Go call:
+-- result, _ := rdb.Eval(ctx, luaScript,
+--   []string{"ratelimit:user42:POST:/orders"},
+--   60000, 100, time.Now().UnixMilli(),
+-- ).Int64Slice()`,insight:"Rate limiting across multiple gateway pods requires ALL pods to share state via Redis. The race condition without Lua: two pods both read count=99, both increment in application code — you've now allowed 101 requests. The Lua script fix: INCR + read is atomic on Redis (single-threaded event loop). Never do application-level read-then-write for rate limiting in a distributed system. For multi-region: allow ~10% burst tolerance per region rather than strict global coordination — the cross-region Redis latency (~80ms) is worse than the occasional 10% over-limit."},{id:10,tag:"UNIQUE IDs",title:"Snowflake ID / UUID v7",color:"#3498DB",accent:"#001525",icon:"❄️",tldr:"Snowflake: 64-bit = 41-bit timestamp + 10-bit machine + 12-bit seq. Sortable, ~4096 IDs/ms/node, no coordination needed between generators.",keyQuestion:"What happens when the system clock drifts backward?",useCases:["Tweet IDs","Instagram media IDs","Order IDs","Message IDs"],decision:"Unique IDs at massive scale",flow:[{step:"Timestamp Bits",detail:"41 bits = ms since custom epoch (~69 years range)",type:"worker"},{step:"Machine ID Bits",detail:"10 bits = up to 1024 generator nodes",type:"worker"},{step:"Sequence Bits",detail:"12 bits = 4096 IDs per millisecond per node",type:"worker"},{step:"Clock Drift Guard",detail:"Detect backward drift → sleep until last_ms or error",type:"worker"},{step:"Sortability",detail:"Higher timestamp = higher ID → sequential B-Tree inserts",type:"db"}],tradeoffs:[{pro:true,text:"Time-ordered: INSERT in ID order = sequential B-Tree writes, no page fragmentation"},{pro:true,text:"4096 IDs/ms/node × 1024 nodes = ~4B IDs/ms globally — virtually unlimited"},{pro:false,text:"Machine ID assignment needs coordination (or hash-based collision risk)"},{pro:false,text:"Clock skew means IDs aren't globally monotonic — only monotonic per node"}],code:`// Go: Snowflake ID generator with clock drift protection
+type Snowflake struct {
+  mu        sync.Mutex
+  epoch     int64 // custom epoch in ms (e.g. 2024-01-01 = 1704067200000)
+  machineID int64
+  sequence  int64
+  lastMs    int64
+}
+
+const (
+  sequenceBits   = 12
+  machineBits    = 10
+  maxSequence    = -1 ^ (-1 << sequenceBits) // 4095
+  machineShift   = sequenceBits
+  timestampShift = sequenceBits + machineBits // 22
+)
+
+func (s *Snowflake) Next() (int64, error) {
+  s.mu.Lock()
+  defer s.mu.Unlock()
+  now := time.Now().UnixMilli() - s.epoch
+
+  if now < s.lastMs {
+    diff := s.lastMs - now
+    if diff > 5 {
+      return 0, fmt.Errorf("clock drifted %dms backward", diff)
+    }
+    time.Sleep(time.Duration(diff) * time.Millisecond)
+    now = s.lastMs
+  }
+
+  if now == s.lastMs {
+    s.sequence = (s.sequence + 1) & maxSequence
+    if s.sequence == 0 {
+      for now <= s.lastMs {
+        now = time.Now().UnixMilli() - s.epoch
+      }
+    }
+  } else {
+    s.sequence = 0
+  }
+
+  s.lastMs = now
+  return (now << timestampShift) | (s.machineID << machineShift) | s.sequence, nil
+}
+
+// UUID v7: time-ordered, no coordination, UUID-ecosystem compatible
+// 48-bit timestamp | 4-bit version(7) | 12-bit rand_a | 2-bit variant | 62-bit rand_b`,insight:"Auto-increment IDs are a secret write performance killer at scale. Sequential PKs concentrate all inserts on the rightmost B-Tree page — creating a write hotspot with lock contention and page splits. Snowflake IDs have millisecond-level monotonicity: ~4096 IDs share the same ms prefix, spreading inserts across the tree naturally. For Postgres: use UUIDv7 as PK — time-ordered like Snowflake but works natively with UUID columns and no coordination needed. For machine ID assignment at K8s scale: use pod ordinal index from StatefulSet, or hash the pod's unique hostname to a 10-bit ID with collision detection."},{id:11,tag:"CQRS",title:"Command Query Responsibility Segregation",color:"#8E44AD",accent:"#150025",icon:"✂️",tldr:"Separate write model (normalized DB) from read model (denormalized store). Commands produce events → update multiple read models each optimized for its consumer.",keyQuestion:"How do you handle read model lag during high write throughput?",useCases:["E-commerce orders/catalog","Banking ledger","Analytics dashboards"],decision:"Read/write access patterns fundamentally differ",flow:[{step:"Command (Write)",detail:"OrderService validates + persists to normalized DB",type:"db"},{step:"Event Published",detail:"OrderCreated → Kafka with full order payload",type:"queue"},{step:"Read Model Projectors",detail:"UserOrdersProjector, AnalyticsProjector, SearchProjector",type:"worker"},{step:"Denormalized Read Store",detail:"Redis: user orders, ES: search, ClickHouse: OLAP",type:"cache"},{step:"Query (Read)",detail:"GET /users/42/orders → Redis O(1), no DB joins",type:"client"}],tradeoffs:[{pro:true,text:"Read models pre-computed: query is a lookup, not a join-heavy OLTP scan"},{pro:true,text:"Multiple read models: each optimized for its specific consumer's access pattern"},{pro:false,text:"Eventual consistency: read model ~1-5s behind write model under normal load"},{pro:false,text:"Event schema changes are breaking: ALL projectors must be updated simultaneously"}],code:`// Go: CQRS write side + read projector
+
+// --- COMMAND SIDE ---
+func (h *OrderCommandHandler) HandleCreate(ctx context.Context, cmd CreateOrderCmd) (*Order, error) {
+  order := &Order{
+    ID: snowflake.Next(), UserID: cmd.UserID,
+    Items: cmd.Items, Status: "PENDING",
+    Total: calculateTotal(cmd.Items),
+  }
+  if err := h.db.InsertOrder(ctx, order); err != nil { return nil, err }
+
+  // Publish event → triggers async read model updates
+  return order, h.events.Publish(ctx, OrderCreatedEvent{
+    OrderID: order.ID, UserID: order.UserID,
+    Items: order.Items, Total: order.Total, Ts: time.Now(),
+  })
+}
+
+// --- READ PROJECTOR (Kafka consumer) ---
+type UserOrdersProjector struct{ redis *redis.Client }
+
+func (p *UserOrdersProjector) OnOrderCreated(ctx context.Context, e OrderCreatedEvent) error {
+  summary, _ := json.Marshal(OrderSummary{
+    ID: e.OrderID, Total: e.Total, Status: "PENDING",
+  })
+  // Denormalized: sorted by timestamp for fast feed reads
+  return p.redis.ZAdd(ctx, fmt.Sprintf("user:%d:orders", e.UserID), redis.Z{
+    Score:  float64(e.Ts.Unix()),
+    Member: string(summary),
+  }).Err()
+}
+
+// --- QUERY SIDE ---
+func (h *OrderQueryHandler) GetUserOrders(ctx context.Context, userID int64, limit int) ([]OrderSummary, error) {
+  results, _ := h.redis.ZRevRange(ctx,
+    fmt.Sprintf("user:%d:orders", userID), 0, int64(limit-1)).Result()
+  // parse and return
+}`,insight:"CQRS shines when read and write access patterns are fundamentally different. The hidden cost: every change to your event payload schema is a migration for ALL projectors. Version your events (v1, v2) and write projectors that handle both during rollout. Additive changes only — never remove or rename fields from published events. Breaking an event schema in a system with 10 downstream projectors is a distributed system migration nightmare. For read model rebuild after a projector bug: replay all events from Kafka from offset 0 into a shadow read model, validate, then cut over."},{id:12,tag:"RESILIENCE",title:"Circuit Breaker + Bulkhead + Retry",color:"#27AE60",accent:"#001A07",icon:"🛡️",tldr:"Circuit breaker opens on failure threshold → fail fast. Bulkhead isolates goroutine pools per dependency. Retry with exponential backoff + full jitter.",keyQuestion:"Do your per-layer timeouts add up to more than the client's SLA?",useCases:["Any service with downstream dependencies — always add this"],decision:"Has downstream dependencies",flow:[{step:"Request to Dependency",detail:"Call wrapped in circuit breaker middleware",type:"client"},{step:"Circuit CLOSED",detail:"Normal operation — track success/failure rate in rolling window",type:"worker"},{step:"Threshold Breached",detail:">50% failures in 10s window → circuit OPENS",type:"worker"},{step:"Circuit OPEN",detail:"Fail fast immediately (no network call) → return fallback",type:"worker"},{step:"Half-Open Probe",detail:"After 30s, allow 1 probe request — success → CLOSE",type:"worker"}],tradeoffs:[{pro:true,text:"Fail fast prevents cascade: one slow dependency can't drain your goroutine pool"},{pro:true,text:"Bulkhead: separate pools — payment slowdown can't affect search response times"},{pro:false,text:"Retry with fixed interval = retry storm when dependency recovers at t=0"},{pro:false,text:"Too-aggressive threshold can trip circuit on normal traffic spikes — tune carefully"}],code:`// Go: Circuit breaker + retry with exponential backoff + full jitter
+import "github.com/sony/gobreaker"
+
+type ResilientClient struct {
+  cb     *gobreaker.CircuitBreaker
+  client HTTPClient
+}
+
+func New(name string, client HTTPClient) *ResilientClient {
+  cb := gobreaker.NewCircuitBreaker(gobreaker.Settings{
+    Name:        name,
+    MaxRequests: 5,               // probes in half-open state
+    Interval:    10 * time.Second,
+    Timeout:     30 * time.Second, // duration to stay open
+    ReadyToTrip: func(c gobreaker.Counts) bool {
+      failRate := float64(c.TotalFailures) / float64(max(c.Requests, 1))
+      return c.Requests >= 10 && failRate >= 0.5
+    },
+  })
+  return &ResilientClient{cb: cb, client: client}
+}
+
+func (c *ResilientClient) Call(ctx context.Context, req *Request) (*Response, error) {
+  backoff := 100 * time.Millisecond
+  for attempt := 0; attempt < 3; attempt++ {
+    result, err := c.cb.Execute(func() (interface{}, error) {
+      // Propagate REMAINING context deadline, not fixed timeout
+      deadline, ok := ctx.Deadline()
+      timeout := 500 * time.Millisecond
+      if ok {
+        remaining := time.Until(deadline)
+        if remaining < timeout { timeout = remaining }
+      }
+      callCtx, cancel := context.WithTimeout(ctx, timeout)
+      defer cancel()
+      return c.client.Do(callCtx, req)
+    })
+    if err == nil { return result.(*Response), nil }
+    if err == gobreaker.ErrOpenState {
+      return nil, fmt.Errorf("circuit open — failing fast")
+    }
+    // Full jitter: avoids synchronized retry storms
+    jitter := time.Duration(rand.Int63n(int64(backoff)))
+    select {
+    case <-time.After(backoff + jitter):
+      backoff = min(backoff*2, 5*time.Second)
+    case <-ctx.Done():
+      return nil, ctx.Err()
+    }
+  }
+  return nil, fmt.Errorf("max retries exhausted")
+}`,insight:"Timeout budgets are the most commonly missed resilience concern. If ServiceA (500ms timeout) calls ServiceB (400ms) calls ServiceC (400ms) — the chain can take 800ms but A only allows 500ms. Always propagate the REMAINING context deadline, not a fixed local timeout. Also: jitter in retry backoff is non-optional. Without it, 1000 services that all failed at t=0 will all retry at exactly t=100ms, t=200ms — recreating the original spike. Full jitter (random 0 to backoff) eliminates synchronization entirely."}];
+
+const TC={client:"#4A9EFF",cache:"#FFD700",db:"#FF6B6B",queue:"#FF8C42",worker:"#7EE8A2"};
+let cur=0,tab=0;
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+function renderSidebar(){
+  const q=document.getElementById("pApp-searchInput").value.toLowerCase();
+  document.getElementById("pApp-sidebar-list").innerHTML=PATTERNS
+    .filter(p=>!q||p.title.toLowerCase().includes(q)||p.tag.toLowerCase().includes(q)||p.useCases.some(u=>u.toLowerCase().includes(q)))
+    .map(p=>{
+      const a=cur===p.id-1;
+      return`<button class="pApp-pbtn" style="${a?`background:${p.color}12;border-color:${p.color}60;`:""}" onclick="pSel(${p.id-1})">
+        <div class="pApp-pb-row">
+          <span class="pApp-pb-icon">${p.icon}</span>
+          <div class="pApp-pb-info">
+            <div class="pApp-pb-tag" style="color:${p.color}">P${String(p.id).padStart(2,"0")} · ${p.tag}</div>
+            <div class="pApp-pb-title">${p.title}</div>
+          </div>
+        </div>
+      </button>`;
+    }).join("");
+  document.getElementById("pApp-dtree").innerHTML=`<div class="pApp-dt-label">DECISION TREE</div>`+PATTERNS.map(p=>`<div class="pApp-di"><span class="arr" style="color:${p.color}">→</span><span class="txt">${p.decision}</span></div>`).join("");
+}
+
+function renderDetail(){
+  const p=PATTERNS[cur];
+  const heroStyle=`background:linear-gradient(135deg,${p.accent} 0%,#0F0F1A 100%);border-color:${p.color}35;`;
+  const insightBg=`background:linear-gradient(135deg,${p.accent} 0%,#07070E 60%);border-color:${p.color}40;`;
+
+  // Flow tab
+  const stepsHtml=p.flow.map((s,i)=>{
+    const tc=TC[s.type]||"#aaa";
+    const isLast=i===p.flow.length-1;
+    const nextTc=isLast?tc:(TC[p.flow[i+1].type]||"#aaa");
+    return`<div class="pApp-fstep"><div class="pApp-fstep-line"><div class="pApp-fdot" style="background:${tc}"></div>${!isLast?`<div class="pApp-fconn" style="background:linear-gradient(${tc},${nextTc})"></div>`:""}</div><div class="pApp-fcontent"><div class="pApp-fname" style="color:${tc}">${s.step}</div><div class="pApp-fdetail">${s.detail}</div></div></div>`;
+  }).join("");
+  const legendHtml=Object.entries({client:"Client / Edge",cache:"Cache (Redis/CDN)",queue:"Queue / Kafka",worker:"Worker / Service",db:"Database / Storage"}).map(([t,l])=>`<div class="pApp-legend-item"><div class="pApp-ldot" style="background:${TC[t]}"></div><span class="pApp-llabel">${l}</span></div>`).join("");
+  const flowHtml=`<div class="pApp-flow-grid"><div class="pApp-card"><div class="pApp-card-label">REQUEST FLOW</div><div class="pApp-flow-steps">${stepsHtml}</div></div><div class="pApp-card"><div class="pApp-card-label">COMPONENT LEGEND</div>${legendHtml}<div class="pApp-trigger" style="background:${p.color}08;border-color:${p.color}20;margin-top:14px"><div class="pApp-trig-label">TRIGGERS WHEN</div><div class="pApp-trig-val" style="color:${p.color}">${p.decision}</div></div></div></div>`;
+
+  // Trade-offs tab
+  const toHtml=`<div class="pApp-card">${p.tradeoffs.map(t=>`<div class="pApp-to-item"><span class="pApp-to-icon" style="color:${t.pro?"#7EE8A2":"#FF6B6B"}">${t.pro?"✓":"✗"}</span><span class="pApp-to-text">${t.text}</span></div>`).join("")}</div>`;
+
+  // Code tab
+  const codeHtml=`<div class="pApp-code-label">PRODUCTION GO CODE</div><div class="pApp-code-wrap"><button class="pApp-copy-btn" onclick="pCopy(this)">copy</button><pre class="pApp-pre" id="pApp-codeBlock">${esc(p.code)}</pre></div>`;
+
+  // Insight tab
+  const insightHtml=`<div class="pApp-insight" style="${insightBg}"><div class="pApp-insight-hd"><div class="pApp-insight-star" style="background:${p.color}">★</div><div><div class="pApp-insight-label" style="color:${p.color}">STAFF-LEVEL INSIGHT</div><div class="pApp-insight-text">${esc(p.insight)}</div></div></div></div>`;
+
+  const panels=[flowHtml,toHtml,codeHtml,insightHtml];
+  const tabNames=["Flow","Trade-offs","Go Code","Senior Insight"];
+
+  document.getElementById("pApp-detail").innerHTML=`
+    <div class="pApp-hero" style="${heroStyle}">
+      <div class="pApp-hero-top">
+        <div>
+          <div class="pApp-badges">
+            <span class="pApp-badge" style="color:${p.color};background:${p.color}18;border-color:${p.color}40">PATTERN ${String(p.id).padStart(2,"0")}</span>
+            <span class="pApp-badge" style="color:${p.color};background:${p.color}12;border-color:${p.color}28">${p.tag}</span>
+          </div>
+          <div class="pApp-title">${p.icon} ${p.title}</div>
+          <div class="pApp-tldr">${p.tldr}</div>
+          <div class="pApp-kq" style="background:${p.color}0D;border:1px solid ${p.color}28">
+            <div class="pApp-kq-label">KEY QUESTION</div>
+            <div class="pApp-kq-text" style="color:${p.color}">${p.keyQuestion}</div>
+          </div>
+        </div>
+        <div class="pApp-uc">
+          <div class="pApp-uc-label">USE WHEN</div>
+          ${p.useCases.map(u=>`<span class="pApp-uc-tag" style="color:${p.color};background:${p.color}10;border-color:${p.color}25">${u}</span>`).join("")}
+        </div>
+      </div>
+    </div>
+    <div class="pApp-tabs">${tabNames.map((t,i)=>`<button class="pApp-tab${tab===i?" active":""}" style="${tab===i?`color:${p.color};border-bottom:2px solid ${p.color};`:""}" onclick="pTab(${i})">${t}</button>`).join("")}</div>
+    ${panels.map((h,i)=>`<div class="pApp-panel${tab===i?" active":""}">${h}</div>`).join("")}
+    <div class="pApp-navbar">
+      <button class="pApp-navbtn" onclick="pSel(${cur-1})" ${cur===0?"disabled":""}>← Previous</button>
+      <span class="pApp-counter">${cur+1} / ${PATTERNS.length}</span>
+      <button class="pApp-navbtn next" onclick="pSel(${cur+1})" ${cur===PATTERNS.length-1?"disabled":""} style="${cur<PATTERNS.length-1?`color:${p.color};border-color:${p.color};background:${p.color}15`:""}">Next →</button>
+    </div>`;
+}
+
+function pSel(i){if(i<0||i>=PATTERNS.length)return;cur=i;tab=0;renderSidebar();renderDetail();document.getElementById("pApp-detail").scrollTop=0;}
+function pTab(i){tab=i;renderDetail();}
+function pCopy(btn){const code=document.getElementById("pApp-codeBlock").innerText;navigator.clipboard.writeText(code).then(()=>{btn.textContent="✓ copied";btn.style.color="#7EE8A2";setTimeout(()=>{btn.textContent="copy";btn.style.color="";},1600);});}
+
+document.getElementById("pApp-searchInput").addEventListener("input",renderSidebar);
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"||e.target.closest("#pApp-body")==null)return;
+  if(e.key==="ArrowRight"||e.key==="ArrowDown")pSel(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="ArrowUp")pSel(cur-1);
+  if(e.key>="1"&&e.key<="9")pSel(parseInt(e.key)-1);
+  if(e.key==="0")pSel(9);
+  const tk={"q":0,"w":1,"e":2,"r":3};
+  if(tk[e.key]!==undefined){tab=tk[e.key];renderDetail();}
+});
+
+renderSidebar();renderDetail();
+})();
+</script>
+</div>
+
+<!-- ── REST OF ARTICLE CONTINUES ─────────────────────────────────── -->
+<div class="wrap">
+<div class="doc-layout" style="padding-top:0">
+  <div></div><!-- toc placeholder -->
+  <article>
 
     <!-- API DESIGN -->
     <div id="api" class="section-anchor">
@@ -305,17 +925,15 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <h2 class="section-h">API Design — REST, gRPC, WebSocket</h2>
     </div>
 
-    <p class="body">Always define the API before drawing the architecture. What does the outside world call? API-first thinking reveals the data flow and exposes misunderstood requirements. Two engineers who agree on the API endpoints rarely disagree about the architecture.</p>
+    <p class="body">Always define the API before drawing the architecture. API-first thinking reveals the data flow and exposes misunderstood requirements. Two engineers who agree on the API endpoints rarely disagree about the architecture.</p>
 
     <div class="table-wrap">
-      <table>
+      <table class="site-table">
         <thead><tr><th>Criterion</th><th>REST</th><th>GraphQL</th><th>gRPC</th><th>WebSocket</th></tr></thead>
         <tbody>
-          <tr><td>Protocol</td><td>HTTP/1.1–2</td><td>HTTP/1.1–2</td><td>HTTP/2</td><td>TCP (WS upgrade)</td></tr>
-          <tr><td>Format</td><td>JSON/XML</td><td>JSON</td><td>Protobuf (binary)</td><td>Any</td></tr>
-          <tr><td>Performance</td><td>Good</td><td>Good</td><td>Excellent (5–10× REST)</td><td>Excellent (persistent)</td></tr>
+          <tr><td>Protocol</td><td>HTTP/1.1–2</td><td>HTTP/1.1–2</td><td>HTTP/2</td><td>TCP (upgrade)</td></tr>
+          <tr><td>Performance</td><td>Good</td><td>Good</td><td>Excellent (5–10× REST)</td><td>Excellent</td></tr>
           <tr><td>Caching</td><td>Native HTTP</td><td>Complex (POST)</td><td>No HTTP cache</td><td>No</td></tr>
-          <tr><td>Type safety</td><td>OpenAPI</td><td>Schema enforced</td><td>Protobuf compile-time</td><td>None by default</td></tr>
           <tr><td>Streaming</td><td>SSE only</td><td>Subscriptions</td><td>Native bidirectional</td><td>Full-duplex</td></tr>
           <tr><td>Best for</td><td>Public APIs, CRUD</td><td>Mobile, multi-client</td><td>Internal microservices</td><td>Real-time bidirectional</td></tr>
         </tbody>
@@ -323,50 +941,27 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     </div>
 
     <h3 class="sub-h">Pagination — the choice that matters at scale</h3>
-    <p class="body"><strong>Offset:</strong> <code>?page=2&limit=20</code>. Simple, but inconsistent when records are inserted or deleted during pagination. Causes <code>OFFSET</code> table scans that get slower as page number grows — O(n) for page n.</p>
-    <p class="body"><strong>Cursor:</strong> <code>?cursor=eyJpZCI6NDJ9&limit=20</code>. Stable regardless of concurrent writes. Cursor = opaque base64-encoded value (last-seen ID or compound key). O(1) lookup. Use this for any feed or list that receives new items while being paginated.</p>
-    <p class="body"><strong>Keyset:</strong> <code>?after_id=42&limit=20</code>. Fastest for indexed columns — the database uses the index to jump directly to the right position. No skip cost. Default choice for high-traffic APIs with a clear sort key.</p>
-
-    <div class="code-wrap">
-      <div class="code-head"><span class="code-lang">protobuf — gRPC service definition</span><button class="code-copy">copy</button></div>
-      <pre><span class="t-k">syntax</span> = <span class="t-s">"proto3"</span>;
-
-<span class="t-k">service</span> <span class="t-t">UserService</span> {
-  <span class="t-f">rpc</span> GetUser(<span class="t-t">GetUserRequest</span>) <span class="t-k">returns</span> (<span class="t-t">User</span>);                      <span class="t-c">// unary</span>
-  <span class="t-f">rpc</span> ListUsers(<span class="t-t">ListRequest</span>) <span class="t-k">returns</span> (<span class="t-k">stream</span> <span class="t-t">User</span>);               <span class="t-c">// server stream</span>
-  <span class="t-f">rpc</span> CreateUsers(<span class="t-k">stream</span> <span class="t-t">CreateReq</span>) <span class="t-k">returns</span> (<span class="t-t">BatchResult</span>);       <span class="t-c">// client stream</span>
-  <span class="t-f">rpc</span> Chat(<span class="t-k">stream</span> <span class="t-t">ChatMsg</span>) <span class="t-k">returns</span> (<span class="t-k">stream</span> <span class="t-t">ChatMsg</span>);             <span class="t-c">// bidirectional</span>
-}
-
-<span class="t-k">message</span> <span class="t-t">User</span> {
-  <span class="t-t">string</span> id         = <span class="t-n">1</span>;  <span class="t-c">// field numbers must NEVER change (wire format)</span>
-  <span class="t-t">string</span> name       = <span class="t-n">2</span>;
-  <span class="t-t">string</span> email      = <span class="t-n">3</span>;
-  google.protobuf.<span class="t-t">Timestamp</span> created_at = <span class="t-n">4</span>;
-}
-<span class="t-c">// 5–10× faster than REST/JSON for internal microservices</span>
-<span class="t-c">// Auto-generates typed client + server in Go, Java, Python, Rust, Node</span>
-<span class="t-c">// Use REST for: public APIs. gRPC for: internal service-to-service.</span></pre>
-    </div>
+    <p class="body"><strong>Offset:</strong> <code>?page=2&limit=20</code> — simple but inconsistent when records are inserted during pagination. O(n) table scan grows with page number.</p>
+    <p class="body"><strong>Cursor:</strong> <code>?cursor=eyJpZCI6NDJ9&limit=20</code> — stable regardless of concurrent writes. O(1) lookup. Use for any feed that receives new items.</p>
+    <p class="body"><strong>Keyset:</strong> <code>?after_id=42&limit=20</code> — fastest for indexed columns. No skip cost. Default choice for high-traffic APIs with a clear sort key.</p>
 
     <!-- NUMBERS -->
     <div id="numbers" class="section-anchor">
       <span class="section-num">03</span>
       <h2 class="section-h">Numbers Every Engineer Memorises</h2>
     </div>
-    <p class="body">Back-of-envelope math shows engineering judgment. These numbers let you reason about bottlenecks before drawing a single box. The ones that matter most in interviews: Redis vs DB latency, and what 1B req/day converts to in req/sec.</p>
 
     <div class="latency-table">
       <div class="lt-row"><div class="lt-name">L1 cache hit</div><div class="lt-val">~0.5 ns</div></div>
-      <div class="lt-row"><div class="lt-name">L2 cache hit</div><div class="lt-val">~5 ns</div></div>
       <div class="lt-row"><div class="lt-name">RAM read</div><div class="lt-val">~100 ns</div></div>
-      <div class="lt-row"><div class="lt-name">SSD read</div><div class="lt-val">~16 μs</div></div>
+      <div class="lt-row"><div class="lt-name">SSD sequential read</div><div class="lt-val">~16 μs</div></div>
       <div class="lt-row"><div class="lt-name">Redis GET</div><div class="lt-val">~0.5 ms</div></div>
       <div class="lt-row"><div class="lt-name">DB query (indexed)</div><div class="lt-val">~5–20 ms</div></div>
       <div class="lt-row"><div class="lt-name">CDN cache hit</div><div class="lt-val">~5 ms</div></div>
-      <div class="lt-row"><div class="lt-name">Network (same DC)</div><div class="lt-val">~500 μs</div></div>
-      <div class="lt-row"><div class="lt-name">Network (cross-region)</div><div class="lt-val">~80–150 ms</div></div>
+      <div class="lt-row"><div class="lt-name">Network — same DC</div><div class="lt-val">~500 μs</div></div>
+      <div class="lt-row"><div class="lt-name">Network — cross-region</div><div class="lt-val">~80–150 ms</div></div>
       <div class="lt-row"><div class="lt-name">1B requests/day</div><div class="lt-val">~11,500 req/sec</div></div>
+      <div class="lt-row"><div class="lt-name">1M req/day</div><div class="lt-val">~12 req/sec</div></div>
     </div>
 
     <!-- WEEK 1 -->
@@ -375,33 +970,30 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <h2 class="section-h">Week 1 — Foundations: Scaling, Caching, CAP</h2>
     </div>
 
-    <p class="body">First principles before patterns. You can't reason about which pattern to apply until you can answer: what's the bottleneck type, what's the consistency requirement, and what breaks at 10× traffic?</p>
-
     <div class="design-card">
-      <div class="dc-label">Day 01 · Concept</div>
+      <div class="dc-label">Day 01–02</div>
       <div class="dc-title">Scaling — Vertical, Horizontal, the Scale Cube</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Don't say "add more servers."</strong> Say: "I'd first profile to identify whether we're CPU, memory, or I/O bound. For the stateless API tier, horizontal scaling behind an ALB. For the database, start with read replicas and connection pooling via PgBouncer — escalate to sharding only when reads on replicas saturate."</p>
-        <p><strong>The Scale Cube (AKF):</strong> X-axis = clone (horizontal scale). Y-axis = functional decomposition (microservices, split by domain). Z-axis = data partition (sharding by customer ID, geography). Most systems do X first, then Y when the monolith becomes a bottleneck, then Z when a single dataset outgrows a single node.</p>
+        <p><strong>Don't say "add more servers."</strong> Say: "I'd first profile to identify whether we're CPU, memory, or I/O bound. For the stateless API tier, horizontal scaling behind an ALB. For the database, start with read replicas and connection pooling via PgBouncer — escalate to sharding only when reads on replicas saturate."</p>
+        <p><strong>The Scale Cube (AKF):</strong> X-axis = clone (horizontal scale). Y-axis = functional decomposition (microservices). Z-axis = data partition (sharding by customer ID or geography). Most systems do X first, then Y when the monolith becomes a bottleneck, then Z when a single dataset outgrows a node.</p>
       </div>
     </div>
 
     <div class="design-card">
-      <div class="dc-label">Day 03 · Concept</div>
-      <div class="dc-title">Caching — Strategies, Redis Internals, Invalidation</div>
-      <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Cache-aside (lazy loading)</strong> is the default: app checks Redis, miss → read DB → populate cache. Simple, safe, but every new key requires a DB round-trip first.</p>
-        <p style="margin-bottom:10px"><strong>Write-through</strong>: write to cache AND DB synchronously. Consistent but doubles write latency. <strong>Write-behind</strong>: write to cache only, flush async. Fast writes, risk of data loss on cache crash.</p>
-        <p><strong>Cache stampede</strong> (thundering herd): many requests miss simultaneously, all hammer the DB. Fix: mutex lock (only one request rebuilds the cache), probabilistic early expiry (PER algorithm), or request coalescing. This is the failure mode interviewers want you to raise unprompted.</p>
-      </div>
-    </div>
-
-    <div class="design-card">
-      <div class="dc-label">Day 04 · Concept</div>
+      <div class="dc-label">Day 03–04</div>
       <div class="dc-title">CAP Theorem + PACELC — the More Useful Model</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px">CAP: partition tolerance is not optional in distributed systems. The real choice is between C and A during a network partition. <strong>CP systems</strong>: HBase, ZooKeeper, etcd. <strong>AP systems</strong>: Cassandra, DynamoDB.</p>
-        <p><strong>PACELC extends CAP</strong>: even without a partition, distributed systems trade off latency vs consistency. DynamoDB: PA/EL (available, low latency). Spanner: PC/EC (consistent, higher latency). The PACELC framing shows deeper thinking than CAP alone — use it when the interviewer asks about consistency trade-offs.</p>
+        <p>CAP: partition tolerance is not optional in distributed systems. The real choice is C vs A during a network partition. <strong>CP:</strong> HBase, ZooKeeper, etcd. <strong>AP:</strong> Cassandra, DynamoDB.</p>
+        <p><strong>PACELC extends CAP:</strong> even without a partition, distributed systems trade latency vs consistency. DynamoDB: PA/EL (available, low latency). Spanner: PC/EC (consistent, higher latency). Using PACELC signals deeper thinking — use it when the interviewer asks about consistency trade-offs.</p>
+      </div>
+    </div>
+
+    <div class="design-card">
+      <div class="dc-label">Day 05–07</div>
+      <div class="dc-title">Caching — Cache Stampede, Redis Internals, Invalidation</div>
+      <div class="dc-body">
+        <p><strong>Cache stampede (thundering herd):</strong> many requests miss simultaneously, all hammer the DB. Fix: mutex lock (only one request rebuilds), probabilistic early expiry (PER algorithm), or request coalescing via singleflight. This is the failure mode interviewers want you to raise unprompted.</p>
+        <p><strong>Write-through</strong> doubles write latency but keeps cache consistent. <strong>Write-behind</strong> is fast but risks data loss on crash. <strong>Cache-aside</strong> (lazy) is the safe default — every new key needs a DB round-trip first, but stale reads are bounded by TTL.</p>
       </div>
     </div>
 
@@ -409,11 +1001,11 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <div class="cp-label">Week 1 Checkpoint</div>
       <div class="cp-title">Five Questions to Answer Before Moving On</div>
       <ul class="cp-list">
-        <li class="cp-item">Draw the full request flow (Client → CDN → LB → Gateway → Service → Cache → DB) with latency at each hop — from memory</li>
-        <li class="cp-item">Design a REST API for a ride-booking app: 5 endpoints, correct verbs, status codes, cursor pagination</li>
-        <li class="cp-item">Design a distributed rate limiter for 50K RPS — which algorithm and why?</li>
-        <li class="cp-item">Payment system: which CAP trade-off do you make and what's the user experience of the wrong choice?</li>
-        <li class="cp-item">gRPC vs REST: articulate the decision without hedging. "I'd use gRPC because..."</li>
+        <li class="cp-item">Draw the 5-layer request flow with latency at each hop — from memory</li>
+        <li class="cp-item">Design a distributed rate limiter at 50K RPS — which algorithm and why?</li>
+        <li class="cp-item">Payment system: which CAP trade-off? What's the UX of making the wrong choice?</li>
+        <li class="cp-item">gRPC vs REST: articulate the decision without hedging</li>
+        <li class="cp-item">What is the thundering herd problem and what are the three ways to fix it?</li>
       </ul>
     </div>
 
@@ -423,24 +1015,21 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <h2 class="section-h">Week 2 — Storage Deep Dives</h2>
     </div>
 
-    <p class="body">The most common mistake in system design interviews is choosing a datastore without justifying why. "I'd use MongoDB because it's flexible" is a red flag. The correct approach: identify the access patterns first, then choose the store that serves them.</p>
-
     <div class="design-card">
-      <div class="dc-label">Day 09 · Concept</div>
+      <div class="dc-label">Day 08–10</div>
       <div class="dc-title">Database Internals — B-Tree vs LSM, MVCC, WAL</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>B-Tree (PostgreSQL, MySQL):</strong> self-balancing, O(log n) reads and writes. In-place updates — good for read-heavy workloads. Random writes cause write amplification.</p>
-        <p style="margin-bottom:10px"><strong>LSM-Tree (Cassandra, RocksDB):</strong> write to MemTable first (in-memory) → flush to immutable SSTables on disk → background compaction merges SSTables. O(1) sequential writes. Bloom filters per SSTable skip unnecessary reads. Use for write-heavy workloads where you can tolerate compaction overhead.</p>
-        <p><strong>MVCC:</strong> each write creates a new row version with a transaction timestamp. Readers see a snapshot at their transaction start time — no reader/writer blocking. <strong>WAL:</strong> every change written to log before applied to data pages. On crash: replay WAL. Also enables streaming replication and CDC (Debezium).</p>
+        <p><strong>B-Tree (PostgreSQL):</strong> self-balancing, in-place updates, good for read-heavy OLTP. Write amplification on random writes. <strong>LSM-Tree (Cassandra, RocksDB):</strong> MemTable → SSTable → compaction. O(1) sequential writes, Bloom filters per SSTable. Use for write-heavy workloads where you can tolerate compaction overhead.</p>
+        <p><strong>MVCC:</strong> each write creates a new row version. Readers see a snapshot at transaction start — no reader/writer blocking. <strong>WAL:</strong> every change written to log before data pages. Enables crash recovery, streaming replication, and CDC (Debezium).</p>
       </div>
     </div>
 
     <div class="design-card">
-      <div class="dc-label">Day 10 · Concept</div>
+      <div class="dc-label">Day 11–14</div>
       <div class="dc-title">Sharding — Consistent Hashing, Hotspot Prevention</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Consistent hashing</strong>: place nodes on a hash ring (0 to 2³²). Key → hash → find nearest node clockwise. Adding/removing a node moves only ~k/n keys (where k = total keys, n = nodes). Virtual nodes (vnodes) give each physical node 100–200 points on the ring for even distribution.</p>
-        <p><strong>Shard key selection is the most critical decision.</strong> Bad key = hotspot = one shard does all work. For social networks, user_id hash works for regular users but celebrities cause hot shards. For time-series, time-based shard key means the current-time shard gets all writes. Solution: composite key (time + device_id). Rule: high cardinality AND even distribution across your access patterns.</p>
+        <p><strong>Consistent hashing:</strong> place nodes on hash ring (0 to 2³²). Adding/removing a node moves only k/n keys. Virtual nodes (100–200 per physical node) ensure even distribution. Used by DynamoDB, Cassandra, Redis Cluster.</p>
+        <p><strong>Shard key selection is the most critical decision.</strong> Bad key = hotspot. For social networks, celebrities cause hot shards on user_id hash. For time-series, time-based shard key means current-time shard gets all writes. Rule: high cardinality AND even access distribution.</p>
       </div>
     </div>
 
@@ -448,47 +1037,45 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <div class="cp-label">Week 2 Checkpoint</div>
       <div class="cp-title">Storage Fundamentals</div>
       <ul class="cp-list">
-        <li class="cp-item">When would you choose LSM over B-Tree? Articulate write amplification and compaction overhead</li>
-        <li class="cp-item">Design a sharding strategy for a payment system — what's your shard key and why?</li>
-        <li class="cp-item">Explain MVCC: why does it enable non-blocking reads alongside concurrent writes?</li>
+        <li class="cp-item">When would you choose LSM over B-Tree? Articulate write amplification and compaction</li>
+        <li class="cp-item">Design a sharding strategy for a payment system — shard key choice and reasoning</li>
         <li class="cp-item">w=2, r=2, n=3: strongly consistent? What about w=1, r=1, n=3?</li>
+        <li class="cp-item">Explain MVCC: why does it enable non-blocking reads with concurrent writers?</li>
       </ul>
     </div>
 
     <!-- WEEK 3 -->
     <div id="week3" class="section-anchor">
       <span class="section-num">W3</span>
-      <h2 class="section-h">Week 3 — Messaging, Event-Driven, Real-Time</h2>
+      <h2 class="section-h">Week 3 — Messaging, Events, Real-Time</h2>
     </div>
 
     <div class="design-card">
-      <div class="dc-label">Day 15 · Concept</div>
+      <div class="dc-label">Day 15–17</div>
       <div class="dc-title">Kafka Internals — Partitions, Consumer Groups, EOS</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Kafka guarantees ordering per partition only</strong> — not across partitions. For strict ordering of all events per user: partition by user_id. All events for that user land in the same partition in order. Cross-user ordering is not guaranteed. For globally ordered events (rare): single partition, which sacrifices parallelism.</p>
-        <p style="margin-bottom:10px"><strong>At-least-once by default.</strong> For exactly-once: idempotent producer (<code>enable.idempotence=true</code>) + transactional API. In practice: idempotent consumers (dedup on DB side using unique constraint on idempotency key) are simpler and more resilient than Kafka EOS transactions.</p>
-        <p><strong>Partition count</strong> = parallelism ceiling. You can't have more consumers (in a group) than partitions. Setting partition count too low is a common mistake — you can add partitions later but it requires rebalancing and potentially breaks key ordering.</p>
+        <p><strong>Kafka guarantees ordering per partition only.</strong> For strict ordering of all events per user: partition by user_id. Cross-user ordering not guaranteed. For globally ordered events (rare): single partition, which sacrifices parallelism entirely.</p>
+        <p><strong>Exactly-once:</strong> idempotent producer + transactional API. In practice: idempotent consumers (dedup on unique constraint in DB) are simpler and more resilient than Kafka EOS transactions. <strong>Partition count = parallelism ceiling</strong> — you can't have more consumers in a group than partitions.</p>
       </div>
     </div>
 
     <div class="design-card">
-      <div class="dc-label">Day 16 · Concept</div>
-      <div class="dc-title">Distributed Transactions — Saga vs 2PC, Outbox Pattern</div>
+      <div class="dc-label">Day 18–21</div>
+      <div class="dc-title">Saga vs 2PC, Outbox Pattern — Distributed Transactions</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>2PC is a blocking protocol.</strong> If the coordinator crashes after PREPARE, participants hold locks indefinitely. Avoid in microservices — use Saga instead.</p>
-        <p style="margin-bottom:10px"><strong>Saga</strong>: break distributed transaction into local transactions. Each step publishes an event. On failure: compensating transactions in reverse. Choreography (event-driven, no coordinator) is simpler but harder to track overall state. Orchestration (central saga orchestrator) is easier to monitor and debug, but introduces coordinator coupling.</p>
-        <p><strong>Outbox pattern</strong> solves the dual-write problem: you can't atomically write to DB AND publish to Kafka. Write to DB + Outbox table in one DB transaction (atomic). Debezium watches the WAL for Outbox table inserts and publishes to Kafka. Atomicity is in the DB; delivery is guaranteed by CDC. This is the production-grade answer whenever someone asks how to keep a DB and a message bus in sync.</p>
+        <p><strong>2PC is a blocking protocol.</strong> If coordinator crashes after PREPARE, participants hold locks indefinitely. Never use in microservices — Saga instead. Choreography is simpler but harder to debug. Orchestration has a coordinator (single debug point) but introduces coupling.</p>
+        <p><strong>Outbox pattern</strong> solves dual-write: write to DB + Outbox table in one transaction. Debezium reads WAL → publishes to Kafka. Atomicity in DB, delivery guaranteed by CDC. This is the production answer whenever asked "how do you keep DB and message bus in sync?"</p>
       </div>
     </div>
 
     <div class="checkpoint">
       <div class="cp-label">Week 3 Checkpoint</div>
-      <div class="cp-title">Messaging &amp; Real-Time</div>
+      <div class="cp-title">Messaging and Real-Time</div>
       <ul class="cp-list">
-        <li class="cp-item">Explain the Outbox pattern to a junior engineer — why is it needed and exactly how does it work?</li>
-        <li class="cp-item">Design a presence system for a chat app with 10M concurrent users — heartbeat, fan-out, reconnect</li>
-        <li class="cp-item">When does Kafka guarantee ordering? When does it not?</li>
-        <li class="cp-item">Saga choreography vs orchestration — what's the debugging trade-off?</li>
+        <li class="cp-item">Explain the Outbox pattern to a junior engineer — why is it needed, how does Debezium fit in?</li>
+        <li class="cp-item">Design a presence system for 10M concurrent chat users — heartbeat, fan-out, reconnect</li>
+        <li class="cp-item">When does Kafka guarantee ordering and when does it not?</li>
+        <li class="cp-item">Saga choreography vs orchestration: what's the debugging trade-off?</li>
       </ul>
     </div>
 
@@ -498,15 +1085,13 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <h2 class="section-h">Week 4 — Full System Designs</h2>
     </div>
 
-    <p class="body">Apply everything from the first three weeks to complete systems. The goal: HLD complete in the first 10 minutes, deep dive on the hardest component, trade-offs raised unprompted. You should be driving, not answering.</p>
-
     <div class="design-card">
       <div class="dc-label">Day 22 · Full Design</div>
       <div class="dc-title">Design WhatsApp — Messaging at Scale</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Storage:</strong> Cassandra, partitioned by chat_id, clustered by timestamp DESC — efficient time-ordered reads per chat, write-optimized LSM-tree handles high message throughput. Message IDs: Snowflake — globally unique, time-sortable, no coordination.</p>
-        <p style="margin-bottom:10px"><strong>Delivery:</strong> WebSocket server per region. Connection server is stateful — use consistent hashing to route a user's connections to the same server. On message send: write to Kafka → Delivery Service pushes to recipient's WebSocket → write to Cassandra. If offline: store + push notification via FCM/APNs.</p>
-        <p><strong>Group fan-out:</strong> Small groups (&lt;100): fan-out on write — message to each member's inbox. Large groups: fan-out on read — members pull from shared inbox on open. Hard group size limit (WhatsApp uses 1024) caps write amplification. Group membership cached in Redis, backed by PostgreSQL.</p>
+        <p><strong>Storage:</strong> Cassandra, partitioned by chat_id, clustered by timestamp DESC. Write-optimized LSM-tree handles high message throughput. Message IDs: Snowflake — globally unique, time-sortable.</p>
+        <p><strong>Delivery:</strong> WebSocket server per region. Connection server stateful — consistent hash routes user to same server. On send: write to Kafka → Delivery Service pushes to recipient's WebSocket → write to Cassandra. If offline: store + push notification via FCM/APNs.</p>
+        <p><strong>Group fan-out:</strong> Small groups (&lt;100): fan-out on write. Large groups: fan-out on read. Hard group size limit caps write amplification. Group membership cached in Redis, backed by PostgreSQL.</p>
       </div>
     </div>
 
@@ -514,66 +1099,109 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <div class="dc-label">Day 26 · Full Design</div>
       <div class="dc-title">Design Twitter Feed — The Fan-Out Decision</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Fan-out on write (push):</strong> on tweet, push tweet_id to all followers' feed caches (Redis ZSET, score=timestamp). O(followers) work at write time. Read is O(1). Celebrity problem: 50M followers = 50M Redis writes per tweet.</p>
-        <p style="margin-bottom:10px"><strong>Fan-out on read (pull):</strong> on feed load, fetch recent tweets from all followed users, merge-sort. Heavy reads, no write amplification for celebrities. Slow for users following 5000+ accounts.</p>
-        <p><strong>Hybrid — the actual Twitter answer:</strong> regular users (&lt;1M followers) use fan-out on write. Celebrity users (&gt;1M followers): on read, merge their recent tweets with the user's pre-built feed from Redis. Mentioning this approach unprompted signals you know real production trade-offs, not just textbook patterns.</p>
+        <p><strong>Fan-out on write:</strong> on tweet, push tweet_id to all followers' Redis ZSETs. O(followers) work at write. Celebrity problem: 50M followers = 50M Redis writes per tweet.</p>
+        <p><strong>Fan-out on read:</strong> on feed load, fetch recent tweets from all followed users, merge-sort. Heavy reads, no write amplification. Slow for users following 5000+ accounts.</p>
+        <p><strong>Hybrid (production answer):</strong> regular users (&lt;1M followers) use fan-out on write. Celebrity users (&gt;1M followers): merge their recent tweets with the user's pre-built feed at read time. Mentioning this unprompted signals production trade-off awareness.</p>
       </div>
     </div>
 
     <div class="design-card">
-      <div class="dc-label">Day 27 · LLD</div>
-      <div class="dc-title">LLD Deep Dive — Concurrency as the Differentiator</div>
+      <div class="dc-label">Day 27 · LLD Focus</div>
+      <div class="dc-title">LLD — Concurrency as the Differentiator</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px">The gap between senior and mid-level in LLD is concurrency awareness. Don't just draw classes — identify the race conditions.</p>
-        <p><strong>Example: parking lot slot booking.</strong> The availability check and the reservation write are two separate operations — a TOCTOU (time-of-check-time-of-use) race condition exists. Two users check simultaneously, both see the slot as available, both try to book. Fix: optimistic locking — add a <code>version</code> field to the Slot entity. The UPDATE only succeeds if <code>version</code> matches what was read. On conflict, retry with fresh read. Proactively naming this race condition and its solution is the staff-level signal.</p>
+        <p>The gap between senior and mid-level in LLD is concurrency awareness. Don't just draw classes — identify the race conditions.</p>
+        <p><strong>Parking lot slot booking:</strong> availability check and reservation write are two operations — TOCTOU race condition. Two users check simultaneously, both see slot available, both book. Fix: optimistic locking — <code>version</code> field on Slot entity. UPDATE only succeeds if version matches what was read. On conflict, retry. Proactively naming this is the staff-level signal.</p>
       </div>
     </div>
 
     <!-- WEEK 5 -->
     <div id="week5" class="section-anchor">
       <span class="section-num">W5</span>
-      <h2 class="section-h">Week 5 — AI Agent System Design (Bonus)</h2>
+      <h2 class="section-h">Week 5 (Bonus) — AI Agent System Design</h2>
     </div>
 
-    <p class="body">AI agent design is now appearing in senior interviews at companies building AI products. All prior weeks remain fully intact — this is additive. The core insight: AI agents are distributed systems with non-deterministic components. Every reliability and observability pattern from Weeks 1–4 applies.</p>
+    <p class="body">AI agent design appears in senior interviews at companies building AI products. All prior weeks remain fully intact — this is additive. The core insight: AI agents are distributed systems with non-deterministic components. Every reliability and observability pattern from Weeks 1–4 applies.</p>
 
     <div class="design-card">
-      <div class="dc-label">Day 31 · Concept</div>
+      <div class="dc-label">Day 31–32</div>
       <div class="dc-title">Agent Patterns — ReAct vs Plan-Execute</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>ReAct (Reason + Act):</strong> LLM alternates Thought → Action (tool call) → Observation → repeat. Flexible, handles unknown task shapes, discovers information dynamically. Risk: errors compound over long chains. Add a hard <code>max_steps</code> limit.</p>
-        <p><strong>Plan-and-Execute:</strong> Planner LLM generates a full step-by-step task list upfront. Executor (smaller, cheaper model) runs each step. Dramatically reduces cost. More auditable — the plan is a visible, loggable artifact. Brittle if the plan is wrong at step 1 — add a re-planning step for unexpected failures.</p>
+        <p><strong>ReAct (Reason + Act):</strong> LLM alternates Thought → Action (tool call) → Observation → repeat. Flexible, discovers information dynamically. Risk: errors compound over long chains. Add hard <code>max_steps</code> limit.</p>
+        <p><strong>Plan-and-Execute:</strong> Planner LLM generates full task list upfront. Executor (smaller, cheaper model) runs each step. Dramatically reduces cost. More auditable — the plan is a visible artifact. Brittle if plan is wrong at step 1.</p>
       </div>
     </div>
 
     <div class="design-card">
-      <div class="dc-label">Day 34 · Full Design</div>
+      <div class="dc-label">Day 34–36 · Full Design</div>
       <div class="dc-title">Design a Production RAG System</div>
       <div class="dc-body">
-        <p style="margin-bottom:10px"><strong>Chunking:</strong> semantic boundaries beat fixed-size. Parent-child: retrieve small chunk, return larger parent for context. For a 10M document corpus: incremental indexing with file-watcher, not full re-index on every change.</p>
-        <p style="margin-bottom:10px"><strong>Hybrid search:</strong> ANN (semantic, via embeddings) + BM25 (keyword) combined with RRF (Reciprocal Rank Fusion) scoring. Best precision for most domains — neither semantic nor keyword alone is consistently better.</p>
-        <p><strong>Eval pipeline:</strong> RAGAS metrics (faithfulness, answer relevance, context recall) on a golden dataset. Run on every deploy — catch regressions before they reach users. This is the part most teams skip and regret.</p>
+        <p><strong>Chunking:</strong> semantic boundaries beat fixed-size. Parent-child: retrieve small chunk, return larger parent for context. Incremental indexing with file-watcher, not full re-index.</p>
+        <p><strong>Hybrid search:</strong> ANN (semantic) + BM25 (keyword) combined with RRF scoring. Best precision for most domains — neither alone is consistently better.</p>
+        <p><strong>Eval pipeline:</strong> RAGAS metrics (faithfulness, answer relevance, context recall) on a golden dataset. Run on every deploy. Most teams skip this and regret it.</p>
       </div>
     </div>
 
     <div class="callout" style="--callout-color:var(--red);--callout-bg:#ffeee0">
-      <div class="callout-label">Production Failure Modes for AI Agents</div>
-      <p><strong>Compounding hallucination:</strong> wrong tool call → wrong observation → wrong next step → cascades. Fix: validate tool output schema, add reflection on unexpected results. <strong>Cost explosion:</strong> agent loops without progress. Fix: max_steps + cost budget hard cap + loop detection (hash of recent states). <strong>No audit trail:</strong> impossible to debug. Fix: persistent trace log from day one — non-negotiable.</p>
+      <div class="callout-label">AI Agent Production Failure Modes</div>
+      <p><strong>Compounding hallucination:</strong> wrong tool call → wrong observation → cascades. Fix: validate tool output schema. <strong>Cost explosion:</strong> agent loops without progress. Fix: max_steps + cost budget hard cap + loop detection. <strong>No audit trail:</strong> impossible to debug. Fix: persistent trace log from day one.</p>
+    </div>
+
+    <!-- FLASH CARDS -->
+    <div id="flashcards" class="section-anchor">
+      <span class="section-num">30</span>
+      <h2 class="section-h">Flash Cards — Final Review</h2>
+    </div>
+
+    <div class="flashcard-grid">
+      <div class="flashcard">
+        <div class="fc-q">What's the first thing you do in a system design interview?</div>
+        <div class="fc-a">Clarify requirements before drawing anything. Ask: Who are the users? What's the scale (DAU, RPS)? Read:write ratio? Latency SLA? Consistency requirement? Global or single region? You drive this — don't wait to be asked.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">Cache-aside vs write-through — when does each win?</div>
+        <div class="fc-a">Cache-aside (lazy): safe default, no wasted writes for infrequently accessed data. Cache misses on first read. Write-through: no cache miss penalty on read, but every write hits both cache and DB — doubles write latency. Use write-through when read-after-write consistency is critical.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">When does Kafka guarantee message ordering?</div>
+        <div class="fc-a">Within a single partition only. Cross-partition ordering is not guaranteed. For strict per-user ordering: partition by user_id — all that user's events land in one partition in order. Cross-user events may arrive out of order from each other.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">Why does the Outbox pattern exist — what problem does it solve?</div>
+        <div class="fc-a">Dual-write problem: you can't atomically write to DB AND publish to Kafka. If you write to DB then publish and crash between the two, the event is lost. Outbox: write DB + Outbox table in one DB transaction (atomic). Debezium reads WAL → publishes to Kafka. Atomicity is in the DB; delivery is by CDC.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What's the difference between CP and AP in CAP theorem — examples?</div>
+        <div class="fc-a">CP: during a partition, system refuses writes to maintain consistency — never returns stale data. Examples: ZooKeeper, etcd, HBase. AP: during a partition, system continues serving — may return stale data. Examples: Cassandra, DynamoDB, CouchDB. In practice: you choose what "wrong" looks like — stale data (AP) or unavailability (CP).</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">Fan-out on write vs read — when does each make sense?</div>
+        <div class="fc-a">Fan-out on write: precompute each user's feed at write time. Fast reads (O(1)), expensive writes for users with many followers. Fan-out on read: compute feed at read time by merging followed users' timelines. Handles celebrities well but slow for users following many accounts. Production answer: hybrid — write fan-out for regular users, read fan-out for celebrities (>1M followers).</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">Why is jitter non-optional in retry backoff?</div>
+        <div class="fc-a">Without jitter, 1000 services that all failed at t=0 will all retry at exactly t=100ms, t=200ms — recreating the original load spike that caused the failure. Full jitter (random 0 to backoff) desynchronizes retries across all clients, spreading the load over the backoff window instead of concentrating it.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What is the TOCTOU race condition and how do you fix it in a booking system?</div>
+        <div class="fc-a">Time-of-check-time-of-use: check availability (read), then book (write) are two separate operations. Two users check simultaneously, both see available, both book. Fixes: optimistic locking (version field, UPDATE fails if version changed), pessimistic locking (SELECT FOR UPDATE), or a Redis SET NX atomic claim before the DB write.</div>
+      </div>
     </div>
 
   </article>
 </div>
 </div>
 
-<footer style="border-top:1px solid var(--rule);padding:28px 0">
-  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+<div class="wrap">
+<footer>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
     <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
     <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
   </div>
 </footer>
+</div>
 
 <script>
-document.querySelectorAll('.code-copy').forEach(btn => {
+document.querySelectorAll('.code-copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const text = btn.closest('.code-wrap').querySelector('pre').innerText;
     navigator.clipboard.writeText(text).then(() => {
@@ -582,18 +1210,18 @@ document.querySelectorAll('.code-copy').forEach(btn => {
     });
   });
 });
-const sections = document.querySelectorAll('[id]');
-const tocLinks = document.querySelectorAll('.toc-item');
-const obs = new IntersectionObserver(entries => {
+const secs = document.querySelectorAll('[id]');
+const tl = document.querySelectorAll('.toc-item');
+const ob = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
-      tocLinks.forEach(li => li.classList.remove('active'));
+      tl.forEach(l => l.classList.remove('active'));
       const a = document.querySelector(`.toc-item a[href="#${e.target.id}"]`);
       if (a) a.closest('.toc-item').classList.add('active');
     }
   });
 }, { rootMargin: '-20% 0px -70% 0px' });
-sections.forEach(s => obs.observe(s));
+secs.forEach(s => ob.observe(s));
 </script>
 </body>
 </html>
