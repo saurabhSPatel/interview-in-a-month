@@ -3,2243 +3,706 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSA in 30 Days — Go Lang</title>
+<title>DSA in 30 Days — Engineering OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#07090f; --surface:#0e1117; --surface2:#141820; --border:#1e2530;
-    --accent:#00e5b0; --accent2:#ff5f40; --accent3:#5b8fff;
-    --text:#e8eaf0; --muted:#6b7385;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 50%,rgba(0,229,176,0.03) 0%,transparent 60%);pointer-events:none;}
-
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back-link{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.5rem;}
-  .back-link:hover{color:var(--accent);}
-  .nav-title{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--accent);}
-
-  .hero{max-width:1100px;margin:0 auto;padding:4rem 2rem 2rem;}
-  .tag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(0,229,176,0.08);border:1px solid rgba(0,229,176,0.2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:1rem;}
-  h1 span{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  .hero-desc{color:var(--muted);font-size:.95rem;max-width:600px;margin-bottom:2.5rem;}
-  .meta-row{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .meta-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.5rem;}
-  .meta-box .val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent);}
-  .meta-box .key{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
-
-  /* Timeline nav */
-  .week-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;padding:0 2rem;max-width:1100px;margin-left:auto;margin-right:auto;}
-  .week-tab{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);cursor:pointer;text-decoration:none;transition:all .2s;}
-  .week-tab:hover,.week-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,176,0.06);}
-
-  main{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
-
-  .week-section{margin-bottom:4rem;}
-  .week-label{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
-  .week-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);}
-  .week-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
-  .week-theme{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(0,229,176,0.08);border:1px solid rgba(0,229,176,0.2);color:var(--accent);padding:.2rem .6rem;border-radius:4px;margin-left:auto;}
-
-  .day-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;transition:border-color .2s;}
-  .day-card:hover{border-color:rgba(0,229,176,0.25);}
-  .day-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;cursor:pointer;}
-  .day-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);min-width:52px;}
-  .day-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;flex:1;}
-  .day-pattern{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);color:var(--muted);}
-  .day-toggle{color:var(--muted);font-size:.8rem;transition:transform .3s;}
-  .day-body{padding:0 1.5rem 1.5rem;display:none;}
-  .day-body.open{display:block;}
-  
-  .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
-  .info-block{background:var(--surface2);border-radius:8px;padding:1rem;}
-  .info-block h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.75rem;text-transform:uppercase;}
-  .info-block p,.info-block li{font-size:.82rem;color:var(--muted);line-height:1.6;}
-  .info-block ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
-  .info-block ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  
-  .problems-list{display:flex;flex-direction:column;gap:.4rem;}
-  .problem-item{display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;background:rgba(0,0,0,0.2);border-radius:6px;border:1px solid var(--border);}
-  .problem-item a{font-size:.82rem;color:var(--text);text-decoration:none;flex:1;}
-  .problem-item a:hover{color:var(--accent);}
-  .difficulty{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .45rem;border-radius:3px;}
-  .easy{background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.2);}
-  .medium{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);}
-  .hard{background:rgba(255,95,64,0.12);color:var(--accent2);border:1px solid rgba(255,95,64,0.2);}
-
-  .go-tip{background:rgba(0,168,215,0.06);border:1px solid rgba(0,168,215,0.2);border-radius:8px;padding:1rem;margin-top:1rem;}
-  .go-tip h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#00acd7;letter-spacing:.08em;margin-bottom:.5rem;}
-  .go-tip code{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#00acd7;background:rgba(0,168,215,0.08);padding:.1rem .35rem;border-radius:3px;}
-  .go-tip p{font-size:.82rem;color:var(--muted);line-height:1.6;}
-
-  .checkpoint-card{background:rgba(255,95,64,0.05);border:1px solid rgba(255,95,64,0.2);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .checkpoint-card h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent2);margin-bottom:.75rem;}
-  .checkpoint-card ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
-  .checkpoint-card ul li{font-size:.83rem;color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;}
-  .checkpoint-card ul li::before{content:'✓';color:var(--accent2);font-size:.75rem;margin-top:.1rem;}
-
-  @media(max-width:768px){
-    .section-grid{grid-template-columns:1fr;}
-    .meta-row{gap:1rem;}
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;
+  --paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;
+  --rule:#d4d1c6;--rule-2:#c4c0b3;
+  --lime:#b8f060;--lime-dim:#b8f06018;
+  --amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;
+  --mono:'IBM Plex Mono',monospace;--serif:'Fraunces',serif;--sans:'DM Sans',sans-serif;
+  --r:6px;--r-lg:12px;
+}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+@media(max-width:700px){.wrap{padding:0 20px}}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0;border-left:2px solid transparent;padding-left:12px;transition:color .15s,border-color .15s;line-height:1.4}
+.toc-item a:hover{color:var(--ink);border-left-color:var(--ink-3)}
+.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px;font-weight:500}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+/* week grid */
+.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:48px}
+@media(max-width:700px){.week-grid{grid-template-columns:repeat(2,1fr)}}
+.week-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px;text-decoration:none;transition:border-color .15s,background .15s}
+.week-card:hover{border-color:var(--rule-2);background:var(--paper-3)}
+.wc-num{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;margin-bottom:6px}
+.wc-title{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.2}
+.wc-sub{font-size:12px;color:var(--ink-3);line-height:1.5}
+/* section */
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:28px;margin-top:64px;padding-top:64px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-family:var(--sans);font-size:15px;font-weight:500;color:var(--ink);margin:32px 0 12px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:16px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+/* day cards */
+.day-list{display:flex;flex-direction:column;gap:12px;margin:24px 0}
+.day-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden}
+.day-head{display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer;transition:background .15s}
+.day-head:hover{background:var(--paper-3)}
+.day-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:40px;flex-shrink:0}
+.day-title{font-size:14px;font-weight:500;color:var(--ink);flex:1}
+.day-pattern{font-family:var(--mono);font-size:10px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 8px;border-radius:10px}
+.day-toggle{font-size:12px;color:var(--ink-4);transition:transform .2s;flex-shrink:0}
+.day-card.open .day-toggle{transform:rotate(180deg)}
+.day-body{display:none;padding:0 20px 20px;border-top:1px solid var(--rule)}
+.day-card.open .day-body{display:block}
+.day-section-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px}
+.day-text{font-size:13px;color:var(--ink-2);line-height:1.7;margin-bottom:12px}
+.problem-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.problem-item{display:flex;align-items:center;gap:10px}
+.problem-item a{font-size:13px;color:var(--blue);text-decoration:none;flex:1}
+.problem-item a:hover{text-decoration:underline}
+.diff{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.diff-easy{background:#e9fbe9;color:#1a7a1a;border:1px solid #b8e8b8}
+.diff-med{background:#fff8e0;color:#a06000;border:1px solid #ffd880}
+.diff-hard{background:#ffeee0;color:#b04010;border:1px solid #ffccaa}
+.tip-block{background:var(--paper-3);border-left:3px solid var(--teal);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin-top:12px}
+.tip-label{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.08em;margin-bottom:4px}
+.tip-text{font-size:12px;color:var(--ink-2);line-height:1.6;font-family:var(--mono)}
+/* checkpoint */
+.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:32px;margin:32px 0}
+.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.cp-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--paper);margin-bottom:16px}
+.cp-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
+.cp-item::before{content:'→';color:var(--lime);flex-shrink:0;font-family:var(--mono)}
+/* code */
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer;transition:color .15s}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="index.html" class="back-link">← Back</a>
-  <span class="nav-title">DSA · 30 Days · Go</span>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back">← Platform</a>
+    <div class="nav-badge">DSA · 30 Days · Go Lang</div>
+  </div>
 </nav>
 
-<div class="hero">
-  <div class="tag">PATTERN-FIRST · GO LANG · FAANG+ CALIBRATED</div>
-  <h1>DSA in <span>30 Days</span></h1>
-  <p class="hero-desc">Not random LeetCode grinding. Every day maps to a pattern. Master the pattern → the problems become obvious. Go-specific implementations throughout.</p>
-  <div class="meta-row">
-    <div class="meta-box"><div class="val">30</div><div class="key">Days Total</div></div>
-    <div class="meta-box"><div class="val">~2h</div><div class="key">Per Day</div></div>
-    <div class="meta-box"><div class="val">230+</div><div class="key">Problems</div></div>
-    <div class="meta-box"><div class="val">6</div><div class="key">MC Solutions</div></div>
-  </div>
-</div>
+<div class="wrap">
+<div class="doc-layout">
+  <aside class="toc">
+    <div class="toc-label">Contents</div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#philosophy">Philosophy</a></li>
+      <li class="toc-item"><a href="#week1">Week 1 · Arrays</a></li>
+      <li class="toc-item"><a href="#week2">Week 2 · Stack/Heap</a></li>
+      <li class="toc-item"><a href="#week3">Week 3 · Trees/BS</a></li>
+      <li class="toc-item"><a href="#week4">Week 4 · Graphs/DP</a></li>
+      <li class="toc-item"><a href="#mock">Mock Protocol</a></li>
+    </ul>
+  </aside>
 
-<div class="week-tabs">
-  <a href="#week1" class="week-tab">Week 1: Arrays</a>
-  <a href="#week2" class="week-tab">Week 2: Stack/Heap</a>
-  <a href="#week3" class="week-tab">Week 3: Trees/BS</a>
-  <a href="#week4" class="week-tab">Week 4: Graphs/DP</a>
-  <a href="#trending" class="week-tab" style="border-color:rgba(255,95,64,0.3);color:var(--accent2);">Trending Senior</a>
-  <a href="#machinecoding" class="week-tab" style="border-color:rgba(91,143,255,0.3);color:var(--accent3);">Machine Coding</a>
-</div>
-
-<main>
-
-<!-- ═══════════════════════════════════════════════════ WEEK 1 -->
-<div class="week-section" id="week1">
-  <div class="week-label">
-    <span class="week-num">WEEK 01</span>
-    <span class="week-title">Arrays, Sliding Window, Two Pointers, Prefix Sum</span>
-    <span class="week-theme">LINEAR PATTERNS</span>
-  </div>
-
-  <!-- Day 1 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 01</span>
-      <span class="day-name">Two Pointers — Opposite Ends</span>
-      <span class="day-pattern">Two Pointers</span>
-      <span class="day-toggle">▼</span>
+  <article>
+    <div class="article-header">
+      <div class="art-eyebrow">
+        <span class="art-badge">30 Days</span>
+        Pattern-First · Go Lang · FAANG+ Calibrated
+      </div>
+      <h1 class="art-title">DSA in<br><em>30 Days</em></h1>
+      <p class="art-subtitle">
+        Not random LeetCode grinding. Every day maps to exactly one algorithmic pattern. Master the pattern and the problems become parameter variations — not surprises. Go implementations throughout, written the way you'd write them in a real codebase.
+      </p>
+      <div class="art-meta">
+        <div class="meta-pill"><div class="meta-pill-dot"></div>30 days</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>~2h per day</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>120+ problems</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>4 mock checkpoints</div>
+      </div>
     </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Start pointers at both ends, move inward based on comparison. O(n) over O(n²) brute force. Key insight: sorted arrays make decisions deterministic.</p>
-          <div class="go-tip" style="margin-top:10px; background:rgba(255,255,255,0.03)">
-            <h4 style="color:var(--text)">Algorithm Logic</h4>
-            <ol style="font-size:0.75rem; color:var(--muted); padding-left:15px;">
-              <li>Initialize <code>left := 0</code>, <code>right := len(arr)-1</code>.</li>
-              <li>While <code>left < right</code>:</li>
-              <li>Calculate state (e.g., <code>sum := arr[left] + arr[right]</code>).</li>
-              <li>If state matches target, return/process.</li>
-              <li>If state < target, <code>left++</code> (increase sum).</li>
-              <li>If state > target, <code>right--</code> (decrease sum).</li>
-            </ol>
+
+    <div class="week-grid">
+      <a href="#week1" class="week-card">
+        <div class="wc-num">WEEK 01</div>
+        <div class="wc-title">Arrays &amp; Linear Patterns</div>
+        <div class="wc-sub">Two pointers, sliding window, prefix sum, intervals</div>
+      </a>
+      <a href="#week2" class="week-card">
+        <div class="wc-num">WEEK 02</div>
+        <div class="wc-title">Order &amp; Priority</div>
+        <div class="wc-sub">Stack, monotonic stack, heap, deque, hashing</div>
+      </a>
+      <a href="#week3" class="week-card">
+        <div class="wc-num">WEEK 03</div>
+        <div class="wc-title">Hierarchical Patterns</div>
+        <div class="wc-sub">Binary search, tree DFS/BFS, tries</div>
+      </a>
+      <a href="#week4" class="week-card">
+        <div class="wc-num">WEEK 04</div>
+        <div class="wc-title">Deep Patterns</div>
+        <div class="wc-sub">Graphs, union-find, DP, backtracking</div>
+      </a>
+    </div>
+
+    <!-- PHILOSOPHY -->
+    <div id="philosophy" class="section-anchor">
+      <span class="section-num">00</span>
+      <h2 class="section-h">The Pattern-First Philosophy</h2>
+    </div>
+    <p class="body">There are roughly 15 algorithmic patterns that cover 90% of problems you'll see in a FAANG-calibre interview. Random LeetCode grinding works against you — you end up with a memory of 200 specific solutions rather than fluency with 15 patterns. When you see a new problem you haven't memorised, you're stuck. When you know the patterns cold, you recognise the shape of the problem and know where to start.</p>
+    <p class="body">The daily structure is: read the pattern's core idea, understand <em>why</em> it works, then apply it to 3–4 problems in increasing difficulty. On Day 1 you're not doing Two Sum — you're understanding the two-pointer invariant and why it reduces O(n²) to O(n). Two Sum is then trivially obvious.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">go — pattern template: two pointers</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c">// Before writing any code: name the pattern out loud.</span>
+<span class="t-c">// "This is two pointers — opposite ends — because the array is sorted</span>
+<span class="t-c">// and I need a pair. I know moving the left pointer increases the sum,</span>
+<span class="t-c">// moving the right decreases it."</span>
+<span class="t-c">//</span>
+<span class="t-c">// The invariant: at every step, the answer (if it exists) is</span>
+<span class="t-c">// within [left, right]. We shrink toward it deterministically.</span>
+
+<span class="t-k">func</span> <span class="t-f">twoSum</span>(nums []<span class="t-t">int</span>, target <span class="t-t">int</span>) []<span class="t-t">int</span> {
+    left, right := <span class="t-n">0</span>, <span class="t-f">len</span>(nums)-<span class="t-n">1</span>
+    <span class="t-k">for</span> left &lt; right {
+        <span class="t-k">switch</span> sum := nums[left] + nums[right]; {
+        <span class="t-k">case</span> sum == target: <span class="t-k">return</span> []<span class="t-t">int</span>{left + <span class="t-n">1</span>, right + <span class="t-n">1</span>}
+        <span class="t-k">case</span> sum &lt; target:  left++
+        <span class="t-k">default</span>:            right--
+        }
+    }
+    <span class="t-k">return</span> <span class="t-k">nil</span>
+}</pre>
+    </div>
+
+    <!-- WEEK 1 -->
+    <div id="week1" class="section-anchor">
+      <span class="section-num">W1</span>
+      <h2 class="section-h">Week 1 — Arrays, Sliding Window, Two Pointers, Prefix Sum</h2>
+    </div>
+    <p class="body">Linear patterns. These are the building blocks everything else rests on. The goal by end of week: you can recognise within 30 seconds whether a problem wants two pointers, sliding window, or prefix sum — and you can articulate why.</p>
+
+    <div class="day-list">
+
+      <div class="day-card" id="d1">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 01</span>
+          <span class="day-title">Two Pointers — Opposite Ends</span>
+          <span class="day-pattern">Two Pointers</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Start pointers at both ends of a sorted array, move inward based on comparison. The key insight: because the array is sorted, every decision is deterministic. Moving left increases the sum; moving right decreases it. You never need to backtrack. This converts O(n²) brute-force pair search to O(n).</div>
+          <div class="day-section-label">Why It Matters</div>
+          <div class="day-text">The pattern generalises far beyond Two Sum. Trapping Rain Water is two pointers tracking left/right maximums. 3Sum is two pointers inside an outer loop with deduplication. Container With Most Water is pure opposite-ends. Any time you have a sorted array and need a pair satisfying a constraint, start here.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank">#167 Two Sum II — Sorted Array</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/container-with-most-water/" target="_blank">#11 Container With Most Water</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/3sum/" target="_blank">#15 3Sum</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/trapping-rain-water/" target="_blank">#42 Trapping Rain Water</a><span class="diff diff-hard">Hard</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">For 3Sum: skip duplicates with <code>for i > 0 && nums[i] == nums[i-1] { i++ }</code>. Pre-sort with <code>sort.Ints(nums)</code>. Work in-place — no extra allocation needed.</div>
           </div>
         </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Base for most array manipulation</li>
-            <li>Appears in 3Sum, container water, trapping rain</li>
-            <li>Reduces O(n²) → O(n) in interviews</li>
+      </div>
+
+      <div class="day-card" id="d2">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 02</span>
+          <span class="day-title">Two Pointers — Fast/Slow (Floyd's Cycle)</span>
+          <span class="day-pattern">Two Pointers</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Fast pointer moves 2×, slow moves 1×. If there's a cycle, they must meet — the fast pointer laps the slow one inside the loop. After meeting, reset one pointer to head; advance both at 1× — they meet at the cycle start. This uses O(1) space where a visited set would use O(n).</div>
+          <div class="day-section-label">Why It Matters</div>
+          <div class="day-text">Floyd's algorithm is a classic seniority signal — interviewers use it to check if you know O(1) space tricks. The "find duplicate in array" variant (#287) reframes the array as a linked list with the values as next pointers, then applies Floyd's. Once you see that framing, the solution is immediate.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">#141 Linked List Cycle</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank">#142 Linked List Cycle II</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank">#287 Find the Duplicate Number</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank">#876 Middle of Linked List</a><span class="diff diff-easy">Easy</span></li>
           </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank">#167 Two Sum II — Input Array Sorted</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/container-with-most-water/" target="_blank">#11 Container With Most Water</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/3sum/" target="_blank">#15 3Sum</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/trapping-rain-water/" target="_blank">#42 Trapping Rain Water</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Use <code>sort.Slice(nums, func(i,j int) bool { return nums[i] &lt; nums[j] })</code> to pre-sort. For 3Sum, skip duplicates with <code>for i > 0 && nums[i] == nums[i-1] { i++ }</code>. No overhead from extra allocation — work in-place.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 2 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 02</span>
-      <span class="day-name">Two Pointers — Fast/Slow (Floyd's)</span>
-      <span class="day-pattern">Two Pointers</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Fast pointer moves 2x, slow moves 1x. They meet at cycle start. Also used for finding middle, removing nth from end without counting length.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>O(1) space cycle detection</li>
-            <li>Floyd's algorithm — classic interview signal</li>
-            <li>Variant: duplicate finder in O(1) space</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">#141 Linked List Cycle</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank">#142 Linked List Cycle II</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank">#287 Find the Duplicate Number</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank">#876 Middle of Linked List</a><span class="difficulty easy">Easy</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Define node inline: <code>type ListNode struct { Val int; Next *ListNode }</code>. Go's nil pointer checks are cheap. For cycle detection: <code>slow, fast := head, head</code> then loop until <code>fast == nil || fast.Next == nil</code>.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 3 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 03</span>
-      <span class="day-name">Sliding Window — Fixed Size</span>
-      <span class="day-pattern">Sliding Window</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Window of size k slides right. Subtract outgoing left element, add incoming right. Critical: maintain a running aggregate (sum, max, frequency map). Never recompute from scratch.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Real use: rate limiting (fixed window)</li>
-            <li>Foundation of all substring/subarray problems</li>
-            <li>Teaches "avoid redundant computation" thinking</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank">#643 Maximum Average Subarray I</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/" target="_blank">#2461 Max Sum of Distinct Subarrays Length K</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank">#438 Find All Anagrams in a String</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/permutation-in-string/" target="_blank">#567 Permutation in String</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Use <code>map[byte]int</code> for frequency. Compare maps: <code>reflect.DeepEqual</code> is expensive — instead track a <code>matches int</code> counter. Update on add/remove. Array <code>[26]int</code> beats map for lowercase-only char problems.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 4 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 04</span>
-      <span class="day-name">Sliding Window — Variable Size</span>
-      <span class="day-pattern">Sliding Window</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Expand right when condition satisfied, shrink left when violated. Template: <code>left=0; for right in range; [process]; while violated { shrink left }; update answer</code></p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Longest substring problems — huge category</li>
-            <li>Greedy expansion + lazy contraction</li>
-            <li>At-most K distinct: key interview variant</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank">#3 Longest Substring Without Repeating Characters</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank">#76 Minimum Window Substring</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/longest-repeating-character-replacement/" target="_blank">#424 Longest Repeating Character Replacement</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/fruits-into-baskets/" target="_blank">#904 Fruit Into Baskets</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>For string iteration by byte: <code>for i := 0; i &lt; len(s); i++</code> is faster than range for ASCII. Use <code>s[i]</code> not <code>rune(s[i])</code>. <code>max(a,b)</code> available in Go 1.21+ — use builtin, don't write helpers.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 5 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 05</span>
-      <span class="day-name">Prefix Sum + Hash Map</span>
-      <span class="day-pattern">Prefix Sum</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p><code>prefix[i] = prefix[i-1] + nums[i-1]</code>. Range sum query in O(1). Combine with hash map for subarray sum = k: store <code>prefix → count</code>. Answer += <code>map[prefix-k]</code>.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Transforms O(n²) subarray problems → O(n)</li>
-            <li>Used in distributed stream analytics</li>
-            <li>2D prefix sum for matrix problems</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank">#560 Subarray Sum Equals K</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/contiguous-array/" target="_blank">#525 Contiguous Array</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank">#303 Range Sum Query Immutable</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank">#238 Product of Array Except Self</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Pre-initialize map with zero: <code>prefixCount := map[int]int{0: 1}</code>. This handles subarrays starting at index 0. Go maps have O(1) avg but allocate — for small n, consider array of size 2n+1 with offset.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 6 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 06</span>
-      <span class="day-name">Intervals — Merge, Insert, Overlap</span>
-      <span class="day-pattern">Intervals</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Sort by start time. Merge condition: <code>curr.start ≤ prev.end</code>. For meeting rooms: sort starts/ends separately, use two pointers. Min-heap for active intervals.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Calendar/scheduling systems real-world</li>
-            <li>Meeting rooms II appears in every loop</li>
-            <li>Sweep line algorithm foundation</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">#56 Merge Intervals</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/insert-interval/" target="_blank">#57 Insert Interval</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">#253 Meeting Rooms II</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/non-overlapping-intervals/" target="_blank">#435 Non-Overlapping Intervals</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Sort 2D slice: <code>sort.Slice(intervals, func(i,j int) bool { return intervals[i][0] &lt; intervals[j][0] })</code>. For heap-based meeting rooms, implement <code>container/heap</code> interface (Len, Less, Swap, Push, Pop).</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 7 — Checkpoint -->
-  <div class="checkpoint-card">
-    <h3>🎯 Week 1 Checkpoint — Mock Interview</h3>
-    <ul>
-      <li>Solve one medium Two Pointer + one medium Sliding Window in 45 min under timed conditions</li>
-      <li>Verbalize the pattern name before coding — "this is variable window because..."</li>
-      <li>Review: Prefix sum + hash map combo (most missed pattern)</li>
-      <li>Go code quality: no unnecessary allocations, proper error handling style</li>
-      <li>Target: 4/5 problems solved optimally</li>
-    </ul>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════ WEEK 2 -->
-<div class="week-section" id="week2">
-  <div class="week-label">
-    <span class="week-num">WEEK 02</span>
-    <span class="week-title">Stack, Queue, Monotonic Stack, Heap / Priority Queue</span>
-    <span class="week-theme">ORDER & PRIORITY</span>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 08</span>
-      <span class="day-name">Stack — Classic Applications</span>
-      <span class="day-pattern">Stack</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>LIFO for matching/nesting. Parentheses, histograms, calculator. Key: push opening, pop on closing, check top. Calculator: two stacks (nums + ops) or one stack with precedence.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Parser/lexer foundation in compilers</li>
-            <li>Undo/redo in editors</li>
-            <li>Call stack simulation for DFS</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/valid-parentheses/" target="_blank">#20 Valid Parentheses</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/min-stack/" target="_blank">#155 Min Stack</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/" target="_blank">#150 Evaluate Reverse Polish Notation</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">#84 Largest Rectangle in Histogram</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Use slice as stack: <code>stack := []int{}</code>, push: <code>stack = append(stack, v)</code>, pop: <code>v, stack = stack[len(stack)-1], stack[:len(stack)-1]</code>. No need for a container. This is idiomatic Go.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 09</span>
-      <span class="day-name">Monotonic Stack — Next Greater/Smaller</span>
-      <span class="day-pattern">Monotonic Stack</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Maintain stack in increasing or decreasing order. When current element breaks order → pop and record answer. Each element pushed/popped once → O(n). Store indices, not values.</p>
-          <div class="go-tip" style="margin-top:10px; background:rgba(255,255,255,0.03)">
-            <h4 style="color:var(--text)">The Stack Invariant</h4>
-            <p style="font-size:0.75rem; color:var(--muted); line-height:1.4;">
-              Think of the stack as a <strong>Line of Sight</strong>. 
-              If you use an <em>increasing</em> stack, the element below the top 
-              is always the "Nearest Smaller Value" to the left.
-            </p>
-            <ol style="font-size:0.75rem; color:var(--muted); padding-left:15px; margin-top:5px;">
-              <li>Iterate through <code>arr</code>.</li>
-              <li>While <code>stack</code> not empty AND <code>curr < arr[stack.top]</code>:</li>
-              <li>Pop <code>j</code>. The "Next Smaller Right" for <code>j</code> is the current element.</li>
-              <li>The "Next Smaller Left" for <code>j</code> is the new <code>stack.top</code>.</li>
-              <li>Push current index.</li>
-            </ol>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text"><code>type ListNode struct { Val int; Next *ListNode }</code>. Initialise: <code>slow, fast := head, head</code>. Loop condition: <code>fast != nil && fast.Next != nil</code>. Go nil checks are zero-cost — lean on them.</div>
           </div>
         </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Daily temperatures: canonical interview problem</li>
-            <li>Used in histogram, trapping rain water</li>
-            <li>Span calculation in stock market systems</li>
+      </div>
+
+      <div class="day-card" id="d3">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 03</span>
+          <span class="day-title">Sliding Window — Fixed Size</span>
+          <span class="day-pattern">Sliding Window</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Window of size k slides right. At each step: subtract the outgoing left element, add the incoming right element. The key discipline: never recompute the aggregate from scratch. Maintain a running sum, count, or frequency map. This is what makes it O(n) instead of O(n·k).</div>
+          <div class="day-section-label">Real-World Connection</div>
+          <div class="day-text">Fixed-window rate limiting in API gateways is this exact pattern. The window slides over time; the aggregate is the request count. Understanding the algorithm makes the system design obvious.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank">#643 Maximum Average Subarray I</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/" target="_blank">#2461 Max Sum of Distinct Subarrays Length K</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank">#438 Find All Anagrams in a String</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/permutation-in-string/" target="_blank">#567 Permutation in String</a><span class="diff diff-med">Med</span></li>
           </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">For character frequency: use <code>[26]int</code> array instead of <code>map[byte]int</code> for lowercase-only problems — array comparison is a direct memory compare, not a map iteration. Track a <code>matches int</code> counter to avoid <code>reflect.DeepEqual</code>.</div>
+          </div>
         </div>
       </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">#739 Daily Temperatures</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-i/" target="_blank">#496 Next Greater Element I</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-ii/" target="_blank">#503 Next Greater Element II (circular)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank">#907 Sum of Subarray Minimums</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Store indices in monotonic stack. For circular arrays: iterate <code>2*n</code> using <code>i % n</code>. When popping: <code>result[stack[top]] = i - stack[top]</code> for distance-based answers.</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 10</span>
-      <span class="day-name">Heap / Priority Queue — Top K</span>
-      <span class="day-pattern">Heap</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Min-heap of size k for top-k largest. Max-heap for top-k smallest. Key insight: heap size k → pop when size exceeds k, top is the kth largest. O(n log k) beats O(n log n) sort.</p>
+      <div class="day-card" id="d4">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 04</span>
+          <span class="day-title">Sliding Window — Variable Size</span>
+          <span class="day-pattern">Sliding Window</span>
+          <span class="day-toggle">▼</span>
         </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Real: top-K queries in analytics systems</li>
-            <li>Merge k sorted lists (Kafka partition merge)</li>
-            <li>Dijkstra's algorithm uses min-heap</li>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Expand right when the condition is satisfied, shrink left when violated. Template: <code>left=0; for right := range s { [add right]; for violated { [remove left]; left++ }; update answer }</code>. This greedy expansion and lazy contraction guarantees O(n) — each element is added and removed at most once.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank">#3 Longest Substring Without Repeating Characters</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank">#76 Minimum Window Substring</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/longest-repeating-character-replacement/" target="_blank">#424 Longest Repeating Character Replacement</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/fruits-into-baskets/" target="_blank">#904 Fruit Into Baskets</a><span class="diff diff-med">Med</span></li>
           </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">For ASCII string iteration: <code>for i := 0; i &lt; len(s); i++</code> with <code>s[i]</code> is faster than <code>range</code> (avoids rune decoding). <code>max(a,b)</code> is a builtin in Go 1.21+ — use it directly.</div>
+          </div>
         </div>
       </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank">#215 Kth Largest Element in Array</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank">#347 Top K Frequent Elements</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank">#23 Merge K Sorted Lists</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank">#295 Find Median from Data Stream</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Go's <code>container/heap</code> requires implementing 5 methods. Min-heap: <code>func (h MinHeap) Less(i,j int) bool { return h[i] &lt; h[j] }</code>. Push/Pop must use pointer receiver. Use <code>heap.Init</code>, <code>heap.Push</code>, <code>heap.Pop</code> — not methods directly.</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 11</span>
-      <span class="day-name">Deque — Sliding Window Maximum</span>
-      <span class="day-pattern">Deque / Monotonic Queue</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Monotonic deque: front always holds max/min index. Remove front if out of window. Remove from back if smaller than new element (maintain decreasing order). O(n) window maximum.</p>
+      <div class="day-card" id="d5">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 05</span>
+          <span class="day-title">Prefix Sum + Hash Map</span>
+          <span class="day-pattern">Prefix Sum</span>
+          <span class="day-toggle">▼</span>
         </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>O(n) vs O(n log n) heap approach</li>
-            <li>Jump game variants with deque</li>
-            <li>Constrained sliding window problems</li>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text"><code>prefix[i] = prefix[i-1] + nums[i-1]</code>. Range sum [l,r] in O(1). The power move: combine with a hash map for "subarray sum equals k" — store <code>prefix → count</code>, answer += <code>map[prefix-k]</code>. This transforms O(n²) subarray enumeration to O(n) with a single pass.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank">#560 Subarray Sum Equals K</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/contiguous-array/" target="_blank">#525 Contiguous Array</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank">#303 Range Sum Query Immutable</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank">#238 Product of Array Except Self</a><span class="diff diff-med">Med</span></li>
           </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">Pre-initialise map with zero: <code>seen := map[int]int{0: 1}</code>. This handles subarrays starting at index 0 without a special case. The seed <code>0:1</code> represents the empty prefix before any elements.</div>
+          </div>
         </div>
       </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank">#239 Sliding Window Maximum</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank">#862 Shortest Subarray With Sum ≥ K</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/jump-game-vi/" target="_blank">#1696 Jump Game VI</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Implement deque with <code>[]int</code>: front pop is <code>dq = dq[1:]</code>, back pop is <code>dq = dq[:len(dq)-1]</code>. Store indices not values so you can check window bounds. This is O(n) amortized — each element pushed/popped once.</p>
-      </div>
-    </div>
-  </div>
 
-  <!-- Days 12-14 condensed -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 12–13</span>
-      <span class="day-name">Hashing — Design & Applications</span>
-      <span class="day-pattern">Hash Map / Set</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/group-anagrams/" target="_blank">#49 Group Anagrams</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/longest-consecutive-sequence/" target="_blank">#128 Longest Consecutive Sequence</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/lru-cache/" target="_blank">#146 LRU Cache</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/design-hashmap/" target="_blank">#706 Design HashMap</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/word-pattern/" target="_blank">#290 Word Pattern</a><span class="difficulty easy">Easy</span></div>
+      <div class="day-card" id="d6">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 06</span>
+          <span class="day-title">Intervals — Merge, Insert, Overlap</span>
+          <span class="day-pattern">Intervals</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Sort by start time. Merge condition: <code>curr.start ≤ prev.end</code>. For meeting rooms (min rooms needed): sort starts and ends separately, use two pointers — one for earliest start, one for earliest end. When a meeting starts before the earliest end, you need a new room. This is O(n log n) and avoids a heap entirely.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">#56 Merge Intervals</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/insert-interval/" target="_blank">#57 Insert Interval</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">#253 Meeting Rooms II</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/non-overlapping-intervals/" target="_blank">#435 Non-Overlapping Intervals</a><span class="diff diff-med">Med</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text"><code>sort.Slice(intervals, func(i,j int) bool { return intervals[i][0] &lt; intervals[j][0] })</code>. For heap-based meeting rooms, implement <code>container/heap</code> interface (Len, Less, Swap, Push, Pop on a pointer receiver).</div>
+          </div>
         </div>
       </div>
-      <div class="go-tip">
-        <h4>Go Tip for LRU</h4>
-        <p>LRU = <code>map[int]*Node</code> + doubly linked list. Go has no built-in ordered map. For LRU cache: maintain head/tail sentinel nodes to avoid nil checks. Update: remove from current position + insert at head. O(1) all ops.</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="checkpoint-card">
-    <h3>🎯 Week 2 Checkpoint — Mock Interview</h3>
-    <ul>
-      <li>Implement container/heap from scratch — no looking up the interface</li>
-      <li>Solve Sliding Window Maximum and articulate why deque beats heap here</li>
-      <li>LRU Cache implementation under 20 minutes</li>
-      <li>Explain monotonic stack invariant verbally to imaginary interviewer</li>
-    </ul>
-  </div>
+    </div>
+
+    <div class="checkpoint">
+      <div class="cp-label">Week 1 Checkpoint</div>
+      <div class="cp-title">Mock Interview — Arrays</div>
+      <ul class="cp-list">
+        <li class="cp-item">Solve one medium Two Pointer + one medium Sliding Window in 45 min under timed conditions</li>
+        <li class="cp-item">Verbalize the pattern name and invariant before writing a single line of code</li>
+        <li class="cp-item">Review: prefix sum + hash map combo — most commonly missed pattern in this week</li>
+        <li class="cp-item">Go code standard: no unnecessary allocations, proper nil handling, handles empty input</li>
+      </ul>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div id="week2" class="section-anchor">
+      <span class="section-num">W2</span>
+      <h2 class="section-h">Week 2 — Stack, Monotonic Stack, Heap, Deque</h2>
+    </div>
+    <p class="body">Order and priority patterns. The theme this week is maintaining a partial ordering on a stream of elements. Monotonic stack and deque are the most underrated patterns — they convert what looks like O(n²) into O(n) by using the ordering itself as a data structure.</p>
+
+    <div class="day-list">
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 08</span>
+          <span class="day-title">Stack — Classic Applications</span>
+          <span class="day-pattern">Stack</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">LIFO for matching and nesting. Push opening bracket/token, pop on closing, check the top. For calculators: two stacks (nums + ops) or single stack with precedence rules. The key invariant: whatever you've pushed but not popped is "in progress" — not yet matched or resolved.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/valid-parentheses/" target="_blank">#20 Valid Parentheses</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/min-stack/" target="_blank">#155 Min Stack</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/" target="_blank">#150 Evaluate Reverse Polish Notation</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">#84 Largest Rectangle in Histogram</a><span class="diff diff-hard">Hard</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">Use slice as stack: push with <code>stack = append(stack, v)</code>, pop with <code>v, stack = stack[len(stack)-1], stack[:len(stack)-1]</code>. This is idiomatic Go — no container package needed.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 09</span>
+          <span class="day-title">Monotonic Stack — Next Greater/Smaller</span>
+          <span class="day-pattern">Monotonic Stack</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Maintain a stack in strictly increasing or decreasing order. When the current element breaks the ordering, pop elements until the order is restored — and record the answer for each popped element at that moment. Each element is pushed and popped at most once: O(n) total. Always store indices, not values — you'll need the distance.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">#739 Daily Temperatures</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-i/" target="_blank">#496 Next Greater Element I</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-ii/" target="_blank">#503 Next Greater Element II (circular)</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank">#907 Sum of Subarray Minimums</a><span class="diff diff-med">Med</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">For circular arrays: iterate <code>2*n</code> using index <code>i % n</code>. When popping: <code>result[stack[top]] = i - stack[top]</code> for distance-based answers. Store index, not value — you need both to answer distance questions.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 10</span>
+          <span class="day-title">Heap / Priority Queue — Top K</span>
+          <span class="day-pattern">Heap</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Min-heap of size k for top-k largest. Max-heap of size k for top-k smallest. The key insight: a heap of size k never exceeds k elements — pop when it does, and the top is always the kth largest. O(n log k) beats O(n log n) sorting when k is small. For Merge K Sorted Lists: put the head of each list on the heap, pop the min, push its next.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank">#215 Kth Largest Element in Array</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank">#347 Top K Frequent Elements</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank">#23 Merge K Sorted Lists</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank">#295 Find Median from Data Stream</a><span class="diff diff-hard">Hard</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text"><code>container/heap</code> requires 5 methods. Min-heap: <code>Less(i,j int) bool { return h[i] &lt; h[j] }</code>. Use <code>heap.Init</code>, <code>heap.Push</code>, <code>heap.Pop</code> — not methods directly. Push/Pop must use pointer receiver on the heap type.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="checkpoint">
+      <div class="cp-label">Week 2 Checkpoint</div>
+      <div class="cp-title">Mock Interview — Stack &amp; Priority</div>
+      <ul class="cp-list">
+        <li class="cp-item">Implement container/heap from scratch — without looking up the interface signature</li>
+        <li class="cp-item">Solve Sliding Window Maximum and articulate precisely why deque beats heap (amortised O(n) vs O(n log n))</li>
+        <li class="cp-item">LRU Cache implementation: doubly linked list + hash map, all operations O(1), in under 20 minutes</li>
+        <li class="cp-item">Explain the monotonic stack invariant verbally — what is guaranteed to be on the stack at any point?</li>
+      </ul>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div id="week3" class="section-anchor">
+      <span class="section-num">W3</span>
+      <h2 class="section-h">Week 3 — Binary Search, Trees, Tries</h2>
+    </div>
+    <p class="body">Hierarchical patterns. Binary search extends far beyond sorted arrays — you can binary search on the <em>answer space</em> of any problem with a monotonic predicate. Trees introduce the most important interview concept: the difference between what a DFS function returns locally (to its parent) vs what it reports globally (to a shared variable).</p>
+
+    <div class="day-list">
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 15</span>
+          <span class="day-title">Binary Search — Beyond Sorted Arrays</span>
+          <span class="day-pattern">Binary Search</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Template: <code>lo, hi := 0, n-1; for lo &lt;= hi { mid := lo + (hi-lo)/2 }</code>. For leftmost position: use <code>lo &lt;= hi</code> and set <code>hi = mid-1</code> even when found. Binary search on answer space: define a <code>canAchieve(x int) bool</code> predicate — if it's monotonic (false...false...true...true), binary search finds the boundary in O(log(range)).</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank">#33 Search in Rotated Sorted Array</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank">#153 Find Minimum in Rotated Array</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank">#875 Koko Eating Bananas (BS on answer)</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank">#410 Split Array Largest Sum</a><span class="diff diff-hard">Hard</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">Always: <code>mid := lo + (hi-lo)/2</code> — never <code>(lo+hi)/2</code> which overflows for large indices. For answer-space problems: define the predicate as a named function — clean separation between "what are we searching?" and "what's the binary search structure?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 16–17</span>
+          <span class="day-title">Trees — DFS Patterns (Pre/In/Post-order)</span>
+          <span class="day-pattern">Tree DFS</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">The key distinction for hard tree problems: what does the DFS function <em>return to its parent</em> (local value, like height) vs what does it update <em>globally</em> (like the maximum path sum seen so far). Diameter and maximum path sum both use this — the function returns the best single-arm path upward, but records the best two-arm path into a global variable before returning.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank">#543 Diameter of Binary Tree</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/" target="_blank">#124 Binary Tree Maximum Path Sum</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank">#98 Validate BST</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank">#297 Serialize and Deserialize Binary Tree</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank">#236 Lowest Common Ancestor</a><span class="diff diff-med">Med</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">Global state in DFS: use a closure. <code>var maxPath int; var dfs func(*TreeNode) int; dfs = func(node *TreeNode) int { ... }; dfs(root)</code>. Closures over local variables stay on the stack — no heap allocation, testable, no package-level mutation.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 19–20</span>
+          <span class="day-title">Trie — Prefix Tree</span>
+          <span class="day-pattern">Trie</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Node = <code>{children [26]*TrieNode, isEnd bool}</code>. Insert: create nodes for each char. Search: traverse, return false if any node is nil. The power: prefix search is identical to search but stops before checking <code>isEnd</code>. Add a <code>count int</code> field for frequency-based autocomplete ranking.</div>
+          <div class="day-section-label">Real-World Connection</div>
+          <div class="day-text">Search autocomplete uses a trie (or radix trie for memory efficiency). IP routing tables in network hardware use longest-prefix-match tries. XOR tries let you find maximum XOR pair in O(32n). Understanding the data structure makes the system design discussions much richer.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">#208 Implement Trie</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank">#211 Add and Search Words</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/word-search-ii/" target="_blank">#212 Word Search II (Trie + DFS)</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/" target="_blank">#421 Maximum XOR of Two Numbers</a><span class="diff diff-med">Med</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">Use <code>[26]*TrieNode</code> over <code>map[byte]*TrieNode</code> for lowercase-only — array indexing is 5–10× faster than map lookup. Index: <code>c - 'a'</code>. For wildcard search, recurse on all non-nil children when you see <code>'.'</code>.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="checkpoint">
+      <div class="cp-label">Week 3 Checkpoint</div>
+      <div class="cp-title">Mock Interview — Trees &amp; Search</div>
+      <ul class="cp-list">
+        <li class="cp-item">Implement Trie from scratch in under 15 minutes — no reference</li>
+        <li class="cp-item">Solve a Hard tree problem cleanly: Binary Tree Maximum Path Sum or Serialize/Deserialize</li>
+        <li class="cp-item">Binary search on answer space: pick an unseen problem, identify the monotonic predicate before coding</li>
+        <li class="cp-item">BFS vs DFS decision: articulate when you'd choose each without pausing to think</li>
+      </ul>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div id="week4" class="section-anchor">
+      <span class="section-num">W4</span>
+      <h2 class="section-h">Week 4 — Graphs, DP, Backtracking</h2>
+    </div>
+    <p class="body">The deepest patterns. Dynamic programming has exactly five sub-patterns worth mastering — everything else is a variant of one of them. For graphs, the signal that separates senior from mid-level answers is union-find: knowing when to use it over BFS/DFS and being able to implement path compression from memory.</p>
+
+    <div class="day-list">
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 22–23</span>
+          <span class="day-title">Graph — BFS/DFS + Union Find</span>
+          <span class="day-pattern">Graph</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">BFS for shortest path (unweighted), DFS for connected components and cycle detection. Union-Find: <code>find(x)</code> with path compression, <code>union(x,y)</code> by rank. The key — Union-Find is O(α(n)) practically O(1) per operation, making it better than BFS/DFS for connectivity queries that are answered incrementally as edges are added.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/number-of-islands/" target="_blank">#200 Number of Islands</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/clone-graph/" target="_blank">#133 Clone Graph</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/redundant-connection/" target="_blank">#684 Redundant Connection (Union-Find)</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/pacific-atlantic-water-flow/" target="_blank">#417 Pacific Atlantic Water Flow</a><span class="diff diff-med">Med</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">Iterative path compression: <code>for parent[x] != x { parent[x] = parent[parent[x]]; x = parent[x] }</code> — path halving, one fewer allocation than full path compression with a slice.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 26–27</span>
+          <span class="day-title">Dynamic Programming — 5 Core Patterns</span>
+          <span class="day-pattern">DP</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">The 5 Patterns</div>
+          <div class="day-text"><strong>1D Linear</strong> — Climb Stairs, House Robber. <strong>Knapsack</strong> — 0/1 vs Unbounded. <strong>LCS/LIS</strong> — string subsequences, longest increasing subsequence. <strong>Interval DP</strong> — Burst Balloons, Matrix Chain. <strong>State Machine</strong> — Stock prices with cooldown or transaction limit. Every DP problem is one of these five. Identify the pattern, not the problem title.</div>
+          <div class="day-section-label">How to approach any DP problem</div>
+          <div class="day-text">Write the brute force recursion first — don't skip this step. Identify overlapping subproblems (same arguments called multiple times). Add memoisation. Then convert to bottom-up if needed for space. Space optimisation last: if you only need the previous row, collapse to a 1D array.</div>
+          <div class="day-section-label">Problems</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/house-robber/" target="_blank">#198 House Robber (1D Linear)</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/coin-change/" target="_blank">#322 Coin Change (Unbounded Knapsack)</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank">#1143 Longest Common Subsequence</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" target="_blank">#309 Buy/Sell Stock with Cooldown (State Machine)</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/burst-balloons/" target="_blank">#312 Burst Balloons (Interval DP)</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/edit-distance/" target="_blank">#72 Edit Distance</a><span class="diff diff-med">Med</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip</div>
+            <div class="tip-text">2D DP: <code>dp := make([][]int, m+1)</code> then <code>for i := range dp { dp[i] = make([]int, n+1) }</code>. For space optimisation, two rows: <code>prev, curr := make([]int,n+1), make([]int,n+1)</code>. Swap with <code>prev, curr = curr, prev</code> each iteration.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="checkpoint">
+      <div class="cp-label">Week 4 Checkpoint</div>
+      <div class="cp-title">Final Mocks — Day 29–30</div>
+      <ul class="cp-list">
+        <li class="cp-item">Day 29: 2× timed 45-min sessions. One array/graph + one DP problem. Record yourself explaining. Review pattern gaps.</li>
+        <li class="cp-item">Day 30: Re-solve the 5 problems that took you longest. Speed coding practice. No hints.</li>
+        <li class="cp-item">Target: any medium in ≤20 min, any hard in ≤40 min with full verbal explanation</li>
+        <li class="cp-item">Go standard: clean, no unnecessary allocations, handles edge cases (empty input, single element, negative numbers)</li>
+      </ul>
+    </div>
+
+    <!-- MOCK PROTOCOL -->
+    <div id="mock" class="section-anchor">
+      <span class="section-num">30</span>
+      <h2 class="section-h">The Mock Session Protocol</h2>
+    </div>
+    <p class="body">The gap between "I understand this pattern" and "I can solve this under pressure in 20 minutes" is only closed by doing timed sessions. Here's the exact protocol for every weekly mock:</p>
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">protocol — weekly mock session</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c">// Step 1 (2 min): Read the problem. Say the pattern name out loud.</span>
+<span class="t-c">// "This is sliding window — variable size — because..."</span>
+<span class="t-c">// If you can't name it, you haven't learned the pattern yet.</span>
+
+<span class="t-c">// Step 2 (3 min): State the invariant and edge cases before coding.</span>
+<span class="t-c">// What is always true at the start of each iteration?</span>
+<span class="t-c">// What breaks if input is empty? Single element? All duplicates?</span>
+
+<span class="t-c">// Step 3 (15 min): Write the solution. No hints. Talk through it.</span>
+<span class="t-c">// Think of yourself as explaining to a colleague, not solving alone.</span>
+
+<span class="t-c">// Step 4 (5 min): Analyse complexity. State time AND space.</span>
+<span class="t-c">// "O(n) time because each element is pushed/popped once."</span>
+<span class="t-c">// "O(k) space for the heap of size k."</span>
+
+<span class="t-c">// Step 5 (5 min): Test with 2 examples. Walk through manually.</span>
+<span class="t-c">// Edge case first. Then the given example.</span>
+
+<span class="t-c">// Total budget: 30 minutes for medium, 40 for hard.</span>
+<span class="t-c">// If you go over: note where you got stuck and why.</span></pre>
+    </div>
+
+  </article>
+</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ WEEK 3 -->
-<div class="week-section" id="week3">
-  <div class="week-label">
-    <span class="week-num">WEEK 03</span>
-    <span class="week-title">Binary Search, Trees (DFS/BFS/BST), Tries</span>
-    <span class="week-theme">HIERARCHICAL PATTERNS</span>
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
   </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 15</span>
-      <span class="day-name">Binary Search — Beyond Sorted Arrays</span>
-      <span class="day-pattern">Binary Search</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Template: <code>lo, hi := 0, n-1; for lo &lt;= hi { mid := lo + (hi-lo)/2 }</code>. For "find leftmost": use <code>lo &lt;= hi</code> + <code>hi = mid-1</code> even when found. Binary search on answer space: "can we achieve X?" → monotonic predicate.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>BS on answer space: powerful pattern for optimization</li>
-            <li>Rotated array: appears in every loop of interviews</li>
-            <li>Real: binary search in LSM tree SSTables</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank">#33 Search in Rotated Sorted Array</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank">#153 Find Minimum in Rotated Sorted Array</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank">#875 Koko Eating Bananas (BS on answer)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank">#410 Split Array Largest Sum</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Avoid overflow: <code>mid := lo + (hi-lo)/2</code> not <code>(lo+hi)/2</code>. For answer-space BS, define a <code>canAchieve(mid int) bool</code> function — clean separation. <code>sort.Search(n, f)</code> is Go's built-in lower_bound.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 16–17</span>
-      <span class="day-name">Trees — DFS Patterns (Pre/In/Post)</span>
-      <span class="day-pattern">Tree DFS</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Three DFS variants. Pre-order: process node before children (serialize). In-order: BST sorted traversal. Post-order: process children first (height, diameter). Global vs local return values.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Diameter/path problems need global state trick</li>
-            <li>Serialization = distributed system state transfer</li>
-            <li>BST validation: classic Senior interview</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank">#543 Diameter of Binary Tree</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/" target="_blank">#124 Binary Tree Maximum Path Sum</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank">#98 Validate BST</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank">#297 Serialize and Deserialize Binary Tree</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank">#236 Lowest Common Ancestor</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>For global state in DFS, use closure: <code>var maxPath int; var dfs func(*TreeNode) int; dfs = func(node *TreeNode) int {...; maxPath = max(maxPath, ...); return ...}; dfs(root)</code>. Avoid package-level vars — closures keep it clean and testable.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 18</span>
-      <span class="day-name">Trees — BFS Level Order</span>
-      <span class="day-pattern">Tree BFS</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank">#102 Binary Tree Level Order Traversal</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/binary-tree-right-side-view/" target="_blank">#199 Binary Tree Right Side View</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/word-ladder/" target="_blank">#127 Word Ladder (BFS on implicit graph)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/rotting-oranges/" target="_blank">#994 Rotting Oranges (multi-source BFS)</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip — BFS with Channels</h4>
-        <p>For educational purposes, BFS can use a Go channel as a queue: <code>q := make(chan *TreeNode, n)</code>. In production-style interviews, slice-based queue is preferred. Use <code>levelSize := len(queue)</code> snapshot to process level-by-level.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 19–20</span>
-      <span class="day-name">Trie — Prefix Tree</span>
-      <span class="day-pattern">Trie</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Node = <code>{children [26]*TrieNode, isEnd bool}</code>. Insert: create nodes for each char. Search: traverse, return false if node nil. Prefix search: same but don't need isEnd. Add <code>count int</code> for frequency tracking.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Search autocomplete — exact system design topic</li>
-            <li>IP routing tables use radix tries</li>
-            <li>XOR trie for max XOR pair problems</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">#208 Implement Trie (Prefix Tree)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank">#211 Design Add/Search Words DS</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/word-search-ii/" target="_blank">#212 Word Search II (Trie + DFS backtrack)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/" target="_blank">#421 Maximum XOR of Two Numbers</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Prefer <code>[26]*TrieNode</code> over <code>map[byte]*TrieNode</code> for lowercase-only — it's 5–10x faster. Use <code>c - 'a'</code> as index. For wildcard search with '.', recurse on all non-nil children.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="checkpoint-card">
-    <h3>🎯 Week 3 Checkpoint — Mock Interview</h3>
-    <ul>
-      <li>Implement Trie from scratch in under 15 minutes</li>
-      <li>Solve any Hard tree problem (Path Sum, Serialize/Deserialize) cleanly</li>
-      <li>Binary search on answer space — pick a problem you've never seen, identify predicate</li>
-      <li>BFS vs DFS decision: articulate when to use each without thinking</li>
-    </ul>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════ WEEK 4 -->
-<div class="week-section" id="week4">
-  <div class="week-label">
-    <span class="week-num">WEEK 04</span>
-    <span class="week-title">Graphs + Dynamic Programming (Pattern-Based)</span>
-    <span class="week-theme">DEEP PATTERNS</span>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 22–23</span>
-      <span class="day-name">Graph — BFS/DFS + Union Find</span>
-      <span class="day-pattern">Graph</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Pattern</h4>
-          <p>Build adjacency list from edges. BFS for shortest path (unweighted). DFS for connected components. Union-Find: <code>find(x) = parent[x] == x ? x : find(parent[x])</code> with path compression. Union by rank.</p>
-        </div>
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>Social networks, dependency graphs</li>
-            <li>Kafka partition assignment uses graph coloring</li>
-            <li>Union-Find: Kruskal's MST, network connectivity</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/number-of-islands/" target="_blank">#200 Number of Islands</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/clone-graph/" target="_blank">#133 Clone Graph</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/redundant-connection/" target="_blank">#684 Redundant Connection (Union-Find)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/pacific-atlantic-water-flow/" target="_blank">#417 Pacific Atlantic Water Flow</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/word-ladder/" target="_blank">#127 Word Ladder</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>BFS with goroutines for parallel level exploration (educational): use <code>sync.WaitGroup</code> + channel. In interview, keep it sequential. For Union-Find, iterative path compression: <code>for parent[x] != x { parent[x] = parent[parent[x]]; x = parent[x] }</code></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 24</span>
-      <span class="day-name">Graph — Topological Sort + Cycle Detection</span>
-      <span class="day-pattern">Topo Sort / DAG</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/course-schedule/" target="_blank">#207 Course Schedule (cycle detect)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/course-schedule-ii/" target="_blank">#210 Course Schedule II (Kahn's)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/alien-dictionary/" target="_blank">#269 Alien Dictionary</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/find-eventual-safe-states/" target="_blank">#802 Find Eventual Safe States</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Kahn's (BFS topo sort): build <code>indegree[]</code> map, push all 0-indegree nodes to queue, BFS reducing indegrees. If output len ≠ n → cycle exists. DFS approach: use <code>visited</code> (0=unvisited, 1=in-stack, 2=done).</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 25</span>
-      <span class="day-name">Dijkstra + Bellman-Ford</span>
-      <span class="day-pattern">Shortest Path</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/network-delay-time/" target="_blank">#743 Network Delay Time (Dijkstra)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/cheapest-flights-within-k-stops/" target="_blank">#787 Cheapest Flights Within K Stops</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/path-with-minimum-effort/" target="_blank">#1631 Path With Minimum Effort</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Dijkstra with <code>container/heap</code>: heap item = <code>[2]int{dist, node}</code>. Lazy deletion: skip if <code>dist > dist[node]</code>. For Bellman-Ford with K stops: copy prev dist array each round to avoid using same-round updates.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 26–27</span>
-      <span class="day-name">Dynamic Programming — 5 Core Patterns</span>
-      <span class="day-pattern">DP</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>5 DP Patterns (Master These)</h4>
-          <ul>
-            <li><strong>1D Linear:</strong> Climb stairs, House Robber</li>
-            <li><strong>Knapsack:</strong> 0/1 vs Unbounded</li>
-            <li><strong>LCS/LIS:</strong> String subsequences</li>
-            <li><strong>Interval DP:</strong> Matrix chain, burst balloons</li>
-            <li><strong>State Machine:</strong> Stock prices (cooldown, txn limit)</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Pattern Recognition</h4>
-          <p>Question has overlapping subproblems + optimal substructure? → DP. Start with brute force recursion → add memoization → optimize to bottom-up. Space optimization: if only previous row needed, use 1D array.</p>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems by Pattern</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/house-robber/" target="_blank">#198 House Robber (1D)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/coin-change/" target="_blank">#322 Coin Change (unbounded knapsack)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank">#1143 Longest Common Subsequence</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" target="_blank">#309 Buy/Sell Stock w/ Cooldown (state machine)</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/burst-balloons/" target="_blank">#312 Burst Balloons (interval DP)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/word-break/" target="_blank">#139 Word Break</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/edit-distance/" target="_blank">#72 Edit Distance</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>For 2D DP: <code>dp := make([][]int, m+1)</code> then <code>for i := range dp { dp[i] = make([]int, n+1) }</code>. Go doesn't have 2D array literals for large sizes. For space optimization, two rows: <code>prev, curr := make([]int,n+1), make([]int,n+1)</code>.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Day 28-30 -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">DAY 28</span>
-      <span class="day-name">Backtracking — Permutations & Subsets</span>
-      <span class="day-pattern">Backtracking</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/subsets/" target="_blank">#78 Subsets</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/permutations/" target="_blank">#46 Permutations</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/combination-sum/" target="_blank">#39 Combination Sum</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/n-queens/" target="_blank">#51 N-Queens</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/sudoku-solver/" target="_blank">#37 Sudoku Solver</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Pass <code>path []int</code> by value for immutability at each branch, or append to slice and defer removal: <code>path = append(path, n); backtrack(...); path = path[:len(path)-1]</code>. For result, deep copy path: <code>tmp := make([]int, len(path)); copy(tmp, path); result = append(result, tmp)</code>.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="checkpoint-card" style="background:rgba(0,229,176,0.04);border-color:rgba(0,229,176,0.2);">
-    <h3 style="color:var(--accent);">🏆 Day 29–30: Full Mock Interviews</h3>
-    <ul>
-      <li><strong>Day 29:</strong> 2× timed 45-min sessions. One array/graph problem + one DP. Record yourself explaining. Review pattern gaps.</li>
-      <li><strong>Day 30:</strong> Review all weak spots from notes. Re-solve 5 problems that took >30 min. Speed coding practice.</li>
-      <li>Final target: Any medium in ≤20 min, any hard in ≤40 min with explanation</li>
-      <li>Go code standard: clean, no unnecessary allocations, handles edge cases (empty input, single element)</li>
-    </ul>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════ TRENDING SENIOR QUESTIONS -->
-<div class="week-section" id="trending">
-  <div class="week-label">
-    <span class="week-num">BONUS</span>
-    <span class="week-title">Trending Senior Questions — 5 YOE Target</span>
-    <span class="week-theme" style="background:rgba(255,95,64,0.1);border-color:rgba(255,95,64,0.3);color:var(--accent2);">HOT IN 2024–25</span>
-  </div>
-  <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;">Problems repeatedly reported by engineers at 5-year level across Google, Meta, Stripe, Uber, Coinbase, and top Indian unicorns. Grouped by category. These go beyond patterns — they test judgment and edge-case thinking.</p>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MAP 00</span>
-      <span class="day-name">Advanced Pattern Atlas — What Senior Loops Keep Reusing</span>
-      <span class="day-pattern">Pattern Map</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Pattern Recognition Ladder</h4>
-          <ul>
-            <li><strong>Binary search on answer:</strong> if "can we do it with X?" is monotonic, search X not the raw solution.</li>
-            <li><strong>Monotonic stack/deque:</strong> nearest greater/smaller, sliding maximum, contribution counting.</li>
-            <li><strong>Union-Find:</strong> dynamic connectivity, grouping, offline merges, redundant edges.</li>
-            <li><strong>Sweep line:</strong> sort events and process state changes over time or position.</li>
-            <li><strong>Trie / bitwise trie:</strong> prefix lookup, autocomplete, max XOR, string indexing.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Interview Conversion Rule</h4>
-          <ul>
-            <li>If brute force compares many candidates, ask: <strong>can I sort, precompute, or maintain state incrementally?</strong></li>
-            <li>If the array answer depends on nearest boundaries, ask: <strong>can a monotonic stack expose contribution ranges?</strong></li>
-            <li>If the graph mutates by adding edges, ask: <strong>can DSU replace repeated BFS/DFS?</strong></li>
-            <li>If the question asks minimum feasible capacity/time/rate, ask: <strong>is the predicate monotonic?</strong></li>
-            <li>If the question mixes intervals and overlaps, ask: <strong>should I sort events and sweep?</strong></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Arrays / Strings Hard -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">CAT 01</span>
-      <span class="day-name">Arrays & Strings — Senior Hard Set</span>
-      <span class="day-pattern">Must Know</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Why These Get Asked</h4>
-          <ul>
-            <li>Tests in-place manipulation + edge case coverage</li>
-            <li>Median of two arrays = O(log(min(m,n))) — signals CS depth</li>
-            <li>Palindrome pairs shows trie + hash combo thinking</li>
-            <li>Wildcard matching separates DP from greedy candidates</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Senior Expectations</h4>
-          <ul>
-            <li>Optimal from the start — no O(n²) "I'll optimize later"</li>
-            <li>Handle empty input, all-same chars, single element</li>
-            <li>Articulate why brute force fails before coding</li>
-            <li>Clean Go: no global vars, no unnecessary allocations</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank">#4 Median of Two Sorted Arrays</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/longest-valid-parentheses/" target="_blank">#32 Longest Valid Parentheses</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/wildcard-matching/" target="_blank">#44 Wildcard Matching (DP vs greedy)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank">#76 Minimum Window Substring</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximal-rectangle/" target="_blank">#85 Maximal Rectangle (histogram DP)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/regular-expression-matching/" target="_blank">#10 Regular Expression Matching</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/palindrome-pairs/" target="_blank">#336 Palindrome Pairs (Trie)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/text-justification/" target="_blank">#68 Text Justification (greedy simulation)</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip — Median of Two Arrays</h4>
-        <p>Binary search on the smaller array. Partition both arrays such that left half ≤ right half. <code>maxLeft := max(nums1[p1-1], nums2[p2-1])</code>. Watch out: when <code>p1 == 0</code>, left1 = math.MinInt. When <code>p1 == m</code>, right1 = math.MaxInt. Always binary search on the shorter array to guarantee O(log(min(m,n))).</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">PAT 01</span>
-      <span class="day-name">Binary Search on Answer + Greedy Feasibility</span>
-      <span class="day-pattern">Optimization</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>When This Pattern Appears</h4>
-          <ul>
-            <li>Question asks for minimum capacity, speed, days, distance, or maximum feasible value.</li>
-            <li>There is a <strong>yes/no predicate</strong> that becomes permanently true or false past some boundary.</li>
-            <li>Greedy check runs in O(n) or O(n log n), making total O(n log answer-range).</li>
-            <li>Senior signal: state the monotonic predicate before writing code.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Common Mistakes</h4>
-          <ul>
-            <li>Binary searching the array index instead of the solution space.</li>
-            <li>Using <code>mid := (l+r)/2</code> without thinking about overflow or integer rounding.</li>
-            <li>Greedy checker is subtly wrong on edge cases, so the binary search converges to garbage.</li>
-            <li>Forgetting whether the answer should bias leftmost true or rightmost true.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank">#875 Koko Eating Bananas</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/" target="_blank">#1011 Capacity To Ship Packages Within D Days</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank">#410 Split Array Largest Sum</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/minimize-max-distance-to-gas-station/" target="_blank">#774 Minimize Max Distance to Gas Station</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-running-time-of-n-computers/" target="_blank">#2141 Maximum Running Time of N Computers</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/" target="_blank">#1283 Smallest Divisor Given a Threshold</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Template: <code>for l &lt; r { mid := l + (r-l)/2; if feasible(mid) { r = mid } else { l = mid + 1 } }</code>. Keep <code>feasible</code> pure and side-effect free so you can unit test it separately.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">PAT 02</span>
-      <span class="day-name">Monotonic Stack / Deque + Contribution Technique</span>
-      <span class="day-pattern">Range Reasoning</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Core Insight</h4>
-          <ul>
-            <li>Each element contributes to some range where it is minimum, maximum, or first blocker.</li>
-            <li>Monotonic stack gives previous/next smaller or greater in O(n).</li>
-            <li>Deque handles sliding window extrema while keeping candidates ordered.</li>
-            <li>This pattern shows up far more often than candidates expect.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>What Good Explanations Sound Like</h4>
-          <ul>
-            <li>"I am not computing every subarray. I am counting each index's contribution."</li>
-            <li>"The stack stores unresolved candidates whose boundary hasn't been discovered yet."</li>
-            <li>"Each index is pushed and popped once, so this is amortized O(n)."</li>
-            <li>"I need strict vs non-strict inequality to avoid double counting duplicates."</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">#84 Largest Rectangle in Histogram</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank">#239 Sliding Window Maximum</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank">#907 Sum of Subarray Minimums</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/online-stock-span/" target="_blank">#901 Online Stock Span</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank">#862 Shortest Subarray With Sum At Least K</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">#739 Daily Temperatures</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Use a plain <code>[]int</code> slice as stack for indices. For deque, keep head index instead of repeatedly slicing from the front to avoid hidden reallocations.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">PAT 03</span>
-      <span class="day-name">Union-Find + Offline Query Thinking</span>
-      <span class="day-pattern">Connectivity</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Why This Matters</h4>
-          <ul>
-            <li>DSU turns repeated graph connectivity checks into near O(1) unions and finds.</li>
-            <li>Offline sorting by weight/time/value often unlocks much simpler solutions.</li>
-            <li>Shows maturity: you know when not to rerun BFS/DFS from scratch.</li>
-            <li>Very common in infra-style interview questions about connectivity and partitioning.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Implementation Notes</h4>
-          <ul>
-            <li>Always use path compression + union by size/rank.</li>
-            <li>Model components count explicitly when the question asks "how many groups remain?"</li>
-            <li>For offline queries, sort both edges and queries by threshold, then sweep once.</li>
-            <li>Good candidates explain why DSU cannot handle arbitrary deletions without rollback tricks.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/redundant-connection/" target="_blank">#684 Redundant Connection</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/number-of-operations-to-make-network-connected/" target="_blank">#1319 Number of Operations to Make Network Connected</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/checking-existence-of-edge-length-limited-paths/" target="_blank">#1697 Edge Length Limited Paths</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/" target="_blank">#947 Most Stones Removed</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/satisfiability-of-equality-equations/" target="_blank">#990 Satisfiability of Equality Equations</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/regions-cut-by-slashes/" target="_blank">#959 Regions Cut By Slashes</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>Represent DSU as two slices: <code>parent []int</code> and <code>size []int</code>. Make <code>find</code> iterative if you want to avoid recursion depth concerns in very large inputs.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">PAT 04</span>
-      <span class="day-name">Trie / Bitwise Trie / Indexed Strings</span>
-      <span class="day-pattern">String + XOR</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>When To Reach For It</h4>
-          <ul>
-            <li>Prefix search, autocomplete, dictionary segmentation, wildcard expansion.</li>
-            <li>Bitwise trie when maximizing XOR or answering bounded XOR queries.</li>
-            <li>Senior signal: pick trie only when it simplifies repeated prefix work, not by habit.</li>
-            <li>Memory trade-off matters; say it out loud.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Design Judgment</h4>
-          <ul>
-            <li>Trie is fast but memory-hungry; hashmap may win for sparse datasets.</li>
-            <li>Compressed trie / radix tree is often the production answer.</li>
-            <li>For autocomplete, combine trie prefix lookup with heap/top-k ranking metadata.</li>
-            <li>For XOR trie, iterate bits from high to low and greedily choose the opposite branch.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">#208 Implement Trie</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank">#211 Add and Search Word</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/word-search-ii/" target="_blank">#212 Word Search II</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/" target="_blank">#421 Maximum XOR of Two Numbers</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-with-an-element-from-array/" target="_blank">#1707 Maximum XOR With an Element From Array</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/search-suggestions-system/" target="_blank">#1268 Search Suggestions System</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>For lowercase-only trie, <code>[26]*Node</code> is much faster than <code>map[byte]*Node</code>. Use maps only when the alphabet is sparse or dynamic.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">PAT 05</span>
-      <span class="day-name">Intervals / Sweep Line / Difference Array</span>
-      <span class="day-pattern">Events</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Pattern Summary</h4>
-          <ul>
-            <li>Sort starts/ends or build event points and process them in order.</li>
-            <li>Difference arrays turn repeated range updates into two boundary writes.</li>
-            <li>Heap often appears when you need "currently active" intervals.</li>
-            <li>This pattern is common in scheduling, meeting rooms, booking, and traffic analytics.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>What Strong Candidates Say</h4>
-          <ul>
-            <li>"I only care when state changes, so I can compress work into events."</li>
-            <li>"Tie-breaking start vs end events changes correctness; I need to define it explicitly."</li>
-            <li>"Difference array works because each query updates a contiguous range."</li>
-            <li>"Heap stores the active intervals by the one attribute I need next."</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">#253 Meeting Rooms II</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/the-skyline-problem/" target="_blank">#218 The Skyline Problem</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/my-calendar-iii/" target="_blank">#732 My Calendar III</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/car-pooling/" target="_blank">#1094 Car Pooling</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/employee-free-time/" target="_blank">#759 Employee Free Time</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/range-addition/" target="_blank">#370 Range Addition</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip</h4>
-        <p>For sweep line event sorting, define a small struct and use <code>sort.Slice</code> with explicit tie-break rules. Hidden tie-break bugs are the main reason these solutions fail.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Graph Hard -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">CAT 02</span>
-      <span class="day-name">Graph — Senior Hard Set (Tarjan, SCC, Bridges)</span>
-      <span class="day-pattern">Graph Advanced</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Why These Get Asked</h4>
-          <ul>
-            <li>Critical connections = real infra (which service removes breaks network?)</li>
-            <li>Reconstruct itinerary = Eulerian path — shows algorithm breadth</li>
-            <li>Swim in water = Dijkstra variant — tests adaptability</li>
-            <li>Accounts merge = Union-Find with string keys</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Tarjan's Bridge Algorithm</h4>
-          <ul>
-            <li>Track disc[u] (discovery time) and low[u] (lowest reachable)</li>
-            <li>Edge (u,v) is bridge if low[v] &gt; disc[u]</li>
-            <li>DFS + backedge tracking = O(V+E)</li>
-            <li>SCC: Tarjan's or Kosaraju's (two-pass DFS)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/critical-connections-in-a-network/" target="_blank">#1192 Critical Connections — Tarjan Bridge</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/reconstruct-itinerary/" target="_blank">#332 Reconstruct Itinerary — Eulerian Path</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/swim-in-rising-water/" target="_blank">#778 Swim in Rising Water — Dijkstra/BFS</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/accounts-merge/" target="_blank">#721 Accounts Merge — Union-Find</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/minimum-cost-to-reach-destination-in-time/" target="_blank">#1928 Min Cost with Time Constraint — DP+Graph</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/bus-routes/" target="_blank">#815 Bus Routes — Multi-layer BFS</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/" target="_blank">#1976 Number of Ways — Dijkstra + count</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip — Tarjan's Bridge</h4>
-        <p>Use closure-based DFS: <code>timer := 0; disc := make([]int, n); low := make([]int, n)</code>. For each unvisited neighbor: update <code>low[u] = min(low[u], low[v])</code>. After DFS child returns, check <code>if low[v] > disc[u]</code> → bridge. Skip the edge back to parent using <code>if v == parent { continue }</code>.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- DP Hard -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">CAT 03</span>
-      <span class="day-name">Dynamic Programming — Senior Hard Set</span>
-      <span class="day-pattern">DP Advanced</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Stock Problems — State Machine Mastery</h4>
-          <ul>
-            <li>At most k transactions → 3D DP: day × txn × holding</li>
-            <li>Cooldown → states: held, sold, rest</li>
-            <li>Transaction fee → absorb fee at buy or sell, not both</li>
-            <li>Compress: only need prev day values → O(k) space</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Interval DP Pattern</h4>
-          <ul>
-            <li>Enumerate split point k in range [i,j]</li>
-            <li>dp[i][j] = best over all k in (i,j)</li>
-            <li>Fill by increasing length, not index</li>
-            <li>Burst Balloons: add sentinel 1s at both ends</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/" target="_blank">#123 Buy/Sell Stock III — at most 2 txns</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/" target="_blank">#188 Buy/Sell Stock IV — at most k txns</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/distinct-subsequences/" target="_blank">#115 Distinct Subsequences</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/palindrome-partitioning-ii/" target="_blank">#132 Palindrome Partitioning II (min cuts)</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" target="_blank">#1235 Max Profit Job Scheduling — DP+BS</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/" target="_blank">#1335 Min Difficulty Job Schedule — 2D DP</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/strange-printer/" target="_blank">#664 Strange Printer — Interval DP</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/number-of-music-playlists/" target="_blank">#920 Number of Music Playlists — combinatoric DP</a><span class="difficulty hard">Hard</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip — Stock k Transactions</h4>
-        <p>State: <code>buy[j], sell[j]</code> for j = 0..k transactions used. Transition each day: <code>buy[j] = max(buy[j], sell[j-1] - price)</code>, <code>sell[j] = max(sell[j], buy[j] + price)</code>. Initialize buy arrays to <code>math.MinInt</code>. Single O(k) pass per day. For k ≥ n/2, it becomes unlimited transactions.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Design / System Coding -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">CAT 04</span>
-      <span class="day-name">Data Structure Design — LeetCode Hard Designs</span>
-      <span class="day-pattern">Design</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>LFU Cache — Core Insight</h4>
-          <ul>
-            <li>Two maps: key→(val,freq) and freq→DLL of keys</li>
-            <li>Track minFreq — only valid eviction target</li>
-            <li>On get/put: move key from freq bucket to freq+1 bucket</li>
-            <li>O(1) all ops. LRU order within same frequency</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Range Sum 2D Mutable</h4>
-          <ul>
-            <li>Segment tree or Binary Indexed Tree (Fenwick) in 2D</li>
-            <li>BIT: update in O(log m · log n), query same</li>
-            <li>Real use: database aggregate queries with updates</li>
-            <li>Segment tree: more flexible (range updates)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/lfu-cache/" target="_blank">#460 LFU Cache — O(1) all operations</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/range-sum-query-2d-mutable/" target="_blank">#308 Range Sum Query 2D Mutable — 2D BIT</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/range-module/" target="_blank">#715 Range Module — segment tree / sorted map</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/data-stream-as-disjoint-intervals/" target="_blank">#352 Data Stream as Disjoint Intervals — sorted map</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/design-search-autocomplete-system/" target="_blank">#642 Design Search Autocomplete — Trie + heap</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/all-oone-data-structure/" target="_blank">#432 All O(1) DS — DLL + hashmap</a><span class="difficulty hard">Hard</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/snapshot-array/" target="_blank">#1146 Snapshot Array — binary search on versions</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip — LFU in Go</h4>
-        <p>Use <code>map[int]*list.List</code> from <code>container/list</code> for freq buckets — Go's doubly linked list. Store list elements as struct <code>{key, val, freq int}</code>. <code>keyMap map[int]*list.Element</code> for O(1) access. On access: <code>l.Remove(elem)</code> from old freq list, push to front of <code>freqMap[freq+1]</code>. If old list empty and was minFreq, increment minFreq.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Go Concurrency Coding -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">CAT 05</span>
-      <span class="day-name">Go Concurrency — Trending Interview Problems</span>
-      <span class="day-pattern">Go-Specific</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Most Asked Go Concurrency Problems</h4>
-          <ul>
-            <li>Print FizzBuzz with N goroutines — channel sync</li>
-            <li>Bounded parallel fetch — semaphore pattern</li>
-            <li>Pipeline: producer → transformer → consumer</li>
-            <li>Fan-out / fan-in — merge multiple channels</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Key Patterns to Know Cold</h4>
-          <ul>
-            <li>Done channel for cancellation (context.Context)</li>
-            <li>Semaphore: buffered channel of size N</li>
-            <li>Once: sync.Once for lazy init</li>
-            <li>Mutex vs RWMutex: reads concurrent, writes exclusive</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>LeetCode Concurrency Problems</h4>
-        <div class="problems-list">
-          <div class="problem-item"><a href="https://leetcode.com/problems/print-in-order/" target="_blank">#1114 Print in Order — channel/mutex sync</a><span class="difficulty easy">Easy</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/print-foobar-alternately/" target="_blank">#1115 Print FooBar Alternately — 2 goroutine sync</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/print-zero-even-odd/" target="_blank">#1116 Print Zero Even/Odd — 3 goroutine coordination</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/fizzbuzz-multithreaded/" target="_blank">#1195 FizzBuzz Multithreaded — 4 goroutines</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/the-dining-philosophers/" target="_blank">#1226 Dining Philosophers — deadlock avoidance</a><span class="difficulty medium">Med</span></div>
-          <div class="problem-item"><a href="https://leetcode.com/problems/building-h2o/" target="_blank">#1117 Building H2O — barrier synchronization</a><span class="difficulty medium">Med</span></div>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Go Tip — FooBar with Channels</h4>
-        <p>Two goroutines, two channels: <code>fooTurn := make(chan struct{}, 1)</code>, <code>barTurn := make(chan struct{})</code>. Seed with <code>fooTurn &lt;- struct{}{}</code>. Foo: receive from fooTurn, print, send to barTurn. Bar: receive from barTurn, print, send to fooTurn. Clean, no mutex, no busy-wait. This is the idiomatic Go solution interviewers want to see.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════ MACHINE CODING ROUND -->
-<div class="week-section" id="machinecoding">
-  <div class="week-label">
-    <span class="week-num">BONUS</span>
-    <span class="week-title">Machine Coding Round — Go Solutions</span>
-    <span class="week-theme" style="background:rgba(91,143,255,0.1);border-color:rgba(91,143,255,0.3);color:var(--accent3);">FULL SOLUTIONS</span>
-  </div>
-  <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;">This section is intentionally outside the 30-day timeline. Use it when you want machine-coding depth, not calendar discipline. Complete, production-quality Go solutions for the most frequently asked machine coding problems at 5-year experience level. Each includes design decisions, edge cases, and follow-up extensions.</p>
-
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC MAP</span>
-      <span class="day-name">Machine Coding Round — What To Practice First</span>
-      <span class="day-pattern">Strategy</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Round Structure</h4>
-          <ul>
-            <li>First 5-10 min: clarify API, concurrency needs, error behavior, and extensibility requirements.</li>
-            <li>Next 10 min: design interfaces + structs before full implementation.</li>
-            <li>Middle 25-35 min: build the happy path and one strong invariant.</li>
-            <li>Final 10 min: edge cases, thread safety, tests you would write, and follow-up extensions.</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Prompt Families To Cover</h4>
-          <ul>
-            <li>Caches, rate limiters, key-value stores, and schedulers.</li>
-            <li>Pub-sub, worker pools, retry queues, and job executors.</li>
-            <li>Elevator, parking lot, splitwise, snake-ladder, and book-my-show style object models.</li>
-            <li>Leaderboard, autocomplete, notification service, and in-memory databases.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>The machine-coding differentiator is not writing the most code. It is choosing the right abstractions early, naming invariants, and being explicit about concurrency, cleanup, and testability.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Rate Limiter -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC 01</span>
-      <span class="day-name">Rate Limiter — Token Bucket + Sliding Window</span>
-      <span class="day-pattern">Concurrency</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>What They Test</h4>
-          <ul>
-            <li>Token Bucket: bursty traffic allowed up to capacity</li>
-            <li>Sliding Window Counter: smooth rate, no burst</li>
-            <li>Thread-safety with sync.Mutex</li>
-            <li>Interface design — Accept(key string) bool</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Follow-up Questions</h4>
-          <ul>
-            <li>Per-user vs global rate limiting</li>
-            <li>Distributed rate limiter (Redis + Lua script)</li>
-            <li>Leaky bucket vs token bucket tradeoffs</li>
-            <li>How to test without sleeping in tests</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Complete Go Solution</h4>
-        <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;margin-top:.5rem;"><code><span style="color:#6b7385;">// ── Token Bucket Rate Limiter ────────────────────────────</span>
-<span style="color:#5b8fff;">package</span> main
-
-<span style="color:#5b8fff;">import</span> (
-    <span style="color:#00e5b0;">"fmt"</span>
-    <span style="color:#00e5b0;">"sync"</span>
-    <span style="color:#00e5b0;">"time"</span>
-)
-
-<span style="color:#5b8fff;">type</span> TokenBucket <span style="color:#5b8fff;">struct</span> {
-    mu         sync.Mutex
-    capacity   <span style="color:#5b8fff;">float64</span>
-    tokens     <span style="color:#5b8fff;">float64</span>
-    refillRate <span style="color:#5b8fff;">float64</span> <span style="color:#6b7385;">// tokens per second</span>
-    lastRefill time.Time
-}
-
-<span style="color:#5b8fff;">func</span> NewTokenBucket(capacity <span style="color:#5b8fff;">int</span>, refillRate <span style="color:#5b8fff;">float64</span>) *TokenBucket {
-    <span style="color:#5b8fff;">return</span> &amp;TokenBucket{
-        capacity:   <span style="color:#5b8fff;">float64</span>(capacity),
-        tokens:     <span style="color:#5b8fff;">float64</span>(capacity),
-        refillRate: refillRate,
-        lastRefill: time.Now(),
-    }
-}
-
-<span style="color:#5b8fff;">func</span> (tb *TokenBucket) Allow() <span style="color:#5b8fff;">bool</span> {
-    tb.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> tb.mu.Unlock()
-
-    now := time.Now()
-    elapsed := now.Sub(tb.lastRefill).Seconds()
-    tb.tokens = min(tb.capacity, tb.tokens+elapsed*tb.refillRate)
-    tb.lastRefill = now
-
-    <span style="color:#5b8fff;">if</span> tb.tokens &gt;= <span style="color:#ff5f40;">1</span> {
-        tb.tokens--
-        <span style="color:#5b8fff;">return</span> <span style="color:#5b8fff;">true</span>
-    }
-    <span style="color:#5b8fff;">return</span> <span style="color:#5b8fff;">false</span>
-}
-
-<span style="color:#6b7385;">// ── Sliding Window Rate Limiter ──────────────────────────</span>
-<span style="color:#5b8fff;">type</span> SlidingWindowLimiter <span style="color:#5b8fff;">struct</span> {
-    mu       sync.Mutex
-    limit    <span style="color:#5b8fff;">int</span>
-    window   time.Duration
-    requests []time.Time
-}
-
-<span style="color:#5b8fff;">func</span> NewSlidingWindow(limit <span style="color:#5b8fff;">int</span>, window time.Duration) *SlidingWindowLimiter {
-    <span style="color:#5b8fff;">return</span> &amp;SlidingWindowLimiter{limit: limit, window: window}
-}
-
-<span style="color:#5b8fff;">func</span> (sl *SlidingWindowLimiter) Allow() <span style="color:#5b8fff;">bool</span> {
-    sl.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> sl.mu.Unlock()
-
-    now := time.Now()
-    cutoff := now.Add(-sl.window)
-
-    <span style="color:#6b7385;">// evict expired timestamps</span>
-    i := <span style="color:#ff5f40;">0</span>
-    <span style="color:#5b8fff;">for</span> i &lt; len(sl.requests) &amp;&amp; sl.requests[i].Before(cutoff) {
-        i++
-    }
-    sl.requests = sl.requests[i:]
-
-    <span style="color:#5b8fff;">if</span> len(sl.requests) &lt; sl.limit {
-        sl.requests = append(sl.requests, now)
-        <span style="color:#5b8fff;">return</span> <span style="color:#5b8fff;">true</span>
-    }
-    <span style="color:#5b8fff;">return</span> <span style="color:#5b8fff;">false</span>
-}
-
-<span style="color:#5b8fff;">func</span> main() {
-    tb := NewTokenBucket(<span style="color:#ff5f40;">5</span>, <span style="color:#ff5f40;">2</span>) <span style="color:#6b7385;">// cap 5, refill 2/sec</span>
-    <span style="color:#5b8fff;">for</span> i := <span style="color:#ff5f40;">0</span>; i &lt; <span style="color:#ff5f40;">8</span>; i++ {
-        fmt.Printf(<span style="color:#00e5b0;">"request %d: allowed=%v
-"</span>, i, tb.Allow())
-    }
-}</code></pre>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>Mention the tradeoff: token bucket allows <strong>bursts</strong> up to capacity — good for APIs. Sliding window is <strong>smoother</strong> but uses O(requests) memory. For distributed systems, mention Redis + Lua atomicity. Interviewers at Uber/Stripe ask this in the context of their API gateway.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- LRU Cache thread-safe -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC 02</span>
-      <span class="day-name">Thread-Safe LRU Cache with TTL</span>
-      <span class="day-pattern">Design + Concurrency</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>What They Test</h4>
-          <ul>
-            <li>DLL + hashmap for O(1) get/put</li>
-            <li>TTL expiry — lazy vs eager eviction</li>
-            <li>sync.RWMutex — reads concurrent, writes exclusive</li>
-            <li>Generic design (Go 1.18+ generics)</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Follow-up Questions</h4>
-          <ul>
-            <li>Background goroutine to clean expired keys</li>
-            <li>How to make it distributed (consistent hashing)</li>
-            <li>LFU variant — what changes?</li>
-            <li>Cache stampede / thundering herd prevention</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Complete Go Solution</h4>
-        <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;"><code><span style="color:#5b8fff;">package</span> main
-
-<span style="color:#5b8fff;">import</span> (
-    <span style="color:#00e5b0;">"fmt"</span>
-    <span style="color:#00e5b0;">"sync"</span>
-    <span style="color:#00e5b0;">"time"</span>
-)
-
-<span style="color:#5b8fff;">type</span> entry <span style="color:#5b8fff;">struct</span> {
-    key     <span style="color:#5b8fff;">int</span>
-    val     <span style="color:#5b8fff;">int</span>
-    expiry  time.Time
-    hasExp  <span style="color:#5b8fff;">bool</span>
-    prev, next *entry
-}
-
-<span style="color:#5b8fff;">type</span> LRUCache <span style="color:#5b8fff;">struct</span> {
-    mu         sync.RWMutex
-    cap        <span style="color:#5b8fff;">int</span>
-    items      map[<span style="color:#5b8fff;">int</span>]*entry
-    head, tail *entry <span style="color:#6b7385;">// sentinel nodes</span>
-}
-
-<span style="color:#5b8fff;">func</span> NewLRU(cap <span style="color:#5b8fff;">int</span>) *LRUCache {
-    h, t := &amp;entry{}, &amp;entry{}
-    h.next, t.prev = t, h
-    <span style="color:#5b8fff;">return</span> &amp;LRUCache{cap: cap, items: make(map[<span style="color:#5b8fff;">int</span>]*entry), head: h, tail: t}
-}
-
-<span style="color:#5b8fff;">func</span> (c *LRUCache) remove(e *entry) {
-    e.prev.next, e.next.prev = e.next, e.prev
-}
-
-<span style="color:#5b8fff;">func</span> (c *LRUCache) pushFront(e *entry) {
-    e.next = c.head.next; e.prev = c.head
-    c.head.next.prev = e; c.head.next = e
-}
-
-<span style="color:#5b8fff;">func</span> (c *LRUCache) Get(key <span style="color:#5b8fff;">int</span>) (<span style="color:#5b8fff;">int</span>, <span style="color:#5b8fff;">bool</span>) {
-    c.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> c.mu.Unlock()
-    e, ok := c.items[key]
-    <span style="color:#5b8fff;">if</span> !ok { <span style="color:#5b8fff;">return</span> <span style="color:#ff5f40;">0</span>, <span style="color:#5b8fff;">false</span> }
-    <span style="color:#5b8fff;">if</span> e.hasExp &amp;&amp; time.Now().After(e.expiry) {
-        c.remove(e); <span style="color:#5b8fff;">delete</span>(c.items, key); <span style="color:#5b8fff;">return</span> <span style="color:#ff5f40;">0</span>, <span style="color:#5b8fff;">false</span>
-    }
-    c.remove(e); c.pushFront(e)
-    <span style="color:#5b8fff;">return</span> e.val, <span style="color:#5b8fff;">true</span>
-}
-
-<span style="color:#5b8fff;">func</span> (c *LRUCache) Put(key, val <span style="color:#5b8fff;">int</span>, ttl time.Duration) {
-    c.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> c.mu.Unlock()
-    <span style="color:#5b8fff;">if</span> e, ok := c.items[key]; ok {
-        e.val = val
-        <span style="color:#5b8fff;">if</span> ttl &gt; <span style="color:#ff5f40;">0</span> { e.expiry = time.Now().Add(ttl); e.hasExp = <span style="color:#5b8fff;">true</span> }
-        c.remove(e); c.pushFront(e); <span style="color:#5b8fff;">return</span>
-    }
-    <span style="color:#5b8fff;">if</span> len(c.items) == c.cap {
-        lru := c.tail.prev
-        c.remove(lru); <span style="color:#5b8fff;">delete</span>(c.items, lru.key)
-    }
-    e := &amp;entry{key: key, val: val}
-    <span style="color:#5b8fff;">if</span> ttl &gt; <span style="color:#ff5f40;">0</span> { e.expiry = time.Now().Add(ttl); e.hasExp = <span style="color:#5b8fff;">true</span> }
-    c.pushFront(e); c.items[key] = e
-}
-
-<span style="color:#5b8fff;">func</span> main() {
-    cache := NewLRU(<span style="color:#ff5f40;">3</span>)
-    cache.Put(<span style="color:#ff5f40;">1</span>, <span style="color:#ff5f40;">100</span>, <span style="color:#ff5f40;">0</span>)
-    cache.Put(<span style="color:#ff5f40;">2</span>, <span style="color:#ff5f40;">200</span>, <span style="color:#ff5f40;">2</span>*time.Second)
-    <span style="color:#5b8fff;">if</span> v, ok := cache.Get(<span style="color:#ff5f40;">2</span>); ok { fmt.Println(<span style="color:#00e5b0;">"key 2:"</span>, v) }
-    time.Sleep(<span style="color:#ff5f40;">3</span> * time.Second)
-    <span style="color:#5b8fff;">if</span> _, ok := cache.Get(<span style="color:#ff5f40;">2</span>); !ok { fmt.Println(<span style="color:#00e5b0;">"key 2 expired"</span>) }
-}</code></pre>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>Upgrade to <code>sync.RWMutex</code> — reads use <code>RLock</code>, only writes use <code>Lock</code>. Mention: for cache-heavy workloads this gives significant read throughput improvement. For TTL background cleanup, mention a goroutine with <code>time.Ticker</code> + <code>context.Done()</code> for graceful shutdown.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Worker Pool -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC 03</span>
-      <span class="day-name">Concurrent Worker Pool</span>
-      <span class="day-pattern">Goroutines + Channels</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>What They Test</h4>
-          <ul>
-            <li>Goroutine lifecycle management</li>
-            <li>Graceful shutdown — drain jobs before exit</li>
-            <li>Backpressure — block when queue full</li>
-            <li>Context cancellation propagation</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Real-World Use</h4>
-          <ul>
-            <li>Kafka consumer group processing</li>
-            <li>Batch DB writes with bounded concurrency</li>
-            <li>Parallel HTTP fan-out (microservices)</li>
-            <li>Image resizing / file processing pipelines</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Complete Go Solution</h4>
-        <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;"><code><span style="color:#5b8fff;">package</span> main
-
-<span style="color:#5b8fff;">import</span> (
-    <span style="color:#00e5b0;">"context"</span>
-    <span style="color:#00e5b0;">"fmt"</span>
-    <span style="color:#00e5b0;">"sync"</span>
-    <span style="color:#00e5b0;">"time"</span>
-)
-
-<span style="color:#5b8fff;">type</span> Job[T, R any] <span style="color:#5b8fff;">struct</span> {
-    ID    <span style="color:#5b8fff;">int</span>
-    Input T
-}
-
-<span style="color:#5b8fff;">type</span> Result[T, R any] <span style="color:#5b8fff;">struct</span> {
-    Job    Job[T, R]
-    Output R
-    Err    <span style="color:#5b8fff;">error</span>
-}
-
-<span style="color:#5b8fff;">type</span> Pool[T, R any] <span style="color:#5b8fff;">struct</span> {
-    workers <span style="color:#5b8fff;">int</span>
-    jobs    <span style="color:#5b8fff;">chan</span> Job[T, R]
-    results <span style="color:#5b8fff;">chan</span> Result[T, R]
-    wg      sync.WaitGroup
-}
-
-<span style="color:#5b8fff;">func</span> NewPool[T, R any](workers, queueSize <span style="color:#5b8fff;">int</span>) *Pool[T, R] {
-    <span style="color:#5b8fff;">return</span> &amp;Pool[T, R]{
-        workers: workers,
-        jobs:    make(<span style="color:#5b8fff;">chan</span> Job[T, R], queueSize),
-        results: make(<span style="color:#5b8fff;">chan</span> Result[T, R], queueSize),
-    }
-}
-
-<span style="color:#5b8fff;">func</span> (p *Pool[T, R]) Start(ctx context.Context, fn <span style="color:#5b8fff;">func</span>(context.Context, T) (R, <span style="color:#5b8fff;">error</span>)) {
-    <span style="color:#5b8fff;">for</span> i := <span style="color:#ff5f40;">0</span>; i &lt; p.workers; i++ {
-        p.wg.Add(<span style="color:#ff5f40;">1</span>)
-        <span style="color:#5b8fff;">go func</span>() {
-            <span style="color:#5b8fff;">defer</span> p.wg.Done()
-            <span style="color:#5b8fff;">for</span> {
-                <span style="color:#5b8fff;">select</span> {
-                <span style="color:#5b8fff;">case</span> job, ok := &lt;-p.jobs:
-                    <span style="color:#5b8fff;">if</span> !ok { <span style="color:#5b8fff;">return</span> }
-                    out, err := fn(ctx, job.Input)
-                    p.results &lt;- Result[T, R]{Job: job, Output: out, Err: err}
-                <span style="color:#5b8fff;">case</span> &lt;-ctx.Done():
-                    <span style="color:#5b8fff;">return</span>
-                }
-            }
-        }()
-    }
-    <span style="color:#5b8fff;">go func</span>() { p.wg.Wait(); close(p.results) }()
-}
-
-<span style="color:#5b8fff;">func</span> (p *Pool[T, R]) Submit(job Job[T, R]) { p.jobs &lt;- job }
-<span style="color:#5b8fff;">func</span> (p *Pool[T, R]) Close()               { close(p.jobs) }
-<span style="color:#5b8fff;">func</span> (p *Pool[T, R]) Results() &lt;-<span style="color:#5b8fff;">chan</span> Result[T, R] { <span style="color:#5b8fff;">return</span> p.results }
-
-<span style="color:#5b8fff;">func</span> main() {
-    ctx, cancel := context.WithTimeout(context.Background(), <span style="color:#ff5f40;">5</span>*time.Second)
-    <span style="color:#5b8fff;">defer</span> cancel()
-
-    pool := NewPool[<span style="color:#5b8fff;">int</span>, <span style="color:#5b8fff;">string</span>](<span style="color:#ff5f40;">3</span>, <span style="color:#ff5f40;">10</span>)
-    pool.Start(ctx, <span style="color:#5b8fff;">func</span>(ctx context.Context, n <span style="color:#5b8fff;">int</span>) (<span style="color:#5b8fff;">string</span>, <span style="color:#5b8fff;">error</span>) {
-        time.Sleep(<span style="color:#ff5f40;">100</span> * time.Millisecond)
-        <span style="color:#5b8fff;">return</span> fmt.Sprintf(<span style="color:#00e5b0;">"processed-%d"</span>, n), <span style="color:#5b8fff;">nil</span>
-    })
-
-    <span style="color:#5b8fff;">for</span> i := <span style="color:#ff5f40;">0</span>; i &lt; <span style="color:#ff5f40;">6</span>; i++ {
-        pool.Submit(Job[<span style="color:#5b8fff;">int</span>, <span style="color:#5b8fff;">string</span>]{ID: i, Input: i * <span style="color:#ff5f40;">10</span>})
-    }
-    pool.Close()
-    <span style="color:#5b8fff;">for</span> r := <span style="color:#5b8fff;">range</span> pool.Results() {
-        fmt.Printf(<span style="color:#00e5b0;">"job %d → %s
-"</span>, r.Job.ID, r.Output)
-    }
-}</code></pre>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>Generics here show Go 1.18+ awareness — big signal at senior level. Key design choices to mention: buffered channels prevent goroutine blocking on submit, context propagation allows graceful cancellation, closing jobs channel triggers all workers to drain and exit cleanly via range. Always mention: never close a channel from the receiver side.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pub-Sub -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC 04</span>
-      <span class="day-name">In-Memory Pub-Sub Event Bus</span>
-      <span class="day-pattern">Concurrency + Design</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>What They Test</h4>
-          <ul>
-            <li>Fan-out to multiple subscribers per topic</li>
-            <li>Non-blocking publish (slow subscriber drops)</li>
-            <li>Clean unsubscribe — no goroutine leak</li>
-            <li>Wildcard topic matching (bonus)</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Follow-up Questions</h4>
-          <ul>
-            <li>Persistent subscribers — replay missed events</li>
-            <li>At-least-once vs at-most-once delivery</li>
-            <li>How Kafka solves this at scale</li>
-            <li>Dead letter queue for failed subscribers</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Complete Go Solution</h4>
-        <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;"><code><span style="color:#5b8fff;">package</span> main
-
-<span style="color:#5b8fff;">import</span> (
-    <span style="color:#00e5b0;">"fmt"</span>
-    <span style="color:#00e5b0;">"sync"</span>
-    <span style="color:#00e5b0;">"time"</span>
-)
-
-<span style="color:#5b8fff;">type</span> Message <span style="color:#5b8fff;">struct</span> {
-    Topic   <span style="color:#5b8fff;">string</span>
-    Payload <span style="color:#5b8fff;">interface</span>{}
-}
-
-<span style="color:#5b8fff;">type</span> Subscriber <span style="color:#5b8fff;">struct</span> {
-    id  <span style="color:#5b8fff;">string</span>
-    ch  <span style="color:#5b8fff;">chan</span> Message
-}
-
-<span style="color:#5b8fff;">type</span> EventBus <span style="color:#5b8fff;">struct</span> {
-    mu   sync.RWMutex
-    subs map[<span style="color:#5b8fff;">string</span>][]*Subscriber
-}
-
-<span style="color:#5b8fff;">func</span> NewEventBus() *EventBus {
-    <span style="color:#5b8fff;">return</span> &amp;EventBus{subs: make(map[<span style="color:#5b8fff;">string</span>][]*Subscriber)}
-}
-
-<span style="color:#5b8fff;">func</span> (eb *EventBus) Subscribe(topic, id <span style="color:#5b8fff;">string</span>, bufSize <span style="color:#5b8fff;">int</span>) *Subscriber {
-    eb.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> eb.mu.Unlock()
-    sub := &amp;Subscriber{id: id, ch: make(<span style="color:#5b8fff;">chan</span> Message, bufSize)}
-    eb.subs[topic] = append(eb.subs[topic], sub)
-    <span style="color:#5b8fff;">return</span> sub
-}
-
-<span style="color:#5b8fff;">func</span> (eb *EventBus) Publish(topic <span style="color:#5b8fff;">string</span>, payload <span style="color:#5b8fff;">interface</span>{}) <span style="color:#5b8fff;">int</span> {
-    eb.mu.RLock()
-    subs := eb.subs[topic]
-    eb.mu.RUnlock()
-    msg := Message{Topic: topic, Payload: payload}
-    delivered := <span style="color:#ff5f40;">0</span>
-    <span style="color:#5b8fff;">for</span> _, sub := <span style="color:#5b8fff;">range</span> subs {
-        <span style="color:#5b8fff;">select</span> {
-        <span style="color:#5b8fff;">case</span> sub.ch &lt;- msg:
-            delivered++
-        <span style="color:#5b8fff;">default</span>: <span style="color:#6b7385;">// slow subscriber, drop message</span>
-        }
-    }
-    <span style="color:#5b8fff;">return</span> delivered
-}
-
-<span style="color:#5b8fff;">func</span> (eb *EventBus) Unsubscribe(topic <span style="color:#5b8fff;">string</span>, sub *Subscriber) {
-    eb.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> eb.mu.Unlock()
-    subs := eb.subs[topic]
-    <span style="color:#5b8fff;">for</span> i, s := <span style="color:#5b8fff;">range</span> subs {
-        <span style="color:#5b8fff;">if</span> s.id == sub.id {
-            eb.subs[topic] = append(subs[:i], subs[i+<span style="color:#ff5f40;">1</span>:]...)
-            close(s.ch)
-            <span style="color:#5b8fff;">return</span>
-        }
-    }
-}
-
-<span style="color:#5b8fff;">func</span> main() {
-    bus := NewEventBus()
-    s1 := bus.Subscribe(<span style="color:#00e5b0;">"payments"</span>, <span style="color:#00e5b0;">"service-a"</span>, <span style="color:#ff5f40;">10</span>)
-    s2 := bus.Subscribe(<span style="color:#00e5b0;">"payments"</span>, <span style="color:#00e5b0;">"service-b"</span>, <span style="color:#ff5f40;">10</span>)
-
-    <span style="color:#5b8fff;">go func</span>() {
-        <span style="color:#5b8fff;">for</span> msg := <span style="color:#5b8fff;">range</span> s1.ch {
-            fmt.Printf(<span style="color:#00e5b0;">"service-a got: %v
-"</span>, msg.Payload)
-        }
-    }()
-    <span style="color:#5b8fff;">go func</span>() {
-        <span style="color:#5b8fff;">for</span> msg := <span style="color:#5b8fff;">range</span> s2.ch {
-            fmt.Printf(<span style="color:#00e5b0;">"service-b got: %v
-"</span>, msg.Payload)
-        }
-    }()
-
-    bus.Publish(<span style="color:#00e5b0;">"payments"</span>, map[<span style="color:#5b8fff;">string</span>]<span style="color:#5b8fff;">interface</span>{}{<span style="color:#00e5b0;">"txn"</span>: <span style="color:#00e5b0;">"T001"</span>, <span style="color:#00e5b0;">"amount"</span>: <span style="color:#ff5f40;">500</span>})
-    bus.Publish(<span style="color:#00e5b0;">"payments"</span>, map[<span style="color:#5b8fff;">string</span>]<span style="color:#5b8fff;">interface</span>{}{<span style="color:#00e5b0;">"txn"</span>: <span style="color:#00e5b0;">"T002"</span>, <span style="color:#00e5b0;">"amount"</span>: <span style="color:#ff5f40;">1200</span>})
-    time.Sleep(<span style="color:#ff5f40;">100</span> * time.Millisecond)
-    bus.Unsubscribe(<span style="color:#00e5b0;">"payments"</span>, s1)
-    bus.Unsubscribe(<span style="color:#00e5b0;">"payments"</span>, s2)
-}</code></pre>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>Copying the subscriber slice before publishing with RLock and RUnlock is critical — allows concurrent reads while blocking only on write (subscribe/unsubscribe). Mention: in production, this is how Kafka consumer groups work internally. The <code>select { default: }</code> non-blocking send is the idiomatic Go drop-if-full pattern — much cleaner than checking channel length.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Circuit Breaker -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC 05</span>
-      <span class="day-name">Circuit Breaker</span>
-      <span class="day-pattern">Resilience Pattern</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>Three States</h4>
-          <ul>
-            <li><strong>Closed:</strong> requests pass through, count failures</li>
-            <li><strong>Open:</strong> reject all requests immediately (fast fail)</li>
-            <li><strong>Half-Open:</strong> let N requests through to probe recovery</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>What They Test</h4>
-          <ul>
-            <li>State machine design — transitions correct?</li>
-            <li>Thread-safe state transitions</li>
-            <li>Configurable threshold and timeout</li>
-            <li>Callback/hook on state change (observability)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Complete Go Solution</h4>
-        <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;"><code><span style="color:#5b8fff;">package</span> main
-
-<span style="color:#5b8fff;">import</span> (
-    <span style="color:#00e5b0;">"errors"</span>; <span style="color:#00e5b0;">"fmt"</span>; <span style="color:#00e5b0;">"sync"</span>; <span style="color:#00e5b0;">"time"</span>
-)
-
-<span style="color:#5b8fff;">type</span> State <span style="color:#5b8fff;">uint8</span>
-<span style="color:#5b8fff;">const</span> (Closed State = <span style="color:#5b8fff;">iota</span>; Open; HalfOpen)
-
-<span style="color:#5b8fff;">var</span> ErrOpen = errors.New(<span style="color:#00e5b0;">"circuit breaker is open"</span>)
-
-<span style="color:#5b8fff;">type</span> CB <span style="color:#5b8fff;">struct</span> {
-    mu           sync.Mutex
-    state        State
-    failures     <span style="color:#5b8fff;">int</span>
-    successes    <span style="color:#5b8fff;">int</span>
-    threshold    <span style="color:#5b8fff;">int</span>   <span style="color:#6b7385;">// failures to open</span>
-    halfOpenMax  <span style="color:#5b8fff;">int</span>   <span style="color:#6b7385;">// successes to close from half-open</span>
-    openTimeout  time.Duration
-    openedAt     time.Time
-    OnStateChange <span style="color:#5b8fff;">func</span>(from, to State)
-}
-
-<span style="color:#5b8fff;">func</span> NewCB(threshold, halfOpenMax <span style="color:#5b8fff;">int</span>, timeout time.Duration) *CB {
-    <span style="color:#5b8fff;">return</span> &amp;CB{
-        threshold:   threshold,
-        halfOpenMax: halfOpenMax,
-        openTimeout: timeout,
-    }
-}
-
-<span style="color:#5b8fff;">func</span> (cb *CB) transition(to State) {
-    from := cb.state
-    cb.state = to
-    cb.failures, cb.successes = <span style="color:#ff5f40;">0</span>, <span style="color:#ff5f40;">0</span>
-    <span style="color:#5b8fff;">if</span> to == Open { cb.openedAt = time.Now() }
-    <span style="color:#5b8fff;">if</span> cb.OnStateChange != <span style="color:#5b8fff;">nil</span> { cb.OnStateChange(from, to) }
-}
-
-<span style="color:#5b8fff;">func</span> (cb *CB) Call(fn <span style="color:#5b8fff;">func</span>() <span style="color:#5b8fff;">error</span>) <span style="color:#5b8fff;">error</span> {
-    cb.mu.Lock()
-    <span style="color:#5b8fff;">defer</span> cb.mu.Unlock()
-
-    <span style="color:#5b8fff;">switch</span> cb.state {
-    <span style="color:#5b8fff;">case</span> Open:
-        <span style="color:#5b8fff;">if</span> time.Since(cb.openedAt) &gt; cb.openTimeout {
-            cb.transition(HalfOpen)
-        } <span style="color:#5b8fff;">else</span> {
-            <span style="color:#5b8fff;">return</span> ErrOpen
-        }
-    }
-
-    err := fn()
-    <span style="color:#5b8fff;">if</span> err != <span style="color:#5b8fff;">nil</span> {
-        cb.failures++
-        <span style="color:#5b8fff;">if</span> cb.state == HalfOpen || cb.failures &gt;= cb.threshold {
-            cb.transition(Open)
-        }
-        <span style="color:#5b8fff;">return</span> err
-    }
-
-    <span style="color:#5b8fff;">if</span> cb.state == HalfOpen {
-        cb.successes++
-        <span style="color:#5b8fff;">if</span> cb.successes &gt;= cb.halfOpenMax {
-            cb.transition(Closed)
-        }
-    } <span style="color:#5b8fff;">else</span> {
-        cb.failures = <span style="color:#ff5f40;">0</span>
-    }
-    <span style="color:#5b8fff;">return</span> <span style="color:#5b8fff;">nil</span>
-}
-
-<span style="color:#5b8fff;">func</span> main() {
-    cb := NewCB(<span style="color:#ff5f40;">3</span>, <span style="color:#ff5f40;">2</span>, <span style="color:#ff5f40;">2</span>*time.Second)
-    cb.OnStateChange = <span style="color:#5b8fff;">func</span>(from, to State) {
-        states := []<span style="color:#5b8fff;">string</span>{<span style="color:#00e5b0;">"Closed"</span>, <span style="color:#00e5b0;">"Open"</span>, <span style="color:#00e5b0;">"HalfOpen"</span>}
-        fmt.Printf(<span style="color:#00e5b0;">"state: %s → %s
-"</span>, states[from], states[to])
-    }
-    fail := <span style="color:#5b8fff;">func</span>() <span style="color:#5b8fff;">error</span> { <span style="color:#5b8fff;">return</span> errors.New(<span style="color:#00e5b0;">"downstream error"</span>) }
-    <span style="color:#5b8fff;">for</span> i := <span style="color:#ff5f40;">0</span>; i &lt; <span style="color:#ff5f40;">5</span>; i++ {
-        fmt.Printf(<span style="color:#00e5b0;">"call %d: %v
-"</span>, i, cb.Call(fail))
-    }
-}</code></pre>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>This is directly from your production work — CBDC retry/rollback flows use the same state machine pattern. Key points: the <code>OnStateChange</code> hook is your observability hook (emit metrics, alerts). In production (Netflix Hystrix, Sony gobreaker), also track success rate, not just absolute failures. Mention: combine with exponential backoff on retry for complete resilience.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- In-memory KV with TTL -->
-  <div class="day-card">
-    <div class="day-header" onclick="toggle(this)">
-      <span class="day-num">MC 06</span>
-      <span class="day-name">In-Memory Key-Value Store with TTL (Redis-lite)</span>
-      <span class="day-pattern">Storage + Concurrency</span>
-      <span class="day-toggle">▼</span>
-    </div>
-    <div class="day-body">
-      <div class="section-grid">
-        <div class="info-block">
-          <h4>What They Test</h4>
-          <ul>
-            <li>GET / SET / DEL / EXPIRE / TTL commands</li>
-            <li>Background goroutine for expiry cleanup</li>
-            <li>Shard-based locking for throughput</li>
-            <li>Persistence hint (AOF / snapshot trade-off)</li>
-          </ul>
-        </div>
-        <div class="info-block">
-          <h4>Follow-up Questions</h4>
-          <ul>
-            <li>How Redis does lazy vs active expiry</li>
-            <li>Add INCR / DECR atomically</li>
-            <li>Add pub-sub on key expiry events</li>
-            <li>Consistent hashing for sharding</li>
-          </ul>
-        </div>
-      </div>
-      <div class="info-block" style="margin-bottom:.75rem;">
-        <h4>Complete Go Solution</h4>
-        <pre style="background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:#e8eaf0;"><code><span style="color:#5b8fff;">package</span> main
-
-<span style="color:#5b8fff;">import</span> (
-    <span style="color:#00e5b0;">"context"</span>; <span style="color:#00e5b0;">"fmt"</span>
-    <span style="color:#00e5b0;">"sync"</span>; <span style="color:#00e5b0;">"time"</span>
-)
-
-<span style="color:#5b8fff;">type</span> item <span style="color:#5b8fff;">struct</span> {
-    val    <span style="color:#5b8fff;">string</span>
-    expiry time.Time
-    hasExp <span style="color:#5b8fff;">bool</span>
-}
-
-<span style="color:#5b8fff;">type</span> KVStore <span style="color:#5b8fff;">struct</span> {
-    mu    sync.RWMutex
-    store map[<span style="color:#5b8fff;">string</span>]item
-}
-
-<span style="color:#5b8fff;">func</span> NewKVStore(ctx context.Context) *KVStore {
-    kv := &amp;KVStore{store: make(map[<span style="color:#5b8fff;">string</span>]item)}
-    <span style="color:#5b8fff;">go</span> kv.cleanupLoop(ctx)
-    <span style="color:#5b8fff;">return</span> kv
-}
-
-<span style="color:#5b8fff;">func</span> (kv *KVStore) Set(key, val <span style="color:#5b8fff;">string</span>, ttl time.Duration) {
-    kv.mu.Lock(); <span style="color:#5b8fff;">defer</span> kv.mu.Unlock()
-    it := item{val: val}
-    <span style="color:#5b8fff;">if</span> ttl &gt; <span style="color:#ff5f40;">0</span> { it.expiry = time.Now().Add(ttl); it.hasExp = <span style="color:#5b8fff;">true</span> }
-    kv.store[key] = it
-}
-
-<span style="color:#5b8fff;">func</span> (kv *KVStore) Get(key <span style="color:#5b8fff;">string</span>) (<span style="color:#5b8fff;">string</span>, <span style="color:#5b8fff;">bool</span>) {
-    kv.mu.RLock(); <span style="color:#5b8fff;">defer</span> kv.mu.RUnlock()
-    it, ok := kv.store[key]
-    <span style="color:#5b8fff;">if</span> !ok { <span style="color:#5b8fff;">return</span> <span style="color:#00e5b0;">""</span>, <span style="color:#5b8fff;">false</span> }
-    <span style="color:#5b8fff;">if</span> it.hasExp &amp;&amp; time.Now().After(it.expiry) { <span style="color:#5b8fff;">return</span> <span style="color:#00e5b0;">""</span>, <span style="color:#5b8fff;">false</span> } <span style="color:#6b7385;">// lazy expiry</span>
-    <span style="color:#5b8fff;">return</span> it.val, <span style="color:#5b8fff;">true</span>
-}
-
-<span style="color:#5b8fff;">func</span> (kv *KVStore) Del(key <span style="color:#5b8fff;">string</span>) {
-    kv.mu.Lock(); <span style="color:#5b8fff;">defer</span> kv.mu.Unlock()
-    <span style="color:#5b8fff;">delete</span>(kv.store, key)
-}
-
-<span style="color:#5b8fff;">func</span> (kv *KVStore) TTL(key <span style="color:#5b8fff;">string</span>) time.Duration {
-    kv.mu.RLock(); <span style="color:#5b8fff;">defer</span> kv.mu.RUnlock()
-    it, ok := kv.store[key]
-    <span style="color:#5b8fff;">if</span> !ok || !it.hasExp { <span style="color:#5b8fff;">return</span> -<span style="color:#ff5f40;">1</span> }
-    remaining := time.Until(it.expiry)
-    <span style="color:#5b8fff;">if</span> remaining &lt; <span style="color:#ff5f40;">0</span> { <span style="color:#5b8fff;">return</span> <span style="color:#ff5f40;">0</span> }
-    <span style="color:#5b8fff;">return</span> remaining
-}
-
-<span style="color:#5b8fff;">func</span> (kv *KVStore) cleanupLoop(ctx context.Context) {
-    ticker := time.NewTicker(<span style="color:#ff5f40;">500</span> * time.Millisecond)
-    <span style="color:#5b8fff;">defer</span> ticker.Stop()
-    <span style="color:#5b8fff;">for</span> {
-        <span style="color:#5b8fff;">select</span> {
-        <span style="color:#5b8fff;">case</span> &lt;-ticker.C:
-            kv.mu.Lock()
-            now := time.Now()
-            <span style="color:#5b8fff;">for</span> k, v := <span style="color:#5b8fff;">range</span> kv.store {
-                <span style="color:#5b8fff;">if</span> v.hasExp &amp;&amp; now.After(v.expiry) { <span style="color:#5b8fff;">delete</span>(kv.store, k) }
-            }
-            kv.mu.Unlock()
-        <span style="color:#5b8fff;">case</span> &lt;-ctx.Done(): <span style="color:#5b8fff;">return</span>
-        }
-    }
-}
-
-<span style="color:#5b8fff;">func</span> main() {
-    ctx, cancel := context.WithCancel(context.Background())
-    <span style="color:#5b8fff;">defer</span> cancel()
-    kv := NewKVStore(ctx)
-    kv.Set(<span style="color:#00e5b0;">"session:abc"</span>, <span style="color:#00e5b0;">"user123"</span>, <span style="color:#ff5f40;">2</span>*time.Second)
-    kv.Set(<span style="color:#00e5b0;">"config:timeout"</span>, <span style="color:#00e5b0;">"30s"</span>, <span style="color:#ff5f40;">0</span>)
-    <span style="color:#5b8fff;">if</span> v, ok := kv.Get(<span style="color:#00e5b0;">"session:abc"</span>); ok { fmt.Println(<span style="color:#00e5b0;">"got:"</span>, v) }
-    fmt.Println(<span style="color:#00e5b0;">"ttl:"</span>, kv.TTL(<span style="color:#00e5b0;">"session:abc"</span>).Round(time.Millisecond))
-    time.Sleep(<span style="color:#ff5f40;">3</span> * time.Second)
-    <span style="color:#5b8fff;">if</span> _, ok := kv.Get(<span style="color:#00e5b0;">"session:abc"</span>); !ok { fmt.Println(<span style="color:#00e5b0;">"session expired"</span>) }
-}</code></pre>
-      </div>
-      <div class="go-tip">
-        <h4>Interview Signal</h4>
-        <p>Mention Redis does <strong>both</strong> lazy expiry (check on access) AND active expiry (periodic scan of 20 random keys with TTL). Your cleanupLoop mirrors that. For scale, mention sharding: <code>N shards = N separate maps each with own RWMutex</code> — shard by <code>hash(key) % N</code>. This is how BigCache and groupcache work in Go production.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="checkpoint-card" style="background:rgba(91,143,255,0.05);border-color:rgba(91,143,255,0.18);margin-top:1.25rem;">
-    <h3 style="color:var(--accent3);">More Machine Coding Prompts To Add To Your Rotation</h3>
-    <ul>
-      <li><strong>Scheduler:</strong> delayed job queue with retry, backoff, and idempotency key support.</li>
-      <li><strong>Leaderboard:</strong> top-K, surrounding rank, seasonal reset, tie handling.</li>
-      <li><strong>Autocomplete:</strong> top suggestions by prefix with incremental updates.</li>
-      <li><strong>Splitwise:</strong> balance graph, minimize cash flow, expense settlement rules.</li>
-      <li><strong>Parking Lot:</strong> slot allocation strategy, concurrency-safe entry/exit, pricing policy.</li>
-      <li><strong>BookMyShow:</strong> seat locking with TTL, payment success/failure flow, race prevention.</li>
-      <li><strong>Snake and Ladder / Tic-Tac-Toe:</strong> low-level design, move validation, state machine.</li>
-      <li><strong>File System:</strong> path trie, create/list/delete, metadata cache, permission hooks.</li>
-      <li><strong>Notification Service:</strong> channel abstraction, retries, dedup, user preferences.</li>
-      <li><strong>Mini Redis:</strong> strings + lists + expiry + append-only persistence.</li>
-    </ul>
-  </div>
-
-</div>
-
-</main>
+</footer>
 
 <script>
-function toggle(header) {
-  const body = header.nextElementSibling;
-  const arrow = header.querySelector('.day-toggle');
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+function toggle(head) {
+  const card = head.closest('.day-card');
+  card.classList.toggle('open');
 }
-// Open first card of each week by default
-document.querySelectorAll('.day-card:first-of-type .day-header').forEach(h => {
-  h.click();
+document.querySelectorAll('.code-copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.closest('.code-wrap').querySelector('pre').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  });
 });
+const sections = document.querySelectorAll('[id]');
+const tocLinks = document.querySelectorAll('.toc-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(li => li.classList.remove('active'));
+      const a = document.querySelector(`.toc-item a[href="#${e.target.id}"]`);
+      if (a) a.closest('.toc-item').classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => obs.observe(s));
 </script>
 </body>
 </html>

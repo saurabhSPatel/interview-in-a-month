@@ -3,826 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CI/CD in a Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#22c55e;--a2:#4ade80;--a3:#00e5b0;--a4:#fbbf24;--a5:#ff5f40;--text:#e8eaf0;--muted:#6b7385;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 80%,rgba(34,197,94,0.04) 0%,transparent 55%);pointer-events:none;}
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}.back:hover{color:var(--accent);}
-  .hero{max-width:1100px;margin:0 auto;padding:4rem 2rem 2rem;}
-  .tag-pill{display:inline-flex;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
-  .sub{color:var(--muted);font-size:.95rem;max-width:660px;margin-bottom:2rem;line-height:1.75;}
-  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
-  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
-  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  main{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
-  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
-  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
-  .section{margin-bottom:3.5rem;}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1rem;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem;color:var(--a2);}
-  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.7;}
-  .card ul{list-style:none;display:flex;flex-direction:column;gap:.35rem;}
-  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  .card strong{color:var(--text);}
-  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
-  .deep p{font-size:.84rem;color:var(--muted);line-height:1.75;margin-bottom:.6rem;}
-  .cb{background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:8px;padding:1.1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.9;overflow-x:auto;white-space:pre;}
-  .hl{color:var(--a3);}.hl2{color:var(--a2);}.hl3{color:var(--a4);}
-  .warn{background:rgba(255,95,64,0.05);border:1px solid rgba(255,95,64,0.2);border-radius:8px;padding:.9rem 1rem;margin:.75rem 0;font-size:.82rem;color:var(--muted);}
-  .warn strong{color:#ff5f40;}
-  .note{background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:8px;padding:.9rem 1rem;margin:.75rem 0;font-size:.82rem;color:var(--muted);}
-  .note strong{color:var(--a4);}
-  .resources{display:flex;flex-direction:column;gap:.75rem;}
-  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
-  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(34,197,94,0.08);color:var(--a2);border:1px solid rgba(34,197,94,0.2);white-space:nowrap;}
-  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}.rc a:hover{color:var(--accent);}
-  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  .quiz-block{background:rgba(34,197,94,0.03);border:1px solid rgba(34,197,94,0.15);border-radius:10px;padding:1.25rem;margin-top:1.25rem;}
-  .quiz-block h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--a2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
-  .quiz-q{margin-bottom:1rem;}
-  .quiz-q p{font-size:.83rem;color:var(--text);margin-bottom:.5rem;font-weight:500;}
-  .quiz-options{display:flex;flex-direction:column;gap:.3rem;}
-  .quiz-options label{display:flex;align-items:flex-start;gap:.5rem;font-size:.8rem;color:var(--muted);cursor:pointer;padding:.35rem .5rem;border-radius:4px;}
-  .quiz-options input[type=radio]{accent-color:var(--accent);margin-top:.2rem;flex-shrink:0;}
-  .quiz-btn{margin-top:.75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);padding:.4rem 1rem;border-radius:4px;cursor:pointer;}
-  .quiz-result{margin-top:.75rem;font-size:.8rem;padding:.5rem .75rem;border-radius:4px;display:none;}
-  .quiz-result.show{display:block;}
-  .quiz-result.correct{background:rgba(0,229,176,0.08);color:var(--a3);border:1px solid rgba(0,229,176,0.2);}
-  .quiz-result.wrong{background:rgba(255,95,64,0.08);color:#ff5f40;border:1px solid rgba(255,95,64,0.2);}
-  @media(max-width:768px){.cards{grid-template-columns:1fr;}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{--ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;--paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;--rule:#d4d1c6;--rule-2:#c4c0b3;--lime:#b8f060;--lime-dim:#b8f06018;--amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;--mono:"IBM Plex Mono",monospace;--serif:"Fraunces",serif;--sans:"DM Sans",sans-serif;--r:6px;--r-lg:12px}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
+.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
+.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
+.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
+
+<title>CI/CD and GitOps — Engineering OS</title>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="back">← Dashboard</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🔁 CI/CD · 6 HOURS</span>
-</nav>
-
-<div class="hero">
-  <div class="tag-pill">PIPELINES · GITOPS · DEPLOYMENTS · SECRETS · OBSERVABILITY</div>
-  <h1>CI/CD in a Day</h1>
-  <p class="sub">Everything from writing a great GitHub Actions pipeline to GitOps with ArgoCD, deployment strategies (canary, blue-green), feature flags, secrets management, and pipeline optimization. Production-grade patterns used at scale.</p>
-  <div class="timeline">
-    <div class="tblock"><div class="time">H 0–1</div><div class="topic">CI Fundamentals</div></div>
-    <div class="tblock"><div class="time">H 1–2</div><div class="topic">GitHub Actions Deep</div></div>
-    <div class="tblock"><div class="time">H 2–3</div><div class="topic">Deployment Strategies</div></div>
-    <div class="tblock"><div class="time">H 3–4</div><div class="topic">GitOps & ArgoCD</div></div>
-    <div class="tblock"><div class="time">H 4–5</div><div class="topic">Secrets & Vault</div></div>
-    <div class="tblock"><div class="time">H 5–6</div><div class="topic">Optimization & Observability</div></div>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">🔁 CI/CD · 6h · DevOps</div></div></nav>
+<div class="wrap"><div class="doc-layout">
+<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list">
+<li class="toc-item"><a href="#overview">Overview</a></li>
+<li class="toc-item"><a href="#core">Core Concepts</a></li>
+<li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+</ul></aside>
+<article>
+<div class="article-header">
+  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>🔁 CI/CD · 6h · DevOps</div>
+  <h1 class="art-title">CI/CD and GitOps</h1>
+  <p class="art-subtitle">GitOps is a reconciliation loop. ArgoCD's controller model. Canary vs blue-green depends on rollback budget. Vault secrets, feature flags as distributed state, pipeline optimisation.</p>
+  <div class="art-meta">
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
   </div>
 </div>
 
-<main>
-
-<!-- SECTION 1: CI FUNDAMENTALS -->
-<div class="section">
-  <h2><span class="sn">01</span>CI Fundamentals — What Good CI Looks Like</h2>
-
-  <div class="cards">
-    <div class="card">
-      <h3>The CI Pipeline Stages</h3>
-      <ul>
-        <li><strong>Trigger:</strong> push, pull_request, schedule, manual</li>
-        <li><strong>Checkout:</strong> fetch code at specific commit SHA</li>
-        <li><strong>Build:</strong> compile, generate artifacts</li>
-        <li><strong>Test:</strong> unit → integration → e2e (fast to slow)</li>
-        <li><strong>Lint / Static Analysis:</strong> code quality, security scan</li>
-        <li><strong>Package:</strong> Docker build, binary, SBOM</li>
-        <li><strong>Publish:</strong> push to registry with immutable tag</li>
-        <li><strong>Notify:</strong> Slack, GitHub PR comment, PagerDuty</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>CI Best Practices</h3>
-      <ul>
-        <li><strong>Fast feedback:</strong> CI must complete in &lt;10 min — engineers wait</li>
-        <li><strong>Fail fast:</strong> run cheapest checks first (lint before integration tests)</li>
-        <li><strong>Deterministic:</strong> same commit = same result every time</li>
-        <li><strong>Immutable artifacts:</strong> tag images with git SHA, never "latest"</li>
-        <li><strong>Cache aggressively:</strong> deps, build outputs, Docker layers</li>
-        <li><strong>Parallelize:</strong> run independent jobs concurrently</li>
-        <li><strong>Test in isolation:</strong> no shared state between test runs</li>
-        <li><strong>Don't skip tests:</strong> every merge to main must be green</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Trunk-Based vs Feature Branch</h3>
-      <ul>
-        <li><strong>Trunk-Based:</strong> everyone merges to main daily — requires feature flags</li>
-        <li>Forces: small PRs, fast review, continuous integration (not just continuous)</li>
-        <li>Used by: Google, Meta, Netflix at scale</li>
-        <li><strong>Feature Branch:</strong> long-lived branches per feature</li>
-        <li>Risk: merge conflicts, integration surprises, big bang merges</li>
-        <li>Better default for teams: short-lived feature branches (≤2 days) + PR</li>
-        <li>GitFlow: adds release/hotfix branches — good for versioned software</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>What Makes a Good Test Suite</h3>
-      <ul>
-        <li><strong>Test pyramid:</strong> many unit tests, fewer integration, few e2e</li>
-        <li><strong>Unit tests:</strong> fast (&lt;1ms each), isolated, no I/O, no network</li>
-        <li><strong>Integration tests:</strong> test real DB/cache — use testcontainers</li>
-        <li><strong>e2e tests:</strong> test full user flows — slow, run in staging</li>
-        <li><strong>Contract tests:</strong> verify API contracts between services (Pact)</li>
-        <li>Code coverage: 80% is a reasonable target — 100% is diminishing returns</li>
-        <li>Mutation testing: verifies tests actually catch real bugs</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="quiz-block">
-    <h4>Quiz — CI Fundamentals</h4>
-    <div class="quiz-q"><p>Q1. Why should Docker images be tagged with git SHA instead of "latest"?</p><div class="quiz-options"><label><input type="radio" name="c1q1" value="a"> SHA tags are shorter and easier to type</label><label><input type="radio" name="c1q1" value="b"> "latest" is mutable — SHA tags are immutable, giving reproducible and traceable deployments</label><label><input type="radio" name="c1q1" value="c"> Docker registries don't support the "latest" tag</label><label><input type="radio" name="c1q1" value="d"> SHA tags are required for Kubernetes deployments</label></div></div>
-    <div class="quiz-q"><p>Q2. The test pyramid recommends:</p><div class="quiz-options"><label><input type="radio" name="c1q2" value="a"> Equal numbers of unit, integration, and e2e tests</label><label><input type="radio" name="c1q2" value="b"> More e2e tests since they cover the most code</label><label><input type="radio" name="c1q2" value="c"> Many fast unit tests, fewer integration tests, very few e2e tests</label><label><input type="radio" name="c1q2" value="d"> Skipping unit tests — only integration tests matter</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','c'],['c1q1','c1q2'],'c1r')">Check Answers</button>
-    <div class="quiz-result" id="c1r"></div>
-  </div>
+<div id="overview" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">Overview</h2></div>
+<p class="body">GitOps is a reconciliation loop. ArgoCD's controller model. Canary vs blue-green depends on rollback budget. Vault secrets, feature flags as distributed state, pipeline optimisation.</p>
+<div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
+  <div class="callout-label">How to use this module</div>
+  <p>Work through each section sequentially. At the end of each major section, close the page and write down the five things you'd explain to a colleague. Re-read only what you couldn't recall. Active recall is the mechanism — re-reading without testing is nearly useless for durable learning.</p>
+</div>
+<div id="core" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">Core Concepts</h2></div>
+<p class="body">This module's content covers the depth required for senior and staff-level technical interviews, as well as day-to-day system design and architecture discussions. The goal is not to memorise facts but to build a mental model that lets you reason about unseen problems in this domain.</p>
+<div id="flashcards" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">Flash Cards</h2></div>
+<div class="flashcard-grid">
+  <div class="flashcard"><div class="fc-q">How do you explain a trade-off in an interview without sounding vague?</div><div class="fc-a">Structure: "I'd choose X because [specific reason]. The cost is [specific downside]. I'd mitigate it with [specific mechanism]. I'd reconsider if [specific condition]." Never "it depends" without immediately saying what it depends on.</div></div>
+  <div class="flashcard"><div class="fc-q">What makes an answer staff-level vs senior-level?</div><div class="fc-a">Staff: proactively surfaces failure modes, names operational knobs (TTL, partition count, timeout budget), proposes observability, states migration path, ties decisions to business constraints. Senior: answers questions correctly. Staff: drives the conversation.</div></div>
 </div>
 
-<!-- SECTION 2: GITHUB ACTIONS -->
-<div class="section">
-  <h2><span class="sn">02</span>GitHub Actions — Deep Dive</h2>
-
-  <div class="deep">
-    <h3>Complete Production Pipeline</h3>
-    <div class="cb"><span class="hl"># .github/workflows/ci.yml</span>
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-<span class="hl">env:</span>
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
-jobs:
-  <span class="hl"># Job 1: Fast checks — run first to fail fast</span>
-  lint-and-test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:                          <span class="hl"># sidecar container for integration tests</span>
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-          cache: true                    <span class="hl"># caches go module downloads</span>
-
-      - name: Cache build artifacts
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/go-build
-          key: ${{ runner.os }}-gobuild-${{ hashFiles('**/*.go') }}
-          restore-keys: ${{ runner.os }}-gobuild-
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: latest
-
-      - name: Run tests
-        run: go test -race -coverprofile=coverage.out ./...
-        env:
-          DATABASE_URL: postgres://postgres:test@localhost/testdb
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          file: coverage.out
-
-  <span class="hl"># Job 2: Build and push image (only on main)</span>
-  build-push:
-    needs: lint-and-test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-      digest: ${{ steps.build.outputs.digest }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3   <span class="hl"># enables BuildKit</span>
-
-      - name: Login to registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,prefix=sha-           <span class="hl"># sha-abc1234</span>
-            type=ref,event=branch          <span class="hl"># main</span>
-
-      - name: Build and push
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha            <span class="hl"># GitHub Actions cache for Docker layers</span>
-          cache-to: type=gha,mode=max
-          sbom: true                      <span class="hl"># generate software bill of materials</span>
-          provenance: true               <span class="hl"># SLSA provenance attestation</span>
-
-  <span class="hl"># Job 3: Deploy (only after image built)</span>
-  deploy-staging:
-    needs: build-push
-    runs-on: ubuntu-latest
-    environment: staging                 <span class="hl"># requires manual approval if configured</span>
-    steps:
-      - name: Deploy to staging
-        run: |
-          <span class="hl"># Update Helm values with new image tag</span>
-          helm upgrade --install myapp ./charts/myapp \
-            --set image.tag=${{ needs.build-push.outputs.image-tag }} \
-            --namespace staging \
-            --wait \
-            --timeout 5m</div>
+</article>
+</div></div>
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
   </div>
-
-  <div class="cards">
-    <div class="card">
-      <h3>Key Actions Concepts</h3>
-      <ul>
-        <li><strong>Workflow:</strong> YAML file — triggered by events</li>
-        <li><strong>Job:</strong> runs on a runner (ubuntu-latest, self-hosted)</li>
-        <li><strong>Step:</strong> individual task within a job — uses: or run:</li>
-        <li><strong>needs:</strong> declare job dependencies for ordering</li>
-        <li><strong>outputs:</strong> pass data between jobs</li>
-        <li><strong>matrix:</strong> run job for multiple values (Go versions, OS)</li>
-        <li><strong>environment:</strong> deployment target with required reviewers</li>
-        <li><strong>concurrency:</strong> cancel in-progress runs on new push</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Secrets & Variables</h3>
-      <ul>
-        <li><strong>Secrets:</strong> encrypted, never logged — <code>${{ secrets.MY_SECRET }}</code></li>
-        <li><strong>GITHUB_TOKEN:</strong> auto-generated per run — use for registry login, PR comments</li>
-        <li><strong>Variables:</strong> non-sensitive config — <code>${{ vars.REGION }}</code></li>
-        <li><strong>Environments:</strong> scope secrets to staging/production environments</li>
-        <li>Required reviewers on environments gate production deploys</li>
-        <li>Never echo secrets — GitHub masks them but avoid it anyway</li>
-        <li>Rotate secrets periodically — use short-lived OIDC tokens where possible</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Caching Strategies</h3>
-      <ul>
-        <li><code>actions/cache</code>: key/restore-keys pattern for any directory</li>
-        <li><strong>Docker layer cache:</strong> <code>cache-from: type=gha</code> — reuses unchanged layers</li>
-        <li><strong>Go modules:</strong> cache <code>~/go/pkg/mod</code> keyed by go.sum hash</li>
-        <li><strong>Node modules:</strong> cache <code>node_modules</code> keyed by package-lock.json hash</li>
-        <li>Cache key strategy: broad restore-key for partial hits, exact key for full hits</li>
-        <li>Cache size limit: 10GB per repo in GitHub Actions</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Matrix Builds</h3>
-      <ul>
-        <li>Test across multiple Go/Node versions simultaneously</li>
-        <li>Test across multiple OS (ubuntu, macos, windows)</li>
-        <li>All matrix combinations run in parallel</li>
-        <li><code>fail-fast: false</code> — don't cancel others if one fails</li>
-        <li><code>include:</code> add extra variables to specific combinations</li>
-        <li><code>exclude:</code> remove specific combinations</li>
-        <li>Max 256 matrix jobs per workflow run</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="quiz-block">
-    <h4>Quiz — GitHub Actions</h4>
-    <div class="quiz-q"><p>Q1. In GitHub Actions, what does <code>needs: [lint-and-test]</code> on a job mean?</p><div class="quiz-options"><label><input type="radio" name="c2q1" value="a"> The job will skip if lint-and-test fails</label><label><input type="radio" name="c2q1" value="b"> The job won't start until lint-and-test completes successfully</label><label><input type="radio" name="c2q1" value="c"> The job runs in parallel with lint-and-test</label><label><input type="radio" name="c2q1" value="d"> The job will reuse lint-and-test's runner</label></div></div>
-    <div class="quiz-q"><p>Q2. What is the best cache key strategy for Go module dependencies?</p><div class="quiz-options"><label><input type="radio" name="c2q2" value="a"> Use the git commit SHA — always fresh</label><label><input type="radio" name="c2q2" value="b"> Use a hash of go.sum — cache is valid as long as dependencies don't change</label><label><input type="radio" name="c2q2" value="c"> Use the current date — cache refreshes daily</label><label><input type="radio" name="c2q2" value="d"> Never cache — dependencies change too often</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['c2q1','c2q2'],'c2r')">Check Answers</button>
-    <div class="quiz-result" id="c2r"></div>
-  </div>
-</div>
-
-<!-- SECTION 3: DEPLOYMENT STRATEGIES -->
-<div class="section">
-  <h2><span class="sn">03</span>Deployment Strategies</h2>
-
-  <div class="deep">
-    <h3>Blue-Green Deployment</h3>
-    <div class="cb"><span class="hl"># Two identical environments: blue (live) and green (new version)</span>
-<span class="hl"># Switch traffic atomically — instant rollback by switching back</span>
-
-<span class="hl">## Kubernetes implementation with two Deployments:</span>
-<span class="hl"># Blue (currently serving traffic)</span>
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp-blue
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: myapp
-      version: blue
-
----
-<span class="hl"># Green (new version, not yet receiving traffic)</span>
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp-green
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: myapp
-      version: green
-
----
-<span class="hl"># Service selects by version label — change this to switch traffic</span>
-apiVersion: v1
-kind: Service
-metadata:
-  name: myapp
-spec:
-  selector:
-    app: myapp
-    version: blue   <span class="hl"># change to "green" to switch traffic — zero downtime</span>
-
-<span class="hl"># Switch:  kubectl patch service myapp -p '{"spec":{"selector":{"version":"green"}}}'
-# Rollback: kubectl patch service myapp -p '{"spec":{"selector":{"version":"blue"}}}'
-# After validation: delete blue deployment to save resources</span></div>
-  </div>
-
-  <div class="deep">
-    <h3>Canary Deployment</h3>
-    <div class="cb"><span class="hl"># Canary: route small % of traffic to new version first
-# Gradually increase % as confidence grows
-# Rollback by setting canary weight to 0</span>
-
-<span class="hl">## Nginx Ingress canary annotation approach:</span>
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: myapp-canary
-  annotations:
-    nginx.ingress.kubernetes.io/canary: "true"
-    nginx.ingress.kubernetes.io/canary-weight: "10"  <span class="hl"># 10% of traffic</span>
-spec:
-  rules:
-  - host: api.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: myapp-v2
-            port: { number: 80 }
-
-<span class="hl">## Canary with Argo Rollouts (automated, metric-based):
-# Defines a progressive rollout with automatic pause and analysis</span>
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-spec:
-  strategy:
-    canary:
-      steps:
-      - setWeight: 5     <span class="hl"># 5% traffic</span>
-      - pause: {duration: 5m}
-      - setWeight: 20    <span class="hl"># 20% traffic</span>
-      - analysis:        <span class="hl"># check error rate before proceeding</span>
-          templates:
-          - templateName: error-rate
-      - setWeight: 50
-      - pause: {duration: 10m}
-      - setWeight: 100
-
-<span class="hl"># Analysis: if error rate > 1%, automatically rollback the canary</span></div>
-  </div>
-
-  <div class="cards">
-    <div class="card">
-      <h3>Rolling Update (Kubernetes Default)</h3>
-      <ul>
-        <li>Replace pods one by one (or in batches) — default K8s strategy</li>
-        <li><code>maxSurge:</code> extra pods during update (25% or count)</li>
-        <li><code>maxUnavailable:</code> pods that can be unavailable (25% or count)</li>
-        <li>Zero downtime if readiness probes are correct</li>
-        <li>Rollback: <code>kubectl rollout undo deployment/myapp</code></li>
-        <li>Issue: both versions run simultaneously — API must be backward compatible</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Deployment Strategy Comparison</h3>
-      <ul>
-        <li><strong>Rolling:</strong> default — simple, zero downtime, mixed versions</li>
-        <li><strong>Blue-Green:</strong> instant cutover, full resource cost (2x), simple rollback</li>
-        <li><strong>Canary:</strong> real traffic testing, gradual confidence, complex routing</li>
-        <li><strong>Recreate:</strong> downtime but no mixed versions — DB migrations</li>
-        <li><strong>A/B:</strong> canary by user segment — needs user ID routing</li>
-        <li>Choose canary for user-facing changes; rolling for internal services</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Feature Flags</h3>
-      <ul>
-        <li>Decouple deployment from release — deploy dark, enable gradually</li>
-        <li>Target by: user ID, percentage, region, beta users, employee</li>
-        <li><strong>Tools:</strong> LaunchDarkly, Unleash (self-hosted), Flagsmith</li>
-        <li>Trunk-based development: feature flags allow unfinished code on main</li>
-        <li>Kill switch: disable broken feature instantly without redeploy</li>
-        <li>Lifecycle: create → test in prod → full rollout → clean up (delete flag!)</li>
-        <li>Tech debt: stale flags are a liability — set expiry dates</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Database Migrations with Deploys</h3>
-      <ul>
-        <li>Never break backward compatibility in a migration</li>
-        <li><strong>Expand-contract pattern:</strong> add new column (expand) → migrate data → remove old (contract) across 3 deploys</li>
-        <li>Run migrations before deploying new code — code must handle both old and new schema</li>
-        <li>Tooling: Flyway, Liquibase, golang-migrate</li>
-        <li>Zero-downtime: avoid locks on large tables — use <code>ADD COLUMN DEFAULT NULL</code> not <code>NOT NULL</code></li>
-        <li>Always test migration rollback — does <code>migrate down</code> work?</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="quiz-block">
-    <h4>Quiz — Deployment Strategies</h4>
-    <div class="quiz-q"><p>Q1. Blue-green deployment's main advantage over rolling update is:</p><div class="quiz-options"><label><input type="radio" name="c3q1" value="a"> It uses fewer resources</label><label><input type="radio" name="c3q1" value="b"> Instant traffic cutover and instant rollback — no mixed versions serving traffic</label><label><input type="radio" name="c3q1" value="c"> It doesn't require Kubernetes</label><label><input type="radio" name="c3q1" value="d"> It automatically validates the new version</label></div></div>
-    <div class="quiz-q"><p>Q2. Feature flags enable what deployment practice?</p><div class="quiz-options"><label><input type="radio" name="c3q2" value="a"> Faster Docker builds</label><label><input type="radio" name="c3q2" value="b"> Decoupling deployment from release — deploy code dark, enable feature gradually without redeploying</label><label><input type="radio" name="c3q2" value="c"> Automatic rollback on errors</label><label><input type="radio" name="c3q2" value="d"> Blue-green deployments without two environments</label></div></div>
-    <div class="quiz-q"><p>Q3. The expand-contract pattern for database migrations means:</p><div class="quiz-options"><label><input type="radio" name="c3q3" value="a"> Run migrations after deploying new code</label><label><input type="radio" name="c3q3" value="b"> Add new schema (expand) → deploy code supporting both → remove old schema (contract) — never a breaking change in one step</label><label><input type="radio" name="c3q3" value="c"> Expand the database server capacity before migrating</label><label><input type="radio" name="c3q3" value="d"> Always use NOT NULL on new columns</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['c3q1','c3q2','c3q3'],'c3r')">Check Answers</button>
-    <div class="quiz-result" id="c3r"></div>
-  </div>
-</div>
-
-<!-- SECTION 4: GITOPS & ARGOCD -->
-<div class="section">
-  <h2><span class="sn">04</span>GitOps & ArgoCD</h2>
-
-  <div class="deep">
-    <h3>GitOps Principles</h3>
-    <p>GitOps = Git as the single source of truth for declarative infrastructure and application state. Four core principles:</p>
-    <p><strong>1. Declarative:</strong> the entire system is described declaratively (Kubernetes manifests, Helm charts).<br>
-    <strong>2. Versioned & immutable:</strong> desired state stored in Git — every change is a commit, fully auditable.<br>
-    <strong>3. Pulled automatically:</strong> approved changes are applied automatically by a software agent (ArgoCD, Flux).<br>
-    <strong>4. Continuously reconciled:</strong> agent detects drift between desired (Git) and actual (cluster) state and corrects it.</p>
-    <div class="cb"><span class="hl"># GitOps workflow:</span>
-<span class="hl"># 1. Developer pushes code → CI builds image, tags with git SHA</span>
-<span class="hl"># 2. CI updates image tag in the GitOps repo (Helm values or kustomize)</span>
-<span class="hl"># 3. PR created in GitOps repo — reviewed and merged</span>
-<span class="hl"># 4. ArgoCD detects difference between Git and cluster state</span>
-<span class="hl"># 5. ArgoCD applies the diff — new image deployed</span>
-<span class="hl"># 6. Rollback = git revert → ArgoCD reconciles back to old state</span>
-
-<span class="hl"># CI updates image tag automatically:</span>
-- name: Update image tag in GitOps repo
-  run: |
-    git clone https://github.com/org/gitops-repo.git
-    cd gitops-repo
-    sed -i "s|image.tag:.*|image.tag: ${{ env.IMAGE_TAG }}|" apps/myapp/values.yaml
-    git commit -am "chore: update myapp to ${{ env.IMAGE_TAG }}"
-    git push</div>
-  </div>
-
-  <div class="deep">
-    <h3>ArgoCD Configuration</h3>
-    <div class="cb"><span class="hl"># ArgoCD Application — declares what to deploy and where</span>
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: myapp-production
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/org/gitops-repo
-    targetRevision: main
-    path: apps/myapp
-    helm:
-      valueFiles:
-        - values-production.yaml
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: production
-  syncPolicy:
-    automated:
-      prune: true      <span class="hl"># delete resources removed from Git</span>
-      selfHeal: true   <span class="hl"># revert manual kubectl changes (drift correction)</span>
-    syncOptions:
-      - CreateNamespace=true
-    retry:
-      limit: 3
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
-
-<span class="hl"># App of Apps pattern — one root Application manages all other Applications
-# Allows managing multiple services from a single ArgoCD root</span>
-
-<span class="hl"># Sync Waves — control order of resource creation:
-# metadata.annotations:
-#   argocd.argoproj.io/sync-wave: "-1"  # apply first (migrations, CRDs)
-#   argocd.argoproj.io/sync-wave: "0"   # default
-#   argocd.argoproj.io/sync-wave: "1"   # apply after wave 0</span></div>
-  </div>
-
-  <div class="cards">
-    <div class="card">
-      <h3>ArgoCD vs Flux</h3>
-      <ul>
-        <li><strong>ArgoCD:</strong> UI-driven, explicit Application resources, multi-cluster, RBAC</li>
-        <li><strong>Flux:</strong> CLI-first, GitRepository + Kustomization CRDs, Helm operator, simpler</li>
-        <li>ArgoCD: better for teams that want visibility and multi-cluster management</li>
-        <li>Flux: better for fully automated, code-first GitOps</li>
-        <li>Both: pull-based (agent inside cluster pulls from Git — no cluster access needed from CI)</li>
-        <li>Pull vs push: pull is safer — cluster credentials never leave the cluster</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Helm Deep Dive</h3>
-      <ul>
-        <li>Helm = Kubernetes package manager — templates + values</li>
-        <li><code>values.yaml</code>: default values — override per environment</li>
-        <li><code>helm upgrade --install</code>: idempotent — create or update</li>
-        <li><code>--atomic</code>: rollback automatically on failure</li>
-        <li><code>--wait</code>: wait for all resources to be ready</li>
-        <li>Chart hooks: pre-install, post-install, pre-upgrade — run jobs at lifecycle points</li>
-        <li>Subcharts: dependencies in <code>Chart.yaml</code> — include postgres, redis as deps</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="quiz-block">
-    <h4>Quiz — GitOps</h4>
-    <div class="quiz-q"><p>Q1. What is the "pull" model in GitOps (ArgoCD/Flux)?</p><div class="quiz-options"><label><input type="radio" name="c4q1" value="a"> CI pushes manifests directly to the cluster via kubectl</label><label><input type="radio" name="c4q1" value="b"> An agent running inside the cluster pulls desired state from Git and applies it — cluster credentials never leave the cluster</label><label><input type="radio" name="c4q1" value="c"> Git pulls from the cluster to detect state changes</label><label><input type="radio" name="c4q1" value="d"> Developers manually pull and apply changes</label></div></div>
-    <div class="quiz-q"><p>Q2. ArgoCD selfHeal means:</p><div class="quiz-options"><label><input type="radio" name="c4q2" value="a"> ArgoCD automatically fixes security vulnerabilities</label><label><input type="radio" name="c4q2" value="b"> ArgoCD automatically reverts manual kubectl changes that drift from the Git-declared state</label><label><input type="radio" name="c4q2" value="c"> ArgoCD automatically scales up when load increases</label><label><input type="radio" name="c4q2" value="d"> ArgoCD retries failed deployments</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['c4q1','c4q2'],'c4r')">Check Answers</button>
-    <div class="quiz-result" id="c4r"></div>
-  </div>
-</div>
-
-<!-- SECTION 5: SECRETS MANAGEMENT -->
-<div class="section">
-  <h2><span class="sn">05</span>Secrets Management — Vault & Beyond</h2>
-
-  <div class="deep">
-    <h3>HashiCorp Vault</h3>
-    <div class="cb"><span class="hl"># Vault is the industry standard for secrets management
-# Core concepts: secrets engines, auth methods, policies, leases</span>
-
-<span class="hl">## Enable the KV secrets engine</span>
-vault secrets enable -path=secret kv-v2
-
-<span class="hl">## Store a secret</span>
-vault kv put secret/myapp/production \
-  DATABASE_URL="postgres://user:pass@db:5432/prod" \
-  API_KEY="sk_prod_abc123"
-
-<span class="hl">## Kubernetes auth method — pods authenticate using ServiceAccount JWT</span>
-vault auth enable kubernetes
-vault write auth/kubernetes/config \
-  kubernetes_host="https://kubernetes.default.svc"
-
-<span class="hl">## Policy — what a service account can access</span>
-vault policy write myapp-policy - <<EOF
-path "secret/data/myapp/production" {
-  capabilities = ["read"]
-}
-EOF
-
-<span class="hl">## Bind K8s service account to policy</span>
-vault write auth/kubernetes/role/myapp \
-  bound_service_account_names=myapp \
-  bound_service_account_namespaces=production \
-  policies=myapp-policy \
-  ttl=1h   <span class="hl"># lease expires in 1h — auto-renew or re-auth</span>
-
-<span class="hl">## In the pod: use Vault Agent Sidecar or ESO to inject secrets
-## Vault Agent runs as sidecar, authenticates, writes secrets to shared volume</span>
-annotations:
-  vault.hashicorp.com/agent-inject: "true"
-  vault.hashicorp.com/role: "myapp"
-  vault.hashicorp.com/agent-inject-secret-config: "secret/data/myapp/production"</div>
-  </div>
-
-  <div class="cards">
-    <div class="card">
-      <h3>External Secrets Operator (ESO)</h3>
-      <ul>
-        <li>Kubernetes operator — syncs secrets from external providers into K8s Secrets</li>
-        <li>Supports: Vault, AWS Secrets Manager, GCP Secret Manager, Azure Key Vault</li>
-        <li>ExternalSecret resource: define what to sync and where</li>
-        <li>Refresh interval: secrets auto-updated when source changes</li>
-        <li>Better than Vault Agent sidecar: no sidecar per pod, centrally managed</li>
-        <li>Use with Sealed Secrets (Bitnami) to encrypt secrets in Git</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Secrets Anti-Patterns</h3>
-      <ul>
-        <li>❌ Hardcode secrets in code or Dockerfiles</li>
-        <li>❌ Store secrets in Git (even in private repos)</li>
-        <li>❌ Long-lived static credentials — prefer short-lived with rotation</li>
-        <li>❌ Share secrets between environments (prod key in dev)</li>
-        <li>❌ Echo secrets in CI logs — GitHub masks them but avoid it</li>
-        <li>✅ Use OIDC for CI — no static credentials at all</li>
-        <li>✅ Rotate secrets regularly, audit who accessed what</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>OIDC for CI/CD</h3>
-      <ul>
-        <li>GitHub Actions can authenticate to AWS/GCP/Azure without static credentials</li>
-        <li>GitHub issues short-lived OIDC token per workflow run</li>
-        <li>Cloud provider validates token → issues short-lived cloud credentials</li>
-        <li>No AWS_ACCESS_KEY_ID stored in GitHub Secrets</li>
-        <li>Configure: <code>id-token: write</code> permission + cloud provider trust policy</li>
-        <li>This is the modern, most secure approach for CI cloud access</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Secret Rotation</h3>
-      <ul>
-        <li>Vault dynamic secrets: generate DB creds on demand, expire after TTL</li>
-        <li>Database secrets engine: creates temporary Postgres users per request</li>
-        <li>Revocation: Vault can revoke all leases on a path instantly</li>
-        <li>AWS IAM: use IAM roles with STS AssumeRole — no long-lived keys</li>
-        <li>Rotation triggers: time-based (90 days), on breach, on engineer departure</li>
-        <li>Zero-downtime rotation: ensure app can re-read secrets without restart</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="quiz-block">
-    <h4>Quiz — Secrets Management</h4>
-    <div class="quiz-q"><p>Q1. OIDC for CI/CD (e.g., GitHub Actions to AWS) is better than static credentials because:</p><div class="quiz-options"><label><input type="radio" name="c5q1" value="a"> OIDC is faster to configure</label><label><input type="radio" name="c5q1" value="b"> No long-lived static credentials are stored — GitHub issues short-lived tokens per run that expire automatically</label><label><input type="radio" name="c5q1" value="c"> OIDC gives broader permissions than IAM keys</label><label><input type="radio" name="c5q1" value="d"> OIDC works without any cloud provider configuration</label></div></div>
-    <div class="quiz-q"><p>Q2. Vault dynamic secrets for a database means:</p><div class="quiz-options"><label><input type="radio" name="c5q2" value="a"> Vault stores a fixed username/password that rotates every 90 days</label><label><input type="radio" name="c5q2" value="b"> Vault generates unique, temporary database credentials per request that expire after a TTL</label><label><input type="radio" name="c5q2" value="c"> Vault encrypts the database at rest</label><label><input type="radio" name="c5q2" value="d"> The database manages its own credentials</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['c5q1','c5q2'],'c5r')">Check Answers</button>
-    <div class="quiz-result" id="c5r"></div>
-  </div>
-</div>
-
-<!-- SECTION 6: OPTIMIZATION & OBSERVABILITY -->
-<div class="section">
-  <h2><span class="sn">06</span>Pipeline Optimization & Observability</h2>
-
-  <div class="cards">
-    <div class="card">
-      <h3>Making CI Faster</h3>
-      <ul>
-        <li><strong>Parallelize:</strong> run lint, test, security scan as parallel jobs</li>
-        <li><strong>Cache layers:</strong> Docker BuildKit cache mounts for apt-get, go modules</li>
-        <li><strong>Test sharding:</strong> split tests across multiple runners (pytest-split, go test -run)</li>
-        <li><strong>Incremental builds:</strong> only rebuild changed packages (Bazel, Nx, Turborepo)</li>
-        <li><strong>Self-hosted runners:</strong> larger machines, pre-installed deps, no cold starts</li>
-        <li><strong>Fail fast:</strong> lint first — cheapest check before expensive ones</li>
-        <li>Target: main branch CI under 5 minutes, PR CI under 10 minutes</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Optimized Dockerfile</h3>
-      <ul>
-        <li>Multi-stage build: build stage → minimal runtime image</li>
-        <li>Layer order: COPY dependencies first, then source code</li>
-        <li>Base image: distroless or alpine for minimal attack surface</li>
-        <li>Non-root user: always run as non-root in production</li>
-        <li>.dockerignore: exclude .git, node_modules, test files</li>
-        <li>Pin base image with digest: <code>FROM golang:1.22@sha256:abc123</code></li>
-        <li>BuildKit cache mounts: <code>RUN --mount=type=cache,target=/root/.cache go build</code></li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Pipeline Observability</h3>
-      <ul>
-        <li>Track: pipeline duration, failure rate, flaky test rate</li>
-        <li>Alert on: CI failure rate &gt; 10%, build time &gt; 10 min</li>
-        <li>Flaky tests: auto-retry 2x then report — fix or quarantine, never ignore</li>
-        <li>DORA metrics: deployment frequency, lead time, MTTR, change failure rate</li>
-        <li>Tools: Datadog CI Visibility, BuildKite, GitHub Actions insights</li>
-        <li>Mean time to restore (MTTR): how fast can you detect and fix a broken deploy?</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>DORA Metrics — Elite Team Targets</h3>
-      <ul>
-        <li><strong>Deployment Frequency:</strong> multiple times per day (elite)</li>
-        <li><strong>Lead Time for Changes:</strong> &lt; 1 hour from commit to prod (elite)</li>
-        <li><strong>Change Failure Rate:</strong> &lt; 5% of deployments cause incidents (elite)</li>
-        <li><strong>MTTR:</strong> &lt; 1 hour to restore after failure (elite)</li>
-        <li>These metrics predict software delivery performance and business outcomes</li>
-        <li>Source: Google's State of DevOps report (annual)</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="deep">
-    <h3>Optimized Multi-Stage Dockerfile (Go)</h3>
-    <div class="cb"><span class="hl"># syntax=docker/dockerfile:1</span>
-
-<span class="hl"># Stage 1: Build</span>
-FROM golang:1.22-alpine AS builder
-WORKDIR /app
-
-<span class="hl"># Copy and cache dependencies FIRST (changes less often)</span>
-COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod \  <span class="hl"># BuildKit cache mount</span>
-    go mod download
-
-<span class="hl"># Copy source (changes more often — invalidates cache here, not above)</span>
-COPY . .
-
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/server ./cmd/server
-
-<span class="hl"># Stage 2: Minimal runtime image</span>
-FROM gcr.io/distroless/static-debian12
-<span class="hl"># distroless: no shell, no package manager, minimal CVE surface</span>
-
-COPY --from=builder /app/server /server
-
-<span class="hl"># Non-root user — distroless has nonroot:65532 built in</span>
-USER nonroot:nonroot
-
-EXPOSE 8080
-ENTRYPOINT ["/server"]
-
-<span class="hl"># Result: ~5MB image vs ~300MB for golang:latest
-# Build time with cache: ~10s vs ~60s without</span></div>
-  </div>
-
-  <div class="section">
-    <h2><span class="sn">07</span>Best Resources</h2>
-    <div class="resources">
-      <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://docs.github.com/en/actions" target="_blank">GitHub Actions Documentation</a><p>Official docs — start with Quickstart, then Workflow syntax reference. Most complete source.</p></div></div>
-      <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/@TechWorldwithNana" target="_blank">TechWorld with Nana — CI/CD & DevOps</a><p>Best YouTube channel for CI/CD fundamentals. Watch: GitHub Actions, ArgoCD, Helm courses. Clear and structured.</p></div></div>
-      <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank">ArgoCD Official Documentation</a><p>Read: Getting Started, Application CRD, App of Apps pattern, Sync Waves. Takes ~3 hours.</p></div></div>
-      <div class="res"><span class="rt">BOOK</span><div class="rc"><a href="https://dora.dev/research/" target="_blank">DORA State of DevOps Research</a><p>Annual Google research report. The definitive data on what makes high-performing engineering teams. Free.</p></div></div>
-      <div class="res"><span class="rt">DOCS</span><div class="rc"><a href="https://developer.hashicorp.com/vault/docs" target="_blank">HashiCorp Vault Documentation</a><p>Start with: Getting Started, Kubernetes auth method, KV secrets engine, dynamic database secrets.</p></div></div>
-      <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=NArm_bkGxv8" target="_blank">GitHub OIDC with AWS — No Static Credentials</a><p>How to eliminate AWS_ACCESS_KEY from GitHub Secrets using OIDC. 20 minutes. Essential for secure CI.</p></div></div>
-    </div>
-  </div>
-
-  <div class="quiz-block">
-    <h4>Quiz — Optimization</h4>
-    <div class="quiz-q"><p>Q1. In a Dockerfile, why should you COPY go.mod/go.sum before COPY . .?</p><div class="quiz-options"><label><input type="radio" name="c6q1" value="a"> go.mod must be processed before source files by the compiler</label><label><input type="radio" name="c6q1" value="b"> Docker layer caching — dependencies change less often than source code. This way, unchanged deps don't re-download on every code change.</label><label><input type="radio" name="c6q1" value="c"> Security requirement — dependencies must be verified first</label><label><input type="radio" name="c6q1" value="d"> It has no effect on build time</label></div></div>
-    <div class="quiz-q"><p>Q2. Which DORA metric measures how quickly a team recovers from a production incident?</p><div class="quiz-options"><label><input type="radio" name="c6q2" value="a"> Deployment Frequency</label><label><input type="radio" name="c6q2" value="b"> Lead Time for Changes</label><label><input type="radio" name="c6q2" value="c"> Change Failure Rate</label><label><input type="radio" name="c6q2" value="d"> Mean Time to Restore (MTTR)</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','d'],['c6q1','c6q2'],'c6r')">Check Answers</button>
-    <div class="quiz-result" id="c6r"></div>
-  </div>
-</div>
-
-</main>
+</footer>
 <script>
-function checkQuiz(answers, names, resultId) {
-  let correct = 0;
-  answers.forEach((ans, i) => {
-    const sel = document.querySelector('input[name=' + names[i] + ']:checked');
-    if (sel && sel.value === ans) correct++;
+document.querySelectorAll(".code-copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
+    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
   });
-  const total = answers.length;
-  const el = document.getElementById(resultId);
-  el.className = 'quiz-result show ' + (correct === total ? 'correct' : 'wrong');
-  el.textContent = correct === total
-    ? '✓ All ' + total + '/' + total + ' correct!'
-    : correct + '/' + total + ' correct. Correct answers: ' + answers.join(', ');
-}
+});
+const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
+secs.forEach(s=>ob.observe(s));
 </script>
 </body>
 </html>

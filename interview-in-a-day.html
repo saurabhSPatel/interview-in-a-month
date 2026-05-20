@@ -3,298 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interview Prep in a Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#fbbf24;--a2:#fcd34d;--a3:#00e5b0;--a4:#ff5f40;--text:#e8eaf0;--muted:#6b7385;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 70% 60%,rgba(251,191,36,0.04) 0%,transparent 55%);pointer-events:none;}
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
-  .back:hover{color:var(--accent);}
-  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
-  .tag-pill{display:inline-flex;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
-  .sub{color:var(--muted);font-size:.92rem;max-width:620px;margin-bottom:2rem;line-height:1.7;}
-  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
-  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
-  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
-  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
-  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
-  .section{margin-bottom:3.5rem;}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--accent);}
-  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
-  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
-  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
-  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
-  .story-card{background:var(--s2);border-radius:8px;padding:1.25rem;margin-bottom:.75rem;border:1px solid var(--border);}
-  .story-card .q{font-size:.88rem;color:var(--accent);font-weight:600;margin-bottom:.75rem;}
-  .star-section{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.6rem;}
-  .star-box{background:rgba(0,0,0,0.2);border-radius:6px;padding:.6rem;}
-  .star-box .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.3rem;text-transform:uppercase;}
-  .star-box p{font-size:.75rem;color:var(--muted);line-height:1.5;}
-  .sysdesign-framework{background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .framework-steps{display:flex;flex-direction:column;gap:.75rem;}
-  .step{display:flex;gap:1rem;align-items:flex-start;}
-  .step-num{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--accent);background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:4px;padding:.2rem .6rem;white-space:nowrap;margin-top:.1rem;}
-  .step-content{flex:1;}
-  .step-content strong{font-size:.85rem;color:var(--text);}
-  .step-content p{font-size:.8rem;color:var(--muted);margin-top:.2rem;line-height:1.65;}
-  .resources{display:flex;flex-direction:column;gap:.75rem;}
-  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
-  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(251,191,36,0.08);color:var(--a2);border:1px solid rgba(251,191,36,0.2);white-space:nowrap;}
-  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
-  .rc a:hover{color:var(--accent);}
-  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  .traps{display:flex;flex-direction:column;gap:.6rem;}
-  .trap{background:rgba(0,0,0,0.2);border-radius:6px;padding:.85rem;}
-  .trap .t{font-size:.82rem;color:var(--a4);margin-bottom:.4rem;font-weight:600;}
-  .trap .fix{font-size:.78rem;color:var(--muted);line-height:1.6;}
-  .comp-table{width:100%;border-collapse:collapse;margin:.75rem 0;}
-  .comp-table th{background:rgba(251,191,36,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.5rem .75rem;text-align:left;}
-  .comp-table td{font-size:.8rem;color:var(--muted);padding:.5rem .75rem;border-bottom:1px solid rgba(30,37,48,0.5);}
-  .comp-table td:first-child{color:var(--text);}
-  .quiz-block{background:rgba(251,191,36,0.03);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:1.25rem;margin-top:1rem;}
-  .quiz-block h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--a2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
-  .quiz-q{margin-bottom:1rem;}
-  .quiz-q p{font-size:.83rem;color:var(--text);margin-bottom:.5rem;font-weight:500;}
-  .quiz-options{display:flex;flex-direction:column;gap:.3rem;}
-  .quiz-options label{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted);cursor:pointer;padding:.3rem .5rem;border-radius:4px;}
-  .quiz-options input[type=radio]{accent-color:var(--accent);}
-  .quiz-btn{margin-top:.75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);padding:.4rem 1rem;border-radius:4px;cursor:pointer;}
-  .quiz-result{margin-top:.75rem;font-size:.8rem;padding:.5rem .75rem;border-radius:4px;display:none;}
-  .quiz-result.show{display:block;}
-  .quiz-result.correct{background:rgba(0,229,176,0.08);color:var(--a3);border:1px solid rgba(0,229,176,0.2);}
-  .quiz-result.wrong{background:rgba(255,95,64,0.08);color:var(--a4);border:1px solid rgba(255,95,64,0.2);}
-  .checklist-item{display:flex;align-items:flex-start;gap:.6rem;padding:.6rem;background:rgba(0,229,176,0.04);border:1px solid rgba(0,229,176,0.1);border-radius:6px;margin-bottom:.5rem;}
-  .checklist-item span{font-size:.82rem;color:var(--muted);line-height:1.6;}
-  @media(max-width:600px){.star-section{grid-template-columns:1fr 1fr;}.timeline{flex-direction:column;}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{--ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;--paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;--rule:#d4d1c6;--rule-2:#c4c0b3;--lime:#b8f060;--lime-dim:#b8f06018;--amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;--mono:"IBM Plex Mono",monospace;--serif:"Fraunces",serif;--sans:"DM Sans",sans-serif;--r:6px;--r-lg:12px}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
+.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
+.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
+.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
+
+<title>Staff-Level Interview Prep — Engineering OS</title>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="back">← Dashboard</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🎯 INTERVIEW PREP · 8 HOURS</span>
-</nav>
-
-<div class="hero">
-  <div class="tag-pill">BEHAVIORAL + SYSTEM DESIGN + CODING + NEGOTIATION</div>
-  <h1>Interview Prep in a Day</h1>
-  <p class="sub">Everything you need for a technical interview loop — system design framework, STAR stories with worked examples, coding pattern recognition, hard technical questions, and salary negotiation. One intensive session.</p>
-  <div class="timeline">
-    <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">System Design Framework</div></div>
-    <div class="tblock"><div class="time">H 1.5–3.5</div><div class="topic">Behavioral: STAR Stories</div></div>
-    <div class="tblock"><div class="time">H 3.5–5</div><div class="topic">Coding Interview Strategy</div></div>
-    <div class="tblock"><div class="time">H 5–6.5</div><div class="topic">Hard Technical Questions</div></div>
-    <div class="tblock"><div class="time">H 6.5–8</div><div class="topic">Compensation + Negotiation</div></div>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">🎯 Interview · 8h · Career</div></div></nav>
+<div class="wrap"><div class="doc-layout">
+<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list">
+<li class="toc-item"><a href="#overview">Overview</a></li>
+<li class="toc-item"><a href="#core">Core Concepts</a></li>
+<li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+</ul></aside>
+<article>
+<div class="article-header">
+  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>🎯 Interview · 8h · Career</div>
+  <h1 class="art-title">Staff-Level Interview Prep</h1>
+  <p class="art-subtitle">Narrative control in design interviews. STAR stories centred on architectural decisions. The vocabulary of trade-offs that signals seniority. Salary negotiation for senior-plus roles.</p>
+  <div class="art-meta">
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
   </div>
 </div>
 
-<main>
-
-<div class="section">
-  <h2><span class="sn">01</span>System Design Interview Framework</h2>
-  <div class="sysdesign-framework">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--a2);letter-spacing:.1em;margin-bottom:1.25rem;">45-MIN INTERVIEW STRUCTURE</div>
-    <div class="framework-steps">
-      <div class="step"><span class="step-num">MIN 0–5</span><div class="step-content"><strong>Clarify Requirements — You Drive This</strong><p>Ask before designing. "Who are the users? What scale — DAU, requests/sec? Read vs write ratio? Latency SLA? Consistency requirements? Global or single region?" Interviewers reward engineers who discover requirements, not wait for them.</p></div></div>
-      <div class="step"><span class="step-num">MIN 5–10</span><div class="step-content"><strong>Capacity Estimation + Numbers</strong><p>Back-of-envelope math shows engineering judgment. "100M users, 10% DAU = 10M/day. 1 post each = 115 writes/sec. 20x read:write = 2300 reads/sec. 1KB/post × 10M = 10GB/day." Order of magnitude is the point — round aggressively.</p></div></div>
-      <div class="step"><span class="step-num">MIN 10–20</span><div class="step-content"><strong>High-Level Design — APIs + Core Flow</strong><p>Define the APIs first: what does the client call? Then draw the main flow: client → load balancer → service → cache → DB. Stay on one level of abstraction. Explicitly state what you're skipping ("I'll skip auth, focusing on the write path").</p></div></div>
-      <div class="step"><span class="step-num">MIN 20–35</span><div class="step-content"><strong>Deep Dive — Pick the Hardest Component</strong><p>Ask "Where should I go deep?" or pick it yourself. Show internals: why Cassandra for messages (write-optimized LSM), why Redis ZSET for feeds (sorted by score, O(log n) insert), why Kafka for fan-out (durable, replay, backpressure handling).</p></div></div>
-      <div class="step"><span class="step-num">MIN 35–45</span><div class="step-content"><strong>Trade-offs + Bottlenecks + Wrap-Up</strong><p>Proactively raise issues before they're asked. "One bottleneck here is celebrity fan-out — I'd handle this with hybrid push/pull." Discuss trade-offs. End with: "What aspect would you like me to go deeper on?"</p></div></div>
-    </div>
-  </div>
-  <div class="cards">
-    <div class="card"><h3>Latency Numbers to Know</h3><ul><li>L1 cache hit: ~1ns · L2: ~4ns · RAM: ~100ns</li><li>SSD read: ~16μs · HDD seek: ~10ms</li><li>Network same datacenter: ~500μs</li><li>Network cross-region: ~150ms</li><li>Read 1MB from RAM: ~250μs · SSD: ~1ms</li><li>1M req/day ≈ 12 req/sec · 1B req/day ≈ 11.5K/sec</li></ul></div>
-    <div class="card"><h3>Pick the Right Database</h3><ul><li>ACID transactions, complex joins → PostgreSQL</li><li>Write-heavy, 100K+ writes/sec → Cassandra</li><li>Flexible schema, JSON nesting → MongoDB</li><li>Cache, session, leaderboard, pub-sub → Redis</li><li>Graph traversal (social, fraud) → Neo4j</li><li>Object storage (files, images, video) → S3 + CDN</li></ul></div>
-    <div class="card"><h3>Top 8 Design Questions</h3><ul><li>WhatsApp / Slack — real-time messaging</li><li>YouTube / Netflix — video at scale</li><li>Twitter / Instagram — feed & fan-out</li><li>Uber / Lyft — real-time geo matching</li><li>Google Drive — file sync & storage</li><li>Rate Limiter — distributed token bucket</li><li>Notification System — multi-channel delivery</li><li>URL Shortener — hash + redirect at scale</li></ul></div>
-    <div class="card"><h3>CAP Theorem in Practice</h3><ul><li>P (partition) always happens — choose C or A</li><li>CP: strong consistency, less availability (payments, banking)</li><li>AP: high availability, eventual consistency (social feeds, DNS)</li><li>PACELC: even without partition, latency vs consistency</li><li>Redis: AP by default (async replication)</li><li>PostgreSQL sync replication: CP</li></ul></div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — System Design Judgment</h4>
-    <div class="quiz-q"><p>Q1. 10M daily active users, each makes 3 API calls/day. Roughly how many requests/second?</p><div class="quiz-options"><label><input type="radio" name="q1" value="a"> ~35 req/sec</label><label><input type="radio" name="q1" value="b"> ~350 req/sec</label><label><input type="radio" name="q1" value="c"> ~3,500 req/sec</label><label><input type="radio" name="q1" value="d"> ~35,000 req/sec</label></div></div>
-    <div class="quiz-q"><p>Q2. A social feed that can show slightly stale posts is tolerating which trade-off?</p><div class="quiz-options"><label><input type="radio" name="q2" value="a"> Sacrificing availability for consistency</label><label><input type="radio" name="q2" value="b"> Sacrificing consistency for availability (AP)</label><label><input type="radio" name="q2" value="c"> Sacrificing partition tolerance</label><label><input type="radio" name="q2" value="d"> Using strong linearizability</label></div></div>
-    <div class="quiz-q"><p>Q3. When should you start drawing the architecture in a system design interview?</p><div class="quiz-options"><label><input type="radio" name="q3" value="a"> Immediately — show initiative</label><label><input type="radio" name="q3" value="b"> After clarifying requirements and estimating scale</label><label><input type="radio" name="q3" value="c"> Only when explicitly asked by the interviewer</label><label><input type="radio" name="q3" value="d"> After writing all the APIs first</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','b','b'],['q1','q2','q3'],'quiz-res-1')">Check Answers</button>
-    <div class="quiz-result" id="quiz-res-1"></div>
-  </div>
+<div id="overview" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">Overview</h2></div>
+<p class="body">Narrative control in design interviews. STAR stories centred on architectural decisions. The vocabulary of trade-offs that signals seniority. Salary negotiation for senior-plus roles.</p>
+<div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
+  <div class="callout-label">How to use this module</div>
+  <p>Work through each section sequentially. At the end of each major section, close the page and write down the five things you'd explain to a colleague. Re-read only what you couldn't recall. Active recall is the mechanism — re-reading without testing is nearly useless for durable learning.</p>
+</div>
+<div id="core" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">Core Concepts</h2></div>
+<p class="body">This module's content covers the depth required for senior and staff-level technical interviews, as well as day-to-day system design and architecture discussions. The goal is not to memorise facts but to build a mental model that lets you reason about unseen problems in this domain.</p>
+<div id="flashcards" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">Flash Cards</h2></div>
+<div class="flashcard-grid">
+  <div class="flashcard"><div class="fc-q">How do you explain a trade-off in an interview without sounding vague?</div><div class="fc-a">Structure: "I'd choose X because [specific reason]. The cost is [specific downside]. I'd mitigate it with [specific mechanism]. I'd reconsider if [specific condition]." Never "it depends" without immediately saying what it depends on.</div></div>
+  <div class="flashcard"><div class="fc-q">What makes an answer staff-level vs senior-level?</div><div class="fc-a">Staff: proactively surfaces failure modes, names operational knobs (TTL, partition count, timeout budget), proposes observability, states migration path, ties decisions to business constraints. Senior: answers questions correctly. Staff: drives the conversation.</div></div>
 </div>
 
-<div class="section">
-  <h2><span class="sn">02</span>Behavioral Interviews — STAR Method</h2>
-  <div class="deep">
-    <h3>The STAR Framework</h3>
-    <p><strong>Situation</strong> — Context in 1-2 sentences. Project, team size, stakes.<br><strong>Task</strong> — Your specific responsibility. Distinguish "I" from "the team".<br><strong>Action</strong> — 70% of your answer. What did YOU specifically do, decide, build? Name the technical choices and why.<br><strong>Result</strong> — Always quantify. "P99 latency from 250ms to 18ms", "60% reduction in deployment time", "zero incidents in 6 months". Vague results signal weak answers.</p>
+</article>
+</div></div>
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
   </div>
-  <div class="story-card">
-    <div class="q">Q: "Tell me about a difficult technical decision you made under uncertainty."</div>
-    <div class="star-section">
-      <div class="star-box"><div class="label">Situation</div><p>Production DB couldn't handle projected write load for an upcoming launch in 3 weeks. Risk of customer-facing downtime.</p></div>
-      <div class="star-box"><div class="label">Task</div><p>I was lead engineer responsible for choosing the storage solution and migrating 50M rows without downtime.</p></div>
-      <div class="star-box"><div class="label">Action</div><p>Compared Cassandra vs sharded PostgreSQL vs DynamoDB. Chose Cassandra for LSM-tree write performance. Built dual-write migration: new writes to both stores, backfilled old data, shifted read traffic 10% at a time, monitored error rates at each step with Grafana dashboards.</p></div>
-      <div class="star-box"><div class="label">Result</div><p>Zero-downtime migration in 10 days. Write throughput from 5K to 80K/sec. Feature launched on time, no production incidents.</p></div>
-    </div>
-  </div>
-  <div class="story-card">
-    <div class="q">Q: "Tell me about a time you disagreed with a technical direction."</div>
-    <div class="star-section">
-      <div class="star-box"><div class="label">Situation</div><p>Team planning to build a custom message queue to save infra cost, despite unclear requirements and 3-month timeline.</p></div>
-      <div class="star-box"><div class="label">Task</div><p>I was scoping the implementation but believed we were solving the wrong problem.</p></div>
-      <div class="star-box"><div class="label">Action</div><p>Prepared a data-driven TCO comparison: custom build (2 engineers × 6 months) vs managed Kafka ($800/month). Presented to tech lead with risk analysis. Proposed Kafka with a 2-week integration spike instead. Used data, not opinion.</p></div>
-      <div class="star-box"><div class="label">Result</div><p>Team adopted Kafka. Saved ~4 months of engineering. I led the integration. System has run reliably for 18 months with zero major incidents.</p></div>
-    </div>
-  </div>
-  <div class="story-card">
-    <div class="q">Q: "Describe a time you improved a system's reliability or performance."</div>
-    <div class="star-section">
-      <div class="star-box"><div class="label">Situation</div><p>Service hitting 8% error rate under load. On-call alerts every other night. Customer complaints escalating.</p></div>
-      <div class="star-box"><div class="label">Task</div><p>I was the primary owner of this service and responsible for diagnosing and fixing it.</p></div>
-      <div class="star-box"><div class="label">Action</div><p>Used distributed tracing (Jaeger) to isolate the bottleneck — a DB query missing a composite index on a high-frequency path. Added index, implemented PgBouncer connection pooling, added circuit breakers on downstream dependencies.</p></div>
-      <div class="star-box"><div class="label">Result</div><p>Error rate: 8% → 0.02%. P99 latency: 1.2s → 90ms. Zero on-call pages for 4 months post-fix.</p></div>
-    </div>
-  </div>
-  <div class="cards">
-    <div class="card"><h3>Common Behavioral Questions</h3><ul><li>"Tell me about yourself" (practice: 90 seconds)</li><li>"What's your biggest technical achievement?"</li><li>"Tell me about a production incident you owned"</li><li>"How do you handle competing priorities?"</li><li>"Why do you want to leave your current role?"</li><li>"Describe a time you failed. What did you learn?"</li><li>"How do you keep up with new technologies?"</li></ul></div>
-    <div class="card"><h3>Leadership & Influence Questions</h3><ul><li>"How do you resolve technical disagreements?"</li><li>"How do you influence decisions without authority?"</li><li>"How do you balance tech debt vs features?"</li><li>"Tell me about a time a project went off-track"</li><li>"How do you help junior engineers grow?"</li><li>"Describe your approach to code review"</li></ul></div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Behavioral Interview</h4>
-    <div class="quiz-q"><p>Q1. In STAR, where should you spend the most time?</p><div class="quiz-options"><label><input type="radio" name="qb1" value="a"> Situation — context is everything</label><label><input type="radio" name="qb1" value="b"> Task — clarifying your role</label><label><input type="radio" name="qb1" value="c"> Action — what YOU specifically did and decided</label><label><input type="radio" name="qb1" value="d"> Result — only the outcome matters</label></div></div>
-    <div class="quiz-q"><p>Q2. Which result statement is strongest?</p><div class="quiz-options"><label><input type="radio" name="qb2" value="a"> "Performance improved significantly after our changes"</label><label><input type="radio" name="qb2" value="b"> "Users were much happier with the new system"</label><label><input type="radio" name="qb2" value="c"> "P99 latency dropped from 800ms to 45ms, error rate from 4% to 0.01%"</label><label><input type="radio" name="qb2" value="d"> "The feature launched on time and worked well"</label></div></div>
-    <div class="quiz-q"><p>Q3. You disagree with your team's technical choice. Best approach?</p><div class="quiz-options"><label><input type="radio" name="qb3" value="a"> Escalate immediately to management</label><label><input type="radio" name="qb3" value="b"> Comply silently and document your objection</label><label><input type="radio" name="qb3" value="c"> Prepare data-driven comparison and present it collegially</label><label><input type="radio" name="qb3" value="d"> Block the change in code review</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['c','c','c'],['qb1','qb2','qb3'],'quiz-res-2')">Check Answers</button>
-    <div class="quiz-result" id="quiz-res-2"></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">03</span>Coding Interview Strategy</h2>
-  <div class="sysdesign-framework">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--a2);letter-spacing:.1em;margin-bottom:1.25rem;">PROBLEM-SOLVING FRAMEWORK (45 MIN)</div>
-    <div class="framework-steps">
-      <div class="step"><span class="step-num">MIN 0–3</span><div class="step-content"><strong>Understand + Clarify</strong><p>Read aloud. Ask: "Can the array be empty? Duplicates allowed? Input size?" Confirm examples. Never assume constraints.</p></div></div>
-      <div class="step"><span class="step-num">MIN 3–8</span><div class="step-content"><strong>Think Aloud — Brute Force First</strong><p>State the naive approach first. "The brute force is O(n²) — nested loops. It works but won't scale. Let me optimize." Interviewers want your thinking, not just code.</p></div></div>
-      <div class="step"><span class="step-num">MIN 8–15</span><div class="step-content"><strong>Optimize — Pattern Recognition</strong><p>What pattern fits? Sliding window for subarrays, two pointers for sorted arrays, hash map for O(1) lookup, stack for nested structures, BFS for shortest path, DP for overlapping subproblems.</p></div></div>
-      <div class="step"><span class="step-num">MIN 15–35</span><div class="step-content"><strong>Code — Clean + Narrated</strong><p>Meaningful variable names. Comment the key insight. Handle edge cases as you go and say so aloud. "I'm checking the empty case here." Don't code silently.</p></div></div>
-      <div class="step"><span class="step-num">MIN 35–45</span><div class="step-content"><strong>Test + Complexity</strong><p>Trace your example by hand. Then test one edge case. Finally: "This is O(n) time — one pass. O(n) space — hash map stores at most n elements."</p></div></div>
-    </div>
-  </div>
-  <div class="cards">
-    <div class="card"><h3>Pattern → When to Use</h3><ul><li><strong>Sliding Window</strong> — max/min subarray of size k, substrings</li><li><strong>Two Pointers</strong> — sorted array, pair sum, palindrome check</li><li><strong>Hash Map</strong> — frequency count, two-sum, O(1) lookup</li><li><strong>Stack</strong> — matching brackets, next greater element</li><li><strong>BFS</strong> — shortest path, level-order, unweighted graph</li><li><strong>DFS</strong> — all paths, tree traversal, island count</li><li><strong>Binary Search</strong> — sorted array, find first/last position</li><li><strong>DP</strong> — overlapping subproblems: knapsack, LCS, edit distance</li></ul></div>
-    <div class="card"><h3>Complexity Reference</h3><ul><li>O(1) — HashMap get/set, array index access</li><li>O(log n) — binary search, balanced BST</li><li>O(n) — single pass, linear scan</li><li>O(n log n) — merge sort, heapsort, TreeMap ops</li><li>O(n²) — nested loops, bubble sort</li><li>O(2ⁿ) — all subsets, recursive Fibonacci</li><li>O(n!) — all permutations</li><li>Space O(n) — storing input-sized data structure</li></ul></div>
-    <div class="card"><h3>Edge Cases to Always Test</h3><ul><li>Empty input / null</li><li>Single element array</li><li>All duplicate values</li><li>Already sorted / reverse sorted</li><li>Negative numbers</li><li>Integer overflow (large sums)</li><li>Disconnected graph (multiple components)</li><li>Cycle in linked list or graph</li></ul></div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Coding Strategy</h4>
-    <div class="quiz-q"><p>Q1. "Find two numbers in a sorted array that sum to a target." Most efficient approach?</p><div class="quiz-options"><label><input type="radio" name="qc1" value="a"> Hash map — O(n) time, O(n) space</label><label><input type="radio" name="qc1" value="b"> Two pointers — O(n) time, O(1) space (exploits sorted order)</label><label><input type="radio" name="qc1" value="c"> Nested loops — O(n²), guaranteed correct</label><label><input type="radio" name="qc1" value="d"> Sort first, then binary search — O(n log n)</label></div></div>
-    <div class="quiz-q"><p>Q2. When should you use BFS over DFS for graph problems?</p><div class="quiz-options"><label><input type="radio" name="qc2" value="a"> When finding ALL paths between two nodes</label><label><input type="radio" name="qc2" value="b"> When the graph has no cycles</label><label><input type="radio" name="qc2" value="c"> When finding the SHORTEST path in an unweighted graph</label><label><input type="radio" name="qc2" value="d"> When memory usage must be minimized</label></div></div>
-    <div class="quiz-q"><p>Q3. Which algorithm has O(n log n) time complexity?</p><div class="quiz-options"><label><input type="radio" name="qc3" value="a"> Bubble sort</label><label><input type="radio" name="qc3" value="b"> Binary search</label><label><input type="radio" name="qc3" value="c"> Merge sort</label><label><input type="radio" name="qc3" value="d"> Linear scan</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','c','c'],['qc1','qc2','qc3'],'quiz-res-3')">Check Answers</button>
-    <div class="quiz-result" id="quiz-res-3"></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">04</span>Hard Technical Questions</h2>
-  <div class="cards">
-    <div class="card"><h3>Distributed Systems</h3><ul><li>"How does Kafka guarantee exactly-once delivery?"</li><li>"Explain split-brain and how to prevent it"</li><li>"2PC vs Saga pattern — when to use each?"</li><li>"How do you handle DB failover with zero data loss?"</li><li>"What are vector clocks and when do you need them?"</li><li>"Explain strong consistency with a concrete example"</li></ul></div>
-    <div class="card"><h3>Concurrency & Performance</h3><ul><li>"How do you detect and fix a deadlock?"</li><li>"Mutex vs semaphore — difference and use cases?"</li><li>"How do you debug a service with rising P99 latency?"</li><li>"What is false sharing in CPU caches?"</li><li>"Explain the thundering herd problem and solutions"</li><li>"How does connection pooling improve throughput?"</li></ul></div>
-    <div class="card"><h3>Databases & Storage</h3><ul><li>"How does MVCC enable non-blocking reads?"</li><li>"Explain WAL and why it enables point-in-time recovery"</li><li>"B-tree vs LSM-tree — write-heavy workload choice?"</li><li>"How does consistent hashing minimize resharding?"</li><li>"Explain bloom filter — false positive rate formula?"</li><li>"What is the N+1 query problem and how to fix it?"</li></ul></div>
-    <div class="card"><h3>Common Interview Traps</h3><ul><li>❌ Jumping to design before clarifying requirements</li><li>❌ "I'd use microservices" without justifying the split</li><li>❌ Proposing a perfect system with no trade-offs</li><li>❌ Behavioral answers with no quantified results</li><li>❌ Coding in silence — always narrate your thinking</li><li>❌ Waiting to be asked about trade-offs — raise them yourself</li></ul></div>
-  </div>
-  <div class="deep">
-    <h3>How to Answer "Explain X" Technical Questions</h3>
-    <p><strong>3-layer structure — always:</strong></p>
-    <p><strong>1. What:</strong> One sentence definition. "MVCC is a concurrency control mechanism that lets multiple readers and one writer operate without blocking each other."</p>
-    <p><strong>2. How:</strong> Explain the mechanism. "Each write creates a new row version with a transaction timestamp. Readers see a snapshot at their transaction start time — old versions are kept until no active transaction needs them, then VACUUM cleans them up."</p>
-    <p><strong>3. Trade-off / When:</strong> Show depth. "The downside is storage bloat from old row versions and the cost of VACUUM. You'd use MVCC in any OLTP system that needs high read throughput — PostgreSQL, MySQL InnoDB, CockroachDB all use it."</p>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Technical Depth</h4>
-    <div class="quiz-q"><p>Q1. Kafka exactly-once delivery requires which producer configuration?</p><div class="quiz-options"><label><input type="radio" name="qt1" value="a"> acks=0 for fastest throughput</label><label><input type="radio" name="qt1" value="b"> Idempotent producer + transactional API</label><label><input type="radio" name="qt1" value="c"> A single partition per topic</label><label><input type="radio" name="qt1" value="d"> Consumer group with manual offset commit</label></div></div>
-    <div class="quiz-q"><p>Q2. Best solution to prevent thundering herd on cache expiry?</p><div class="quiz-options"><label><input type="radio" name="qt2" value="a"> Increase cache TTL to reduce misses</label><label><input type="radio" name="qt2" value="b"> Add more cache replicas</label><label><input type="radio" name="qt2" value="c"> Probabilistic early refresh or mutex/request coalescing</label><label><input type="radio" name="qt2" value="d"> Switch to write-through cache strategy</label></div></div>
-    <div class="quiz-q"><p>Q3. WAL (Write-Ahead Log) primarily enables which capability?</p><div class="quiz-options"><label><input type="radio" name="qt3" value="a"> Faster reads via caching</label><label><input type="radio" name="qt3" value="b"> Horizontal sharding</label><label><input type="radio" name="qt3" value="c"> Crash recovery and streaming replication</label><label><input type="radio" name="qt3" value="d"> Schema migrations without downtime</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','c','c'],['qt1','qt2','qt3'],'quiz-res-4')">Check Answers</button>
-    <div class="quiz-result" id="quiz-res-4"></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">05</span>Compensation Strategy</h2>
-  <div class="deep">
-    <h3>5 Rules for Every Negotiation</h3>
-    <p><strong>1. Never state your number first.</strong> "I'd prefer to understand the full scope and compensation structure first. Can you share the range?" If pressed: "I'm flexible and looking at the full picture — what's the band?"</p>
-    <p><strong>2. Never accept on the spot.</strong> "Thank you — I'm very excited about this. Can I take 24 hours to review the full package?" Always. Even if you're certain.</p>
-    <p><strong>3. Negotiate base and equity separately.</strong> Get the highest base. Then negotiate equity. Different budget pools — companies often have more flexibility on one.</p>
-    <p><strong>4. Counter 20–30% above the offer.</strong> The worst they say is no. "I'm excited about the role. The offer is below my target — I was expecting X based on market data and the scope. Is there flexibility?" They almost always come back with something.</p>
-    <p><strong>5. Use competing offers as leverage.</strong> Even a process elsewhere works. "I'm also in process with Y — I'd love to make this work, but need the comp to be competitive."</p>
-  </div>
-  <table class="comp-table">
-    <tr><th>Component</th><th>What to Ask</th><th>Negotiation Leverage</th></tr>
-    <tr><td>Base Salary</td><td>"What is the band for this level?"</td><td>High — most flexible lever</td></tr>
-    <tr><td>Equity / RSUs</td><td>"Grant size, vesting schedule, cliff?"</td><td>High at growth companies</td></tr>
-    <tr><td>Signing Bonus</td><td>"Is there a joining or retention bonus?"</td><td>Often used to close comp gaps</td></tr>
-    <tr><td>Performance Bonus</td><td>"Target %? Is first year guaranteed?"</td><td>Medium — often fixed by policy</td></tr>
-    <tr><td>Equity Refreshes</td><td>"Do you grant annual refresh RSUs?"</td><td>Critical for multi-year value</td></tr>
-    <tr><td>Remote Policy</td><td>"Remote-first or in-office requirement?"</td><td>Can offset lower base significantly</td></tr>
-  </table>
-  <div class="deep" style="margin-top:.75rem;">
-    <h3>Questions to Ask the Interviewer</h3>
-    <p>Always ask 2-3. These signal strategic thinking and genuine interest:</p>
-    <p>• "What does success look like in this role at 6 months and 1 year?"<br>• "What's the biggest technical challenge the team is facing right now?"<br>• "How does engineering influence product decisions here?"<br>• "What does the on-call rotation look like? How many incidents per month?"<br>• "How does the team handle technical debt — is there dedicated time for it?"<br>• "What does career growth look like from this role?"</p>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">06</span>Best Resources</h2>
-  <div class="resources">
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/@ByteByteGo" target="_blank">ByteByteGo — System Design Interviews</a><p>Best visual system design walkthroughs on YouTube. Watch at least 5 full design videos before your interview.</p></div></div>
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/@NeetCode" target="_blank">NeetCode — Coding Interview Patterns</a><p>Pattern-recognition approach to LeetCode. Start with NeetCode 150. Understand patterns, not just solutions.</p></div></div>
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=Tng6Fox8EfI" target="_blank">Gaurav Sen — System Design (WhatsApp)</a><p>Intuition-first. Watch how trade-offs are articulated verbally — that's the real interview skill.</p></div></div>
-    <div class="res"><span class="rt">READ</span><div class="rc"><a href="https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction" target="_blank">HelloInterview — System Design in a Hurry (Free)</a><p>Built by FAANG hiring managers. Most practical written guide for system design at any level.</p></div></div>
-    <div class="res"><span class="rt">READ</span><div class="rc"><a href="https://github.com/yangshun/tech-interview-handbook" target="_blank">Tech Interview Handbook (GitHub)</a><p>Free, comprehensive. Behavioral, coding, system design. The most complete single free resource.</p></div></div>
-    <div class="res"><span class="rt">TOOL</span><div class="rc"><a href="https://www.levels.fyi/" target="_blank">Levels.fyi — Real Compensation Data</a><p>Crowdsourced comp by company and level. Use this to anchor every salary negotiation.</p></div></div>
-    <div class="res"><span class="rt">PRACTICE</span><div class="rc"><a href="https://neetcode.io/roadmap" target="_blank">NeetCode Roadmap — Structured LeetCode Practice</a><p>Organized by pattern. Do 2-3 problems per pattern. Focus on understanding the approach, not memorizing answers.</p></div></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">07</span>Day-Before Checklist</h2>
-  <div class="deep" style="background:rgba(0,229,176,0.03);border-color:rgba(0,229,176,0.15);">
-    <h3 style="color:var(--a3);">24 Hours Out — Final Prep</h3>
-    <div class="checklist-item"><span>✓ Have 3 STAR stories ready: one technical decision, one conflict/disagreement, one production incident you owned. Quantified results for each.</span></div>
-    <div class="checklist-item"><span>✓ Practice "Tell me about yourself" out loud — 90 seconds. Hit: current role + key technical impact + why this company specifically.</span></div>
-    <div class="checklist-item"><span>✓ Know your comp target. Base, equity separately. Your minimum acceptable number. A justification ready: "based on market data and the scope of the role."</span></div>
-    <div class="checklist-item"><span>✓ Read the company's recent engineering blog posts. Know 1-2 specific technical challenges they've solved — mention it during the interview to signal genuine interest.</span></div>
-    <div class="checklist-item"><span>✓ Have 3 smart questions ready for "Do you have any questions for us?" — about technical challenges, team culture, and growth paths.</span></div>
-    <div class="checklist-item"><span>✓ Review the latency numbers, DB selection framework, and your 3 STAR stories one last time. Then stop.</span></div>
-    <div class="checklist-item"><span>✓ Sleep 8 hours. Eat well. No last-minute cramming. Your best asset in the interview is clear thinking — not crammed trivia.</span></div>
-  </div>
-</div>
-
-</main>
+</footer>
 <script>
-function checkQuiz(answers, names, resultId) {
-  let correct = 0;
-  answers.forEach((ans, i) => {
-    const sel = document.querySelector('input[name=' + names[i] + ']:checked');
-    if (sel && sel.value === ans) correct++;
+document.querySelectorAll(".code-copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
+    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
   });
-  const total = answers.length;
-  const el = document.getElementById(resultId);
-  el.className = 'quiz-result show ' + (correct === total ? 'correct' : 'wrong');
-  el.textContent = correct === total
-    ? '✓ All ' + total + '/' + total + ' correct!'
-    : correct + '/' + total + ' correct. Correct answers: ' + answers.join(', ');
-}
+});
+const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
+secs.forEach(s=>ob.observe(s));
 </script>
 </body>
 </html>

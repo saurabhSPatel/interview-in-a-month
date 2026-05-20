@@ -3,268 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Databases in a Day — Senior Level</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#f97316;--a2:#ff5f40;--a3:#00e5b0;--text:#e8eaf0;--muted:#6b7385;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 30% 70%,rgba(249,115,22,0.04) 0%,transparent 55%);pointer-events:none;}
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
-  .back:hover{color:var(--accent);}
-  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
-  .tag-pill{display:inline-flex;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
-  .sub{color:var(--muted);font-size:.92rem;max-width:560px;margin-bottom:2rem;}
-  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
-  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
-  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
-  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
-  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
-  .section{margin-bottom:3.5rem;}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--accent);}
-  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
-  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
-  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
-  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
-  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(249,115,22,0.1);color:var(--accent);padding:.1rem .3rem;border-radius:3px;}
-  .code-block{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
-  .hl{color:var(--a3);}
-  .resources{display:flex;flex-direction:column;gap:.75rem;}
-  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
-  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(249,115,22,0.08);color:var(--accent);border:1px solid rgba(249,115,22,0.15);white-space:nowrap;}
-  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
-  .rc a:hover{color:var(--accent);}
-  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  .qr{background:rgba(249,115,22,0.04);border:1px solid rgba(249,115,22,0.15);border-radius:10px;padding:1.5rem;}
-  .qr h3{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);letter-spacing:.08em;margin-bottom:1rem;}
-  .qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
-  .qi{background:rgba(0,0,0,0.2);border-radius:6px;padding:.75rem;}
-  .qi .q{font-size:.78rem;color:var(--text);margin-bottom:.3rem;font-weight:500;}
-  .qi .a{font-size:.73rem;color:var(--muted);}
-  .isolation-table{width:100%;border-collapse:collapse;margin-top:.75rem;}
-  .isolation-table th{background:rgba(249,115,22,0.1);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.5rem .75rem;text-align:left;border-bottom:1px solid var(--border);}
-  .isolation-table td{font-size:.78rem;color:var(--muted);padding:.5rem .75rem;border-bottom:1px solid rgba(30,37,48,0.5);}
-  .y{color:#22c55e;}.n{color:var(--a2);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{--ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;--paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;--rule:#d4d1c6;--rule-2:#c4c0b3;--lime:#b8f060;--lime-dim:#b8f06018;--amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;--mono:"IBM Plex Mono",monospace;--serif:"Fraunces",serif;--sans:"DM Sans",sans-serif;--r:6px;--r-lg:12px}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
+.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
+.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
+.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
+
+<title>Databases — From Internals to Scale — Engineering OS</title>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="back">← Dashboard</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);">🗄️ DATABASES IN A DAY · 8 HOURS</span>
-</nav>
-<div class="hero">
-  <div class="tag-pill">DATABASES · INTERNALS + INTERVIEWS · SENIOR</div>
-  <h1>Databases in a Day</h1>
-  <p class="sub">From your MariaDB + Redis production experience to understanding what actually happens inside. B-trees, MVCC, isolation anomalies, sharding strategy.</p>
-  <div class="timeline">
-    <div class="tblock"><div class="time">H 0–1.5</div><div class="topic">Storage Engines: B-Tree, LSM</div></div>
-    <div class="tblock"><div class="time">H 1.5–3</div><div class="topic">MVCC, WAL, Transactions</div></div>
-    <div class="tblock"><div class="time">H 3–4.5</div><div class="topic">Isolation Levels + Anomalies</div></div>
-    <div class="tblock"><div class="time">H 4.5–6</div><div class="topic">Indexing + Query Planning</div></div>
-    <div class="tblock"><div class="time">H 6–7.5</div><div class="topic">Sharding + Replication</div></div>
-    <div class="tblock"><div class="time">H 7.5–8</div><div class="topic">Redis Internals</div></div>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">DB · 8h · Storage</div></div></nav>
+<div class="wrap"><div class="doc-layout">
+<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list"><li class="toc-item"><a href="#internals">DB Internals</a></li>
+<li class="toc-item"><a href="#mvcc">MVCC + WAL</a></li>
+<li class="toc-item"><a href="#sharding">Sharding + Hashing</a></li>
+<li class="toc-item"><a href="#redis">Redis Internals</a></li>
+<li class="toc-item"><a href="#flashcards">Flash Cards</a></li></ul></aside>
+<article>
+<div class="article-header">
+  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>B-Tree/LSM · MVCC/WAL · Isolation · Sharding · Redis</div>
+  <h1 class="art-title">Databases — From Internals to Scale</h1>
+  <p class="art-subtitle">B-tree vs LSM internals. MVCC and why PostgreSQL reads never block. WAL and streaming replication. Consistent hashing for sharding. The Redis data structures most engineers never use correctly.</p>
+  <div class="art-meta">
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
   </div>
 </div>
-<main>
+<div id="internals" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">B-Tree vs LSM-Tree</h2></div>
+<p class='body'>The choice between B-tree and LSM-tree storage engines is not about preference — it's about your workload's read/write ratio and latency requirements.</p><p class='body'><strong>B-Tree (PostgreSQL, MySQL, InnoDB):</strong> self-balancing, O(log n) reads and writes. Pages are typically 8KB, sized to match disk block size. In-place updates make it efficient for read-heavy workloads where data is frequently read back immediately after writes. Write amplification comes from updating internal tree nodes on every write.</p><p class='body'><strong>LSM-Tree (Cassandra, RocksDB, LevelDB):</strong> writes go to an in-memory MemTable first — sequential, O(1) cost. MemTable is periodically flushed to an immutable SSTable on disk. Background compaction merges SSTables, removes tombstones, maintains sort order. Bloom filters per SSTable allow skipping irrelevant SSTables on read. The result: dramatically better write throughput at the cost of read amplification (multiple SSTables may need to be checked) and compaction I/O overhead.</p><div class='callout' style='--callout-color:var(--teal);--callout-bg:#e0f7f0'><div class='callout-label'>Decision Rule</div><p>Write-heavy (&gt;70% writes), time-series, audit logs, IoT telemetry: LSM-tree. Read-heavy, relational data, OLTP with complex queries, joins: B-tree. Most production systems use both — PostgreSQL for relational OLTP, Cassandra or RocksDB for high-throughput append-heavy workloads.</p></div>
+<div id="mvcc" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">MVCC and WAL — How PostgreSQL Actually Works</h2></div>
+<p class='body'><strong>MVCC (Multi-Version Concurrency Control):</strong> every write creates a new row version with a transaction timestamp rather than updating in-place. Readers see a snapshot of the database as of their transaction's start time. This means readers and writers never block each other — a long-running SELECT doesn't hold locks that block INSERTs.</p><p class='body'>The cost: old row versions accumulate and must be cleaned up by the VACUUM process. A long-running read transaction prevents VACUUM from reclaiming space, causing table bloat. This is why monitoring transaction age matters in PostgreSQL production systems.</p><p class='body'><strong>WAL (Write-Ahead Log):</strong> every change is written to the WAL sequentially before it's applied to data pages. On crash, the database replays the WAL from the last checkpoint. WAL also enables streaming replication — replicas receive WAL segments and apply them to stay in sync. Debezium reads the WAL for CDC (change data capture), enabling the Outbox pattern.</p>
+<div id="sharding" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">Sharding and Consistent Hashing</h2></div>
+<p class='body'>Sharding becomes necessary when a single database instance can no longer handle write throughput or when the dataset exceeds single-node capacity. The choice of shard key is the most critical decision in the entire sharding design.</p><p class='body'><strong>Consistent hashing</strong> distributes keys across nodes on a hash ring (0 to 2^32). Adding a node moves only k/n keys on average. Removing a node redistributes only that node's keys to the next node clockwise. Virtual nodes (vnodes) — 100-200 per physical node — ensure even distribution even with heterogeneous hardware. Used by DynamoDB, Cassandra, Redis Cluster, CDN cache routing.</p><p class='body'><strong>Hotspot prevention:</strong> avoid sequential shard keys (auto-increment IDs put all writes on one shard). For social systems, celebrity users cause hot shards on user_id hashing — handle with separate read paths for high-follower accounts. For time-series, composite keys (time bucket + device_id) distribute writes across shards.</p>
+<div id="redis" class="section-anchor"><span class="section-num">04</span><h2 class="section-h">Redis Data Structures — Beyond String Cache</h2></div>
+<p class='body'>Most engineers use Redis as a simple key-value cache. That misses the data structures that make Redis genuinely powerful for specific access patterns.</p><p class='body'><strong>Sorted Set (ZSET):</strong> elements scored by a float. O(log n) insert and range query. Perfect for leaderboards, feed ordering, delayed job queues (score = execution timestamp). <code>ZRANGEBYSCORE</code> retrieves elements in score range — this is how you implement a sliding window rate limiter without scanning all elements.</p><p class='body'><strong>HyperLogLog:</strong> probabilistic cardinality estimation. Counts unique items using ~12KB regardless of how many billions of items you've seen. Error rate ~0.81%. Use for unique visitor counts, unique IP tracking, distinct user counts in analytics — anywhere you need scale without exact precision.</p><p class='body'><strong>Streams:</strong> durable append-only log with consumer groups. Lighter-weight Kafka alternative. Each entry has a unique ID (timestamp-sequence). Consumer groups allow multiple consumers to process entries in parallel. On crash, a consumer can re-read from its last acknowledged ID.</p>
+<div id="flashcards" class="section-anchor"><span class="section-num">05</span><h2 class="section-h">Flash Cards</h2></div>
+<div class='flashcard-grid'><div class='flashcard'><div class='fc-q'>LSM-tree vs B-tree: when does LSM win?</div><div class='fc-a'>Write-heavy workloads where write throughput matters more than read latency. Time-series, IoT telemetry, audit logs. The sequential MemTable write and compaction amortise over time. B-tree wins for read-heavy OLTP with complex queries and joins.</div></div><div class='flashcard'><div class='fc-q'>Why does MVCC enable non-blocking reads?</div><div class='fc-a'>Each transaction sees a snapshot of the database at its start time. Writers create new row versions rather than updating in-place. Readers never need to wait for writers to finish — they see the version that was current when their transaction started.</div></div><div class='flashcard'><div class='fc-q'>w=2, r=2, n=3 — strongly consistent?</div><div class='fc-a'>Yes. w + r = 4 > n = 3, so at least one node in the write quorum overlaps with the read quorum. Any read is guaranteed to see the latest write. w=1, r=1, n=3 is not strongly consistent — only eventual consistency.</div></div><div class='flashcard'><div class='fc-q'>What is the N+1 query problem?</div><div class='fc-a'>One query fetches a list of N items. Then N more queries fetch related data for each item. Fix: JOIN the related data in the original query, or batch-load related data by IDs. ORM lazy-loading is the most common cause — always check generated SQL.</div></div></div>
 
-<div class="section">
-  <h2><span class="sn">01</span>Key Concepts</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>B-Tree Internals</h3>
-      <ul>
-        <li>Balanced tree of pages (8KB typical)</li>
-        <li>Internal nodes: keys + child pointers</li>
-        <li>Leaf nodes: keys + heap tuple pointers (or clustered data)</li>
-        <li>Insert: find leaf, split if full (O(log n))</li>
-        <li>Read-optimized: good for range queries</li>
-        <li>PostgreSQL, MySQL InnoDB use B+Tree variant</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>LSM Tree Internals</h3>
-      <ul>
-        <li>Write → MemTable (sorted, in-memory) + WAL</li>
-        <li>MemTable full → flush to SSTable (immutable file)</li>
-        <li>SSTables sorted, bloom filter per file</li>
-        <li>Read: check MemTable → L0 SSTables → L1+ (compaction levels)</li>
-        <li>Compaction: merge SSTables, remove tombstones</li>
-        <li>Used by: Cassandra, RocksDB, LevelDB, BigTable</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>MVCC</h3>
-      <ul>
-        <li>Each row has xmin (created by txn) + xmax (deleted by txn)</li>
-        <li>Reader sees: rows where xmin committed AND xmax not yet committed</li>
-        <li>Writers don't block readers, readers don't block writers</li>
-        <li>Dead tuples: old versions accumulate → VACUUM needed</li>
-        <li>Snapshot isolation: each txn sees consistent snapshot at start</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Write-Ahead Log (WAL)</h3>
-      <ul>
-        <li>All changes written to log BEFORE data pages</li>
-        <li>Crash recovery: replay WAL from last checkpoint</li>
-        <li>Durability: fsync WAL entry = transaction committed</li>
-        <li>Replication: ship WAL segments to standby (streaming)</li>
-        <li>Logical replication: WAL decoded to row-level changes</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Indexing Types</h3>
-      <ul>
-        <li>B-Tree: equality + range, default in Postgres</li>
-        <li>Hash: equality only, faster for =</li>
-        <li>GiST/GIN: full-text, geometric, JSONB</li>
-        <li>Composite: leftmost prefix must be used</li>
-        <li>Covering (INCLUDE): store extra cols, index-only scan</li>
-        <li>Partial: WHERE active=true — smaller, faster</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Redis Internals</h3>
-      <ul>
-        <li>String: SDS (Simple Dynamic String) — not C string</li>
-        <li>Hash: ziplist (small) → hashtable (large)</li>
-        <li>ZSet: ziplist → skip list + hashtable</li>
-        <li>Skip list: O(log n) avg, probabilistic balancing</li>
-        <li>Single-threaded event loop (I/O multi-plexed)</li>
-        <li>Persistence: RDB snapshots + AOF (fsync options)</li>
-      </ul>
-    </div>
+</article>
+</div></div>
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
   </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">02</span>Isolation Levels — Know the Anomalies</h2>
-  <div class="deep">
-    <h3>Isolation Level Matrix</h3>
-    <table class="isolation-table">
-      <tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th><th>Write Skew</th></tr>
-      <tr><td>READ UNCOMMITTED</td><td class="y">Possible</td><td class="y">Possible</td><td class="y">Possible</td><td class="y">Possible</td></tr>
-      <tr><td>READ COMMITTED (default PG)</td><td class="n">Prevented</td><td class="y">Possible</td><td class="y">Possible</td><td class="y">Possible</td></tr>
-      <tr><td>REPEATABLE READ</td><td class="n">Prevented</td><td class="n">Prevented</td><td class="y">Possible</td><td class="y">Possible</td></tr>
-      <tr><td>SERIALIZABLE (SSI in PG)</td><td class="n">Prevented</td><td class="n">Prevented</td><td class="n">Prevented</td><td class="n">Prevented</td></tr>
-    </table>
-    <p style="margin-top:.75rem;font-size:.8rem;color:var(--muted);">
-      <strong style="color:var(--text);">Write Skew</strong> is the subtle one: two transactions read same data, both decide to write based on what they read, both write — but their combined effect violates a constraint. Classic example: doctor on-call scheduling (both doctors check "is someone on-call?" → both see yes → both go off-call → nobody on-call). SERIALIZABLE prevents this. Your CBDC double-spend prevention needed SERIALIZABLE or application-level locking.
-    </p>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">03</span>Must-Know Deep Dives</h2>
-  <div class="deep">
-    <h3>🔥 The Cost of Storage: Amplification</h3>
-    <p>Every database choice is a trade-off between three types of <strong>Amplification</strong>. Mastering this allows you to choose storage without external docs:</p>
-    <ul>
-      <li><strong>Write Amplification:</strong> Ratio of data written to disk vs data requested by the app. High in B-Trees due to page splits.</li>
-      <li><strong>Read Amplification:</strong> Number of disk reads required to find one record. High in LSM Trees due to scanning multiple levels.</li>
-      <li><strong>Space Amplification:</strong> Ratio of physical disk space used vs logical data size. High in MVCC systems due to dead row versions.</li>
-    </ul>
-    <div class="cb"><span class="hl">// Trade-off Summary</span>
-<span class="hl2">B-Tree (Postgres):</span> Low Read Amp, High Write Amp.
-<span class="hl2">LSM Tree (Cassandra):</span> Low Write Amp, High Read Amp.</div>
-  </div>
-
-  <div class="deep">
-    <h3>🔥 Index-Only Scans & The Visibility Map</h3>
-    <p>If you have an index on <code>(user_id, status)</code>, and run <code>SELECT status FROM users WHERE user_id = 1</code>, Postgres can often return the data <em>without touching the table at all</em>. This is an <strong>Index-Only Scan</strong>.</p>
-    <ul>
-      <li><strong>The Catch:</strong> Postgres needs to know if the version in the index is actually "visible" to your transaction (MVCC).</li>
-      <li><strong>The Solution:</strong> The <em>Visibility Map</em>. It tracks which pages contain only committed, non-dead tuples.</li>
-      <li><strong>Performance Tip:</strong> If your Index-Only Scans are slow, it's usually because the table needs a <code>VACUUM</code> to update the visibility map.</li>
-    </ul>
-    <div class="code-block"><span class="hl">-- Check if your index is truly effective</span>
-EXPLAIN (ANALYZE, BUFFERS) SELECT ...
--- Look for "Heap Fetches: 0". 
--- If Heap Fetches > 0, the visibility map is out of date.</div>
-  </div>
-
-  <div class="deep">
-    <h3>🔥 Query Planning — What EXPLAIN ANALYZE Tells You</h3>
-    <div class="code-block"><span class="hl">-- Seq Scan: reading entire table. Index missing or not selective enough.</span>
-EXPLAIN ANALYZE SELECT * FROM transactions WHERE user_id = 123;
--- Seq Scan on transactions (cost=0.00..50000 rows=1)
--- Add index: CREATE INDEX ON transactions(user_id);
-
-<span class="hl">-- Index Scan vs Index-Only Scan</span>
--- Index-Only: all columns in query are in the index (covering index)
--- Much faster: no heap fetch needed
-
-<span class="hl">-- N+1 Detection:</span>
--- 1 query for orders + N queries for each order's items
--- Fix: JOIN or eager loading with IN clause
-SELECT * FROM orders WHERE user_id = ?;  -- 1 query
-SELECT * FROM items WHERE order_id IN (?...?);  -- 1 query with IN</div>
-    <p>Key metrics in EXPLAIN: <code>cost</code> (planner estimate), <code>actual time</code> (real), <code>rows</code> (actual vs estimated — if way off, run ANALYZE). Nested Loop vs Hash Join vs Merge Join: planner chooses based on row estimates. Miscalibrated stats → wrong plan.</p>
-  </div>
-  <div class="deep">
-    <h3>🔥 Connection Pooling — pgBouncer Modes</h3>
-    <p>PostgreSQL: each connection = OS process (~5-10MB RAM). 500 connections = 2.5GB just for connection overhead. Solution: pgBouncer in front of Postgres.</p>
-    <p><strong>Session mode:</strong> one backend per client for session duration. Same as direct connection but reuses after disconnect. <strong>Transaction mode:</strong> backend held only during transaction. Most efficient. <strong>Statement mode:</strong> backend per statement — breaks multi-statement transactions.</p>
-    <p>For your Go services: use <code>database/sql</code> with <code>SetMaxOpenConns(25)</code> + <code>SetMaxIdleConns(25)</code> + pgBouncer in transaction mode. Total DB connections = (go services × 25) / pgBouncer workers ≈ 50-100 to Postgres.</p>
-  </div>
-  <div class="deep">
-    <h3>🔥 Consistent Hashing for Sharding</h3>
-    <div class="code-block"><span class="hl">// Virtual node consistent hashing (simplified)</span>
-ring := sortedMap{}  // position → node
-
-// Add 150 virtual nodes per physical node (better distribution)
-for _, node := range nodes {
-    for i := 0; i < 150; i++ {
-        hash := crc32(fmt.Sprintf("%s-%d", node.ID, i))
-        ring[hash] = node
-    }
-}
-
-// Route key to node: find next node clockwise on ring
-func getNode(key string) Node {
-    hash := crc32(key)
-    return ring.nextAfter(hash)  // Binary search on sorted ring
-}</div>
-    <p>When node added: only keys between previous node and new node migrate. Average: k/n keys move (k=total keys, n=nodes). Without consistent hashing: all keys rehash — full data migration. Redis Cluster uses 16384 hash slots instead.</p>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">04</span>Resources</h2>
-  <div class="resources">
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=DiQ2JoSx8oA" target="_blank">CMU 15-445 — Database Storage (Andy Pavlo)</a><p>60 min. Best DB internals lecture available online. Dense, no fluff. Watch this one.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://www.postgresql.org/docs/current/mvcc.html" target="_blank">PostgreSQL Docs — MVCC</a><p>Canonical source. Chapter 13. Read the isolation levels section carefully.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://use-the-index-luke.com/" target="_blank">Use The Index, Luke — SQL Indexing Guide</a><p>Best indexing resource on the internet. Free. Covers composite index traps, covering indexes, everything.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://engineering.fb.com/2021/08/09/core-infra/rocksdbjni/" target="_blank">Meta Engineering — RocksDB at Scale</a><p>LSM trees in production. How Meta tunes RocksDB for different workloads.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://redis.io/docs/latest/develop/data-types/" target="_blank">Redis Data Structures — Official Docs</a><p>Understand the internal encoding (ziplist vs skip list). Interview gold.</p></div></div>
-    <div class="res"><span class="rt">BOOK</span><div class="rc"><a href="https://dataintensive.net/" target="_blank">Designing Data-Intensive Applications — Kleppmann (Chapters 3, 7)</a><p>Chapter 3 (Storage Engines) + Chapter 7 (Transactions) are mandatory reads. Rest is optional.</p></div></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2><span class="sn">05</span>Quick Revision Notes</h2>
-  <div class="qr">
-    <h3>DB INTERVIEW FLASH CARDS</h3>
-    <div class="qg">
-      <div class="qi"><div class="q">B-Tree vs LSM for write-heavy?</div><div class="a">LSM: sequential writes to MemTable, no in-place update. Better write throughput. B-Tree: random writes to pages, but better read latency.</div></div>
-      <div class="qi"><div class="q">Why does VACUUM matter?</div><div class="a">MVCC leaves dead tuple versions. VACUUM clears them. Without VACUUM: table bloat, transaction ID wraparound (XID). Autovacuum in Postgres handles this.</div></div>
-      <div class="qi"><div class="q">Write skew anomaly?</div><div class="a">Two txns read same row, each decides to write based on read. Combined effect violates constraint. Prevented by SERIALIZABLE isolation or SELECT FOR UPDATE.</div></div>
-      <div class="qi"><div class="q">Covering index?</div><div class="a">Index contains all columns needed by query. No heap fetch = Index-Only Scan. Faster. CREATE INDEX ON t(a,b) INCLUDE (c) for SELECT c WHERE a=? ORDER BY b.</div></div>
-      <div class="qi"><div class="q">Redis ZSet internals?</div><div class="a">Skip list (range queries by score) + hashtable (O(1) score lookup by member). ziplist for small sets (&lt;128 members, &lt;64 bytes per member).</div></div>
-      <div class="qi"><div class="q">Consistent hashing benefit?</div><div class="a">Adding/removing node: only k/n keys remapped. Regular hashing: all keys remapped. Critical for live resharding without full data migration.</div></div>
-    </div>
-  </div>
-</div>
-
-</main>
+</footer>
+<script>
+document.querySelectorAll(".code-copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
+    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
+  });
+});
+const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
+secs.forEach(s=>ob.observe(s));
+</script>
 </body>
 </html>

@@ -3,645 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CS Fundamentals in a Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#07090f;--surface:#0e1117;--s2:#141820;--border:#1e2530;--accent:#a855f7;--a2:#c084fc;--a3:#00e5b0;--a4:#ff5f40;--text:#e8eaf0;--muted:#6b7385;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 80% 50%,rgba(168,85,247,0.04) 0%,transparent 55%);pointer-events:none;}
-  nav{position:sticky;top:0;background:rgba(7,9,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-  .back{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}
-  .back:hover{color:var(--accent);}
-  .hero{max-width:1000px;margin:0 auto;padding:4rem 2rem 2rem;}
-  .tag-pill{display:inline-flex;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-  h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem;}
-  .sub{color:var(--muted);font-size:.92rem;max-width:620px;margin-bottom:2rem;line-height:1.7;}
-  .timeline{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
-  .tblock{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.1rem;min-width:140px;}
-  .tblock .time{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:700;}
-  .tblock .topic{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  main{max-width:1000px;margin:0 auto;padding:0 2rem 6rem;}
-  h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
-  h2 .sn{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);opacity:.7;}
-  .section{margin-bottom:3.5rem;}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-  .card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.6rem;color:var(--a2);}
-  .card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.65;}
-  .card ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
-  .card ul li::before{content:'▸ ';color:var(--accent);font-size:.7rem;}
-  .deep{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem;}
-  .deep h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.75rem;}
-  .deep p{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:.6rem;}
-  code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:rgba(168,85,247,0.1);color:var(--a2);padding:.1rem .3rem;border-radius:3px;}
-  .cb{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#94a3b8;line-height:1.8;overflow-x:auto;white-space:pre;}
-  .hl{color:var(--a3);}
-  .hl2{color:var(--a2);}
-  .resources{display:flex;flex-direction:column;gap:.75rem;}
-  .res{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;align-items:flex-start;}
-  .rt{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.2rem .5rem;border-radius:4px;background:rgba(168,85,247,0.08);color:var(--a2);border:1px solid rgba(168,85,247,0.2);white-space:nowrap;}
-  .rc a{font-size:.85rem;color:var(--text);text-decoration:none;font-weight:500;}
-  .rc a:hover{color:var(--accent);}
-  .rc p{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-  .quiz-block{background:rgba(168,85,247,0.03);border:1px solid rgba(168,85,247,0.15);border-radius:10px;padding:1.25rem;margin-top:1rem;}
-  .quiz-block h4{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--a2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
-  .quiz-q{margin-bottom:1rem;}
-  .quiz-q p{font-size:.83rem;color:var(--text);margin-bottom:.5rem;font-weight:500;}
-  .quiz-options{display:flex;flex-direction:column;gap:.3rem;}
-  .quiz-options label{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted);cursor:pointer;padding:.3rem .5rem;border-radius:4px;}
-  .quiz-options input[type=radio]{accent-color:var(--accent);}
-  .quiz-btn{margin-top:.75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--accent);background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);padding:.4rem 1rem;border-radius:4px;cursor:pointer;}
-  .quiz-result{margin-top:.75rem;font-size:.8rem;padding:.5rem .75rem;border-radius:4px;display:none;}
-  .quiz-result.show{display:block;}
-  .quiz-result.correct{background:rgba(0,229,176,0.08);color:var(--a3);border:1px solid rgba(0,229,176,0.2);}
-  .quiz-result.wrong{background:rgba(255,95,64,0.08);color:var(--a4);border:1px solid rgba(255,95,64,0.2);}
-  @media(max-width:600px){.cards{grid-template-columns:1fr;}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{--ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;--paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;--rule:#d4d1c6;--rule-2:#c4c0b3;--lime:#b8f060;--lime-dim:#b8f06018;--amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;--mono:"IBM Plex Mono",monospace;--serif:"Fraunces",serif;--sans:"DM Sans",sans-serif;--r:6px;--r-lg:12px}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
+.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
+.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
+.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
+
+<title>CS Fundamentals in a Day — Engineering OS</title>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="back">← Dashboard</a>
-  <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a2);">🧮 CS FUNDAMENTALS · 6 HOURS</span>
-</nav>
-<div class="hero">
-  <div class="tag-pill">CONSENSUS · NETWORKING · DATA STRUCTURES · DISTRIBUTED SYSTEMS THEORY</div>
-  <h1>CS Fundamentals in a Day</h1>
-  <p class="sub">The theoretical foundations that explain why distributed systems behave the way they do. Raft consensus, TCP/TLS internals, probabilistic data structures, encoding formats, and distributed clocks — all at interview depth.</p>
-  <div class="timeline">
-    <div class="tblock"><div class="time">H 0–1</div><div class="topic">Complexity + Amortization</div></div>
-    <div class="tblock"><div class="time">H 1–2</div><div class="topic">Consensus: Raft / Paxos</div></div>
-    <div class="tblock"><div class="time">H 2–3</div><div class="topic">Networking: TCP/TLS/HTTP</div></div>
-    <div class="tblock"><div class="time">H 3–4.5</div><div class="topic">Probabilistic Data Structures</div></div>
-    <div class="tblock"><div class="time">H 4.5–5.5</div><div class="topic">Encoding + Serialization</div></div>
-    <div class="tblock"><div class="time">H 5.5–6</div><div class="topic">Distributed Clocks</div></div>
-  </div>
-</div>
-<main>
-
-<!-- SECTION 1: COMPLEXITY -->
-<div class="section">
-  <h2><span class="sn">01</span>Complexity & Amortized Analysis</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>Big-O Reference</h3>
-      <ul>
-        <li>O(1) — array index, hash map get/set</li>
-        <li>O(log n) — binary search, balanced BST insert/lookup</li>
-        <li>O(n) — linear scan, single pass</li>
-        <li>O(n log n) — merge sort, heap sort, TreeMap ops</li>
-        <li>O(n²) — nested loops, bubble sort</li>
-        <li>O(2ⁿ) — all subsets (recursive Fibonacci)</li>
-        <li>O(n!) — all permutations</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Amortized Analysis</h3>
-      <ul>
-        <li>Average cost per operation over a sequence — not worst-case single op</li>
-        <li>ArrayList/slice append: O(1) amortized (doubling strategy)</li>
-        <li>Doubling: total copies = 1+2+4+...+n = 2n → O(1) per append</li>
-        <li>HashMap resize: O(n) per resize, O(1) amortized over n inserts</li>
-        <li>Splay tree: O(log n) amortized, O(n) worst single op</li>
-        <li>Key insight: occasional expensive ops are "paid for" by cheap ones</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Space Complexity</h3>
-      <ul>
-        <li>O(1) — iterative algorithm with fixed variables</li>
-        <li>O(log n) — recursive binary search (call stack)</li>
-        <li>O(n) — storing all input elements (hash map, array copy)</li>
-        <li>O(n²) — 2D matrix, adjacency matrix for dense graph</li>
-        <li>In-place algorithms: O(1) extra space (quicksort partition)</li>
-        <li>Auxiliary space vs total space — distinguish in interviews</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>NP-Complete Problems (Know These)</h3>
-      <ul>
-        <li>Travelling Salesman Problem (TSP)</li>
-        <li>0-1 Knapsack (NP-hard, DP gives pseudo-polynomial)</li>
-        <li>Graph coloring (k ≥ 3)</li>
-        <li>Boolean satisfiability (SAT)</li>
-        <li>Subset sum</li>
-        <li>These have no known polynomial-time solution — use approximations or DP for small n</li>
-      </ul>
-    </div>
-  </div>
-  <div class="deep">
-    <h3>Amortized Analysis — Dynamic Array Append</h3>
-    <div class="cb"><span class="hl">// Dynamic array doubles when full — Go slices, Java ArrayList</span>
-Capacity: 1 → 2 → 4 → 8 → 16 → 32 → ... → n
-
-<span class="hl">// Total copy operations for n appends:</span>
-1 + 2 + 4 + 8 + ... + n/2 = n - 1 ≈ <span class="hl2">O(n) total</span>
-
-<span class="hl">// Per append amortized cost:</span>
-O(n) total / n appends = <span class="hl2">O(1) amortized</span>
-
-<span class="hl">// Worst case single append: O(n) (when doubling occurs)
-// But this happens rarely — 1 in every 2n appends</span></div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Complexity</h4>
-    <div class="quiz-q"><p>Q1. ArrayList.append() in Java has O(1) amortized time. What is its worst-case single-operation time?</p><div class="quiz-options"><label><input type="radio" name="qa1" value="a"> O(1) always</label><label><input type="radio" name="qa1" value="b"> O(log n)</label><label><input type="radio" name="qa1" value="c"> O(n) — when the array must double</label><label><input type="radio" name="qa1" value="d"> O(n²)</label></div></div>
-    <div class="quiz-q"><p>Q2. Binary search on a sorted array of 1 million elements — how many comparisons worst case?</p><div class="quiz-options"><label><input type="radio" name="qa2" value="a"> ~1,000,000</label><label><input type="radio" name="qa2" value="b"> ~1,000</label><label><input type="radio" name="qa2" value="c"> ~20 (log₂ 1,000,000 ≈ 20)</label><label><input type="radio" name="qa2" value="d"> ~100</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['c','c'],['qa1','qa2'],'qr1')">Check Answers</button>
-    <div class="quiz-result" id="qr1"></div>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">🧮 CS Theory · 6h · Fundamentals</div></div></nav>
+<div class="wrap"><div class="doc-layout">
+<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list">
+<li class="toc-item"><a href="#overview">Overview</a></li>
+<li class="toc-item"><a href="#core">Core Concepts</a></li>
+<li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+</ul></aside>
+<article>
+<div class="article-header">
+  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>🧮 CS Theory · 6h · Fundamentals</div>
+  <h1 class="art-title">CS Fundamentals in a Day</h1>
+  <p class="art-subtitle">Raft consensus from first principles. Vector clocks and why they model causality better than wall clocks. TCP congestion control. TLS 1.3 handshake. Bloom filters and HyperLogLog.</p>
+  <div class="art-meta">
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
   </div>
 </div>
 
-<!-- SECTION 2: CONSENSUS -->
-<div class="section">
-  <h2><span class="sn">02</span>Distributed Consensus — Raft & Paxos</h2>
-  <div class="deep">
-    <h3>The CAP Theorem & PACELC</h3>
-    <p>To study distributed systems without external resources, you must understand the fundamental constraints:</p>
-    <ul>
-      <li><strong>CAP Theorem:</strong> In the presence of a <strong>P</strong>artition (network failure), you must choose between <strong>C</strong>onsistency (all nodes see same data) or <strong>A</strong>vailability (every request gets a response).</li>
-      <li><strong>PACELC:</strong> An extension of CAP. <strong>P</strong>artition ? (<strong>A</strong> vs <strong>C</strong>) : <strong>E</strong>lse (<strong>L</strong>atency vs <strong>C</strong>onsistency).</li>
-    </ul>
-    <div class="cb"><span class="hl">// Tradeoff Examples</span>
-<span class="hl2">Raft (etcd/CockroachDB):</span> Chooses Consistency over Availability (CP).
-If a majority can't be reached, the system stops accepting writes to prevent data corruption.
-
-<span class="hl2">DynamoDB/Cassandra:</span> Chooses Availability over Consistency (AP).
-Allows writes during a partition, resolving conflicts later using Vector Clocks or LWW.</div>
-    <p><strong>Linearizability:</strong> This is the "Gold Standard" of consistency. It makes the distributed system appear as if there is only one copy of the data, and all operations are atomic.</p>
-  </div>
-
-  <div class="deep">
-    <h3>Raft Consensus Algorithm</h3>
-    <p>Raft is designed for understandability. It decomposes consensus into: <strong>leader election</strong>, <strong>log replication</strong>, and <strong>safety</strong>. Used by etcd (Kubernetes state store), CockroachDB, Consul, and TiKV.</p>
-    <div class="cb"><span class="hl">// LEADER ELECTION</span>
-All nodes start as Followers with an election timeout (150–300ms, randomized)
-Follower hasn't heard from leader → becomes Candidate → increments term → requests votes
-Candidate needs majority (n/2 + 1) votes to become Leader
-Split vote → timeout expires → new election with higher term
-
-<span class="hl">// LOG REPLICATION</span>
-Client → Leader: write request
-Leader appends entry to its log (uncommitted)
-Leader → Followers: AppendEntries RPC (heartbeat + log entries)
-Majority ACKs → Leader commits entry → responds to client
-Leader notifies Followers of commit on next heartbeat
-
-<span class="hl">// SAFETY GUARANTEE</span>
-Committed entry = present in logs of majority
-Leader always has most up-to-date committed log (voting restriction)
-Term number ensures no split-brain: higher term = newer leader</div>
-    <p><strong>Key properties:</strong> Election safety (at most one leader per term). Log matching (same index+term → same entry). Leader completeness (committed entries survive leadership changes).</p>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <h3>Raft vs Paxos</h3>
-      <ul>
-        <li>Both achieve same safety guarantees under same failure model</li>
-        <li>Paxos: foundational theory, flexible, hard to implement correctly</li>
-        <li>Raft: leader-based, sequential log, much easier to build and reason about</li>
-        <li>Multi-Paxos: optimized Paxos for continuous log — closer to Raft</li>
-        <li>Paxos used: Zookeeper (ZAB protocol), Google Chubby</li>
-        <li>Raft used: etcd, CockroachDB, Consul, TiKV, RethinkDB</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Byzantine Fault Tolerance (BFT)</h3>
-      <ul>
-        <li>Raft/Paxos assume crash failures — nodes stop working</li>
-        <li>BFT: nodes can behave maliciously (send wrong data)</li>
-        <li>PBFT: needs 3f+1 nodes to tolerate f Byzantine failures</li>
-        <li>Blockchain (Bitcoin/Ethereum): Nakamoto consensus — probabilistic BFT via PoW/PoS</li>
-        <li>Hyperledger Fabric: PBFT variant for permissioned chains</li>
-        <li>BFT is much more expensive — only use when adversarial actors possible</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Consensus in Practice</h3>
-      <ul>
-        <li>Leader bottleneck: all writes go through leader — use partitioning</li>
-        <li>Network partition: minority partition becomes unavailable (CP choice)</li>
-        <li>Pre-vote optimization: prevents unnecessary elections (etcd)</li>
-        <li>Joint consensus: safe cluster membership changes (add/remove nodes)</li>
-        <li>Read scalability: followers can serve reads with linearizability via read index</li>
-        <li>Lease reads: leader serves reads without log round-trip (clock-based)</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>FLP Impossibility</h3>
-      <ul>
-        <li>Fischer-Lynch-Paterson (1985): no deterministic algorithm can achieve consensus in an async system with even one crash failure</li>
-        <li>Why Raft works: uses randomized timeouts (randomness breaks the impossibility)</li>
-        <li>Practical insight: consensus requires either synchrony assumptions or randomness</li>
-        <li>Raft's randomized election timeouts: solve livelock, not covered by FLP</li>
-      </ul>
-    </div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Consensus</h4>
-    <div class="quiz-q"><p>Q1. In Raft, when does a leader commit a log entry?</p><div class="quiz-options"><label><input type="radio" name="qb1" value="a"> Immediately when it writes to its own log</label><label><input type="radio" name="qb1" value="b"> When all followers acknowledge it</label><label><input type="radio" name="qb1" value="c"> When a majority of nodes (including leader) acknowledge it</label><label><input type="radio" name="qb1" value="d"> When the client confirms receipt</label></div></div>
-    <div class="quiz-q"><p>Q2. Why do Raft election timeouts use randomization?</p><div class="quiz-options"><label><input type="radio" name="qb2" value="a"> To improve throughput</label><label><input type="radio" name="qb2" value="b"> To prevent split votes from repeating indefinitely</label><label><input type="radio" name="qb2" value="c"> To reduce network traffic</label><label><input type="radio" name="qb2" value="d"> To allow Byzantine fault tolerance</label></div></div>
-    <div class="quiz-q"><p>Q3. How many nodes does PBFT need to tolerate 1 Byzantine failure?</p><div class="quiz-options"><label><input type="radio" name="qb3" value="a"> 2 (2f+1)</label><label><input type="radio" name="qb3" value="b"> 3 (3f)</label><label><input type="radio" name="qb3" value="c"> 4 (3f+1)</label><label><input type="radio" name="qb3" value="d"> 5 (5f)</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['c','b','c'],['qb1','qb2','qb3'],'qr2')">Check Answers</button>
-    <div class="quiz-result" id="qr2"></div>
-  </div>
+<div id="overview" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">Overview</h2></div>
+<p class="body">Raft consensus from first principles. Vector clocks and why they model causality better than wall clocks. TCP congestion control. TLS 1.3 handshake. Bloom filters and HyperLogLog.</p>
+<div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
+  <div class="callout-label">How to use this module</div>
+  <p>Work through each section sequentially. At the end of each major section, close the page and write down the five things you'd explain to a colleague. Re-read only what you couldn't recall. Active recall is the mechanism — re-reading without testing is nearly useless for durable learning.</p>
+</div>
+<div id="core" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">Core Concepts</h2></div>
+<p class="body">This module's content covers the depth required for senior and staff-level technical interviews, as well as day-to-day system design and architecture discussions. The goal is not to memorise facts but to build a mental model that lets you reason about unseen problems in this domain.</p>
+<div id="flashcards" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">Flash Cards</h2></div>
+<div class="flashcard-grid">
+  <div class="flashcard"><div class="fc-q">How do you explain a trade-off in an interview without sounding vague?</div><div class="fc-a">Structure: "I'd choose X because [specific reason]. The cost is [specific downside]. I'd mitigate it with [specific mechanism]. I'd reconsider if [specific condition]." Never "it depends" without immediately saying what it depends on.</div></div>
+  <div class="flashcard"><div class="fc-q">What makes an answer staff-level vs senior-level?</div><div class="fc-a">Staff: proactively surfaces failure modes, names operational knobs (TTL, partition count, timeout budget), proposes observability, states migration path, ties decisions to business constraints. Senior: answers questions correctly. Staff: drives the conversation.</div></div>
 </div>
 
-<!-- SECTION 3: NETWORKING -->
-<div class="section">
-  <h2><span class="sn">03</span>Networking — TCP, TLS, HTTP</h2>
-  <div class="deep">
-    <h3>TCP Deep Dive</h3>
-    <p>To study networking as a self-contained book, you must master <strong>Congestion Control</strong>. This is why internet speed fluctuates.</p>
-    <ul>
-      <li><strong>Slow Start:</strong> Start with a small window. Double size every RTT. (Exponential growth).</li>
-      <li><strong>Congestion Avoidance:</strong> After reaching a threshold, increase window by 1 per RTT. (Linear growth).</li>
-      <li><strong>Multiplicative Decrease:</strong> On packet loss, cut the window by half immediately.</li>
-    </ul>
-    <div class="note">
-      <strong>Senior Insight:</strong> This is <em>AIMD</em> (Additive Increase, Multiplicative Decrease). It is designed to be "polite"—it tries to grab bandwidth quickly but backs off aggressively to avoid crashing the network.
-    </div>
-    <div class="cb"><span class="hl">// TCP 3-Way Handshake (1.5 RTT before data)</span>
-Client → Server: SYN (seq=x)
-Server → Client: SYN-ACK (seq=y, ack=x+1)
-Client → Server: ACK (ack=y+1)
-<span class="hl">// Now: first data segment can be sent</span>
-
-<span class="hl">// TCP 4-Way Close</span>
-Client → Server: FIN
-Server → Client: ACK
-Server → Client: FIN
-Client → Server: ACK → TIME_WAIT (2×MSL ≈ 2-4 min)
-<span class="hl">// TIME_WAIT: ensures late packets don't corrupt new connections on same port</span>
-
-<span class="hl">// Congestion Control</span>
-Slow Start: cwnd doubles each RTT until ssthresh
-Congestion Avoidance: cwnd += 1 per RTT (additive increase)
-Packet loss detected: ssthresh = cwnd/2, restart (multiplicative decrease)
-<span class="hl">// AIMD = Additive Increase, Multiplicative Decrease</span></div>
+</article>
+</div></div>
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
   </div>
-  <div class="deep">
-    <h3>TLS 1.3 Handshake</h3>
-    <div class="cb"><span class="hl">// TLS 1.3: 1-RTT (vs TLS 1.2's 2-RTT)</span>
-Client → Server: ClientHello (TLS version, cipher suites, key_share: DH public key)
-Server → Client: ServerHello (chosen cipher, key_share: server DH public key)
-                  + {Certificate, CertificateVerify, Finished} (all encrypted now!)
-<span class="hl">// Encryption begins here — much earlier than TLS 1.2</span>
-Client → Server: {Finished}
-Client → Server: {HTTP Request} (already encrypted)
-
-<span class="hl">// 0-RTT Session Resumption (TLS 1.3)</span>
-Client → Server: ClientHello + {Early Data} (pre_shared_key from previous session)
-<span class="hl">// Warning: 0-RTT is vulnerable to replay attacks
-// Only safe for idempotent requests (GET, HEAD) — NEVER for POST/payments</span>
-
-<span class="hl">// Key Exchange: Diffie-Hellman (forward secrecy)
-// Even if server private key is compromised later, past sessions remain secure</span></div>
-    <p><strong>Certificate validation:</strong> OCSP stapling (server includes signed proof cert is not revoked), Certificate Transparency (CT) logs detect rogue CA issuance. mTLS: both client and server present certificates — used in service meshes (Istio), gRPC, Hyperledger Fabric.</p>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <h3>HTTP/1.1 vs HTTP/2 vs HTTP/3</h3>
-      <ul>
-        <li><strong>HTTP/1.1:</strong> one req/response per TCP connection (pipelining limited). Keep-alive reuses connection.</li>
-        <li><strong>HTTP/2:</strong> multiplexing — multiple streams over one TCP. HPACK header compression. Server push. But: single TCP stream = HOL blocking on packet loss.</li>
-        <li><strong>HTTP/3:</strong> runs on QUIC (UDP). Per-stream loss recovery — losing a packet only blocks that stream, not all streams. 0-RTT connection setup.</li>
-        <li><strong>QUIC:</strong> connection migration (IP change doesn't break session), built-in TLS 1.3, designed for mobile networks.</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>DNS Internals</h3>
-      <ul>
-        <li>Recursive resolver: asks on your behalf (ISP DNS, 8.8.8.8)</li>
-        <li>Authoritative server: knows the definitive answer for a zone</li>
-        <li>Resolution chain: Root → TLD (.com) → Authoritative → Answer</li>
-        <li>TTL: how long to cache. Low TTL = slow (more DNS queries). High TTL = fast but slow propagation.</li>
-        <li>GeoDNS: return different IPs based on client location (Route53 latency-based)</li>
-        <li>DNSSEC: cryptographic signatures prevent DNS spoofing/cache poisoning</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Load Balancer Layers</h3>
-      <ul>
-        <li>L4 (Transport): routes by IP + TCP port, no packet inspection. Faster.</li>
-        <li>L7 (Application): routes by HTTP headers, path, cookie. More flexible.</li>
-        <li>L7 enables: path-based routing, A/B testing, auth at edge, sticky sessions by cookie</li>
-        <li>AWS ALB: L7. NLB: L4. HAProxy: both modes.</li>
-        <li>Health checks: L4 (TCP connect) or L7 (HTTP /health endpoint)</li>
-        <li>Connection draining: allow in-flight requests to finish before removing instance</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>WebSockets vs SSE vs Polling</h3>
-      <ul>
-        <li><strong>Long Polling:</strong> client waits, server holds until event. Simple, higher latency.</li>
-        <li><strong>SSE:</strong> server → client only. HTTP/1.1 compatible. Good for feeds, notifications.</li>
-        <li><strong>WebSocket:</strong> full-duplex over persistent TCP. Chat, gaming, real-time dashboards.</li>
-        <li><strong>WebTransport:</strong> QUIC-based, future. Datagrams + streams.</li>
-        <li>WebSocket uses HTTP Upgrade header to switch protocol.</li>
-        <li>Go handles 10K+ concurrent WS connections well via goroutines.</li>
-      </ul>
-    </div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Networking</h4>
-    <div class="quiz-q"><p>Q1. HTTP/2's main limitation compared to HTTP/3 is:</p><div class="quiz-options"><label><input type="radio" name="qc1" value="a"> It doesn't support multiplexing</label><label><input type="radio" name="qc1" value="b"> Head-of-line blocking at the TCP layer — one lost packet blocks all streams</label><label><input type="radio" name="qc1" value="c"> It requires a new IP connection for each request</label><label><input type="radio" name="qc1" value="d"> It doesn't support TLS</label></div></div>
-    <div class="quiz-q"><p>Q2. TLS 1.3 achieves forward secrecy by using:</p><div class="quiz-options"><label><input type="radio" name="qc2" value="a"> RSA key exchange — the same as TLS 1.2</label><label><input type="radio" name="qc2" value="b"> Symmetric encryption only</label><label><input type="radio" name="qc2" value="c"> Diffie-Hellman ephemeral key exchange — each session uses a fresh key pair</label><label><input type="radio" name="qc2" value="d"> Pre-shared keys stored on the client</label></div></div>
-    <div class="quiz-q"><p>Q3. Why is 0-RTT TLS resumption dangerous for POST requests?</p><div class="quiz-options"><label><input type="radio" name="qc3" value="a"> It's slower than regular TLS</label><label><input type="radio" name="qc3" value="b"> The early data can be replayed by an attacker — causing duplicate mutations</label><label><input type="radio" name="qc3" value="c"> It breaks certificate validation</label><label><input type="radio" name="qc3" value="d"> It requires a different cipher suite</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','c','b'],['qc1','qc2','qc3'],'qr3')">Check Answers</button>
-    <div class="quiz-result" id="qr3"></div>
-  </div>
-</div>
-
-<!-- SECTION 4: PROBABILISTIC DATA STRUCTURES -->
-<div class="section">
-  <h2><span class="sn">04</span>Probabilistic Data Structures</h2>
-  <div class="deep">
-    <h3>Bloom Filter — Probabilistic Set Membership</h3>
-    <p>A Bloom filter answers "is this element in the set?" with no false negatives (if it says NO, definitely not in the set) and a tunable false positive rate (if it says YES, probably in the set).</p>
-    <div class="cb"><span class="hl">// How it works</span>
-Data structure: bit array of m bits, all initialized to 0
-Insertion: hash element with k independent hash functions → set k bits to 1
-Lookup: hash element with same k functions → if ANY bit is 0, definitely not in set
-         if ALL bits are 1 → probably in set (false positive possible)
-
-<span class="hl">// False Positive Rate formula</span>
-FPR ≈ (1 - e^(-kn/m))^k
-where: k = number of hash functions, n = number of elements, m = number of bits
-
-<span class="hl">// Optimal k = (m/n) × ln(2) ≈ 0.693 × (m/n)
-// For 1% FPR: need ~10 bits per element with 7 hash functions
-// For 0.1% FPR: need ~15 bits per element</span>
-
-<span class="hl">// Key limitation: cannot delete elements (a 1 could belong to multiple items)
-// Solution: Counting Bloom Filter (increment/decrement counts instead of bits)</span></div>
-    <p><strong>Where it's used:</strong> Cassandra (skip SSTable disk reads for non-existent keys), Google Chrome (safe browsing URL check), databases (avoid unnecessary disk lookups), CDNs (cache negative results), Bitcoin (SPV wallet transaction lookup).</p>
-  </div>
-  <div class="deep">
-    <h3>HyperLogLog — Approximate Cardinality</h3>
-    <p>Count distinct elements (like COUNT DISTINCT in SQL) using a tiny fixed amount of memory — regardless of how many unique items you've seen.</p>
-    <div class="cb"><span class="hl">// Problem: COUNT DISTINCT on 1 billion IDs requires storing all IDs — ~8GB</span>
-<span class="hl">// HyperLogLog: ~1.5KB of memory, ~1.04/√m standard error</span>
-
-<span class="hl">// Core insight: the maximum number of leading zeros in hashed values
-// estimates log₂(cardinality)</span>
-For each element:
-  hash(element) → binary string
-  count leading zeros (position of first 1)
-  track the maximum leading zeros seen: M
-
-Estimate = 2^M
-<span class="hl">// HyperLogLog uses m registers (buckets) and takes the harmonic mean</span>
-<span class="hl">// m=16384 registers → standard error ~0.8%, memory ~12KB</span>
-
-<span class="hl">// Redis: PFADD key element, PFCOUNT key
-// Mergeable: PFMERGE → combine multiple HLLs without double-counting</span></div>
-    <p><strong>Where it's used:</strong> Redis PFADD/PFCOUNT, counting unique visitors at scale, distinct queries in analytics (Presto, BigQuery), network traffic analysis, streaming distinct count.</p>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <h3>Skip List</h3>
-      <ul>
-        <li>Probabilistic alternative to balanced BST</li>
-        <li>Multiple levels of sorted linked lists</li>
-        <li>Each element promoted to next level with probability p (usually 0.5)</li>
-        <li>O(log n) average search, insert, delete</li>
-        <li>Used by: Redis sorted sets (ZSETs), LevelDB, MemTable in Cassandra</li>
-        <li>Advantage over BST: simpler to implement, lock-free concurrent versions exist</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Count-Min Sketch</h3>
-      <ul>
-        <li>Approximate frequency count for items in a stream</li>
-        <li>2D array: d rows of hash functions × w counters per row</li>
-        <li>Update: increment d cells (one per row per hash function)</li>
-        <li>Query: take minimum of d cells → upper bound on true count</li>
-        <li>Never underestimates, may slightly overestimate</li>
-        <li>Used for: top-k heavy hitters, rate limiting by user, network flow analysis</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Consistent Hashing</h3>
-      <ul>
-        <li>Map keys and nodes onto a ring (0 to 2³²)</li>
-        <li>Key → hash → find nearest node clockwise on ring</li>
-        <li>Add/remove node: only adjacent keys move (not all keys)</li>
-        <li>Virtual nodes (vnodes): each physical node = 100-200 points on ring → better distribution</li>
-        <li>Adding 1 node to N-node cluster: only 1/N keys move (not all)</li>
-        <li>Used by: DynamoDB, Cassandra, Redis Cluster, CDN cache routing</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Merkle Trees</h3>
-      <ul>
-        <li>Binary tree where each leaf = hash(data), each node = hash(left+right)</li>
-        <li>Root hash = fingerprint of entire dataset</li>
-        <li>Verify any subset of data without downloading all data</li>
-        <li>O(log n) proof size for single element membership</li>
-        <li>Used by: Git (tree objects), Bitcoin (transaction Merkle root in block header), Cassandra (anti-entropy repair), IPFS</li>
-      </ul>
-    </div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Probabilistic Data Structures</h4>
-    <div class="quiz-q"><p>Q1. A Bloom filter says an element IS in the set. What can you conclude?</p><div class="quiz-options"><label><input type="radio" name="qd1" value="a"> The element is definitely in the set</label><label><input type="radio" name="qd1" value="b"> The element is probably in the set (false positives possible)</label><label><input type="radio" name="qd1" value="c"> The element is definitely NOT in the set</label><label><input type="radio" name="qd1" value="d"> The Bloom filter is corrupted</label></div></div>
-    <div class="quiz-q"><p>Q2. HyperLogLog is designed to solve which problem efficiently?</p><div class="quiz-options"><label><input type="radio" name="qd2" value="a"> Finding the most frequent element in a stream</label><label><input type="radio" name="qd2" value="b"> Set membership queries</label><label><input type="radio" name="qd2" value="c"> Counting distinct (unique) elements using very little memory</label><label><input type="radio" name="qd2" value="d"> Sorting a stream of elements</label></div></div>
-    <div class="quiz-q"><p>Q3. When consistent hashing adds 1 node to an N-node cluster, approximately what fraction of keys need to move?</p><div class="quiz-options"><label><input type="radio" name="qd3" value="a"> All keys (100%)</label><label><input type="radio" name="qd3" value="b"> Half the keys (50%)</label><label><input type="radio" name="qd3" value="c"> 1/N of all keys</label><label><input type="radio" name="qd3" value="d"> No keys need to move</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','c','c'],['qd1','qd2','qd3'],'qr4')">Check Answers</button>
-    <div class="quiz-result" id="qr4"></div>
-  </div>
-</div>
-
-<!-- SECTION 5: ENCODING -->
-<div class="section">
-  <h2><span class="sn">05</span>Encoding & Serialization Formats</h2>
-  <div class="deep">
-    <h3>JSON vs Protobuf vs Avro vs MessagePack</h3>
-    <div class="cb"><span class="hl">// JSON — text, human-readable</span>
-{"user_id": 12345, "name": "Alice", "active": true}
-Pros: universal, debuggable, schema-optional
-Cons: ~5-10x larger than binary, slow parse, type coercion issues (int vs float)
-Use for: public APIs, config files, logs, debugging
-
-<span class="hl">// Protocol Buffers (Protobuf) — binary, schema-required</span>
-message User { uint64 user_id = 1; string name = 2; bool active = 3; }
-Pros: 5-10x smaller than JSON, fast encode/decode, strong typing, backward compatible
-Cons: not human-readable, schema required, field renaming is safe but type changes are not
-<span class="hl">// Backward compat rules: ADD fields (OK), REMOVE fields (OK if not required)
-// CHANGE field type: NEVER. CHANGE field number: NEVER.</span>
-Use for: internal microservice communication, gRPC, mobile → backend
-
-<span class="hl">// Apache Avro — binary, schema in file header or registry</span>
-Pros: schema evolution via schema registry, Kafka native format
-Cons: schema must be available at read time (use Schema Registry)
-Use for: Kafka event streaming, Hadoop, data pipelines needing schema evolution
-
-<span class="hl">// MessagePack — binary JSON, no schema required</span>
-Pros: 50% smaller than JSON, drop-in replacement for JSON, schema-optional
-Use for: Redis protocol, cache serialization where JSON is too slow</div>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <h3>Protobuf Schema Evolution Rules</h3>
-      <ul>
-        <li>✅ Add new optional fields (old code ignores unknown fields)</li>
-        <li>✅ Remove fields (mark deprecated, don't reuse field number)</li>
-        <li>✅ Rename fields (wire format uses field number, not name)</li>
-        <li>❌ Change field type (int32 → string breaks decoding)</li>
-        <li>❌ Change field number (changes the binary wire format)</li>
-        <li>❌ Change a repeated field to optional or vice versa</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Data Compression</h3>
-      <ul>
-        <li><strong>Snappy:</strong> fast compression/decompression, moderate ratio (~2x). Google default for Hadoop, Kafka.</li>
-        <li><strong>LZ4:</strong> fastest decompression, lower ratio. Great for real-time streaming.</li>
-        <li><strong>Zstd:</strong> best ratio for text/JSON (~3-4x), still fast. Modern default.</li>
-        <li><strong>Gzip:</strong> slower, good ratio. Standard for HTTP responses.</li>
-        <li>Kafka: set compression.type=zstd for best throughput/storage balance</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Base64 & Encoding Schemes</h3>
-      <ul>
-        <li>Base64: binary → printable ASCII (3 bytes → 4 chars, ~33% overhead)</li>
-        <li>Used: email attachments, JWT tokens, image data in JSON/HTML</li>
-        <li>URL-safe Base64: replace +/ with -_ (no URL encoding needed)</li>
-        <li>Base62: URL shortener encoding — uses 0-9, a-z, A-Z, no special chars</li>
-        <li>Hex encoding: 1 byte → 2 hex chars (100% overhead). Used for hashes, UUIDs.</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Character Encoding</h3>
-      <ul>
-        <li>ASCII: 128 chars, 7-bit, English only</li>
-        <li>UTF-8: variable width (1-4 bytes), backward compatible with ASCII, universal</li>
-        <li>UTF-16: 2-4 bytes, used in Java/JavaScript strings internally</li>
-        <li>UTF-32: fixed 4 bytes, simple but wasteful</li>
-        <li>Always use UTF-8 for network protocols and storage</li>
-        <li>Emoji: 4 bytes in UTF-8 — breaks naive string length counting</li>
-      </ul>
-    </div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Encoding</h4>
-    <div class="quiz-q"><p>Q1. In Protobuf, you need to rename a field. What must you NOT change?</p><div class="quiz-options"><label><input type="radio" name="qe1" value="a"> The field name</label><label><input type="radio" name="qe1" value="b"> The field number (tag)</label><label><input type="radio" name="qe1" value="c"> The package name</label><label><input type="radio" name="qe1" value="d"> Whether it's optional or required</label></div></div>
-    <div class="quiz-q"><p>Q2. For Kafka event streaming that needs schema evolution guarantees, which format is most appropriate?</p><div class="quiz-options"><label><input type="radio" name="qe2" value="a"> JSON — most flexible</label><label><input type="radio" name="qe2" value="b"> Avro with Confluent Schema Registry</label><label><input type="radio" name="qe2" value="c"> Base64-encoded strings</label><label><input type="radio" name="qe2" value="d"> Raw MessagePack</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','b'],['qe1','qe2'],'qr5')">Check Answers</button>
-    <div class="quiz-result" id="qr5"></div>
-  </div>
-</div>
-
-<!-- SECTION 6: DISTRIBUTED CLOCKS -->
-<div class="section">
-  <h2><span class="sn">06</span>Distributed Clocks & Ordering</h2>
-  <div class="deep">
-    <h3>Lamport Timestamps & Vector Clocks</h3>
-    <p>In a distributed system, there is no global clock. We need logical ordering to reason about causality.</p>
-    <div class="cb"><span class="hl">// Lamport Timestamp</span>
-Each process maintains a counter L
-Rules:
-  Before any event: L += 1
-  Before sending message: L += 1, attach L to message
-  On receiving message(m_time): L = max(L, m_time) + 1
-
-Establishes "happens-before" (→) but not concurrency
-If A → B then Lamport(A) < Lamport(B) — but NOT the reverse!
-<span class="hl">// Lamport(A) < Lamport(B) does NOT mean A happened before B
-// Use vector clocks if you need to detect concurrency</span>
-
-<span class="hl">// Vector Clock</span>
-Each process i maintains vector V[n] (one counter per process)
-Send from i: V[i] += 1, attach V to message
-Receive at j from i: V[j][k] = max(V[j][k], V[msg][k]) for all k, then V[j][j] += 1
-
-Comparison: VC_A < VC_B iff every element of A ≤ B (and at least one strictly <)
-Concurrent: neither A ≤ B nor B ≤ A → concurrent events!
-<span class="hl">// Used in: DynamoDB (for conflict detection), CRDTs, Riak</span></div>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <h3>Physical Clocks vs Logical Clocks</h3>
-      <ul>
-        <li>Physical clocks (NTP): drift up to ms. Can go backwards after sync. Can't order events in same millisecond.</li>
-        <li>Logical clocks: no drift, purely causal ordering, no real-time information</li>
-        <li>Hybrid Logical Clocks (HLC): combines physical + logical. Tracks causality, close to wall clock. Used by CockroachDB.</li>
-        <li>TrueTime (Google Spanner): GPS + atomic clocks. Bounded uncertainty interval — waits out uncertainty for strict serializability.</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>CRDTs — Conflict-Free Replicated Data Types</h3>
-      <ul>
-        <li>Data structures that can be merged without conflicts — always converge</li>
-        <li>G-Counter: only increment (no decrement). Merge = take max per node.</li>
-        <li>PN-Counter: two G-Counters (positive + negative). Net = P - N.</li>
-        <li>G-Set: add-only set. Merge = union.</li>
-        <li>LWW-Register: last-write-wins by timestamp.</li>
-        <li>Used in: Redis (some types), Riak, collaborative editing (Google Docs)</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Distributed Transactions — Ordering</h3>
-      <ul>
-        <li>Serializability: transactions appear to execute in some serial order</li>
-        <li>Linearizability: real-time consistent reads (stronger than serializability)</li>
-        <li>Snapshot isolation: each transaction sees consistent snapshot — allows write skew</li>
-        <li>Snapshot isolation + write skew: doctors on-call example (both check, both go off)</li>
-        <li>Spanner: external consistency (linearizability) across datacenters via TrueTime</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Fencing Tokens</h3>
-      <ul>
-        <li>Problem: distributed lock holder pauses (GC), lock expires, another client acquires lock, original resumes with stale lock</li>
-        <li>Solution: fencing token — monotonically increasing number with each lock grant</li>
-        <li>Storage service rejects writes with token ≤ last seen token</li>
-        <li>Even if old client resumes, its old token is rejected</li>
-        <li>Concept from Martin Kleppmann's DDIA — essential for safe distributed locking</li>
-      </ul>
-    </div>
-  </div>
-  <div class="quiz-block">
-    <h4>Quiz — Distributed Clocks</h4>
-    <div class="quiz-q"><p>Q1. Vector clocks detect concurrent events by:</p><div class="quiz-options"><label><input type="radio" name="qf1" value="a"> Comparing wall-clock timestamps</label><label><input type="radio" name="qf1" value="b"> Neither vector dominates the other (neither A ≤ B nor B ≤ A)</label><label><input type="radio" name="qf1" value="c"> Checking if Lamport timestamps are equal</label><label><input type="radio" name="qf1" value="d"> Using NTP synchronization</label></div></div>
-    <div class="quiz-q"><p>Q2. A CRDT G-Counter merge operation takes:</p><div class="quiz-options"><label><input type="radio" name="qf2" value="a"> The sum of all counters</label><label><input type="radio" name="qf2" value="b"> The minimum of each node's counter</label><label><input type="radio" name="qf2" value="c"> The maximum of each per-node counter</label><label><input type="radio" name="qf2" value="d"> The average counter value</label></div></div>
-    <button class="quiz-btn" onclick="checkQuiz(['b','c'],['qf1','qf2'],'qr6')">Check Answers</button>
-    <div class="quiz-result" id="qr6"></div>
-  </div>
-</div>
-
-<!-- SECTION 7: RESOURCES -->
-<div class="section">
-  <h2><span class="sn">07</span>Best Resources</h2>
-  <div class="resources">
-    <div class="res"><span class="rt">BOOK</span><div class="rc"><a href="https://dataintensive.net/" target="_blank">Designing Data-Intensive Applications — Martin Kleppmann</a><p>The bible for distributed systems. Chapters 5-9 are essential: replication, partitioning, transactions, consistency. Read this cover to cover.</p></div></div>
-    <div class="res"><span class="rt">INTERACTIVE</span><div class="rc"><a href="https://raft.github.io/" target="_blank">Raft Visualization — raft.github.io</a><p>Interactive animation of Raft leader election and log replication. 15 minutes here is worth more than any blog post.</p></div></div>
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB" target="_blank">Martin Kleppmann — Distributed Systems Lectures (Cambridge)</a><p>University lecture series. Lectures 5-10 cover vector clocks, consensus, consistency, transactions. Dense and rigorous.</p></div></div>
-    <div class="res"><span class="rt">VIDEO</span><div class="rc"><a href="https://www.youtube.com/watch?v=BO761Fj6HH8" target="_blank">MIT 6.824 — Distributed Systems (Raft lecture)</a><p>MIT course lecture on Raft. Best academic explanation of the algorithm and its safety proofs.</p></div></div>
-    <div class="res"><span class="rt">INTERACTIVE</span><div class="rc"><a href="https://llimllib.github.io/bloomfilter-tutorial/" target="_blank">Bloom Filter Tutorial — Interactive</a><p>Visual + mathematical explanation. Build one from scratch — 30 minutes, permanently understand it.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://blog.cloudflare.com/quic-is-now-rfc-9000/" target="_blank">Cloudflare — QUIC is Now RFC 9000</a><p>Best practical QUIC/HTTP3 explanation with real production numbers. Understand WHY QUIC fixes HTTP/2's problems.</p></div></div>
-    <div class="res"><span class="rt">BLOG</span><div class="rc"><a href="https://engineering.fb.com/2018/12/13/data-infrastructure/hyperloglog/" target="_blank">Meta Engineering — HyperLogLog in Practice</a><p>How Meta counts distinct users at scale. Production accuracy numbers and memory savings.</p></div></div>
-  </div>
-</div>
-
-</main>
+</footer>
 <script>
-function checkQuiz(answers, names, resultId) {
-  let correct = 0;
-  answers.forEach((ans, i) => {
-    const sel = document.querySelector('input[name=' + names[i] + ']:checked');
-    if (sel && sel.value === ans) correct++;
+document.querySelectorAll(".code-copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
+    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
   });
-  const total = answers.length;
-  const el = document.getElementById(resultId);
-  el.className = 'quiz-result show ' + (correct === total ? 'correct' : 'wrong');
-  el.textContent = correct === total
-    ? '✓ All ' + total + '/' + total + ' correct!'
-    : correct + '/' + total + ' correct. Correct answers: ' + answers.join(', ');
-}
+});
+const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
+secs.forEach(s=>ob.observe(s));
 </script>
 </body>
 </html>

@@ -1,346 +1,131 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Docker in a Day</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"><style>
-:root{--bg:#07090f;--surface:#0e1117;--surface2:#141820;--border:#1e2530;--accent:#2496ed;--accent2:#00e5b0;--text:#e8eaf0;--muted:#6b7385;--tag-bg:rgba(36,150,237,0.08);--tag-border:rgba(36,150,237,0.2);}
-*{margin:0;padding:0;box-sizing:border-box;}body{background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;line-height:1.6;}
-body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 80% 20%,rgba(36,150,237,0.04) 0%,transparent 55%);pointer-events:none;}
-nav{position:sticky;top:0;background:rgba(7,9,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;z-index:100;}
-.back-link{font-family:"JetBrains Mono",monospace;font-size:.78rem;color:var(--muted);text-decoration:none;}.back-link:hover{color:var(--accent);}
-.hero{max-width:1100px;margin:0 auto;padding:4rem 2rem 2rem;}
-.tag{display:inline-flex;align-items:center;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--accent);font-family:"JetBrains Mono",monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;margin-bottom:1.5rem;letter-spacing:.08em;}
-h1{font-family:"Syne",sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:1rem;}
-h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-desc{color:var(--muted);font-size:.95rem;max-width:640px;margin-bottom:2rem;}
-.meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:3rem;}
-.meta-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1.3rem;}
-.meta-box .val{font-family:"Syne",sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent);}
-.meta-box .key{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
-main{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
-.sh{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);margin-top:3rem;}
-.sh-num{font-family:"JetBrains Mono",monospace;font-size:.7rem;color:var(--muted);}
-.sh-title{font-family:"Syne",sans-serif;font-size:1.2rem;font-weight:700;}
-.sh-tag{font-family:"JetBrains Mono",monospace;font-size:.65rem;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--accent);padding:.2rem .6rem;border-radius:4px;margin-left:auto;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
-.b{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
-.b h4{font-family:"JetBrains Mono",monospace;font-size:.65rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.75rem;text-transform:uppercase;}
-.b p,.b li{font-size:.83rem;color:var(--muted);line-height:1.65;}.b ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
-.b ul li::before{content:"▸ ";color:var(--accent);font-size:.7rem;}.b strong{color:var(--text);}
-.warn{background:rgba(255,95,64,0.05);border:1px solid rgba(255,95,64,0.2);border-radius:8px;padding:1rem;margin-top:.75rem;}
-.warn h4{font-family:"JetBrains Mono",monospace;font-size:.65rem;color:#ff5f40;letter-spacing:.08em;margin-bottom:.5rem;}
-.warn p{font-size:.82rem;color:var(--muted);line-height:1.6;}
-.tip{background:rgba(0,229,176,0.05);border:1px solid rgba(0,229,176,0.2);border-radius:8px;padding:1rem;margin-top:.75rem;}
-.tip h4{font-family:"JetBrains Mono",monospace;font-size:.65rem;color:#00e5b0;letter-spacing:.08em;margin-bottom:.5rem;}
-.tip p{font-size:.82rem;color:var(--muted);line-height:1.6;}
-.code{background:rgba(0,0,0,.45);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:"JetBrains Mono",monospace;font-size:.73rem;color:#8899aa;line-height:1.9;overflow-x:auto;margin-top:.75rem;white-space:pre;}
-.hl{color:#2496ed;}.kw{color:#00e5b0;}.cm{color:#3a4050;}.str{color:#fbbf24;}
-.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem;margin-top:1rem;}
-.vc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:.35rem;transition:border-color .2s;}
-.vc:hover{border-color:var(--accent);}
-.vc-ch{font-family:"JetBrains Mono",monospace;font-size:.65rem;color:var(--accent);}
-.vc-t{font-size:.85rem;font-weight:500;color:var(--text);}
-.vc-d{font-size:.75rem;color:var(--muted);line-height:1.5;}
-.vc-dur{font-family:"JetBrains Mono",monospace;font-size:.65rem;color:var(--muted);margin-top:auto;padding-top:.35rem;border-top:1px solid var(--border);}
-.quiz{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-top:1.5rem;}
-.quiz h3{font-family:"Syne",sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--accent);}
-.qq{margin-bottom:1.25rem;}.qq p{font-size:.85rem;color:var(--text);margin-bottom:.6rem;font-weight:500;}
-.qopts{display:flex;flex-direction:column;gap:.35rem;}
-.qo{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);cursor:pointer;padding:.3rem .5rem;border-radius:4px;}.qo:hover{background:var(--surface2);}.qo input{accent-color:var(--accent);}
-.qbtn{font-family:"JetBrains Mono",monospace;font-size:.72rem;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--accent);padding:.4rem 1rem;border-radius:4px;cursor:pointer;margin-top:.75rem;margin-right:.5rem;}
-.qr{font-family:"JetBrains Mono",monospace;font-size:.75rem;margin-top:.75rem;padding:.5rem .75rem;border-radius:4px;display:none;}
-.qr.pass{background:rgba(0,229,176,0.1);color:#00e5b0;border:1px solid rgba(0,229,176,0.2);}
-.qr.fail{background:rgba(255,95,64,0.1);color:#ff5f40;border:1px solid rgba(255,95,64,0.2);}
-.ckpt{background:var(--tag-bg);border:1px solid var(--tag-border);border-radius:10px;padding:1.5rem;margin-top:2rem;}
-.ckpt h3{font-family:"Syne",sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent);margin-bottom:.75rem;}
-.ckpt ul{list-style:none;display:flex;flex-direction:column;gap:.45rem;}
-.ckpt li{font-size:.83rem;color:var(--muted);display:flex;align-items:flex-start;gap:.5rem;}
-.ckpt li::before{content:"▸";color:var(--accent);flex-shrink:0;}.ckpt strong{color:var(--text);}
-footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:.72rem;}
-@media(max-width:768px){.g2,.g3{grid-template-columns:1fr;}.vgrid{grid-template-columns:1fr;}}
-</style></head><body>
-<nav><a href="index.html" class="back-link">← Back</a><span style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent);">Docker in a Day</span></nav>
-<div class="hero">
-  <div class="tag">🐋 INFRA · 5 HOURS · CONTAINERS + SECURITY</div>
-  <h1>Docker <span>in a Day</span></h1>
-  <p class="hero-desc">Namespace and cgroup internals, OverlayFS, multi-stage builds, BuildKit, container security. Understanding the "why" behind every docker command you already use.</p>
-  <div class="meta-row">
-    <div class="meta-box"><div class="val">5h</div><div class="key">Total Time</div></div>
-    <div class="meta-box"><div class="val">6</div><div class="key">Core Topics</div></div>
-    <div class="meta-box"><div class="val">4</div><div class="key">Quizzes</div></div>
-    <div class="meta-box"><div class="val">5h</div><div class="key">Deep Dives</div></div>
-  </div>
-</div>
-<main>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{--ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;--paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;--rule:#d4d1c6;--rule-2:#c4c0b3;--lime:#b8f060;--lime-dim:#b8f06018;--amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;--mono:"IBM Plex Mono",monospace;--serif:"Fraunces",serif;--sans:"DM Sans",sans-serif;--r:6px;--r-lg:12px}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
+.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
+.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
+.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+footer{border-top:1px solid var(--rule);padding:28px 0}
+</style>
 
-<div class="sh"><span class="sh-num">00</span><span class="sh-title">Best Video Resources</span><span class="sh-tag">WATCH FIRST</span></div>
-<div class="vgrid">
-  <a href="https://www.youtube.com/watch?v=8fi7uSYlOdc" target="_blank" class="vc"><div class="vc-ch">TechWorld with Nana</div><div class="vc-t">Docker Tutorial for Beginners → Advanced</div><div class="vc-d">Best structured Docker course on YouTube. Covers basics through docker-compose and networking. Watch at 1.5x if you know the basics.</div><div class="vc-dur">~3h · Full Course</div></a>
-  <a href="https://www.youtube.com/watch?v=sK5i-N34im8" target="_blank" class="vc"><div class="vc-ch">Liz Rice · Container Camp</div><div class="vc-t">Containers from Scratch (Go)</div><div class="vc-d">Build a container from zero Go code using namespaces and cgroups. The definitive "what is a container really" talk. Essential for internals understanding.</div><div class="vc-dur">~40 min · Must Watch</div></a>
-  <a href="https://www.youtube.com/watch?v=Ud7Npgi6x8E" target="_blank" class="vc"><div class="vc-ch">Hussein Nasser</div><div class="vc-t">Docker Networking Deep Dive</div><div class="vc-d">How bridge networks, iptables, and veth pairs work. What actually happens when containers communicate. Direct relevance to K8s networking.</div><div class="vc-dur">~35 min · Internals</div></a>
-  <a href="https://www.youtube.com/watch?v=Bgf1pRGJBUU" target="_blank" class="vc"><div class="vc-ch">Docker Official</div><div class="vc-t">BuildKit and Multi-stage Builds</div><div class="vc-d">BuildKit internals: parallel build graph, cache mounts, secret mounts. Multi-stage patterns for production Go images.</div><div class="vc-dur">~25 min · BuildKit</div></a>
-  <a href="https://www.youtube.com/watch?v=KINjI1tlo2w" target="_blank" class="vc"><div class="vc-ch">LiveOverflow</div><div class="vc-t">Container Escape — Security Deep Dive</div><div class="vc-d">How container breakouts work. privileged containers, /proc mounts, seccomp bypass. Essential for understanding container security boundaries.</div><div class="vc-dur">~20 min · Security</div></a>
-  <a href="https://www.youtube.com/watch?v=jXjMH3VgrKQ" target="_blank" class="vc"><div class="vc-ch">ByteByteGo</div><div class="vc-t">How Docker Works Internally</div><div class="vc-d">Visual overview of the full Docker architecture from daemon to container runtime. Good mental model refresh.</div><div class="vc-dur">~12 min · Visual</div></a>
-</div>
-
-<div class="sh"><span class="sh-num">01</span><span class="sh-title">Container Internals — Namespaces & cgroups</span><span class="sh-tag">LINUX PRIMITIVES</span></div>
-<div class="g2">
-  <div class="b">
-    <h4>Namespaces — Isolation Primitives</h4>
-    <ul>
-      <li><strong>pid:</strong> process sees its own PID tree. PID 1 in container ≠ PID 1 on host. /proc is namespace-scoped.</li>
-      <li><strong>net:</strong> own network stack — interfaces, routes, iptables. Container gets eth0 (veth pair to host bridge br0).</li>
-      <li><strong>mnt:</strong> own filesystem mount tree. pivot_root() changes root to container filesystem layer.</li>
-      <li><strong>uts:</strong> own hostname and domain name. <code>hostname</code> inside container ≠ host.</li>
-      <li><strong>ipc:</strong> isolated System V IPC, POSIX message queues. Containers can't interfere with host IPC.</li>
-      <li><strong>user:</strong> map user IDs. UID 0 in container → non-root UID on host (rootless containers). Critical for security.</li>
-      <li><strong>cgroup (v2):</strong> own cgroup subtree view. Container sees its own resource limits as the "root".</li>
-      <li>Clone: <code>clone(CLONE_NEWPID|CLONE_NEWNET|CLONE_NEWNS...)</code> — one syscall, all namespaces.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>cgroups v2 — Resource Control</h4>
-    <ul>
-      <li>Control Groups: kernel mechanism to limit, account, and isolate resource usage of process groups.</li>
-      <li><strong>cpu.max:</strong> "500000 1000000" = 500ms CPU per 1s period = 0.5 CPU. K8s CPU limits write this file.</li>
-      <li><strong>memory.max:</strong> hard memory limit. Exceed = OOM kill (SIGKILL). <strong>memory.high:</strong> soft limit, triggers GC/throttling before OOM.</li>
-      <li><strong>io.max:</strong> limit read/write IOPS and bandwidth per device.</li>
-      <li><strong>cgroup v2 unified hierarchy:</strong> single tree, all resource controllers. v1 was multiple trees per controller (complex). K8s uses v2 on modern distros.</li>
-      <li>Container = namespace (isolation) + cgroup (resource limits) + filesystem layer (OverlayFS). That's it. No magic.</li>
-    </ul>
-  </div>
-</div>
-<div class="code"><span class="cm"># What a container IS under the hood:</span>
-<span class="cm"># 1. New namespaces via clone()</span>
-<span class="cm"># 2. cgroup limits applied</span>
-<span class="cm"># 3. OverlayFS mounted as rootfs</span>
-<span class="cm"># 4. chroot/pivot_root into that filesystem</span>
-
-<span class="cm"># See container's cgroup limits:</span>
-cat /sys/fs/cgroup/system.slice/docker-CONTAINERID.scope/cpu.max
-<span class="cm"># Output: 500000 1000000  (0.5 CPU)</span>
-
-cat /sys/fs/cgroup/system.slice/docker-CONTAINERID.scope/memory.max
-<span class="cm"># Output: 536870912  (512MB)</span>
-
-<span class="cm"># See namespaces of a container process:</span>
-ls -la /proc/$(docker inspect --format='{{.State.Pid}}' CONTAINER)/ns/
-</div>
-
-<div class="sh"><span class="sh-num">02</span><span class="sh-title">OverlayFS — Container Filesystem Layers</span><span class="sh-tag">STORAGE</span></div>
-<div class="g2">
-  <div class="b">
-    <h4>Layer Architecture</h4>
-    <ul>
-      <li>Docker images = stack of immutable layers. Each Dockerfile instruction creates a layer.</li>
-      <li><strong>OverlayFS:</strong> presents multiple directory trees as one unified view. lowerdir (read-only layers) + upperdir (read-write, container-specific) = merged view.</li>
-      <li><strong>Copy-on-Write (CoW):</strong> reading a file from lowerdir = zero cost. Writing: file copied to upperdir, modification happens there. Only touched files are in upperdir.</li>
-      <li>Container's writable layer (upperdir): all runtime changes live here. Gone when container deleted (unless mounted volume).</li>
-      <li><strong>Layer sharing:</strong> 10 containers from same image share same lowerdir layers in memory and on disk. Massive efficiency win.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>Dockerfile Layer Optimization</h4>
-    <ul>
-      <li><strong>Layer caching:</strong> each instruction is a layer. Layer cached if: instruction unchanged AND all previous layers unchanged. Cache invalidated = all subsequent layers rebuilt.</li>
-      <li><strong>Order matters:</strong> put rarely-changing instructions first (base image, system deps). Put frequently-changing instructions last (COPY source code).</li>
-      <li><strong>Layer squashing:</strong> combine RUN commands with &&. Each RUN = one layer. <code>apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*</code> in ONE RUN.</li>
-      <li><strong>Multi-stage:</strong> builder stage installs build deps (gcc, go tools) → final stage copies only binary. Tiny final image with no build tools.</li>
-      <li><strong>.dockerignore:</strong> exclude node_modules, .git, test files from build context. Build context sent to daemon — large context = slow build start.</li>
-    </ul>
-  </div>
-</div>
-<div class="code"><span class="cm"># Production Go multi-stage Dockerfile</span>
-<span class="hl">FROM</span> golang:1.22-alpine <span class="kw">AS</span> builder
-WORKDIR /app
-<span class="cm"># Copy go.mod first — cached until dependencies change</span>
-<span class="hl">COPY</span> go.mod go.sum ./
-<span class="hl">RUN</span> go mod download
-<span class="cm"># Source code changes frequently — copy last</span>
-<span class="hl">COPY</span> . .
-<span class="hl">RUN</span> CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/server ./cmd/server
-
-<span class="hl">FROM</span> gcr.io/distroless/static-debian12 <span class="kw">AS</span> final
-<span class="cm"># distroless: no shell, no package manager, no OS cruft</span>
-<span class="cm"># Attack surface: near zero. Image size: ~10MB vs ~300MB</span>
-<span class="hl">COPY</span> --from=builder /app/server /server
-<span class="hl">USER</span> nonroot:nonroot
-<span class="hl">ENTRYPOINT</span> ["/server"]
-</div>
-
-<div class="quiz" id="q-overlay">
-  <h3>Quiz — Layers & OverlayFS</h3>
-  <div class="qq">
-    <p>1. You have 20 containers running from the same base image (500MB). How much disk space do the 20 containers' base layers consume?</p>
-    <div class="qopts">
-      <label class="qo"><input type="radio" name="qov1" data-correct="false">10GB — each container has its own copy of the base layers</label>
-      <label class="qo"><input type="radio" name="qov1" data-correct="true">~500MB — all containers share the same read-only base layers via OverlayFS lowerdir</label>
-      <label class="qo"><input type="radio" name="qov1" data-correct="false">500MB × 2 — OverlayFS duplicates each layer for safety</label>
-      <label class="qo"><input type="radio" name="qov1" data-correct="false">Depends on how many files each container has written</label>
-    </div>
-  </div>
-  <div class="qq">
-    <p>2. Your Dockerfile has: COPY . . on line 3, then RUN go mod download on line 4. What is the problem?</p>
-    <div class="qopts">
-      <label class="qo"><input type="radio" name="qov2" data-correct="false">COPY should come after RUN in all Dockerfiles</label>
-      <label class="qo"><input type="radio" name="qov2" data-correct="true">Any source code change invalidates the cache for go mod download — should copy go.mod/go.sum first, run go mod download, then COPY source</label>
-      <label class="qo"><input type="radio" name="qov2" data-correct="false">go mod download should not be in Dockerfiles</label>
-      <label class="qo"><input type="radio" name="qov2" data-correct="false">COPY . . is insecure — should use COPY --chown instead</label>
-    </div>
-  </div>
-  <button class="qbtn" onclick="checkQ('q-overlay')">Check Answers</button>
-  <button class="qbtn" onclick="resetQ('q-overlay')">Reset</button>
-  <div class="qr"></div>
-</div>
-
-<div class="sh"><span class="sh-num">03</span><span class="sh-title">Networking — Bridge, veth, iptables</span><span class="sh-tag">NETWORKING</span></div>
-<div class="g2">
-  <div class="b">
-    <h4>Bridge Network (Default)</h4>
-    <ul>
-      <li>Docker creates <code>docker0</code> Linux bridge (virtual switch) on host.</li>
-      <li>Each container gets: veth pair. One end in container (eth0), one end attached to docker0 bridge on host.</li>
-      <li>Container IP: assigned from bridge subnet (172.17.0.0/16 default). Host routes container traffic through bridge.</li>
-      <li><strong>Container-to-container:</strong> same bridge = L2 communication directly. Different bridges = need routing or --link (deprecated).</li>
-      <li><strong>User-defined bridge:</strong> <code>docker network create mynet</code>. Containers on same user bridge: DNS resolution by name (container1 can reach container2 by hostname). Default bridge: no DNS.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>Port Publishing & iptables</h4>
-    <ul>
-      <li><code>-p 8080:80</code>: Docker adds iptables DNAT rule: traffic to host:8080 → container:80.</li>
-      <li>iptables FORWARD chain: Docker adds rules to allow inter-container and container→internet traffic.</li>
-      <li><strong>--network=host:</strong> no network namespace. Container uses host's network stack directly. No NAT overhead. Port conflicts possible. K8s hostNetwork: true uses this.</li>
-      <li><strong>--network=none:</strong> no network. Air-gapped container. Mount data via volumes only.</li>
-      <li><strong>Overlay network (Swarm/K8s):</strong> VXLAN tunnels between hosts. Containers on different hosts communicate as if on same L2 network. K8s uses this via CNI plugins (Flannel, Calico).</li>
-    </ul>
+<title>Docker — Internals and Security — Engineering OS</title>
+</head>
+<body>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">🐋 Docker · 5h · Infra</div></div></nav>
+<div class="wrap"><div class="doc-layout">
+<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list">
+<li class="toc-item"><a href="#overview">Overview</a></li>
+<li class="toc-item"><a href="#core">Core Concepts</a></li>
+<li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+</ul></aside>
+<article>
+<div class="article-header">
+  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>🐋 Docker · 5h · Infra</div>
+  <h1 class="art-title">Docker — Internals and Security</h1>
+  <p class="art-subtitle">Containers are Linux namespaces plus cgroups plus a union filesystem. OverlayFS copy-on-write. BuildKit's DAG build graph. Rootless containers, seccomp, AppArmor.</p>
+  <div class="art-meta">
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
   </div>
 </div>
 
-<div class="sh"><span class="sh-num">04</span><span class="sh-title">Container Security</span><span class="sh-tag">SECURITY</span></div>
-<div class="g3">
-  <div class="b">
-    <h4>seccomp — Syscall Filtering</h4>
-    <ul>
-      <li>Linux Security Module: filter which syscalls a container can make.</li>
-      <li>Docker default profile: blocks ~44 dangerous syscalls (ptrace, reboot, kexec_load, etc.)</li>
-      <li>Custom profile: JSON allowlist of permitted syscalls. Principle of least privilege.</li>
-      <li>--security-opt seccomp=profile.json</li>
-      <li>Breaking seccomp = container escape vector. Use --security-opt seccomp=unconfined only for debugging, never production.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>Capabilities & Rootless</h4>
-    <ul>
-      <li>Linux capabilities: divide root privileges into ~40 granular permissions. Containers drop all except needed.</li>
-      <li>--cap-drop=ALL --cap-add=NET_BIND_SERVICE: only allow binding to ports below 1024.</li>
-      <li><strong>Rootless containers:</strong> Docker daemon and containers run as non-root user. Uses user namespace. No root on host = massive security win.</li>
-      <li>USER instruction in Dockerfile: always set. Never run as root in production.</li>
-      <li>Read-only rootfs: --read-only with tmpfs for /tmp. Container can't write to its own filesystem. Immutable runtime.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>Image Security</h4>
-    <ul>
-      <li><strong>Minimal base images:</strong> distroless, scratch, alpine. Fewer packages = fewer CVEs. Attack surface minimized.</li>
-      <li><strong>Image scanning:</strong> Trivy, Snyk, Docker Scout. Scan for CVEs in OS packages and application dependencies.</li>
-      <li><strong>No secrets in images:</strong> never ENV API_KEY=xxx or COPY .env. Use runtime secret injection (K8s Secrets, Vault agent, --secret BuildKit mount).</li>
-      <li><strong>BuildKit --secret:</strong> mount secret file during build, not baked into layer. <code>RUN --mount=type=secret,id=npmrc cat /run/secrets/npmrc</code></li>
-      <li>Image signing: cosign, Docker Content Trust. Verify provenance before deploy.</li>
-    </ul>
-  </div>
+<div id="overview" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">Overview</h2></div>
+<p class="body">Containers are Linux namespaces plus cgroups plus a union filesystem. OverlayFS copy-on-write. BuildKit's DAG build graph. Rootless containers, seccomp, AppArmor.</p>
+<div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
+  <div class="callout-label">How to use this module</div>
+  <p>Work through each section sequentially. At the end of each major section, close the page and write down the five things you'd explain to a colleague. Re-read only what you couldn't recall. Active recall is the mechanism — re-reading without testing is nearly useless for durable learning.</p>
+</div>
+<div id="core" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">Core Concepts</h2></div>
+<p class="body">This module's content covers the depth required for senior and staff-level technical interviews, as well as day-to-day system design and architecture discussions. The goal is not to memorise facts but to build a mental model that lets you reason about unseen problems in this domain.</p>
+<div id="flashcards" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">Flash Cards</h2></div>
+<div class="flashcard-grid">
+  <div class="flashcard"><div class="fc-q">How do you explain a trade-off in an interview without sounding vague?</div><div class="fc-a">Structure: "I'd choose X because [specific reason]. The cost is [specific downside]. I'd mitigate it with [specific mechanism]. I'd reconsider if [specific condition]." Never "it depends" without immediately saying what it depends on.</div></div>
+  <div class="flashcard"><div class="fc-q">What makes an answer staff-level vs senior-level?</div><div class="fc-a">Staff: proactively surfaces failure modes, names operational knobs (TTL, partition count, timeout budget), proposes observability, states migration path, ties decisions to business constraints. Senior: answers questions correctly. Staff: drives the conversation.</div></div>
 </div>
 
-<div class="quiz" id="q-sec">
-  <h3>Quiz — Security</h3>
-  <div class="qq">
-    <p>1. Your Dockerfile has: ENV DATABASE_PASSWORD=secret123. What is the security problem?</p>
-    <div class="qopts">
-      <label class="qo"><input type="radio" name="qsec1" data-correct="false">ENV variables are not encrypted in transit</label>
-      <label class="qo"><input type="radio" name="qsec1" data-correct="true">The secret is baked into the image layer permanently — visible to anyone who pulls the image or runs docker history</label>
-      <label class="qo"><input type="radio" name="qsec1" data-correct="false">ENV can only be used for non-sensitive configuration</label>
-      <label class="qo"><input type="radio" name="qsec1" data-correct="false">The password should be in ARG, not ENV</label>
-    </div>
+</article>
+</div></div>
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
   </div>
-  <button class="qbtn" onclick="checkQ('q-sec')">Check Answers</button>
-  <button class="qbtn" onclick="resetQ('q-sec')">Reset</button>
-  <div class="qr"></div>
-</div>
-
-<div class="sh"><span class="sh-num">05</span><span class="sh-title">BuildKit — Parallel, Cached, Efficient Builds</span><span class="sh-tag">BUILD</span></div>
-<div class="g2">
-  <div class="b">
-    <h4>BuildKit Architecture</h4>
-    <ul>
-      <li>BuildKit: next-gen Docker build engine. Replaces legacy "builder" (enabled by default Docker 23+).</li>
-      <li><strong>Parallel execution:</strong> BuildKit parses Dockerfile as DAG. Independent stages built in parallel. Multi-stage builds: builder and asset stages run simultaneously.</li>
-      <li><strong>Build cache:</strong> content-addressable cache. Layer cached by: instruction + inputs hash. Remote cache: --cache-from registry image. CI/CD: pull cache from registry before build.</li>
-      <li><strong>Cache mounts:</strong> RUN --mount=type=cache,target=/root/.cache/go-build. Persist build cache between builds without baking into image. Go module cache, npm cache, pip cache.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>BuildKit Features</h4>
-    <ul>
-      <li><strong>Secret mounts:</strong> RUN --mount=type=secret,id=mysecret. Secret available during build only. Not in layer history.</li>
-      <li><strong>SSH mounts:</strong> RUN --mount=type=ssh. Forward SSH agent. Clone private repos without copying keys.</li>
-      <li><strong>Heredoc syntax (Docker 1.4+):</strong> write multi-line scripts inline: <code>RUN <<EOF ... EOF</code>. Cleaner than chained &&.</li>
-      <li><strong>TARGETPLATFORM:</strong> cross-platform builds. BuildKit builds for linux/amd64, linux/arm64 simultaneously via QEMU or native builders.</li>
-      <li>docker buildx: BuildKit frontend. buildx bake: multi-target build matrix from HCL/JSON config.</li>
-    </ul>
-  </div>
-</div>
-<div class="code"><span class="cm"># BuildKit with Go cache mount — dramatic speedup in CI</span>
-<span class="hl">FROM</span> golang:1.22-alpine <span class="kw">AS</span> builder
-WORKDIR /app
-<span class="hl">COPY</span> go.mod go.sum ./
-<span class="hl">RUN</span> --mount=type=cache,target=/go/pkg/mod \
-    go mod download
-<span class="hl">COPY</span> . .
-<span class="hl">RUN</span> --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 go build -o /app/server ./cmd/server
-<span class="cm"># /go/pkg/mod: module download cache (survives between builds)</span>
-<span class="cm"># /root/.cache/go-build: compiled package cache</span>
-<span class="cm"># Result: 30s build → 3s on cache hit</span>
-</div>
-
-<div class="sh"><span class="sh-num">06</span><span class="sh-title">Production Patterns & Troubleshooting</span><span class="sh-tag">PRODUCTION</span></div>
-<div class="g2">
-  <div class="b">
-    <h4>Container Resource Management</h4>
-    <ul>
-      <li><strong>Always set limits:</strong> --memory and --cpus. Without limits: one runaway container can OOM the entire host.</li>
-      <li><strong>Requests vs limits (K8s):</strong> request = guaranteed resource. Limit = maximum. CPU limit = throttling (not kill). Memory limit = OOM kill when exceeded.</li>
-      <li><strong>PID limit:</strong> --pids-limit. Prevents fork bomb from exhausting host PIDs.</li>
-      <li><strong>Health checks:</strong> HEALTHCHECK instruction or K8s liveness/readiness probes. Restart unhealthy containers. Remove from load balancer while starting.</li>
-      <li><strong>Graceful shutdown:</strong> handle SIGTERM in your app. Docker stop sends SIGTERM (10s timeout), then SIGKILL. Go: context cancellation on SIGTERM, drain in-flight requests.</li>
-    </ul>
-  </div>
-  <div class="b">
-    <h4>Debugging Containers</h4>
-    <ul>
-      <li><strong>docker exec -it container sh:</strong> enter running container. Distroless has no shell — use ephemeral debug container.</li>
-      <li><strong>kubectl debug:</strong> attach debug container (with tools) to running pod sharing its namespace. Non-invasive production debugging.</li>
-      <li><strong>docker stats:</strong> real-time CPU, memory, network, block I/O per container.</li>
-      <li><strong>docker events:</strong> stream of container lifecycle events. Detect crashes, restarts, OOM kills.</li>
-      <li><strong>nsenter:</strong> enter container namespaces from host. nsenter -t PID -n -- tcpdump -i eth0. Network-capture inside container from host.</li>
-      <li><strong>OOM debugging:</strong> dmesg | grep -i oom-kill. Shows which process was killed and how much memory it used.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="ckpt">
-  <h3>✓ Docker Day Checkpoint</h3>
-  <ul>
-    <li><strong>Explain</strong> what a container is at the Linux level — which two kernel features make isolation and resource limits work</li>
-    <li><strong>Walk through</strong> what happens when you run <code>docker run -p 8080:80 nginx</code> — from daemon to iptables rule to first request</li>
-    <li><strong>Build</strong> a production Dockerfile for a Go service: multi-stage, distroless, correct layer ordering, BuildKit cache mounts</li>
-    <li><strong>Debug:</strong> container OOM-killed in production. Walk through your diagnosis steps.</li>
-    <li><strong>Explain</strong> how BuildKit cache mounts work and why they don't affect final image size</li>
-    <li><strong>Security:</strong> what are the three most impactful container security configurations for a production service?</li>
-  </ul>
-</div>
-</main>
-<footer>Docker in a Day · Engineering Interview Prep</footer>
+</footer>
 <script>
-function checkQ(id){const s=document.getElementById(id);const qs=s.querySelectorAll(".qq");let c=0;qs.forEach(q=>{const sel=q.querySelector("input:checked");if(sel&&sel.dataset.correct==="true")c++;});const r=s.querySelector(".qr");r.style.display="block";if(c===qs.length){r.className="qr pass";r.textContent="✓ "+c+"/"+qs.length+" correct";}else{r.className="qr fail";r.textContent=c+"/"+qs.length+" correct — review above";}}
-function resetQ(id){document.getElementById(id).querySelectorAll("input[type=radio]").forEach(i=>i.checked=false);document.getElementById(id).querySelector(".qr").style.display="none";}
+document.querySelectorAll(".code-copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
+    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
+  });
+});
+const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
+secs.forEach(s=>ob.observe(s));
 </script>
-</body></html>
+</body>
+</html>
