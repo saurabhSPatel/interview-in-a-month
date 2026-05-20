@@ -3,538 +3,750 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team LLM Context Management | EngineeringOS</title>
+<title>Team LLM Context Engineering — Engineering OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;
+  --paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;
+  --rule:#d4d1c6;--rule-2:#c4c0b3;
+  --lime:#b8f060;--lime-dim:#b8f06018;
+  --amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;--purple:#7030b0;
+  --mono:'IBM Plex Mono',monospace;--serif:'Fraunces',serif;--sans:'DM Sans',sans-serif;
+  --r:6px;--r-lg:12px;
+}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+@media(max-width:700px){.wrap{padding:0 20px}}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+
+/* ── TOC ── */
+.toc{position:sticky;top:72px}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s;line-height:1.4}
+.toc-item a:hover{color:var(--ink);border-left-color:var(--ink-3)}
+.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+
+/* ── ARTICLE ── */
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px;font-weight:500}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+
+/* ── SECTION ── */
+.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:60px;padding-top:60px;border-top:1px solid var(--rule)}
+.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub-h::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+p.body strong{color:var(--ink);font-weight:500}
+
+/* ── CALLOUT ── */
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+
+/* ── CODE ── */
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer;transition:color .15s}
+.code-copy:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
+.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}
+.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
+.t-cm{color:#ff9f80}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+
+/* ── PROBLEM CARDS ── */
+.problem-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
+@media(max-width:600px){.problem-grid{grid-template-columns:1fr}}
+.problem-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.prob-icon{font-size:20px;margin-bottom:10px}
+.prob-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.prob-desc{font-size:12px;color:var(--ink-3);line-height:1.6}
+.prob-cost{font-family:var(--mono);font-size:10px;color:var(--red);margin-top:8px;padding:3px 8px;background:#ffeee0;border:1px solid #ffccaa;border-radius:10px;display:inline-block}
+
+/* ── AGENT FOLDER TREE ── */
+.file-tree{background:var(--ink);border-radius:var(--r-lg);padding:24px;font-family:var(--mono);font-size:12.5px;line-height:2;margin:16px 0}
+.ft-dir{color:#74c0fc}
+.ft-file{color:#b8f060}
+.ft-desc{color:rgba(255,255,255,.35);font-size:11px}
+.ft-line{display:flex;align-items:baseline;gap:12px}
+
+/* ── PATTERN CARDS (strategy) ── */
+.strategy-grid{display:grid;grid-template-columns:1fr;gap:16px;margin:20px 0}
+.strategy-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden}
+.strategy-head{display:flex;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--rule)}
+.strat-num{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;flex-shrink:0}
+.strat-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:10px;flex-shrink:0}
+.strat-title{font-size:14px;font-weight:500;color:var(--ink)}
+.strategy-body{padding:20px}
+.strategy-body p{font-size:13px;color:var(--ink-2);line-height:1.7;margin-bottom:10px}
+.strategy-body p:last-child{margin-bottom:0}
+.strategy-body strong{color:var(--ink);font-weight:500}
+
+/* ── WORKFLOW STEPS ── */
+.workflow{display:flex;flex-direction:column;gap:0;margin:20px 0;position:relative}
+.workflow::before{content:'';position:absolute;left:19px;top:24px;bottom:24px;width:1px;background:var(--rule);z-index:0}
+.wf-step{display:flex;gap:16px;align-items:flex-start;position:relative;z-index:1}
+.wf-step+.wf-step{margin-top:16px}
+.wf-dot{width:40px;height:40px;border-radius:50%;background:var(--paper-3);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--ink-3);flex-shrink:0}
+.wf-content{flex:1;padding-top:8px}
+.wf-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.wf-desc{font-size:13px;color:var(--ink-3);line-height:1.6}
+
+/* ── FLASHCARDS ── */
+.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
+@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
+.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
+.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+
+/* ── DARK BLOCK ── */
+.dark-block{background:var(--ink);border-radius:var(--r-lg);padding:36px;margin:24px 0}
+.db-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.db-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--paper);margin-bottom:14px}
+.db-body{font-size:14px;color:rgba(245,243,238,.65);line-height:1.75}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--rule);padding:28px 0}
+</style>
 </head>
 <body>
-  <nav class="site-nav">
-    <a href="index.html" class="nav-logo">
-      Engineering<span>OS</span>
-    </a>
-    <div class="nav-links">
-      <a href="#problem" class="nav-link">The Problem</a>
-      <a href="#strategies" class="nav-link">Strategies</a>
-      <a href="#tools" class="nav-link">Tools & Techniques</a>
-      <a href="#ide-integration" class="nav-link">IDE Integration</a>
-      <a href="#best-practices" class="nav-link">Best Practices</a>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back">← Platform</a>
+    <div class="nav-badge">🤖 Team LLM · 4h · Engineering Practice</div>
+  </div>
+</nav>
+
+<div class="wrap">
+<div class="doc-layout">
+
+  <!-- TOC -->
+  <aside class="toc">
+    <div class="toc-label">Contents</div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#problem">The Real Problem</a></li>
+      <li class="toc-item"><a href="#agent-folder">The .agent Folder</a></li>
+      <li class="toc-item"><a href="#context-protocol">Context Protocol</a></li>
+      <li class="toc-item"><a href="#multi-model">Multi-Model Routing</a></li>
+      <li class="toc-item"><a href="#drift">Preventing Context Drift</a></li>
+      <li class="toc-item"><a href="#workflows">Team Workflows</a></li>
+      <li class="toc-item"><a href="#pitfalls">Failure Modes</a></li>
+      <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+    </ul>
+  </aside>
+
+  <!-- ARTICLE -->
+  <article>
+
+    <div class="article-header">
+      <div class="art-eyebrow">
+        <span class="art-badge">Team</span>
+        Multi-LLM · Context Engineering · Distributed Knowledge
+      </div>
+      <h1 class="art-title">Team LLM<br><em>Context Engineering</em></h1>
+      <p class="art-subtitle">
+        Most teams are using LLMs the same way they used Stack Overflow in 2012 — each person alone, rebuilding context from scratch each session. This module covers what it actually looks like to treat LLM context as shared team infrastructure: versioned, observable, and consistent across Claude, GPT-4o, Gemini, and Copilot simultaneously.
+      </p>
+      <div class="art-meta">
+        <div class="meta-pill"><div class="meta-pill-dot"></div>4 hours</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>Engineering practice</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>Team-level, not prompt-level</div>
+      </div>
     </div>
-  </nav>
 
-  <main class="content-wrap">
-    <section class="page-hero">
-      <div class="eyebrow">Team Collaboration</div>
-      <h1>Team LLM Context Management <em>Synchronized Intelligence</em></h1>
-      <p>This deep dive explores how to maintain shared context when multiple team members use different LLMs. Learn strategies for creating common knowledge bases, synchronization protocols, and collaborative AI workflows that keep everyone aligned.</p>
-      <div class="stats-row">
-        <div class="stat"><div class="stat-val">5</div><div class="stat-key">Core Strategies</div></div>
-        <div class="stat"><div class="stat-val">18</div><div class="stat-key">Implementation Patterns</div></div>
-        <div class="stat"><div class="stat-val">15</div><div class="stat-key">Tool Categories</div></div>
-        <div class="stat"><div class="stat-val">100%</div><div class="stat-key">Team Synchronization</div></div>
-      </div>
-      <div class="callout-note">
-        This page provides a comprehensive framework for managing LLM contexts across teams, ensuring consistent understanding and decision-making regardless of which AI tools individual members prefer. Learn how to implement the .agent folder approach for seamless multi-LLM synchronization.
-      </div>
-    </section>
+    <!-- 01 — THE REAL PROBLEM -->
+    <div id="problem" class="section-anchor">
+      <span class="section-num">01</span>
+      <h2 class="section-h">The Real Problem — It's Not Which Model You Use</h2>
+    </div>
 
-    <section id="problem" class="content-section">
-      <div class="section-header">
-        <div class="section-num">01</div>
-        <h2>The Context Fragmentation Problem</h2>
-      </div>
-      <div class="pattern-card">
-        <h3>Why Context Matters in Team AI Usage</h3>
-        <p>When team members use different LLMs (GPT-4, Claude, Gemini, etc.), each conversation becomes siloed. The same project context gets fragmented across multiple AI instances, leading to:</p>
-        <ul>
-          <li>Inconsistent understanding of project requirements</li>
-          <li>Redundant work as team members re-explain the same concepts</li>
-          <li>Conflicting recommendations from different AIs</li>
-          <li>Lost institutional knowledge that never gets captured</li>
-          <li>Difficulty in maintaining project continuity</li>
-        </ul>
-      </div>
-      <div class="pattern-card">
-        <h3>The Hidden Cost of Context Loss</h3>
-        <p>Each time a team member switches LLMs or starts a new conversation, they lose access to previous context. This creates a "context tax" where significant time is spent rebuilding understanding rather than making progress.</p>
-        <h4>Common Scenarios:</h4>
-        <ul>
-          <li>New team member onboarding without access to established context</li>
-          <li>Project handoffs between team members using different LLMs</li>
-          <li>Cross-functional collaboration where different departments use different tools</li>
-          <li>Long-term project maintenance where original context has been lost</li>
-        </ul>
-      </div>
-    </section>
+    <p class="body">Teams typically frame the multi-LLM problem as "which model should we standardise on?" That's the wrong question. The real problem is that <strong>LLM context is not a first-class engineering artifact</strong> in most teams — it's ephemeral, siloed, and non-reproducible.</p>
 
-    <section id="strategies" class="content-section">
-      <div class="section-header">
-        <div class="section-num">02</div>
-        <h2>5 Core Strategies for Context Synchronization</h2>
-      </div>
+    <p class="body">Think about what a new engineer has to do on their first day with an LLM: explain the entire system architecture, the team's conventions, the business domain, the current sprint context, and the relevant constraints — every single session. A senior engineer who has been on the project for two years does exactly the same thing. The LLM knows nothing persistent about your system.</p>
 
-      <div class="tab-nav">
-        <button class="tab-btn active" onclick="showTab(event, 'strategy-1')">Strategy 1: Knowledge Base</button>
-        <button class="tab-btn" onclick="showTab(event, 'strategy-2')">Strategy 2: Context Bridging</button>
-        <button class="tab-btn" onclick="showTab(event, 'strategy-3')">Strategy 3: Multi-LLM Orchestration</button>
-        <button class="tab-btn" onclick="showTab(event, 'strategy-4')">Strategy 4: AI Workspaces</button>
-        <button class="tab-btn" onclick="showTab(event, 'strategy-5')">Strategy 5: Standardization</button>
-      </div>
+    <p class="body">Meanwhile, every engineer on the team is having parallel conversations with different models, getting subtly different architectural recommendations, using subtly different vocabulary to describe the same things, and none of it is captured anywhere. This is context fragmentation — and it compounds over time.</p>
 
-      <div id="strategy-1" class="tab-panel active">
-        <div class="pattern-card">
-          <h3>Strategy 1: Centralized Knowledge Base</h3>
-          <h4>Concept</h4>
-          <p>Maintain a shared, LLM-agnostic knowledge repository that all team members contribute to and reference.</p>
-          <h4>Implementation</h4>
-          <ul>
-            <li>Use tools like Notion, Confluence, or GitHub Wiki for structured documentation</li>
-            <li>Create standardized templates for project context, decisions, and learnings</li>
-            <li>Establish regular "context sync" meetings where team members update the knowledge base</li>
-            <li>Implement version control for documentation changes</li>
-          </ul>
-          <h4>LLM Integration</h4>
-          <ul>
-            <li>Train all team LLMs on the same knowledge base content</li>
-            <li>Use API integrations to pull from the central repository</li>
-            <li>Create custom GPTs or Claude assistants that reference the shared knowledge</li>
-          </ul>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="prob-icon">🔁</div>
+        <div class="prob-title">Context Rebuild Tax</div>
+        <div class="prob-desc">Every new session starts from zero. A 5-minute re-explanation of system architecture, repeated 10 times a week, across 8 engineers, is 400+ minutes of lost time per month.</div>
+        <span class="prob-cost">~400 min/month per team</span>
+      </div>
+      <div class="problem-card">
+        <div class="prob-icon">🌀</div>
+        <div class="prob-title">Recommendation Drift</div>
+        <div class="prob-desc">Engineer A asks Claude to design the notification system. Engineer B asks GPT-4o the same question. They get structurally different answers with different vocabulary. Now there's a design disagreement that's actually an LLM inconsistency.</div>
+        <span class="prob-cost">Silent, hard to detect</span>
+      </div>
+      <div class="problem-card">
+        <div class="prob-icon">🧩</div>
+        <div class="prob-title">Tribal Knowledge Lock-In</div>
+        <div class="prob-desc">The engineer who wrote the auth service has the best LLM conversations about it — and all that context lives in their browser history. When they leave, the context goes with them. Not committed anywhere.</div>
+        <span class="prob-cost">Lost on offboarding</span>
+      </div>
+      <div class="problem-card">
+        <div class="prob-icon">⏱️</div>
+        <div class="prob-title">Onboarding Cliff</div>
+        <div class="prob-desc">New engineers spend weeks asking LLMs questions that existing engineers have already asked and answered, in sessions that were never captured. The team's accumulated LLM knowledge is zero from the new hire's perspective.</div>
+        <span class="prob-cost">2–4 weeks slower ramp</span>
+      </div>
+    </div>
+
+    <div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
+      <div class="callout-label">The reframe</div>
+      <p>LLM context is not a personal tool. It's a team infrastructure problem — the same class of problem as shared config, shared schema, shared runbooks. The solution is the same: version control it, make it collaborative, and make it reproducible.</p>
+    </div>
+
+    <!-- 02 — THE .AGENT FOLDER -->
+    <div id="agent-folder" class="section-anchor">
+      <span class="section-num">02</span>
+      <h2 class="section-h">The .agent Folder — Context as Code</h2>
+    </div>
+
+    <p class="body">The <code>.agent/</code> folder is a versioned, committed directory in your repository that serves as the shared context layer for all LLM interactions on the project. It's LLM-agnostic — the same files load into Claude, GPT-4o, Gemini, and Copilot. It lives in git, so it has history, ownership, code review, and diffs like any other code.</p>
+
+    <p class="body">The structure has two layers: <strong>stable context</strong> (architecture, conventions, decisions — changes rarely, reviewed carefully) and <strong>live context</strong> (current sprint, open questions, recent decisions — changes frequently, lower friction to update).</p>
+
+    <div class="file-tree">
+      <div class="ft-line"><span class="ft-dir">.agent/</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">├──</span> <span class="ft-file">CONTEXT.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← load this first. 1-page system summary.</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">├──</span> <span class="ft-dir">stable/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← changes require PR + review</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; ├──</span> <span class="ft-file">architecture.md</span>&nbsp;<span class="ft-desc">← services, data flows, dependencies</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; ├──</span> <span class="ft-file">decisions.md</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← ADRs: what was decided and why</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; ├──</span> <span class="ft-file">conventions.md</span>&nbsp;&nbsp;<span class="ft-desc">← naming, patterns, code style</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; └──</span> <span class="ft-file">constraints.md</span>&nbsp;&nbsp;<span class="ft-desc">← SLAs, compliance, non-negotiables</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">├──</span> <span class="ft-dir">live/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← commit directly, no PR needed</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; ├──</span> <span class="ft-file">sprint.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← current sprint goals + in-flight work</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; ├──</span> <span class="ft-file">open-questions.md</span><span class="ft-desc">← unresolved design questions</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│&nbsp;&nbsp; └──</span> <span class="ft-file">recent.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← last 2 weeks: decisions + learnings</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">│</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">└──</span> <span class="ft-dir">prompts/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← reusable prompt templates</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">&nbsp;&nbsp;&nbsp; ├──</span> <span class="ft-file">review.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← code review prompt</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">&nbsp;&nbsp;&nbsp; ├──</span> <span class="ft-file">design.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← system design session prompt</span></div>
+      <div class="ft-line"><span style="color:rgba(255,255,255,.2)">&nbsp;&nbsp;&nbsp; └──</span> <span class="ft-file">debug.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ft-desc">← debugging session prompt</span></div>
+    </div>
+
+    <h3 class="sub-h">What goes in CONTEXT.md</h3>
+    <p class="body">CONTEXT.md is the first file any LLM gets. It's deliberately short — 400–600 words. It answers: what does this system do, who uses it, what's the tech stack, what are the three most important architectural decisions already made, and what does the LLM need to know to not suggest something we've already ruled out. It's the system prompt you'd write if you were hiring a contractor for a week.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">markdown — CONTEXT.md template</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c"># [Service Name] — LLM Context</span>
+<span class="t-c">## What this is</span>
+<span class="t-r">[2 sentences. What the service does and who calls it.]</span>
+
+<span class="t-c">## Stack</span>
+<span class="t-r">- Language: Go 1.23</span>
+<span class="t-r">- Transport: gRPC (internal) + REST (public)</span>
+<span class="t-r">- DB: PostgreSQL 15 (primary) + Redis (cache)</span>
+<span class="t-r">- Messaging: Kafka (Confluent Cloud)</span>
+<span class="t-r">- Deploy: Kubernetes on GKE, ArgoCD</span>
+
+<span class="t-c">## Scale</span>
+<span class="t-r">- ~50K RPS at peak, 200M requests/day</span>
+<span class="t-r">- p99 latency SLA: 150ms</span>
+<span class="t-r">- Data: 2TB primary DB, 180-day retention</span>
+
+<span class="t-c">## Decisions already made — do not re-suggest alternatives</span>
+<span class="t-r">1. We use Kafka for all async, not RabbitMQ. Migration done in Q1 2024.</span>
+<span class="t-r">2. We do not use ORMs. All queries are raw SQL via pgx.</span>
+<span class="t-r">3. Auth is handled by the gateway — services trust the forwarded claims.</span>
+<span class="t-r">4. We use ULID for all IDs, not UUID or auto-increment.</span>
+
+<span class="t-c">## Current constraints</span>
+<span class="t-r">- SOC 2 Type II: no PII in logs, all PII fields encrypted at rest</span>
+<span class="t-r">- No external HTTP calls from the hot path (latency requirement)</span>
+<span class="t-r">- Go version upgrades require platform team approval</span>
+
+<span class="t-c">## Team conventions — see .agent/stable/conventions.md for full list</span>
+<span class="t-r">- Error wrapping: fmt.Errorf("context: %w", err) — always wrap</span>
+<span class="t-r">- Context propagation: first argument on every function</span>
+<span class="t-r">- Tests: table-driven, no mocks for DB (use testcontainers)</span></pre>
+    </div>
+
+    <h3 class="sub-h">What goes in decisions.md</h3>
+    <p class="body">Every significant architectural decision gets an entry in decisions.md in ADR (Architecture Decision Record) format. The format is: context (what situation forced this decision), options considered, decision made, reasoning, and consequences. The LLM doesn't need to re-derive these — but it does need to know they exist so it doesn't suggest you reverse them.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">markdown — ADR entry in decisions.md</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c">## ADR-007: Fan-out strategy for notification delivery</span>
+<span class="t-r">Date: 2024-11-12 | Status: Accepted | Author: @saurabh</span>
+
+<span class="t-c">### Context</span>
+<span class="t-r">Notification service needs to deliver to 50+ channel types</span>
+<span class="t-r">(push, email, SMS, Slack, webhook). Original design had a monolithic</span>
+<span class="t-r">delivery function. At 10K alerts/sec this became a bottleneck.</span>
+
+<span class="t-c">### Options considered</span>
+<span class="t-r">A. Single topic, channel-specific consumers (current state)</span>
+<span class="t-r">B. One Kafka topic per channel type</span>
+<span class="t-r">C. Single topic + in-consumer routing by channel</span>
+
+<span class="t-c">### Decision</span>
+<span class="t-r">Option B: one topic per channel type.</span>
+
+<span class="t-c">### Reasoning</span>
+<span class="t-r">Independent scaling per channel. Email delivery is slower than push</span>
+<span class="t-r">(SMTP vs APNs latency). Separate topics prevent email backpressure</span>
+<span class="t-r">from delaying push. Consumer group lag per channel type becomes</span>
+<span class="t-r">independently observable in Grafana.</span>
+
+<span class="t-c">### Consequences</span>
+<span class="t-r">+ Each channel scales independently</span>
+<span class="t-r">+ Cleaner consumer lag monitoring</span>
+<span class="t-r">- More topics to manage (currently 52 channel topics)</span>
+<span class="t-r">- Channel registry must stay in sync with topic list (see topic-registry.go)</span></pre>
+    </div>
+
+    <!-- 03 — CONTEXT PROTOCOL -->
+    <div id="context-protocol" class="section-anchor">
+      <span class="section-num">03</span>
+      <h2 class="section-h">The Session Context Protocol</h2>
+    </div>
+
+    <p class="body">The .agent folder is only useful if engineers actually load it at the start of every LLM session. That means the loading process must be near-zero friction. Here's the protocol that makes it habitual.</p>
+
+    <h3 class="sub-h">The three-file session start</h3>
+    <p class="body">Every LLM session for project work starts with three files: <code>CONTEXT.md</code> (the base), <code>live/sprint.md</code> (current state), and the most relevant stable file for today's task (<code>architecture.md</code> for design work, <code>conventions.md</code> for code review, <code>decisions.md</code> for planning). Three files, loaded at the top of the conversation, before any actual question. This is the "context handshake."</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">shell — session start script (save as bin/llm-start)</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c">#!/bin/bash</span>
+<span class="t-c"># Usage: llm-start [context-type]</span>
+<span class="t-c"># context-type: design | code | debug | review</span>
+<span class="t-c"># Outputs the context block to copy into your LLM session</span>
+
+TYPE<span class="t-p">=</span><span class="t-s">"${1:-code}"</span>
+
+<span class="t-f">echo</span> <span class="t-s">"=== SESSION CONTEXT — $(date +%Y-%m-%d) ==="</span>
+<span class="t-f">echo</span> <span class="t-s">""</span>
+<span class="t-f">cat</span> .agent/CONTEXT.md
+<span class="t-f">echo</span> <span class="t-s">""</span>
+<span class="t-f">echo</span> <span class="t-s">"--- CURRENT SPRINT ---"</span>
+<span class="t-f">cat</span> .agent/live/sprint.md
+<span class="t-f">echo</span> <span class="t-s">""</span>
+
+<span class="t-k">case</span> <span class="t-s">"$TYPE"</span> <span class="t-k">in</span>
+  design)  <span class="t-f">cat</span> .agent/stable/architecture.md
+           <span class="t-f">cat</span> .agent/stable/decisions.md ;;
+  code)    <span class="t-f">cat</span> .agent/stable/conventions.md ;;
+  debug)   <span class="t-f">cat</span> .agent/stable/architecture.md
+           <span class="t-f">cat</span> .agent/live/recent.md ;;
+  review)  <span class="t-f">cat</span> .agent/stable/conventions.md
+           <span class="t-f">cat</span> .agent/prompts/review.md ;;
+<span class="t-k">esac</span>
+
+<span class="t-f">echo</span> <span class="t-s">""</span>
+<span class="t-f">echo</span> <span class="t-s">"=== END CONTEXT — ready for your question ==="</span>
+
+<span class="t-c"># Pipe to pbcopy (macOS) or xclip (Linux) for instant clipboard</span>
+<span class="t-c"># bin/llm-start design | pbcopy</span></pre>
+    </div>
+
+    <h3 class="sub-h">IDE integration — VS Code and Cursor</h3>
+    <p class="body">For engineers using Cursor or VS Code with Continue/Copilot, automate context injection via workspace settings. The <code>.cursorrules</code> file in the repo root is loaded automatically by Cursor as the system-level context for every AI interaction in that workspace.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">text — .cursorrules (auto-loaded by Cursor)</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c"># This file is automatically loaded by Cursor as project-level context.</span>
+<span class="t-c"># Keep it under 800 words. Link to .agent/ files for detail.</span>
+
+<span class="t-r">You are working on [Service Name], a Go microservice handling</span>
+<span class="t-r">notification delivery at 50K RPS. Full context: .agent/CONTEXT.md</span>
+
+<span class="t-r">Before suggesting code:</span>
+<span class="t-r">1. Check .agent/stable/conventions.md for naming and patterns</span>
+<span class="t-r">2. Check .agent/stable/decisions.md before suggesting new dependencies</span>
+<span class="t-r">3. All DB queries use pgx, never an ORM</span>
+<span class="t-r">4. All functions take context.Context as first argument</span>
+<span class="t-r">5. Error wrapping: fmt.Errorf("functionName: %w", err)</span>
+
+<span class="t-r">When reviewing code:</span>
+<span class="t-r">1. Flag any PII in log statements (SOC 2 violation)</span>
+<span class="t-r">2. Flag any missing context propagation</span>
+<span class="t-r">3. Flag any error paths that don't wrap with context</span>
+<span class="t-r">4. Use .agent/prompts/review.md for the full review checklist</span></pre>
+    </div>
+
+    <div class="callout" style="--callout-color:var(--amber);--callout-bg:#fff8e0">
+      <div class="callout-label">GitHub Copilot</div>
+      <p>Copilot reads <code>.github/copilot-instructions.md</code> automatically in supported editors. Add a short version of your CONTEXT.md there. It's different from .cursorrules but the same principle — inject stable project context at the tool level, not the session level.</p>
+    </div>
+
+    <!-- 04 — MULTI-MODEL ROUTING -->
+    <div id="multi-model" class="section-anchor">
+      <span class="section-num">04</span>
+      <h2 class="section-h">Multi-Model Routing — Right Model for the Right Task</h2>
+    </div>
+
+    <p class="body">Standardising on a single model is the wrong instinct. Different models have genuinely different strengths, and using the same model for code review, creative brainstorming, formal reasoning, and quick lookups is like using the same tool for every job. The goal is a clear routing decision, not uniformity.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Task Type</th>
+            <th>Best Model (2026)</th>
+            <th>Why</th>
+            <th>Context files needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>System design + architecture</td>
+            <td>Claude Sonnet / Opus</td>
+            <td>Long context (200K tokens), structured reasoning, nuanced trade-offs</td>
+            <td>CONTEXT.md + architecture.md + decisions.md</td>
+          </tr>
+          <tr>
+            <td>Code generation (Go, Rust)</td>
+            <td>Claude Sonnet / GPT-4o</td>
+            <td>Both excellent. Claude is stronger on memory safety reasoning; GPT-4o on speed</td>
+            <td>CONTEXT.md + conventions.md</td>
+          </tr>
+          <tr>
+            <td>Code review + security audit</td>
+            <td>Claude Sonnet</td>
+            <td>Best at finding subtle issues, race conditions, nil traps; reads full diff</td>
+            <td>CONTEXT.md + conventions.md + prompts/review.md</td>
+          </tr>
+          <tr>
+            <td>In-editor autocomplete</td>
+            <td>GitHub Copilot / Cursor Tab</td>
+            <td>Low latency, file-aware context, no session management needed</td>
+            <td>.cursorrules (auto-loaded)</td>
+          </tr>
+          <tr>
+            <td>Formal math / proofs / logic</td>
+            <td>o3 / Gemini Ultra</td>
+            <td>Extended reasoning chains, better on symbolic tasks</td>
+            <td>Minimal — math is domain-agnostic</td>
+          </tr>
+          <tr>
+            <td>Document drafting / RFCs</td>
+            <td>Claude Sonnet</td>
+            <td>Best structured prose with technical precision, handles long output</td>
+            <td>CONTEXT.md + decisions.md</td>
+          </tr>
+          <tr>
+            <td>Quick lookup / syntax</td>
+            <td>Any / Perplexity</td>
+            <td>Speed matters. Don't load context for "what's the flag for X command"</td>
+            <td>None</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-h">The routing rule of thumb</h3>
+    <p class="body"><strong>Load context for anything that touches project-specific knowledge.</strong> Skip context (and often skip LLMs entirely) for anything that's general knowledge — language syntax, library docs, standard algorithms. The context overhead is worth it when the task requires knowing your system's specific constraints; it's waste when the answer doesn't depend on your system at all.</p>
+
+    <!-- 05 — PREVENTING DRIFT -->
+    <div id="drift" class="section-anchor">
+      <span class="section-num">05</span>
+      <h2 class="section-h">Preventing Context Drift</h2>
+    </div>
+
+    <p class="body">Context drift is when the .agent files fall out of sync with the actual system. An architecture.md that describes what the system looked like six months ago is worse than no architecture.md — it actively misleads both new engineers and the LLM. Preventing drift requires treating context updates as part of the definition of done, not as documentation afterthought.</p>
+
+    <h3 class="sub-h">The context update checklist — part of every PR</h3>
+    <p class="body">Add this to your PR template. The goal is zero extra effort for small decisions and very low friction for large ones.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">markdown — .github/pull_request_template.md addition</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c">## Context Updates (.agent/)</span>
+<span class="t-r">- [ ] No architectural changes — no update needed</span>
+<span class="t-r">- [ ] Updated decisions.md with new ADR (if a significant decision was made)</span>
+<span class="t-r">- [ ] Updated conventions.md (if a new pattern was established)</span>
+<span class="t-r">- [ ] Updated architecture.md (if a service dependency changed)</span>
+<span class="t-r">- [ ] Updated live/sprint.md (automatically, not required per PR)</span>
+
+<span class="t-c">## LLM session notes worth capturing</span>
+<span class="t-c"># Did an LLM session surface anything important for the team?</span>
+<span class="t-c"># Key decisions, tradeoffs explored, alternatives ruled out?</span>
+<span class="t-c"># If yes: add a brief entry to .agent/live/recent.md</span></pre>
+    </div>
+
+    <h3 class="sub-h">Automated drift detection</h3>
+    <p class="body">For teams with stricter requirements, a lightweight CI check can flag when certain file patterns change but the corresponding .agent file was not updated. This isn't meant to be a hard gate — it's a reminder.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">yaml — .github/workflows/context-check.yml</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-k">name</span>: <span class="t-s">Context Freshness Check</span>
+<span class="t-k">on</span>:
+  <span class="t-k">pull_request</span>:
+    <span class="t-k">paths</span>:
+      - <span class="t-s">'**/*.go'</span>
+      - <span class="t-s">'**/schema/*.sql'</span>
+      - <span class="t-s">'**/proto/**'</span>
+
+<span class="t-k">jobs</span>:
+  <span class="t-k">context-check</span>:
+    <span class="t-k">runs-on</span>: <span class="t-s">ubuntu-latest</span>
+    <span class="t-k">steps</span>:
+      - <span class="t-k">uses</span>: <span class="t-s">actions/checkout@v4</span>
+        <span class="t-k">with</span>: <span class="t-p">{</span> <span class="t-k">fetch-depth</span>: <span class="t-n">2</span> <span class="t-p">}</span>
+
+      - <span class="t-k">name</span>: <span class="t-s">Check if context needs updating</span>
+        <span class="t-k">run</span>: |
+          <span class="t-c"># If proto files changed, architecture likely changed</span>
+          PROTO_CHANGED=$(git diff --name-only HEAD~1 | grep "\.proto$" | wc -l)
+          ARCH_CHANGED=$(git diff --name-only HEAD~1 | grep ".agent/stable/architecture" | wc -l)
+
+          if [ "$PROTO_CHANGED" -gt "0" ] && [ "$ARCH_CHANGED" -eq "0" ]; then
+            echo "::warning::Proto files changed — consider updating .agent/stable/architecture.md"
+          fi
+
+          <span class="t-c"># If schema changed, decisions.md likely needs an ADR</span>
+          SQL_CHANGED=$(git diff --name-only HEAD~1 | grep "schema/" | wc -l)
+          DEC_CHANGED=$(git diff --name-only HEAD~1 | grep ".agent/stable/decisions" | wc -l)
+
+          if [ "$SQL_CHANGED" -gt "3" ] && [ "$DEC_CHANGED" -eq "0" ]; then
+            echo "::warning::Schema changes detected — was a migration decision documented in decisions.md?"
+          fi</pre>
+    </div>
+
+    <!-- 06 — TEAM WORKFLOWS -->
+    <div id="workflows" class="section-anchor">
+      <span class="section-num">06</span>
+      <h2 class="section-h">Team Workflows — Concrete Processes</h2>
+    </div>
+
+    <p class="body">Abstract principles don't change team behaviour. Concrete, low-friction processes do. These are the three workflows that matter most.</p>
+
+    <h3 class="sub-h">Workflow 1 — The weekly context sync (15 minutes)</h3>
+    <div class="workflow">
+      <div class="wf-step">
+        <div class="wf-dot">01</div>
+        <div class="wf-content">
+          <div class="wf-title">Each engineer pastes their most useful LLM exchange of the week</div>
+          <div class="wf-desc">Not the full conversation — the key insight or decision that came out of it. 3–5 sentences. The question that worked well and the answer that was actually right.</div>
         </div>
       </div>
-
-      <div id="strategy-2" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Strategy 2: Context Bridging Protocols</h3>
-          <h4>Concept</h4>
-          <p>Establish standardized ways to transfer context between different LLMs and team members.</p>
-          <h4>Implementation</h4>
-          <ul>
-            <li>Create context summary templates that work across all LLMs</li>
-            <li>Use shared prompt libraries with consistent formatting</li>
-            <li>Implement context handoff checklists for project transitions</li>
-            <li>Develop standardized vocabulary and terminology guides</li>
-          </ul>
-          <h4>Practical Example</h4>
-          <p>When switching from Claude to GPT-4 for a task, use this protocol:</p>
-          <pre><code>Context Transfer Template:
-Project: [Name]
-Current State: [Summary]
-Key Decisions: [List]
-Open Questions: [List]
-Next Steps: [List]
-Shared Resources: [Links]</code></pre>
+      <div class="wf-step">
+        <div class="wf-dot">02</div>
+        <div class="wf-content">
+          <div class="wf-title">Team decides what gets committed to .agent/</div>
+          <div class="wf-desc">Most things go into live/recent.md. Significant decisions go into stable/decisions.md as ADRs. Patterns that should be adopted broadly go into stable/conventions.md. Anything that was wrong in the existing files gets corrected.</div>
         </div>
       </div>
-
-      <div id="strategy-3" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Strategy 3: Multi-LLM Orchestration</h3>
-          <h4>Concept</h4>
-          <p>Use orchestration tools that can coordinate multiple LLMs while maintaining shared context.</p>
-          <h4>Implementation</h4>
-          <ul>
-            <li>Implement workflow automation tools like Zapier or Make for cross-LLM communication</li>
-            <li>Use platforms like SmythOS or LangChain for multi-model workflows</li>
-            <li>Create custom APIs that normalize responses from different LLMs</li>
-            <li>Develop shared context stores (databases, vector stores) that all LLMs can access</li>
-          </ul>
-          <h4>Advanced Pattern</h4>
-          <p>Use a "context broker" service that:</p>
-          <ul>
-            <li>Accepts context updates from any LLM</li>
-            <li>Normalizes and stores context in a unified format</li>
-            <li>Provides context to any requesting LLM</li>
-            <li>Maintains version history and conflict resolution</li>
-          </ul>
+      <div class="wf-step">
+        <div class="wf-dot">03</div>
+        <div class="wf-content">
+          <div class="wf-title">One person commits the updates</div>
+          <div class="wf-desc">Rotating responsibility. The commit goes to main directly — these are context files, not code. No PR required for the live/ directory.</div>
         </div>
       </div>
+    </div>
 
-      <div id="strategy-4" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Strategy 4: Collaborative AI Workspaces</h3>
-          <h4>Concept</h4>
-          <p>Create shared digital spaces where team members can collaborate with LLMs in real-time.</p>
-          <h4>Implementation</h4>
-          <ul>
-            <li>Use platforms like Cursor, GitHub Copilot Workspace, or custom team dashboards</li>
-            <li>Implement shared prompt engineering sessions</li>
-            <li>Create team-specific AI assistants that learn from collective interactions</li>
-            <li>Establish shared code repositories with embedded AI context</li>
-          </ul>
-          <h4>Benefits</h4>
-          <ul>
-            <li>Real-time collaboration reduces context fragmentation</li>
-            <li>Collective learning improves team AI capabilities</li>
-            <li>Version control ensures context persistence</li>
-          </ul>
+    <h3 class="sub-h">Workflow 2 — Onboarding with the .agent folder</h3>
+    <p class="body">Day 1 for a new engineer: clone the repo, read <code>.agent/CONTEXT.md</code>, then spend 30 minutes asking an LLM questions about the system using that file as context. Every question they ask surfaces gaps in CONTEXT.md that should be filled. This is the most valuable first-day use of the folder — new engineers ask the questions that existing engineers stopped asking.</p>
+
+    <h3 class="sub-h">Workflow 3 — The design session transcript pattern</h3>
+    <p class="body">When an engineer does a major design session with an LLM — say, designing a new subsystem — they capture the key exchanges in a session log file. Not the full transcript, but the structured output: what alternatives were explored, what was rejected and why, what constraints shaped the final design. This becomes an ADR in decisions.md and the context for the next engineer who touches that subsystem.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lang">markdown — session log template (.agent/live/sessions/)</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c"># Session: [Topic] — [Date]</span>
+<span class="t-c">## Who: @engineer | Model: Claude Sonnet 4.6 | Duration: ~45min</span>
+
+<span class="t-c">## Question posed</span>
+<span class="t-r">How should we handle backpressure in the notification fan-out when</span>
+<span class="t-r">a downstream channel (e.g. email) is slow?</span>
+
+<span class="t-c">## Alternatives explored</span>
+<span class="t-r">1. Single Kafka topic, all channels — rejected: email backlog blocks push</span>
+<span class="t-r">2. In-memory queue per channel — rejected: data loss on crash</span>
+<span class="t-r">3. Per-channel Kafka topics — selected (see ADR-007)</span>
+
+<span class="t-c">## Key insight</span>
+<span class="t-r">LLM surfaced that Kafka consumer group lag per topic gives us independent</span>
+<span class="t-r">observability — email lag visible separately from push lag. This became</span>
+<span class="t-r">the deciding factor, not just isolation.</span>
+
+<span class="t-c">## What to read next</span>
+<span class="t-r">.agent/stable/decisions.md ADR-007</span>
+<span class="t-r">cmd/notification/kafka/topic-registry.go</span></pre>
+    </div>
+
+    <!-- 07 — FAILURE MODES -->
+    <div id="pitfalls" class="section-anchor">
+      <span class="section-num">07</span>
+      <h2 class="section-h">Failure Modes — What Goes Wrong and Why</h2>
+    </div>
+
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <div class="strategy-head">
+          <span class="strat-num">FAIL 01</span>
+          <span class="strat-tag" style="background:#ffeee0;color:#b04010;border:1px solid #ffccaa">Context bloat</span>
+          <span class="strat-title">CONTEXT.md becomes a 10,000-word document</span>
+        </div>
+        <div class="strategy-body">
+          <p>Teams over-document. Every decision, every convention, every nuance goes into CONTEXT.md. The file crosses 5,000 tokens. LLMs start to lose context from the early sections because it's buried in middle-of-context (mid-context attention degradation is real). Engineers stop maintaining it because it's too long to keep accurate.</p>
+          <p><strong>Fix:</strong> CONTEXT.md stays under 600 words, always. Everything else goes in the specific stable/ files that are only loaded when relevant. The discipline of keeping CONTEXT.md short forces you to prioritise what actually matters for baseline orientation.</p>
         </div>
       </div>
+      <div class="strategy-card">
+        <div class="strategy-head">
+          <span class="strat-num">FAIL 02</span>
+          <span class="strat-tag" style="background:#ffeee0;color:#b04010;border:1px solid #ffccaa">Stale context</span>
+          <span class="strat-title">The .agent files describe last year's system</span>
+        </div>
+        <div class="strategy-body">
+          <p>Architecture changes. The auth migration happened, the monolith was split, the database was changed — but decisions.md still describes the old world. An LLM reading it confidently gives advice that's technically correct for the old system and wrong for the current one. This is worse than no context at all because it's confidently wrong.</p>
+          <p><strong>Fix:</strong> Make context updates part of the definition of done — same as tests. The PR checklist addition from the previous section enforces this. Assign a "context owner" who reviews .agent/ files monthly for accuracy.</p>
+        </div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-head">
+          <span class="strat-num">FAIL 03</span>
+          <span class="strat-tag" style="background:#ffeee0;color:#b04010;border:1px solid #ffccaa">Over-trust</span>
+          <span class="strat-title">Treating LLM output as ground truth</span>
+        </div>
+        <div class="strategy-body">
+          <p>Even with perfect context, LLMs make subtle mistakes. They'll confidently suggest a database schema that has an N+1 query problem, or a concurrency pattern that has a race condition, or an API design that has a pagination issue. The context doesn't prevent this — it just makes the mistakes better-informed.</p>
+          <p><strong>Fix:</strong> LLM output is a first draft, not a final answer. Code review exists for a reason. The output should go through the same review process as code written by a junior engineer — which means the LLM is most valuable for acceleration, not for authority.</p>
+        </div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-head">
+          <span class="strat-num">FAIL 04</span>
+          <span class="strat-tag" style="background:#ffeee0;color:#b04010;border:1px solid #ffccaa">Zero adoption</span>
+          <span class="strat-title">The .agent folder exists but no one loads it</span>
+        </div>
+        <div class="strategy-body">
+          <p>The folder gets created with great intentions. Two weeks later, half the team forgot it exists and the other half finds the loading step too much friction. It falls into disrepair, stops being updated, and the team reverts to session-by-session context rebuilding.</p>
+          <p><strong>Fix:</strong> The <code>llm-start</code> script and .cursorrules remove the friction for engineers who use those tools. For the rest: make loading the context the first step in any LLM task, same as running <code>git pull</code> before starting work. Make it a habit, not a policy.</p>
+        </div>
+      </div>
+    </div>
 
-      <div id="strategy-5" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Strategy 5: Context Standardization Frameworks</h3>
-          <h4>Concept</h4>
-          <p>Develop standardized frameworks for representing and sharing context across different systems.</p>
-          <h4>Implementation</h4>
-          <ul>
-            <li>Create ontology frameworks for project knowledge</li>
-            <li>Implement schema standards for context representation</li>
-            <li>Use semantic web technologies (RDF, OWL) for knowledge modeling</li>
-            <li>Develop context serialization formats that work across LLMs</li>
-          </ul>
-          <h4>Example Framework</h4>
-          <pre><code>Standard Context Schema:
-{
-  "project": {
-    "name": "string",
-    "version": "string",
-    "context": {
-      "goals": ["string"],
-      "constraints": ["string"],
-      "decisions": [{"date": "string", "decision": "string", "rationale": "string"}],
-      "artifacts": [{"type": "string", "location": "string", "description": "string"}]
+    <!-- DARK BLOCK — SUMMARY -->
+    <div class="dark-block">
+      <div class="db-label">The One-Line Summary</div>
+      <div class="db-title">Context is infrastructure. Treat it like code.</div>
+      <div class="db-body">Version it in git. Review significant changes. Keep it short and accurate. Load it consistently. Update it when the system changes. Assign ownership. The team that does this well doesn't just use LLMs more efficiently — they accumulate knowledge that compounds, onboard engineers faster, and make decisions that are consistent across engineers and models.</div>
+    </div>
+
+    <!-- 08 — FLASHCARDS -->
+    <div id="flashcards" class="section-anchor">
+      <span class="section-num">08</span>
+      <h2 class="section-h">Flash Cards</h2>
+    </div>
+
+    <div class="flashcard-grid">
+      <div class="flashcard">
+        <div class="fc-q">What is the fundamental problem with per-session LLM context?</div>
+        <div class="fc-a">It's ephemeral and siloed. Every engineer rebuilds context from scratch every session. Institutional knowledge from good LLM conversations is never captured. New engineers have zero accumulated team knowledge from the LLM's perspective. The "context tax" compounds as the team grows.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What is the .agent folder and why does it live in git?</div>
+        <div class="fc-a">A versioned directory of markdown files that serve as shared LLM context for the project. Lives in git so it has history, ownership, code review, and diffs. LLM-agnostic — the same files load into Claude, GPT-4o, Gemini. Structured into stable/ (changes rarely, needs PR) and live/ (changes often, commit directly).</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What goes in CONTEXT.md and how long should it be?</div>
+        <div class="fc-a">The 1-page system primer: what the service does, tech stack, scale, decisions already made (that the LLM should not re-suggest), and current constraints. Under 600 words — always. If it grows beyond this, move content to specific stable/ files loaded only when relevant. Length discipline is the hardest part to maintain.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What is context drift and how do you prevent it?</div>
+        <div class="fc-a">When .agent files describe an older version of the system than currently exists. Prevents this by: adding a context update checklist to the PR template, automated CI warnings when proto/schema changes without corresponding .agent updates, assigning a "context owner," and treating context updates as part of the definition of done.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">Which model for architecture design vs in-editor autocomplete — and why different?</div>
+        <div class="fc-a">Architecture design: Claude Sonnet/Opus — 200K context window handles full .agent folder, better at nuanced trade-offs and structured reasoning. In-editor autocomplete: Copilot/Cursor Tab — low latency matters most, file-aware context loaded automatically, no session management overhead. Wrong to standardise on one model across both tasks.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What is the session log pattern and what does it capture?</div>
+        <div class="fc-a">A brief markdown file (not a full transcript) capturing: the question posed, alternatives the LLM explored and rejected, the key insight that shaped the final decision, and where to read more. Goes in .agent/live/sessions/. Significant ones get promoted to ADRs in decisions.md. Ensures design thinking is preserved, not just the final answer.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What is the weekly context sync and what does it take to run it?</div>
+        <div class="fc-a">15 minutes. Each engineer shares their most useful LLM exchange of the week. Team decides what gets committed — recent.md for live context, decisions.md for significant decisions, conventions.md for new patterns. One person commits on a rotating basis. No PR required for live/. Compounds into a knowledge base over weeks.</div>
+      </div>
+      <div class="flashcard">
+        <div class="fc-q">What is the biggest LLM team adoption failure mode?</div>
+        <div class="fc-a">The .agent folder exists but no one loads it — because loading is too much friction. Fix: llm-start script (one command), .cursorrules file (auto-loaded by Cursor), .github/copilot-instructions.md (auto-loaded by Copilot). Remove the loading step from requiring deliberate action. When context loading is automatic, it gets loaded.</div>
+      </div>
+    </div>
+
+  </article>
+</div>
+</div>
+
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.code-copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.closest('.code-wrap').querySelector('pre').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  });
+});
+const secs = document.querySelectorAll('[id]');
+const tl = document.querySelectorAll('.toc-item');
+const ob = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tl.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.toc-item a[href="#${e.target.id}"]`);
+      if (a) a.closest('.toc-item').classList.add('active');
     }
-  }
-}</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <section id="tools" class="content-section">
-      <div class="section-header">
-        <div class="section-num">03</div>
-        <h2>Tools & Techniques for Implementation</h2>
-      </div>
-
-      <div class="tab-nav">
-        <button class="tab-btn active" onclick="showTab(event, 'tools-knowledge')">Knowledge Tools</button>
-        <button class="tab-btn" onclick="showTab(event, 'tools-sync')">Sync Tools</button>
-        <button class="tab-btn" onclick="showTab(event, 'tools-advanced')">Advanced Techniques</button>
-      </div>
-
-      <div id="tools-knowledge" class="tab-panel active">
-        <div class="pattern-card">
-          <h3>Knowledge Management Tools</h3>
-          <ul>
-            <li><strong>Notion</strong>: Flexible knowledge bases with AI integration</li>
-            <li><strong>Confluence</strong>: Enterprise documentation with team collaboration</li>
-            <li><strong>GitHub Wiki</strong>: Version-controlled project documentation</li>
-            <li><strong>Obsidian</strong>: Personal knowledge management with team sharing</li>
-            <li><strong>Roam Research</strong>: Networked note-taking for complex relationships</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="tools-sync" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Context Synchronization Tools</h3>
-          <ul>
-            <li><strong>Zapier/Make</strong>: Workflow automation for cross-tool integration</li>
-            <li><strong>LangChain</strong>: Multi-LLM orchestration frameworks</li>
-            <li><strong>Vector Databases</strong>: Shared context storage (Pinecone, Weaviate)</li>
-            <li><strong>Redis</strong>: Fast shared caching for context data</li>
-            <li><strong>Git</strong>: Version control for context and prompts</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="tools-advanced" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Advanced Techniques</h3>
-          <h4>Context Chunking</h4>
-          <p>Break complex project context into manageable chunks that can be efficiently shared and updated:</p>
-          <ul>
-            <li>Project Overview (high-level goals, timeline)</li>
-            <li>Technical Architecture (system design, tech stack)</li>
-            <li>Current State (recent changes, open issues)</li>
-            <li>Team Knowledge (expertise areas, contact points)</li>
-            <li>Decision Log (important choices and rationales)</li>
-          </ul>
-
-          <h4>Prompt Engineering for Context</h4>
-          <p>Create standardized prompts that ensure consistent context handling:</p>
-          <pre><code>Standard Context Prompt:
-"You are working on project [NAME] with the following context:
-[INSERT SHARED CONTEXT CHUNK]
-
-When responding, consider:
-- Project goals: [LIST]
-- Current constraints: [LIST]
-- Team preferences: [LIST]
-
-Provide responses that align with team standards and maintain consistency."</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <section id="ide-integration" class="content-section">
-      <div class="section-header">
-        <div class="section-num">03.5</div>
-        <h2>IDE Integration: VS Code & Editing Tools</h2>
-      </div>
-
-      <div class="tab-nav">
-        <button class="tab-btn active" onclick="showTab(event, 'agent-intro')">Introduction</button>
-        <button class="tab-btn" onclick="showTab(event, 'agent-setup')">Setup Guide</button>
-        <button class="tab-btn" onclick="showTab(event, 'agent-multillm')">Multi-LLM Integration</button>
-        <button class="tab-btn" onclick="showTab(event, 'agent-vscode')">VS Code Integration</button>
-        <button class="tab-btn" onclick="showTab(event, 'agent-advanced')">Advanced Features</button>
-      </div>
-
-      <div id="agent-intro" class="tab-panel active">
-        <div class="pattern-card">
-          <h3>The .agent Folder Approach</h3>
-          <h4>Concept</h4>
-          <p>Create a dedicated `.agent` folder in your project root that serves as a centralized context repository. This folder contains markdown files that capture project knowledge, decisions, and context that can be shared across different LLMs and team members.</p>
-          <h4>Why This Works for Multiple LLMs</h4>
-          <ul>
-            <li><strong>LLM-Agnostic Format</strong>: Markdown works with GPT-4, Claude, Gemini, and any other LLM</li>
-            <li><strong>Consistent Context</strong>: Same information fed to all AI tools prevents conflicting advice</li>
-            <li><strong>Knowledge Preservation</strong>: Captures institutional knowledge that would otherwise be lost in AI conversations</li>
-            <li><strong>Version Control</strong>: Context evolves with your codebase, tracked in git</li>
-            <li><strong>Team Synchronization</strong>: Everyone references the same source of truth</li>
-            <li><strong>IDE Integration</strong>: Direct access from VS Code and other editors</li>
-          </ul>
-          <h4>How It Solves Multi-LLM Fragmentation</h4>
-          <p>Without .agent, each LLM conversation starts from scratch. With .agent:</p>
-          <ul>
-            <li><strong>Context Continuity</strong>: Switch between LLMs without losing project understanding</li>
-            <li><strong>Decision Consistency</strong>: All LLMs reference the same architectural decisions</li>
-            <li><strong>Pattern Recognition</strong>: LLMs learn from collective team knowledge</li>
-            <li><strong>Reduced Redundancy</strong>: No need to re-explain project context to each AI</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="agent-setup" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Creating Your .agent Folder: Step-by-Step</h3>
-          <h4>Step 1: Initialize the Folder Structure</h4>
-          <p><strong>Option A: Manual Setup</strong></p>
-          <pre><code># Create the .agent folder in your project root
-mkdir .agent
-mkdir .agent/sessions
-
-# Create core context files
-touch .agent/README.md
-touch .agent/project-context.md
-touch .agent/architecture.md
-touch .agent/decisions.md
-touch .agent/team.md
-touch .agent/patterns.md</code></pre>
-
-          <p><strong>Option B: Automated Setup (Recommended)</strong></p>
-          <p>Download and run the setup script:</p>
-          <pre><code># Download the setup script
-curl -O https://raw.githubusercontent.com/your-repo/setup-agent-folder.sh
-
-# Or if you have it locally:
-./setup-agent-folder.sh</code></pre>
-          <p>This script will:</p>
-          <ul>
-            <li>Create the complete .agent folder structure</li>
-            <li>Set up VS Code integration files</li>
-            <li>Create template files and sample content</li>
-            <li>Configure workspace settings automatically</li>
-          </ul>
-
-          <h4>Step 2: Set Up VS Code Integration</h4>
-          <p>Create or update `.vscode/settings.json`:</p>
-          <pre><code>{
-  "agent.context": {
-    "projectOverview": ".agent/project-context.md",
-    "architecture": ".agent/architecture.md",
-    "decisions": ".agent/decisions.md",
-    "patterns": ".agent/patterns.md"
-  },
-  "files.exclude": {
-    ".agent/sessions/": true
-  },
-  "search.exclude": {
-    ".agent/sessions/": true
-  }
-}</code></pre>
-
-          <h4>Step 3: Create Initial Context Files</h4>
-          <p>Start with your `README.md`:</p>
-          <pre><code># .agent - Team LLM Context Management
-
-This folder serves as the central context repository for [PROJECT_NAME].
-
-## Purpose
-- Maintain consistent understanding across different LLMs
-- Preserve institutional knowledge
-- Enable seamless team collaboration
-
-## Quick Start
-1. Read `project-context.md` for overview
-2. Review `architecture.md` for technical details
-3. Check `decisions.md` for important choices
-4. Update context files as project evolves
-
-## Usage with LLMs
-When starting a conversation with any LLM, include relevant context:
-```
-Please review this project context before we begin:
-[Include relevant .agent/*.md files]
-```</code></pre>
-
-          <h4>Step 4: Establish Maintenance Workflow</h4>
-          <ul>
-            <li><strong>Daily Updates</strong>: Update context files as project evolves</li>
-            <li><strong>Session Logging</strong>: Summarize important LLM conversations</li>
-            <li><strong>Decision Tracking</strong>: Log significant choices immediately</li>
-            <li><strong>Regular Reviews</strong>: Audit context accuracy weekly</li>
-          </ul>
-
-          <h4>Step 5: Integrate with Development Workflow</h4>
-          <p>Add to your `.gitignore` (if needed):</p>
-          <pre><code># .agent folder should be committed (contains project context)
-# .agent/sessions/ can be gitignored if too large
-.agent/sessions/</code></pre>
-
-          <p>Create a pre-commit hook for context validation:</p>
-          <pre><code>#!/bin/sh
-# .git/hooks/pre-commit
-
-# Check if context files exist
-if [ ! -f ".agent/project-context.md" ]; then
-    echo "Warning: .agent/project-context.md missing"
-    exit 1
-fi
-
-# Validate context file structure
-echo "Context files validated successfully"</code></pre>
-        </div>
-      </div>
-
-      <div id="agent-multillm" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Multi-LLM Integration Patterns</h3>
-          <h4>How .agent Folder Enables Multi-LLM Synchronization</h4>
-          <p>The .agent folder serves as the single source of truth that eliminates context fragmentation across different LLMs:</p>
-          <ul>
-            <li><strong>Unified Knowledge Base</strong>: All LLMs reference the same markdown files</li>
-            <li><strong>Consistent Context Injection</strong>: Standardized prompts work across GPT-4, Claude, Gemini</li>
-            <li><strong>Decision Continuity</strong>: Past choices documented and accessible to all AIs</li>
-            <li><strong>Pattern Recognition</strong>: LLMs learn from collective team experience</li>
-            <li><strong>Conflict Prevention</strong>: Same context prevents contradictory recommendations</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="agent-vscode" class="tab-panel">
-        <div class="pattern-card">
-          <h3>VS Code Integration Techniques</h3>
-          <h4>Workspace Settings for Context Awareness</h4>
-          <p>Create a `.vscode/settings.json` file that references your .agent context:</p>
-          <pre><code>{
-  "agent.context": {
-    "projectOverview": ".agent/project-context.md",
-    "architecture": ".agent/architecture.md",
-    "patterns": ".agent/patterns.md",
-    "decisions": ".agent/decisions.md"
-  }
-}</code></pre>
-        </div>
-      </div>
-
-      <div id="agent-advanced" class="tab-panel">
-        <div class="pattern-card">
-          <h3>Advanced Features</h3>
-          <h4>Template Files for Consistency</h4>
-          <pre><code># Decision Log Template
-[Decision template content here]</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <section id="best-practices" class="content-section">
-      <div class="section-header">
-        <div class="section-num">04</div>
-        <h2>Best Practices & Implementation Guide</h2>
-      </div>
-
-      <div class="split">
-        <div class="pattern-card">
-          <h3>Team Process Best Practices</h3>
-          <ul>
-            <li><strong>Regular Context Reviews</strong>: Weekly sessions to update and validate shared knowledge</li>
-            <li><strong>Context Ownership</strong>: Assign team members to maintain specific knowledge areas</li>
-            <li><strong>Standardized Templates</strong>: Use consistent formats for all documentation</li>
-            <li><strong>Change Tracking</strong>: Log all significant context changes with rationale</li>
-            <li><strong>Access Control</strong>: Ensure all team members can access current context</li>
-          </ul>
-        </div>
-        <div class="pattern-card">
-          <h3>Technical Best Practices</h3>
-          <ul>
-            <li><strong>API-First Design</strong>: Build context sharing as APIs for tool integration</li>
-            <li><strong>Version Control Everything</strong>: Apply git-like versioning to context changes</li>
-            <li><strong>Automated Sync</strong>: Use webhooks and automation for real-time updates</li>
-            <li><strong>Conflict Resolution</strong>: Define clear processes for resolving context conflicts</li>
-            <li><strong>Performance Optimization</strong>: Cache frequently accessed context for speed</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="pattern-card">
-        <h3>Measuring Success</h3>
-        <h4>Key Metrics to Track</h4>
-        <ul>
-          <li><strong>Context Access Time</strong>: How quickly team members can get current context</li>
-          <li><strong>Knowledge Freshness</strong>: How up-to-date the shared knowledge remains</li>
-          <li><strong>Decision Consistency</strong>: Alignment between different team members' approaches</li>
-          <li><strong>Onboarding Time</strong>: How quickly new members become productive</li>
-          <li><strong>Error Reduction</strong>: Decrease in context-related misunderstandings</li>
-        </ul>
-
-        <h4>Implementation Roadmap</h4>
-        <ol>
-          <li>Assess current context fragmentation pain points</li>
-          <li>Choose primary strategy based on team size and needs</li>
-          <li>Implement basic knowledge sharing infrastructure</li>
-          <li>Establish context maintenance processes</li>
-          <li>Train team on new workflows and tools</li>
-          <li>Monitor metrics and iterate on the approach</li>
-        </ol>
-      </div>
-
-      <div class="pattern-card">
-        <h3>Common Pitfalls to Avoid</h3>
-        <ul>
-          <li><strong>Over-Engineering</strong>: Don't build complex systems before validating the need</li>
-          <li><strong>Resistance to Change</strong>: Ensure team buy-in before implementing new processes</li>
-          <li><strong>Inconsistent Adoption</strong>: Make sure all team members actually use the new systems</li>
-          <li><strong>Security Oversights</strong>: Protect sensitive context appropriately</li>
-          <li><strong>Maintenance Burden</strong>: Keep processes lightweight and sustainable</li>
-        </ul>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    function showTab(event, tabId) {
-      // Hide all tab panels
-      const panels = document.querySelectorAll('.tab-panel');
-      panels.forEach(panel => panel.classList.remove('active'));
-
-      // Remove active class from all tab buttons
-      const buttons = document.querySelectorAll('.tab-btn');
-      buttons.forEach(button => button.classList.remove('active'));
-
-      // Show the selected tab panel
-      const selectedPanel = document.getElementById(tabId);
-      if (selectedPanel) {
-        selectedPanel.classList.add('active');
-      }
-
-      // Add active class to clicked button
-      if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-      }
-    }
-  </script>
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+secs.forEach(s => ob.observe(s));
+</script>
 </body>
-</html>
 </html>
