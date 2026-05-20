@@ -227,148 +227,391 @@ footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
 <span class="t-r">  p99 bottleneck: almost always DB miss or missing cache</span></pre>
     </div>
 
-    <!-- PATTERNS ANCHOR — the widget is below the article, full-width -->
+    <!-- PATTERNS SECTION: 12 native cards + modal deep-dive -->
     <div id="patterns" class="section-anchor">
       <span class="section-num">01</span>
-      <h2 class="section-h">12 Universal Patterns — Interactive Deep Dive</h2>
+      <h2 class="section-h">12 Universal Patterns</h2>
     </div>
 
-    <p class="body">Every system design question maps to one or more of these 12 patterns. The interactive app below covers each pattern with: request flow diagram, production Go code, full trade-off analysis, and a staff-level insight. Use keyboard shortcuts — arrow keys to navigate, <code>q/w/e/r</code> to switch tabs.</p>
+    <p class="body">Every system design question maps to one or more of these 12 patterns. Each card below shows the trigger condition and use cases — click <strong>Explore deep dive</strong> to open the full interactive view with request flow diagram, production Go code, trade-off analysis, and a staff-level insight.</p>
 
     <div class="callout" style="--callout-color:var(--amber);--callout-bg:#fff8e0">
       <div class="callout-label">Pattern decision tree — run this in the first 2 minutes</div>
-      <p>Read:write &gt;5:1 → P01 (cache). Writes &gt;50K/s → P02 (queue). Server must push → P03 (WebSocket). Global &lt;100ms → P04 (CDN). Multi-service tx → P05 (saga). DB write + event → P06 (outbox). Full-text search → P07. Location queries → P08. API abuse → P09 (rate limit). Unique IDs at scale → P10. Read/write models differ → P11 (CQRS). Has downstream deps → P12 (always).</p>
+      <p>Read:write &gt;5:1 → P01. Writes &gt;50K/s → P02. Server must push → P03. Global &lt;100ms → P04. Multi-service tx → P05. DB write + event → P06. Full-text search → P07. Location queries → P08. API abuse → P09. Unique IDs at scale → P10. Read/write models differ → P11. Has downstream deps → P12 (always).</p>
     </div>
 
-  </article>
+    <div class="patterns-grid">
+
+      <div class="pat-card" style="--pat:#00D4FF">
+        <div class="pat-top">
+          <div class="pat-icon">⚡</div>
+          <div>
+            <div class="pat-num">P01 · READ HEAVY</div>
+            <div class="pat-title">Cache-Aside + Read Replicas</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Read:write &gt; 5:1</div>
+        <div class="pat-uses">Social feeds · Product pages · YouTube view counts</div>
+        <button class="pat-explore" onclick="openPattern(0)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#FF6B35">
+        <div class="pat-top">
+          <div class="pat-icon">📨</div>
+          <div>
+            <div class="pat-num">P02 · WRITE HEAVY</div>
+            <div class="pat-title">Write-Ahead Queue + Async Workers</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Writes &gt; 50K/s</div>
+        <div class="pat-uses">Analytics events · IoT telemetry · Audit logs</div>
+        <button class="pat-explore" onclick="openPattern(1)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#00FF88">
+        <div class="pat-top">
+          <div class="pat-icon">🔴</div>
+          <div>
+            <div class="pat-num">P03 · REAL-TIME</div>
+            <div class="pat-title">WebSocket + Pub-Sub Backend</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Server must push to client</div>
+        <div class="pat-uses">Chat · Live scores · Collaborative editing</div>
+        <button class="pat-explore" onclick="openPattern(2)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#FFD700">
+        <div class="pat-top">
+          <div class="pat-icon">🌍</div>
+          <div>
+            <div class="pat-num">P04 · GLOBAL SCALE</div>
+            <div class="pat-title">CDN + GeoDNS + Edge Caching</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Global &lt;100ms latency</div>
+        <div class="pat-uses">Netflix/YouTube delivery · Global APIs</div>
+        <button class="pat-explore" onclick="openPattern(3)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#FF4D8B">
+        <div class="pat-top">
+          <div class="pat-icon">🔄</div>
+          <div>
+            <div class="pat-num">P05 · DISTRIBUTED TX</div>
+            <div class="pat-title">Saga Pattern (Choreography / Orchestration)</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Transaction spans multiple services</div>
+        <div class="pat-uses">E-commerce checkout · Flight booking · Bank transfer</div>
+        <button class="pat-explore" onclick="openPattern(4)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#9B59B6">
+        <div class="pat-top">
+          <div class="pat-icon">📤</div>
+          <div>
+            <div class="pat-num">P06 · DUAL WRITE</div>
+            <div class="pat-title">Outbox Pattern + CDC (Debezium)</div>
+          </div>
+        </div>
+        <div class="pat-trigger">DB write + publish event atomically</div>
+        <div class="pat-uses">Any service writing to DB AND publishing events</div>
+        <button class="pat-explore" onclick="openPattern(5)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#1ABC9C">
+        <div class="pat-top">
+          <div class="pat-icon">🔍</div>
+          <div>
+            <div class="pat-num">P07 · SEARCH</div>
+            <div class="pat-title">Inverted Index + ES Sync via CDC</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Full-text search needed</div>
+        <div class="pat-uses">Airbnb search · LinkedIn · Product catalog</div>
+        <button class="pat-explore" onclick="openPattern(6)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#E67E22">
+        <div class="pat-top">
+          <div class="pat-icon">📍</div>
+          <div>
+            <div class="pat-num">P08 · GEO PROXIMITY</div>
+            <div class="pat-title">Geohash Grid + Redis GEO</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Location / proximity queries</div>
+        <div class="pat-uses">Uber driver matching · Yelp nearby · Tinder radius</div>
+        <button class="pat-explore" onclick="openPattern(7)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#E74C3C">
+        <div class="pat-top">
+          <div class="pat-icon">🚦</div>
+          <div>
+            <div class="pat-num">P09 · RATE LIMITING</div>
+            <div class="pat-title">Token Bucket / Sliding Window at Gateway</div>
+          </div>
+        </div>
+        <div class="pat-trigger">API abuse prevention</div>
+        <div class="pat-uses">API platform · Payment gateway · SMS OTP</div>
+        <button class="pat-explore" onclick="openPattern(8)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#3498DB">
+        <div class="pat-top">
+          <div class="pat-icon">❄️</div>
+          <div>
+            <div class="pat-num">P10 · UNIQUE IDs</div>
+            <div class="pat-title">Snowflake ID / UUID v7</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Unique IDs at massive scale</div>
+        <div class="pat-uses">Tweet IDs · Order IDs · Message IDs</div>
+        <button class="pat-explore" onclick="openPattern(9)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#8E44AD">
+        <div class="pat-top">
+          <div class="pat-icon">✂️</div>
+          <div>
+            <div class="pat-num">P11 · CQRS</div>
+            <div class="pat-title">Command Query Responsibility Segregation</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Read/write access patterns fundamentally differ</div>
+        <div class="pat-uses">E-commerce orders · Banking ledger · Analytics</div>
+        <button class="pat-explore" onclick="openPattern(10)">Explore deep dive →</button>
+      </div>
+
+      <div class="pat-card" style="--pat:#27AE60">
+        <div class="pat-top">
+          <div class="pat-icon">🛡️</div>
+          <div>
+            <div class="pat-num">P12 · RESILIENCE</div>
+            <div class="pat-title">Circuit Breaker + Bulkhead + Retry</div>
+          </div>
+        </div>
+        <div class="pat-trigger">Has downstream dependencies — always add this</div>
+        <div class="pat-uses">Any service with downstream calls</div>
+        <button class="pat-explore" onclick="openPattern(11)">Explore deep dive →</button>
+      </div>
+
+    </div><!-- end .patterns-grid -->
+
+    </article>
 </div>
 </div>
 
-<!-- ── FULL-WIDTH PATTERNS INTERACTIVE APP ──────────────────────────── -->
-<div class="patterns-section" id="patterns-app">
-  <div class="patterns-section-head">
-    <div style="font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Interactive · Go Code · Trade-offs · Staff Insights</div>
-    <div style="font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink)">12 System Design Patterns</div>
-    <div style="font-size:13px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)">← → arrow keys to navigate · q/w/e/r to switch tabs · t to toggle theme</div>
+<!-- ── MODAL OVERLAY: PATTERNS DEEP DIVE ──────────────────────────── -->
+<div id="patModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(26,25,22,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px">
+  <div style="width:100%;max-width:1000px;height:90vh;max-height:700px;background:#07070E;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;border:1px solid #2a2a3a;box-shadow:0 32px 80px rgba(0,0,0,.6)">
+
+    <!-- Modal header — stays in site design language -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1C1C2E;background:#0F0F1A;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--lime)"></div>
+        <span id="modalTitle" style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:#E4E4F0;letter-spacing:.02em">Pattern Deep Dive</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5A5A7A">← → navigate · q/w/e/r tabs</span>
+        <button onclick="closePattern()" style="background:#1C1C2E;border:1px solid #2a2a3a;color:#9e9c94;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.color='#f5f3ee'" onmouseout="this.style.color='#9e9c94'">×</button>
+      </div>
+    </div>
+
+    <!-- App body inside modal -->
+    <div style="flex:1;overflow:hidden;display:flex">
+
+      <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+      <style>
+      #mApp-sidebar{width:220px;flex-shrink:0;border-right:1px solid #1C1C2E;background:#0F0F1A;display:flex;flex-direction:column;overflow:hidden}
+      #mApp-search{padding:10px 8px 6px}
+      #mApp-search input{width:100%;background:#07070E;border:1px solid #1C1C2E;border-radius:6px;padding:6px 10px;color:#E4E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;outline:none}
+      #mApp-search input:focus{border-color:#444}
+      #mApp-list{flex:1;overflow-y:auto;padding:0 8px 8px}
+      #mApp-list::-webkit-scrollbar{width:4px}
+      #mApp-list::-webkit-scrollbar-thumb{background:#1C1C2E;border-radius:2px}
+      .mApp-pbtn{width:100%;background:#13131F;border:1px solid #1C1C2E;border-radius:7px;padding:8px 10px;cursor:pointer;text-align:left;margin-bottom:4px;transition:all .15s}
+      .mApp-pbtn:hover{border-color:#333;background:#171725}
+      .mApp-pb-row{display:flex;align-items:center;gap:8px}
+      .mApp-pb-tag{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:.1em}
+      .mApp-pb-title{font-size:11px;font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#E4E4F0}
+      #mApp-dtree{margin:8px;padding:10px;background:#07070E;border:1px solid #1C1C2E;border-radius:8px}
+      .mApp-dt-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:6px}
+      .mApp-di{display:flex;gap:5px;margin-bottom:3px}
+      .mApp-di .arr{font-size:10px;flex-shrink:0;margin-top:1px}
+      .mApp-di .txt{font-size:10px;color:#5A5A7A;line-height:1.4}
+      #mApp-detail{flex:1;overflow-y:auto;padding:18px 22px;background:#07070E}
+      #mApp-detail::-webkit-scrollbar{width:5px}
+      #mApp-detail::-webkit-scrollbar-thumb{background:#1C1C2E;border-radius:2px}
+      .mApp-hero{border-radius:10px;padding:18px 22px;margin-bottom:16px;border:1px solid transparent}
+      .mApp-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+      .mApp-badges{display:flex;gap:6px;margin-bottom:8px}
+      .mApp-badge{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:.12em;padding:3px 8px;border-radius:4px;border:1px solid transparent}
+      .mApp-title{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;line-height:1.2;font-family:'Syne',sans-serif;color:#E4E4F0}
+      .mApp-tldr{font-size:12px;color:#A0A0C0;line-height:1.6;max-width:520px}
+      .mApp-kq{margin-top:10px;padding:7px 11px;border-radius:6px;display:inline-block}
+      .mApp-kq-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace}
+      .mApp-kq-text{font-size:11px;font-weight:600;margin-top:1px}
+      .mApp-uc{flex-shrink:0}
+      .mApp-uc-label{font-size:9px;color:#5A5A7A;margin-bottom:4px;font-family:'JetBrains Mono',monospace;text-align:right}
+      .mApp-uc-tag{font-size:10px;padding:2px 7px;border-radius:4px;margin-bottom:3px;display:block;text-align:right;font-family:'JetBrains Mono',monospace;border:1px solid transparent}
+      .mApp-tabs{display:flex;gap:2px;border-bottom:1px solid #1C1C2E;margin-bottom:14px}
+      .mApp-tab{background:transparent;border:none;border-bottom:2px solid transparent;color:#5A5A7A;padding:7px 13px;font-size:11px;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s;margin-bottom:-1px}
+      .mApp-tab:hover{color:#E4E4F0}
+      .mApp-tab.active{font-weight:700}
+      .mApp-panel{display:none}
+      .mApp-panel.active{display:block}
+      .mApp-flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      .mApp-card{background:#0F0F1A;border:1px solid #1C1C2E;border-radius:10px;padding:14px}
+      .mApp-card-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:10px}
+      .mApp-fstep{display:flex;align-items:stretch}
+      .mApp-fstep-line{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
+      .mApp-fdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+      .mApp-fconn{width:2px;flex:1;opacity:.3}
+      .mApp-fcontent{margin-left:7px;padding-bottom:9px;flex:1}
+      .mApp-fname{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+      .mApp-fdetail{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;margin-top:2px;line-height:1.35}
+      .mApp-legend-item{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+      .mApp-ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+      .mApp-llabel{font-size:11px;color:#8888A8;font-family:'JetBrains Mono',monospace}
+      .mApp-trigger{margin-top:12px;padding:9px 11px;border-radius:6px;border:1px solid transparent}
+      .mApp-trig-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+      .mApp-trig-val{font-size:12px;font-weight:700}
+      .mApp-to-item{display:flex;gap:9px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #1C1C2E}
+      .mApp-to-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+      .mApp-to-icon{font-size:13px;flex-shrink:0;margin-top:1px;font-weight:900}
+      .mApp-to-text{font-size:12px;color:#C0C0D8;line-height:1.55}
+      .mApp-code-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+      .mApp-code-wrap{position:relative}
+      .mApp-copy-btn{position:absolute;top:7px;right:7px;background:#13131F;border:1px solid #1C1C2E;color:#5A5A7A;font-size:10px;padding:2px 8px;border-radius:4px;cursor:pointer;z-index:1;font-family:'JetBrains Mono',monospace;transition:all .2s}
+      .mApp-copy-btn:hover{border-color:#5A5A7A}
+      .mApp-pre{background:#09090F;border:1px solid #1C1C2E;border-radius:8px;padding:14px 12px;font-size:10.5px;font-family:'JetBrains Mono',monospace;color:#C8C8E8;overflow:auto;max-height:300px;line-height:1.65;tab-size:2}
+      .mApp-insight{border-radius:10px;padding:18px;border:1px solid transparent}
+      .mApp-insight-hd{display:flex;gap:10px;align-items:flex-start}
+      .mApp-insight-star{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;color:#000;font-weight:900}
+      .mApp-insight-label{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:7px}
+      .mApp-insight-text{font-size:13px;color:#D0D0E8;line-height:1.7}
+      .mApp-navbar{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid #1C1C2E}
+      .mApp-navbtn{background:transparent;border:1px solid #1C1C2E;color:#E4E4F0;padding:7px 14px;border-radius:6px;font-size:11px;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s}
+      .mApp-navbtn:hover:not(:disabled){border-color:#444}
+      .mApp-navbtn:disabled{color:#5A5A7A;cursor:not-allowed}
+      .mApp-navbtn.next{font-weight:600}
+      .mApp-counter{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace}
+      </style>
+
+      <aside id="mApp-sidebar">
+        <div id="mApp-search"><input type="text" id="mApp-searchInput" placeholder="Filter patterns…"></div>
+        <div id="mApp-list"></div>
+        <div id="mApp-dtree"></div>
+      </aside>
+      <main id="mApp-detail"></main>
+    </div>
+
   </div>
 </div>
+<!-- end modal -->
 
-<!-- ── PATTERNS APP INLINE (full fidelity, no iframe) ──────────────── -->
-<div id="patternsApp" style="background:#07070E;border-top:2px solid var(--rule);font-family:'JetBrains Mono',monospace">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Scoped to #patternsApp */
-#patternsApp{--bg:#07070E;--surface:#0F0F1A;--surface2:#13131F;--border:#1C1C2E;--ptext:#E4E4F0;--muted:#5A5A7A;--code-bg:#09090F;--code-text:#C8C8E8;--hero-text:#A0A0C0;--tradeoff-text:#C0C0D8;--insight-text:#D0D0E8;--legend-text:#8888A8;--mono2:'JetBrains Mono',monospace;--sans2:'Syne',sans-serif}
-#patternsApp *{box-sizing:border-box;margin:0;padding:0}
-#pApp-body{display:flex;height:600px;overflow:hidden}
-#pApp-sidebar{width:230px;flex-shrink:0;border-right:1px solid #1C1C2E;background:#0F0F1A;display:flex;flex-direction:column;overflow:hidden}
-#pApp-search{padding:10px 8px 6px}
-#pApp-search input{width:100%;background:#07070E;border:1px solid #1C1C2E;border-radius:6px;padding:6px 10px;color:#E4E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;outline:none}
-#pApp-search input:focus{border-color:#333}
-#pApp-sidebar-list{flex:1;overflow-y:auto;padding:0 8px 8px}
-#pApp-sidebar-list::-webkit-scrollbar{width:4px}
-#pApp-sidebar-list::-webkit-scrollbar-thumb{background:#1C1C2E;border-radius:2px}
-.pApp-pbtn{width:100%;background:#13131F;border:1px solid #1C1C2E;border-radius:7px;padding:9px 11px;cursor:pointer;text-align:left;margin-bottom:4px;transition:all .15s}
-.pApp-pbtn:hover{border-color:#333;background:#171725}
-.pApp-pb-row{display:flex;align-items:center;gap:8px}
-.pApp-pb-icon{font-size:15px}
-.pApp-pb-info{flex:1;min-width:0}
-.pApp-pb-tag{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:.1em}
-.pApp-pb-title{font-size:12px;font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#E4E4F0}
-#pApp-dtree{margin:8px;padding:10px;background:#07070E;border:1px solid #1C1C2E;border-radius:8px}
-.pApp-dt-label{font-size:9px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:6px}
-.pApp-di{display:flex;gap:5px;margin-bottom:3px;align-items:flex-start}
-.pApp-di .arr{font-size:10px;flex-shrink:0;margin-top:1px}
-.pApp-di .txt{font-size:10px;color:#5A5A7A;line-height:1.4}
-#pApp-detail{flex:1;overflow-y:auto;padding:20px 24px;background:#07070E}
-#pApp-detail::-webkit-scrollbar{width:5px}
-#pApp-detail::-webkit-scrollbar-thumb{background:#1C1C2E;border-radius:2px}
-.pApp-hero{border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid transparent}
-.pApp-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.pApp-badges{display:flex;gap:6px;margin-bottom:10px}
-.pApp-badge{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:800;letter-spacing:.12em;padding:3px 8px;border-radius:4px;border:1px solid transparent}
-.pApp-title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;line-height:1.2;font-family:'Syne',sans-serif;color:#E4E4F0}
-.pApp-tldr{font-size:13px;color:#A0A0C0;line-height:1.65;max-width:580px}
-.pApp-kq{margin-top:12px;padding:8px 12px;border-radius:6px;display:inline-block}
-.pApp-kq-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace}
-.pApp-kq-text{font-size:12px;font-weight:600;margin-top:1px}
-.pApp-uc{flex-shrink:0}
-.pApp-uc-label{font-size:10px;color:#5A5A7A;margin-bottom:5px;font-family:'JetBrains Mono',monospace;text-align:right}
-.pApp-uc-tag{font-size:11px;padding:3px 8px;border-radius:4px;margin-bottom:4px;text-align:right;display:block;font-family:'JetBrains Mono',monospace;border:1px solid transparent}
-.pApp-tabs{display:flex;gap:2px;border-bottom:1px solid #1C1C2E;margin-bottom:16px}
-.pApp-tab{background:transparent;border:none;border-bottom:2px solid transparent;color:#5A5A7A;padding:8px 15px;font-size:12px;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s;margin-bottom:-1px}
-.pApp-tab:hover{color:#E4E4F0}
-.pApp-tab.active{font-weight:700}
-.pApp-panel{display:none}
-.pApp-panel.active{display:block}
-.pApp-flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.pApp-card{background:#0F0F1A;border:1px solid #1C1C2E;border-radius:10px;padding:16px}
-.pApp-card-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:12px}
-.pApp-flow-steps{display:flex;flex-direction:column}
-.pApp-fstep{display:flex;align-items:stretch}
-.pApp-fstep-line{display:flex;flex-direction:column;align-items:center;width:22px;flex-shrink:0}
-.pApp-fdot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.pApp-fconn{width:2px;flex:1;opacity:.35}
-.pApp-fcontent{margin-left:8px;padding-bottom:10px;flex:1}
-.pApp-fname{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-.pApp-fdetail{font-size:11px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;margin-top:2px;line-height:1.4}
-.pApp-legend-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.pApp-ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.pApp-llabel{font-size:12px;color:#8888A8;font-family:'JetBrains Mono',monospace}
-.pApp-trigger{margin-top:14px;padding:10px 12px;border-radius:6px;border:1px solid transparent}
-.pApp-trig-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
-.pApp-trig-val{font-size:13px;font-weight:700}
-.pApp-to-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1C1C2E}
-.pApp-to-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.pApp-to-icon{font-size:14px;flex-shrink:0;margin-top:1px;font-weight:900}
-.pApp-to-text{font-size:13px;color:#C0C0D8;line-height:1.6}
-.pApp-code-label{font-size:10px;color:#5A5A7A;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:6px}
-.pApp-code-wrap{position:relative}
-.pApp-copy-btn{position:absolute;top:8px;right:8px;background:#13131F;border:1px solid #1C1C2E;color:#5A5A7A;font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;z-index:1;font-family:'JetBrains Mono',monospace;transition:all .2s}
-.pApp-copy-btn:hover{border-color:#5A5A7A}
-.pApp-pre{background:#09090F;border:1px solid #1C1C2E;border-radius:8px;padding:16px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#C8C8E8;overflow:auto;max-height:340px;line-height:1.65;tab-size:2}
-.pApp-insight{border-radius:10px;padding:20px;border:1px solid transparent}
-.pApp-insight-hd{display:flex;gap:12px;align-items:flex-start}
-.pApp-insight-star{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#000;font-weight:900}
-.pApp-insight-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.1em;margin-bottom:8px}
-.pApp-insight-text{font-size:14px;color:#D0D0E8;line-height:1.75}
-.pApp-navbar{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid #1C1C2E}
-.pApp-navbtn{background:transparent;border:1px solid #1C1C2E;color:#E4E4F0;padding:8px 16px;border-radius:6px;font-size:12px;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s}
-.pApp-navbtn:hover:not(:disabled){border-color:#444}
-.pApp-navbtn:disabled{color:#5A5A7A;cursor:not-allowed}
-.pApp-navbtn.next{font-weight:600}
-.pApp-counter{font-size:11px;color:#5A5A7A;font-family:'JetBrains Mono',monospace}
-</style>
+/* ── PATTERN CARDS — site design language ─────────────────────────── */
+.patterns-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin:24px 0 0;
+}
+@media(max-width:800px){.patterns-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.patterns-grid{grid-template-columns:1fr}}
 
-<div id="pApp-body">
-  <aside id="pApp-sidebar">
-    <div id="pApp-search"><input type="text" id="pApp-searchInput" placeholder="Filter patterns…"></div>
-    <div id="pApp-sidebar-list"></div>
-    <div id="pApp-dtree"></div>
-  </aside>
-  <main id="pApp-detail"></main>
-</div>
+.pat-card{
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-radius:var(--r-lg);
+  padding:18px 20px 14px;
+  display:flex;flex-direction:column;gap:10px;
+  transition:border-color .15s,transform .15s,box-shadow .15s;
+  position:relative;
+  overflow:hidden;
+}
+.pat-card::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;
+  width:3px;
+  background:var(--pat);
+  opacity:.7;
+}
+.pat-card:hover{
+  border-color:var(--rule-2);
+  transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(26,25,22,.06);
+}
+.pat-top{display:flex;align-items:flex-start;gap:10px}
+.pat-icon{
+  font-size:18px;flex-shrink:0;
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb, var(--pat) 12%, transparent);
+  border:1px solid color-mix(in srgb, var(--pat) 25%, transparent);
+  border-radius:8px;
+}
+.pat-num{
+  font-family:var(--mono);font-size:9px;
+  color:var(--pat);letter-spacing:.1em;font-weight:700;
+  text-transform:uppercase;margin-bottom:3px;
+}
+.pat-title{
+  font-size:13px;font-weight:500;color:var(--ink);
+  line-height:1.3;
+}
+.pat-trigger{
+  font-family:var(--mono);font-size:10px;
+  color:var(--ink-3);
+  padding:4px 8px;
+  background:var(--paper-3);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  display:inline-block;
+}
+.pat-uses{
+  font-size:11px;color:var(--ink-4);
+  font-family:var(--mono);
+  line-height:1.5;
+  flex:1;
+}
+.pat-explore{
+  align-self:flex-start;
+  font-family:var(--mono);font-size:11px;
+  color:var(--pat);
+  background:color-mix(in srgb, var(--pat) 8%, transparent);
+  border:1px solid color-mix(in srgb, var(--pat) 25%, transparent);
+  padding:5px 12px;border-radius:20px;
+  cursor:pointer;
+  transition:all .15s;
+  margin-top:2px;
+}
+.pat-explore:hover{
+  background:color-mix(in srgb, var(--pat) 18%, transparent);
+  border-color:color-mix(in srgb, var(--pat) 50%, transparent);
+}
+</style>
 
 <script>
 (function(){
-const PATTERNS=[{id:1,tag:"READ HEAVY",title:"Cache-Aside + Read Replicas",color:"#00D4FF",accent:"#001D2A",icon:"⚡",tldr:"App checks Redis first → miss → read DB → populate cache. Add read replicas to fanout query load. Critical question: what's the cache invalidation strategy?",keyQuestion:"What's the cache invalidation strategy?",useCases:["Social feeds","Product pages","YouTube view counts"],decision:"Read:write > 5:1",flow:[{step:"Client Request",detail:"GET /product/42",type:"client"},{step:"Redis Check",detail:"GET product:42 → HIT (~1ms) or MISS",type:"cache"},{step:"DB Read (on miss)",detail:"SELECT * FROM products WHERE id=42 (~5–20ms)",type:"db"},{step:"Cache Populate",detail:"SET product:42 <data> EX 300 + jitter",type:"cache"},{step:"Read Replica",detail:"Route reads to replicas, writes to primary only",type:"db"}],tradeoffs:[{pro:true,text:"Dramatically reduces DB load — cache hit rate ~95% for hot data"},{pro:true,text:"Read replicas multiply read throughput linearly at low cost"},{pro:false,text:"Cache invalidation is hard — stale reads possible during TTL window"},{pro:false,text:"Thundering herd: many requests miss simultaneously on cold start or TTL expiry"}],code:`// Go: Cache-Aside with singleflight (thundering herd prevention)
+// ── PATTERN DATA ────────────────────────────────────────────────────
+const PATTERNS=[{id:1,tag:"READ HEAVY",title:"Cache-Aside + Read Replicas",color:"#00D4FF",accent:"#001D2A",icon:"⚡",tldr:"App checks Redis first → miss → read DB → populate cache. Add read replicas to fanout query load. Critical question: what's the cache invalidation strategy?",keyQuestion:"What's the cache invalidation strategy?",useCases:["Social feeds","Product pages","YouTube view counts"],decision:"Read:write > 5:1",flow:[{step:"Client Request",detail:"GET /product/42",type:"client"},{step:"Redis Check",detail:"GET product:42 → HIT (~1ms) or MISS",type:"cache"},{step:"DB Read (on miss)",detail:"SELECT * FROM products WHERE id=42 (~5–20ms)",type:"db"},{step:"Cache Populate",detail:"SET product:42 <data> EX 300 + jitter",type:"cache"},{step:"Read Replica",detail:"Route reads to replicas, writes to primary only",type:"db"}],tradeoffs:[{pro:true,text:"Dramatically reduces DB load — cache hit rate ~95% for hot data"},{pro:true,text:"Read replicas multiply read throughput linearly at low cost"},{pro:false,text:"Cache invalidation is hard — stale reads possible during TTL window"},{pro:false,text:"Thundering herd: many requests miss simultaneously on cold start"}],code:`// Go: Cache-Aside with singleflight (thundering herd prevention)
 func (s *ProductService) GetProduct(ctx context.Context, id string) (*Product, error) {
   cacheKey := fmt.Sprintf("product:%s", id)
-
-  // 1. Check cache first
   cached, err := s.redis.Get(ctx, cacheKey).Bytes()
   if err == nil {
     var p Product
     return &p, json.Unmarshal(cached, &p)
   }
-
-  // 2. singleflight: only ONE goroutine fetches from DB
-  //    all concurrent callers for same key wait and share result
+  // singleflight: only ONE goroutine fetches from DB
   mu := s.sfGroup.DoChan(cacheKey, func() (interface{}, error) {
-    p, err := s.db.GetProduct(ctx, id) // reads from READ REPLICA
+    p, err := s.db.GetProduct(ctx, id)
     if err != nil { return nil, err }
     data, _ := json.Marshal(p)
-    // TTL jitter prevents mass expiry stampede
     ttl := 5*time.Minute + time.Duration(rand.Intn(30))*time.Second
     s.redis.Set(ctx, cacheKey, data, ttl)
     return p, nil
@@ -377,17 +620,10 @@ func (s *ProductService) GetProduct(ctx context.Context, id string) (*Product, e
   return result.Val.(*Product), result.Err
 }
 
-// Write path: update DB then invalidate cache (delete, not update)
 func (s *ProductService) UpdateProduct(ctx context.Context, p *Product) error {
   if err := s.db.UpdateProduct(ctx, p); err != nil { return err }
   return s.redis.Del(ctx, fmt.Sprintf("product:%s", p.ID)).Err()
-}`,insight:"Hot keys are the silent killer. A celebrity product or viral post creates a single Redis key that saturates one shard. Solution: local in-process L1 cache (sync.Map with 1s TTL) before Redis L2, or key sharding by appending random suffix (product:42:0…3) and reading from a random shard. Also: probabilistic early expiry (PER) prevents the thundering herd without singleflight — recalculate with probability proportional to how close to TTL expiry."},{id:2,tag:"WRITE HEAVY",title:"Write-Ahead Queue + Async Workers",color:"#FF6B35",accent:"#2A0D00",icon:"📨",tldr:"Writes go to Kafka/SQS first, workers process async. Decouples ingestion rate from processing rate. Backpressure = consumer lag depth.",keyQuestion:"How do you guarantee exactly-once semantics?",useCases:["Analytics events","IoT telemetry","Email queue","Audit logs"],decision:"Write-heavy, >50K/s",flow:[{step:"Client Write",detail:"POST /events — validated & serialized",type:"client"},{step:"Kafka Produce",detail:"Partition by user_id, acks=all, linger.ms=5",type:"queue"},{step:"Immediate ACK",detail:"Return 202 Accepted — don't wait for processing",type:"client"},{step:"Consumer Group",detail:"Workers poll, process batch of 100 msgs",type:"worker"},{step:"DB Write + Commit",detail:"Batch upsert + commit offset atomically after write",type:"db"}],tradeoffs:[{pro:true,text:"Ingestion is O(1) regardless of downstream processing time"},{pro:true,text:"Backpressure is visible: consumer lag = how far behind you are"},{pro:false,text:"At-least-once delivery default — consumers MUST be idempotent"},{pro:false,text:"Added latency: data available after processing, not immediately on write"}],code:`// Go: Idempotent Kafka consumer — commit AFTER processing
-type EventConsumer struct {
-  kafka  *kafka.Reader
-  db     *pgxpool.Pool
-  redis  *redis.Client
-}
-
+}`,insight:"Hot keys are the silent killer. A celebrity product or viral post creates a single Redis key that saturates one shard. Solution: local in-process L1 cache (sync.Map with 1s TTL) before Redis L2, or key sharding by appending random suffix (product:42:0…3). Also: probabilistic early expiry (PER algorithm) prevents thundering herd without singleflight."},{id:2,tag:"WRITE HEAVY",title:"Write-Ahead Queue + Async Workers",color:"#FF6B35",accent:"#2A0D00",icon:"📨",tldr:"Writes go to Kafka/SQS first, workers process async. Decouples ingestion rate from processing rate. Backpressure = consumer lag depth.",keyQuestion:"How do you guarantee exactly-once semantics?",useCases:["Analytics events","IoT telemetry","Email queue","Audit logs"],decision:"Write-heavy, >50K/s",flow:[{step:"Client Write",detail:"POST /events — validated & serialized",type:"client"},{step:"Kafka Produce",detail:"Partition by user_id, acks=all, linger.ms=5",type:"queue"},{step:"Immediate ACK",detail:"Return 202 Accepted — don't wait for processing",type:"client"},{step:"Consumer Group",detail:"Workers poll, process batch of 100 msgs",type:"worker"},{step:"DB Write + Commit",detail:"Batch upsert + commit offset atomically after write",type:"db"}],tradeoffs:[{pro:true,text:"Ingestion is O(1) regardless of downstream processing time"},{pro:true,text:"Backpressure is visible: consumer lag = how far behind you are"},{pro:false,text:"At-least-once delivery default — consumers MUST be idempotent"},{pro:false,text:"Added latency: data available after processing, not immediately"}],code:`// Go: Idempotent Kafka consumer — commit AFTER processing
 func (c *EventConsumer) ProcessBatch(ctx context.Context) error {
   msgs := make([]kafka.Message, 0, 100)
   for len(msgs) < 100 {
@@ -395,12 +631,9 @@ func (c *EventConsumer) ProcessBatch(ctx context.Context) error {
     if err != nil { break }
     msgs = append(msgs, m)
   }
-
-  // Dedup: check which event IDs already processed (Redis SET)
   keys := make([]interface{}, len(msgs))
   for i, m := range msgs { keys[i] = string(m.Key) }
   existing, _ := c.redis.SMIsMember(ctx, "processed_events", keys...).Result()
-
   var toProcess []Event
   for i, m := range msgs {
     if !existing[i].(bool) {
@@ -409,18 +642,14 @@ func (c *EventConsumer) ProcessBatch(ctx context.Context) error {
       toProcess = append(toProcess, e)
     }
   }
-
   if err := c.db.BulkInsert(ctx, toProcess); err != nil { return err }
-
-  // Mark as processed atomically
   pipe := c.redis.Pipeline()
   pipe.SAdd(ctx, "processed_events", keys...)
   pipe.Expire(ctx, "processed_events", 24*time.Hour)
   pipe.Exec(ctx)
-
-  // CRITICAL: commit offsets AFTER durable write, never before
+  // CRITICAL: commit AFTER durable write, never before
   return c.kafka.CommitMessages(ctx, msgs...)
-}`,insight:"Commit offsets AFTER you've durably processed the message — never before. If you commit first and crash, those messages are lost (at-most-once). Backpressure strategy: monitor consumer lag (kafka_consumer_group_lag metric in Grafana). Alert at 100K messages, page at 1M. Auto-scale consumers by lag depth, not CPU. Partition count = parallelism ceiling — set it correctly at topic creation, adding partitions later breaks key ordering guarantees."},{id:3,tag:"REAL-TIME",title:"WebSocket + Pub-Sub Backend",color:"#00FF88",accent:"#001A0D",icon:"🔴",tldr:"Clients hold persistent WebSocket connections. Backend pub-sub fans out to all connection servers. State lives in Redis/Kafka, not on the WS server.",keyQuestion:"How do you handle reconnect + replay from last received offset?",useCases:["Chat","Live scores","Collaborative editing","Dashboards"],decision:"Server must push to client",flow:[{step:"WS Handshake",detail:"HTTP Upgrade → TCP persistent connection established",type:"client"},{step:"Connection Registry",detail:"Redis: HSET conn:user42 serverID timestamp",type:"cache"},{step:"Event Arrives",detail:"Any service: PUBLISH room:123 <serialized msg>",type:"queue"},{step:"Fan-out",detail:"All WS servers subscribed to room:123 receive it",type:"worker"},{step:"Push to Client",detail:"WS server writes to socket; replays missed msgs on reconnect",type:"client"}],tradeoffs:[{pro:true,text:"True server-push — zero client polling overhead, sub-100ms delivery"},{pro:true,text:"Full-duplex: client and server send simultaneously"},{pro:false,text:"WS servers hold connection state — sticky sessions needed at LB"},{pro:false,text:"Redis Pub-Sub has no persistence — use Kafka Streams for replay guarantees"}],code:`// Go: WebSocket hub with Redis pub-sub fan-out
+}`,insight:"Commit offsets AFTER you've durably processed the message — never before. Backpressure strategy: monitor kafka_consumer_group_lag. Alert at 100K messages, page at 1M. Auto-scale consumers by lag depth, not CPU. Partition count = parallelism ceiling — set it at topic creation, adding partitions later breaks key ordering."},{id:3,tag:"REAL-TIME",title:"WebSocket + Pub-Sub Backend",color:"#00FF88",accent:"#001A0D",icon:"🔴",tldr:"Clients hold persistent WebSocket connections. Backend pub-sub fans out to all connection servers. State lives in Redis/Kafka, not on the WS server.",keyQuestion:"How do you handle reconnect + replay from last received offset?",useCases:["Chat","Live scores","Collaborative editing","Dashboards"],decision:"Server must push to client",flow:[{step:"WS Handshake",detail:"HTTP Upgrade → TCP persistent connection",type:"client"},{step:"Connection Registry",detail:"Redis: HSET conn:user42 serverID timestamp",type:"cache"},{step:"Event Arrives",detail:"Any service: PUBLISH room:123 <msg>",type:"queue"},{step:"Fan-out",detail:"All WS servers subscribed to room:123 receive it",type:"worker"},{step:"Push to Client",detail:"Write to socket; replay missed msgs on reconnect",type:"client"}],tradeoffs:[{pro:true,text:"True server-push — zero client polling overhead"},{pro:true,text:"Full-duplex: client and server send simultaneously"},{pro:false,text:"WS servers hold connection state — sticky sessions needed"},{pro:false,text:"Redis Pub-Sub has no persistence — use Kafka for replay guarantees"}],code:`// Go: WebSocket hub with Redis pub-sub fan-out
 type Hub struct {
   clients   sync.Map // userID → *websocket.Conn
   rdb       *redis.Client
@@ -438,51 +667,36 @@ func (h *Hub) Subscribe(ctx context.Context, roomID string) {
   }()
 }
 
-// Reconnect: client sends last received sequence number
 func (h *Hub) HandleReconnect(ctx context.Context, userID, roomID string, lastSeq int64) {
-  // 1. Replay missed messages from durable store
   missed, _ := h.msgStore.GetSince(ctx, roomID, lastSeq)
   if conn, ok := h.clients.Load(userID); ok {
-    for _, m := range missed {
-      conn.(*websocket.Conn).WriteJSON(m)
-    }
+    for _, m := range missed { conn.(*websocket.Conn).WriteJSON(m) }
   }
-  // 2. Switch to live Redis pub-sub
   h.Subscribe(ctx, roomID)
 }
 
-// Presence: heartbeat TTL keeps user "online"
 func (h *Hub) TrackPresence(ctx context.Context, userID string) {
   ticker := time.NewTicker(15 * time.Second)
   for range ticker.C {
     h.rdb.Set(ctx, "presence:"+userID, "online", 30*time.Second)
   }
-}`,insight:"Sticky sessions at the WS tier break stateless scaling. The correct model: WS servers are interchangeable because ALL state lives in Redis/Kafka. Any server can serve any user. Consistent hashing on user_id at the LB just reduces cross-server pub-sub fan-out for efficiency — it's an optimization, not a requirement. For 10M concurrent users: use Kafka consumer groups per WS server cluster, not Redis pub-sub — Redis can't handle fan-out at that scale without becoming a bottleneck."},{id:4,tag:"GLOBAL SCALE",title:"CDN + GeoDNS + Edge Caching",color:"#FFD700",accent:"#2A2000",icon:"🌍",tldr:"Static assets from CDN edge. GeoDNS routes to nearest PoP. Origin shield collapses cache misses. Tag-based purging on deploy.",keyQuestion:"How do you handle cache invalidation at edge + data residency laws?",useCases:["Netflix/YouTube delivery","Cloudflare","Global APIs","Static assets"],decision:"Global <100ms latency",flow:[{step:"GeoDNS",detail:"Route53 returns nearest PoP IP based on client geo",type:"client"},{step:"CDN Edge",detail:"Cache HIT → ~5ms. MISS → forward to Origin Shield",type:"cache"},{step:"Origin Shield",detail:"Collapses multiple PoP misses into 1 origin request",type:"cache"},{step:"Origin",detail:"Generates response, streams to Shield → Edge → Client",type:"db"},{step:"Cache Headers",detail:"Cache-Control: public, max-age=86400, s-maxage=3600",type:"worker"}],tradeoffs:[{pro:true,text:"CDN hit = ~5ms globally vs 80–150ms cross-region origin"},{pro:true,text:"Origin Shield reduces origin load ~90% during miss storms"},{pro:false,text:"Stale content until TTL expires or manual purge — purge APIs have eventual consistency"},{pro:false,text:"GDPR/data residency: EU PII must not be cached at certain PoP locations"}],code:`// Go: Cache-Control strategy per content type
+}`,insight:"Sticky sessions at the WS tier break stateless scaling. The correct model: WS servers are interchangeable because ALL state lives in Redis/Kafka. Consistent hashing at the LB just reduces cross-server pub-sub for efficiency — it's an optimization, not a requirement. For 10M concurrent users: use Kafka consumer groups per WS cluster, not Redis pub-sub."},{id:4,tag:"GLOBAL SCALE",title:"CDN + GeoDNS + Edge Caching",color:"#FFD700",accent:"#2A2000",icon:"🌍",tldr:"Static assets from CDN edge. GeoDNS routes to nearest PoP. Origin shield collapses cache misses. Tag-based purging on deploy.",keyQuestion:"How do you handle cache invalidation at edge + data residency laws?",useCases:["Netflix/YouTube delivery","Cloudflare","Global APIs"],decision:"Global <100ms latency",flow:[{step:"GeoDNS",detail:"Route53 returns nearest PoP IP based on client geo",type:"client"},{step:"CDN Edge",detail:"Cache HIT → ~5ms. MISS → forward to Origin Shield",type:"cache"},{step:"Origin Shield",detail:"Collapses multiple PoP misses into 1 origin request",type:"cache"},{step:"Origin",detail:"Generates response, streams to Shield → Edge → Client",type:"db"},{step:"Cache Headers",detail:"Cache-Control: public, max-age=86400, s-maxage=3600",type:"worker"}],tradeoffs:[{pro:true,text:"CDN hit = ~5ms globally vs 80–150ms cross-region origin"},{pro:true,text:"Origin Shield reduces origin load ~90% during miss storms"},{pro:false,text:"Stale content until TTL expires or manual purge"},{pro:false,text:"GDPR/data residency: EU PII must not be cached at certain PoPs"}],code:`// Go: Cache-Control strategy per content type
 func setCacheHeaders(w http.ResponseWriter, contentType string) {
   switch contentType {
   case "static-asset":
-    // URL-versioned (/app.v3.1.2.js) → immutable forever
     w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-
   case "api-response":
-    // CDN caches 1hr, client 5min, serve stale while revalidating
     w.Header().Set("Cache-Control",
       "public, max-age=300, s-maxage=3600, stale-while-revalidate=60")
     w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
-
   case "user-specific":
-    // NEVER cache at CDN — private user data
     w.Header().Set("Cache-Control", "private, no-store")
-
-  case "media-segment": // HLS video chunks
+  case "media-segment":
     w.Header().Set("Cache-Control", "public, max-age=86400")
     w.Header().Set("CDN-Cache-Control", "max-age=604800")
   }
 }
 
-// Tag-based purge on deploy (Cloudflare)
-// Cache-Tag: product-42 on all pages that render product 42
-// One API call purges ALL pages referencing that product
 func purgeByTag(token, zoneID, tag string) error {
   body, _ := json.Marshal(map[string][]string{"tags": {tag}})
   req, _ := http.NewRequest("POST",
@@ -491,7 +705,7 @@ func purgeByTag(token, zoneID, tag string) error {
   req.Header.Set("Authorization", "Bearer "+token)
   _, err := http.DefaultClient.Do(req)
   return err
-}`,insight:"Never rely on TTL alone for cache invalidation at scale. Tag-based purging (Cloudflare Cache Tags, Fastly Surrogate-Key) lets you invalidate ALL pages related to 'product:42' with a single API call when you update that product. Design your cache keys with invalidation in mind from day one — it's far harder to retrofit. Also: stale-while-revalidate is underused. It serves the cached version immediately (zero latency) while asynchronously fetching a fresh copy — better UX than waiting for a 20ms origin request."},{id:5,tag:"DISTRIBUTED TX",title:"Saga Pattern (Choreography / Orchestration)",color:"#FF4D8B",accent:"#2A0015",icon:"🔄",tldr:"Break multi-service transaction into steps. Each step publishes an event. On failure: compensating transactions roll back in reverse order.",keyQuestion:"Are all compensating transactions idempotent?",useCases:["E-commerce checkout","Flight booking","Bank transfer"],decision:"Spans multiple services",flow:[{step:"Order Created",detail:"OrderService → publishes OrderPlaced event",type:"worker"},{step:"Reserve Inventory",detail:"InventoryService → reserves stock, publishes InventoryReserved",type:"worker"},{step:"Process Payment",detail:"PaymentService → charges card, publishes PaymentProcessed",type:"worker"},{step:"Ship Order",detail:"ShippingService → creates shipment, completes saga",type:"worker"},{step:"Compensate on Fail",detail:"Payment fails → Release Inventory → Cancel Order (reverse)",type:"queue"}],tradeoffs:[{pro:true,text:"No distributed 2PC lock — services loosely coupled via events"},{pro:true,text:"Orchestration makes saga state visible & debuggable in one place"},{pro:false,text:"Compensating transactions must be idempotent — they may run multiple times"},{pro:false,text:"Choreography debugging is brutal — events fly across services with no central view"}],code:`// Go: Orchestrated Saga with persistent state
+}`,insight:"Never rely on TTL alone for cache invalidation at scale. Tag-based purging (Cloudflare Cache Tags, Fastly Surrogate-Key) lets you invalidate ALL pages related to 'product:42' with one API call. Design cache keys with invalidation in mind from day one. Also: stale-while-revalidate serves cached content immediately while asynchronously fetching fresh — better UX than waiting 20ms."},{id:5,tag:"DISTRIBUTED TX",title:"Saga Pattern (Choreography / Orchestration)",color:"#FF4D8B",accent:"#2A0015",icon:"🔄",tldr:"Break multi-service transaction into steps. Each step publishes an event. On failure: compensating transactions roll back in reverse order.",keyQuestion:"Are all compensating transactions idempotent?",useCases:["E-commerce checkout","Flight booking","Bank transfer"],decision:"Spans multiple services",flow:[{step:"Order Created",detail:"OrderService → publishes OrderPlaced event",type:"worker"},{step:"Reserve Inventory",detail:"InventoryService → reserves, publishes InventoryReserved",type:"worker"},{step:"Process Payment",detail:"PaymentService → charges card, publishes PaymentProcessed",type:"worker"},{step:"Ship Order",detail:"ShippingService → creates shipment",type:"worker"},{step:"Compensate on Fail",detail:"Payment fails → Release Inventory → Cancel Order",type:"queue"}],tradeoffs:[{pro:true,text:"No distributed 2PC lock — services loosely coupled via events"},{pro:true,text:"Orchestration makes saga state visible & debuggable in one place"},{pro:false,text:"Compensating transactions must be idempotent — may run multiple times"},{pro:false,text:"Choreography debugging is brutal — events fly with no central view"}],code:`// Go: Orchestrated Saga with persistent state
 type SagaState string
 const (
   SagaStarted           SagaState = "STARTED"
@@ -500,27 +714,18 @@ const (
   SagaCompleted         SagaState = "COMPLETED"
 )
 
-type OrderSaga struct {
-  ID            uuid.UUID
-  State         SagaState
-  ReservationID string
-  PaymentID     string
-}
-
 func (s *Orchestrator) Execute(ctx context.Context, order Order) error {
   saga := &OrderSaga{ID: uuid.New(), State: SagaStarted}
-  s.db.SaveSaga(ctx, saga) // persist for crash recovery
+  s.db.SaveSaga(ctx, saga)
 
   resID, err := s.inventory.Reserve(ctx, order.Items)
   if err != nil { return s.compensate(ctx, saga) }
-  saga.State = SagaInventoryReserved
-  saga.ReservationID = resID
+  saga.State, saga.ReservationID = SagaInventoryReserved, resID
   s.db.SaveSaga(ctx, saga)
 
   payID, err := s.payment.Charge(ctx, order.PaymentID, order.Total)
   if err != nil { return s.compensate(ctx, saga) }
-  saga.State = SagaPaymentProcessed
-  saga.PaymentID = payID
+  saga.State, saga.PaymentID = SagaPaymentProcessed, payID
   s.db.SaveSaga(ctx, saga)
 
   if err := s.shipping.Create(ctx, order); err != nil {
@@ -531,7 +736,6 @@ func (s *Orchestrator) Execute(ctx context.Context, order Order) error {
 }
 
 func (s *Orchestrator) compensate(ctx context.Context, saga *OrderSaga) error {
-  // Compensations MUST be idempotent — check before acting
   switch saga.State {
   case SagaPaymentProcessed:
     s.payment.RefundIfNotRefunded(ctx, saga.PaymentID)
@@ -540,24 +744,14 @@ func (s *Orchestrator) compensate(ctx context.Context, saga *OrderSaga) error {
     s.inventory.ReleaseIfNotReleased(ctx, saga.ReservationID)
   }
   return ErrSagaFailed
-}`,insight:"The hardest part of Sagas isn't the happy path — it's ensuring every compensation is idempotent AND handles partial failure where compensation itself fails. Use a Saga log table (saga_id, step, status, payload) persisted in your DB. On service restart, replay from the last committed step. This is the Outbox pattern applied recursively to Saga compensation events. Also: 2PC is a blocking protocol — if the coordinator crashes after PREPARE, participants hold locks indefinitely. That's why Sagas win in microservices despite the added complexity."},{id:6,tag:"DUAL WRITE",title:"Outbox Pattern + CDC (Debezium)",color:"#9B59B6",accent:"#150020",icon:"📤",tldr:"Write to DB + Outbox table in same DB transaction. Debezium reads WAL → publishes to Kafka. Atomicity guaranteed — no dual-write failure mode.",keyQuestion:"What happens if Debezium restarts — are consumers idempotent?",useCases:["Any service writing to DB AND publishing events"],decision:"DB write + publish event atomically",flow:[{step:"Business Write",detail:"INSERT INTO orders + INSERT INTO outbox — same TX",type:"db"},{step:"TX Commit",detail:"DB commits both atomically — no split-brain possible",type:"db"},{step:"Debezium Reads WAL",detail:"Postgres WAL → Debezium connector reads outbox changes",type:"worker"},{step:"Publish to Kafka",detail:"Debezium produces to Kafka with at-least-once guarantee",type:"queue"},{step:"Outbox Cleanup",detail:"After publish confirmed, rows deleted or tombstoned",type:"db"}],tradeoffs:[{pro:true,text:"Atomic: business write + event guaranteed to both happen or neither"},{pro:true,text:"No dual-write code — Debezium handles DB→Kafka bridge transparently"},{pro:false,text:"Small latency: event published after DB commit + CDC polling interval (~100ms)"},{pro:false,text:"Outbox table grows unboundedly — need cleanup job or TTL + partitioning"}],code:`// Go: Transactional outbox write
-type OutboxEvent struct {
-  ID          uuid.UUID       \`db:"id"\`
-  AggregateID string          \`db:"aggregate_id"\`
-  EventType   string          \`db:"event_type"\`
-  Payload     json.RawMessage \`db:"payload"\`
-  CreatedAt   time.Time       \`db:"created_at"\`
-}
-
+}`,insight:"The hardest part of Sagas isn't the happy path — it's ensuring every compensation is idempotent AND handles partial failure where compensation itself fails. Use a Saga log table (saga_id, step, status, payload). On restart, replay from last committed step. 2PC is a blocking protocol — if coordinator crashes after PREPARE, participants hold locks indefinitely. That's why Sagas win in microservices."},{id:6,tag:"DUAL WRITE",title:"Outbox Pattern + CDC (Debezium)",color:"#9B59B6",accent:"#150020",icon:"📤",tldr:"Write to DB + Outbox table in same DB transaction. Debezium reads WAL → publishes to Kafka. Atomicity guaranteed — no dual-write failure mode.",keyQuestion:"What happens if Debezium restarts — are consumers idempotent?",useCases:["Any service writing to DB AND publishing events"],decision:"DB write + publish event atomically",flow:[{step:"Business Write",detail:"INSERT INTO orders + INSERT INTO outbox — same TX",type:"db"},{step:"TX Commit",detail:"DB commits both atomically",type:"db"},{step:"Debezium Reads WAL",detail:"Postgres WAL → Debezium reads outbox changes",type:"worker"},{step:"Publish to Kafka",detail:"Debezium produces with at-least-once guarantee",type:"queue"},{step:"Outbox Cleanup",detail:"After publish confirmed, rows deleted or tombstoned",type:"db"}],tradeoffs:[{pro:true,text:"Atomic: business write + event guaranteed to both happen or neither"},{pro:true,text:"No dual-write code — Debezium handles DB→Kafka bridge"},{pro:false,text:"Small latency: event published after DB commit + CDC poll interval (~100ms)"},{pro:false,text:"Outbox table grows unboundedly — need cleanup job or TTL partitioning"}],code:`// Go: Transactional outbox write
 func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
   return s.db.WithTx(ctx, func(tx pgx.Tx) error {
-    // 1. Business write
     if _, err := tx.Exec(ctx,
       "INSERT INTO orders(id,user_id,total,status) VALUES($1,$2,$3,$4)",
       order.ID, order.UserID, order.Total, "PENDING",
     ); err != nil { return err }
 
-    // 2. Outbox write — SAME transaction = atomic guarantee
     payload, _ := json.Marshal(OrderCreatedEvent{
       OrderID: order.ID, UserID: order.UserID, Total: order.Total,
     })
@@ -569,11 +763,9 @@ func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
     return nil // Both committed or both rolled back
   })
 }
-
 // Debezium connector config:
 // "table.include.list": "public.outbox"
-// "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter"
-// "transforms.outbox.route.by.field": "event_type"`,insight:"Debezium restart replays from its last committed Kafka offset — consumers will see duplicate events. Your consumers MUST be idempotent. Pattern: unique DB constraint on event_id, or Redis SET 'already-processed' with 24h TTL. The Outbox guarantees delivery (at-least-once), not exactly-once processing — that's the consumer's responsibility. For outbox cleanup: partition the outbox table by created_at and drop old partitions instead of DELETEs — far cheaper at scale and avoids table bloat."},{id:7,tag:"SEARCH",title:"Inverted Index + ES Sync via CDC",color:"#1ABC9C",accent:"#001A15",icon:"🔍",tldr:"Primary DB = source of truth. ES = read-optimized search replica synced via Kafka CDC. Hybrid ANN+BM25 ranking for best precision.",keyQuestion:"How do you handle index lag vs freshness SLA?",useCases:["Airbnb search","LinkedIn","Product catalog","Legal docs"],decision:"Full-text search needed",flow:[{step:"Write to Primary DB",detail:"Source of truth: Postgres/MySQL with normalized schema",type:"db"},{step:"CDC via Debezium",detail:"WAL → Kafka topic per table → search indexer consumer",type:"queue"},{step:"ES Indexer",detail:"Transform DB row → ES document, upsert by primary ID",type:"worker"},{step:"Hybrid Search Query",detail:"ANN (semantic) + BM25 (keyword) → RRF fusion ranking",type:"cache"},{step:"Results + Facets",detail:"ES returns ranked hits + aggregation facets",type:"client"}],tradeoffs:[{pro:true,text:"ES: full-text, fuzzy, geo, range, aggregations in one query"},{pro:true,text:"Hybrid ANN+BM25 dramatically outperforms either alone (BEIR benchmark data)"},{pro:false,text:"Eventual consistency: index lag ~1-5s behind primary DB"},{pro:false,text:"ES schema changes require full re-index — expensive for billion-doc corpora"}],code:`// Go: Hybrid search — BM25 + KNN with RRF fusion
+// "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter"`,insight:"Debezium restart replays from last Kafka offset — consumers see duplicates. Consumers MUST be idempotent: unique DB constraint on event_id, or Redis SET 'already-processed' with 24h TTL. The Outbox guarantees at-least-once delivery — exactly-once is the consumer's responsibility. For outbox cleanup: partition the outbox table by created_at and drop old partitions — far cheaper than DELETEs at scale."},{id:7,tag:"SEARCH",title:"Inverted Index + ES Sync via CDC",color:"#1ABC9C",accent:"#001A15",icon:"🔍",tldr:"Primary DB = source of truth. ES = read-optimized search replica synced via Kafka CDC. Hybrid ANN+BM25 ranking for best precision.",keyQuestion:"How do you handle index lag vs freshness SLA?",useCases:["Airbnb search","LinkedIn","Product catalog","Legal docs"],decision:"Full-text search needed",flow:[{step:"Write to Primary DB",detail:"Source of truth: Postgres/MySQL",type:"db"},{step:"CDC via Debezium",detail:"WAL → Kafka topic per table",type:"queue"},{step:"ES Indexer",detail:"Transform DB row → ES document, upsert by ID",type:"worker"},{step:"Hybrid Search Query",detail:"ANN (semantic) + BM25 (keyword) → RRF fusion",type:"cache"},{step:"Results + Facets",detail:"Ranked hits + aggregation facets",type:"client"}],tradeoffs:[{pro:true,text:"ES: full-text, fuzzy, geo, range, aggregations in one query"},{pro:true,text:"Hybrid ANN+BM25 outperforms either alone (BEIR benchmark)"},{pro:false,text:"Eventual consistency: index lag ~1-5s behind primary DB"},{pro:false,text:"ES schema changes require full re-index — expensive for large corpora"}],code:`// Go: Hybrid search — BM25 + KNN with RRF fusion
 func (s *SearchService) Search(ctx context.Context, query string, f Filters) ([]Product, error) {
   embedding, err := s.embedder.Embed(ctx, query)
   if err != nil { return nil, err }
@@ -582,51 +774,34 @@ func (s *SearchService) Search(ctx context.Context, query string, f Filters) ([]
     "retriever": map[string]any{
       "rrf": map[string]any{
         "retrievers": []any{
-          // BM25 keyword leg
           map[string]any{"standard": map[string]any{
             "query": map[string]any{
               "multi_match": map[string]any{
-                "query":  query,
-                "fields": []string{"title^3","description","tags"},
+                "query": query, "fields": []string{"title^3","description","tags"},
               },
             },
           }},
-          // KNN semantic leg
           map[string]any{"knn": map[string]any{
-            "field":          "embedding",
-            "query_vector":   embedding,
-            "num_candidates": 100,
+            "field": "embedding", "query_vector": embedding, "num_candidates": 100,
           }},
         },
-        "rank_window_size": 50,
-        "rank_constant":    20,
+        "rank_window_size": 50, "rank_constant": 20,
       },
     },
-    // post_filter: AFTER retrieval (better recall than pre-filter)
     "post_filter": map[string]any{
-      "range": map[string]any{
-        "price": map[string]any{"gte": f.MinPrice, "lte": f.MaxPrice},
-      },
+      "range": map[string]any{"price": map[string]any{"gte": f.MinPrice, "lte": f.MaxPrice}},
     },
   }
   // execute and parse hits
-}`,insight:"Pre-filter vs post-filter in hybrid search matters. Pre-filter reduces the candidate pool BEFORE ANN vector search — hurts recall because semantic similarity across a smaller set is less meaningful. Post-filter applies after retrieval — better recall but you may get fewer results than requested. Rule: pre-filter for hard constraints (user_id, tenant_id, deleted=false), post-filter for soft constraints (price range, category). For re-indexing without downtime: index to a new index alias, run parallel queries against both, cut over when new index is warm."},{id:8,tag:"GEO PROXIMITY",title:"Geohash Grid + Redis GEO",color:"#E67E22",accent:"#2A1000",icon:"📍",tldr:"Encode lat/lng as geohash string. Query neighboring cells. Redis GEOSEARCH for radius queries. Shard by coarse geohash at Uber scale.",keyQuestion:"How do you balance geohash precision vs cell size vs query boundary coverage?",useCases:["Uber driver matching","Yelp nearby","Tinder radius"],decision:"Location / proximity queries",flow:[{step:"Location Update",detail:"WebSocket → GEOADD drivers:active lng lat driver_id",type:"client"},{step:"Geohash Encode",detail:"lat/lng → 12-char string (precision 6 = ~1.2km cell)",type:"worker"},{step:"Radius Query",detail:"GEOSEARCH drivers:active FROMLONLAT … BYRADIUS 5 km",type:"cache"},{step:"Score & Rank",detail:"Distance + rating + vehicle type → scoring function",type:"worker"},{step:"Dispatch + Lock",detail:"Redis SET NX PX 30000 on top N drivers, send offers",type:"db"}],tradeoffs:[{pro:true,text:"Redis GEOSEARCH in-memory: O(N+log M) for N results in radius"},{pro:true,text:"Geohash prefix = natural bounding box — neighbor cells share prefix string"},{pro:false,text:"Geohash edge effect: nearby points in adjacent cells may be missed"},{pro:false,text:"High-frequency GPS updates (4s) saturate one Redis key in dense cities"}],code:`// Go: Location service — Redis GEO + geohash neighbor cells
-import "github.com/mmcloughlin/geohash"
-
+}`,insight:"Pre-filter vs post-filter in hybrid search: pre-filter reduces candidates BEFORE ANN — hurts recall. Post-filter applies after — better recall but may return fewer results. Rule: pre-filter for hard constraints (user_id, deleted=false), post-filter for soft constraints (price, category). For re-indexing without downtime: index to a new alias, run parallel queries against both, cut over when warm."},{id:8,tag:"GEO PROXIMITY",title:"Geohash Grid + Redis GEO",color:"#E67E22",accent:"#2A1000",icon:"📍",tldr:"Encode lat/lng as geohash string. Query neighboring cells. Redis GEOSEARCH for radius queries. Shard by coarse geohash at Uber scale.",keyQuestion:"How do you balance geohash precision vs cell size vs query boundary coverage?",useCases:["Uber driver matching","Yelp nearby","Tinder radius"],decision:"Location / proximity queries",flow:[{step:"Location Update",detail:"WebSocket → GEOADD drivers:active lng lat driver_id",type:"client"},{step:"Geohash Encode",detail:"lat/lng → 12-char string (precision 6 = ~1.2km cell)",type:"worker"},{step:"Radius Query",detail:"GEOSEARCH drivers:active FROMLONLAT … BYRADIUS 5 km",type:"cache"},{step:"Score & Rank",detail:"Distance + rating + vehicle type → scoring",type:"worker"},{step:"Dispatch + Lock",detail:"Redis SET NX PX 30000 on top N drivers",type:"db"}],tradeoffs:[{pro:true,text:"Redis GEOSEARCH in-memory: O(N+log M) for N results in radius"},{pro:true,text:"Geohash prefix = natural bounding box — neighbor cells share prefix"},{pro:false,text:"Geohash edge effect: nearby points in adjacent cells may be missed"},{pro:false,text:"High-frequency GPS updates (4s) saturate one Redis key in dense cities"}],code:`// Go: Location service — Redis GEO + geohash neighbor cells
 func (s *LocationService) UpdateDriver(ctx context.Context, id string, lat, lng float64) error {
   pipe := s.redis.Pipeline()
-
-  // Primary GEO index for radius queries
   pipe.GeoAdd(ctx, "drivers:active", &redis.GeoLocation{
     Name: id, Latitude: lat, Longitude: lng,
   })
-
-  // Coarse geohash buckets for city-level sharding
-  hash := geohash.EncodeWithPrecision(lat, lng, 6) // ~1.2km
+  hash := geohash.EncodeWithPrecision(lat, lng, 6)
   pipe.SAdd(ctx, "geohash:"+hash, id)
   pipe.Expire(ctx, "geohash:"+hash, 30*time.Second)
-
-  // TTL-based staleness — auto-removes inactive drivers
   pipe.Set(ctx, "driver:active:"+id, "1", 15*time.Second)
   _, err := pipe.Exec(ctx)
   return err
@@ -638,154 +813,89 @@ func (s *LocationService) FindNearby(ctx context.Context, lat, lng, radiusKm flo
     Radius: radiusKm, RadiusUnit: "km",
     Sort: "ASC", Count: 20,
   }).Result()
-
-  // Edge fix: check neighboring geohash cells
   center := geohash.EncodeWithPrecision(lat, lng, 6)
   neighbors := geohash.Neighbors(center)
-  _ = neighbors // query each neighbor, merge, deduplicate
+  _ = neighbors // query each, merge, deduplicate
   return s.enrichAndFilter(ctx, results)
-}`,insight:"At Uber scale (100K+ active drivers per city), a single Redis ZSET becomes a hotspot. Shard by coarse geohash prefix — drivers:active:9q (SF), drivers:active:dr (NYC). Each city-level shard lives on a different Redis node. The shard key is precision-3 geohash (~156km cell), fine GEOSEARCH runs within that shard. For driver dispatch locking: Redis SET NX with 30s TTL claims a driver atomically across all gateway pods without a DB round-trip. If the offer expires without acceptance, the TTL releases the lock automatically."},{id:9,tag:"RATE LIMITING",title:"Token Bucket / Sliding Window at Gateway",color:"#E74C3C",accent:"#2A0000",icon:"🚦",tldr:"API Gateway checks Redis before forwarding. Token bucket for burst-friendly. Sliding window counter for precise. Return 429 + Retry-After. Lua for atomicity.",keyQuestion:"How do you prevent the boundary burst attack on fixed windows?",useCases:["API platform","Payment gateway","SMS OTP service"],decision:"API abuse prevention",flow:[{step:"Request Arrives",detail:"API Gateway intercepts before routing to service",type:"client"},{step:"Redis Atomic Check",detail:"Lua script: sliding window counter in one round-trip",type:"cache"},{step:"Limit Decision",detail:"count > limit → 429 + Retry-After. Else → forward.",type:"worker"},{step:"Service Processes",detail:"Rate-limited requests never reach the service",type:"worker"},{step:"Response Headers",detail:"X-RateLimit-Limit, -Remaining, -Reset on every response",type:"client"}],tradeoffs:[{pro:true,text:"Token bucket: allows controlled bursting — user-friendly for APIs with bursty patterns"},{pro:true,text:"Sliding window counter: ~0.003% error rate, O(1) memory per user"},{pro:false,text:"Fixed window: boundary attack — 2× rate in 1ms straddling the reset time"},{pro:false,text:"Distributed across regions: Redis cross-region adds ~80ms latency — use local Redis per region"}],code:`-- Lua: Atomic sliding window counter (executes atomically on Redis)
+}`,insight:"At Uber scale (100K+ drivers/city), a single Redis ZSET becomes a hotspot. Shard by coarse geohash prefix — drivers:active:9q (SF), drivers:active:dr (NYC). Each city shard lives on a different Redis node. Shard key is precision-3 geohash (~156km cell). For dispatch locking: Redis SET NX with 30s TTL claims a driver atomically across all pods. TTL auto-releases if offer expires."},{id:9,tag:"RATE LIMITING",title:"Token Bucket / Sliding Window at Gateway",color:"#E74C3C",accent:"#2A0000",icon:"🚦",tldr:"API Gateway checks Redis before forwarding. Token bucket for burst-friendly. Sliding window counter for precise. Return 429 + Retry-After. Lua for atomicity.",keyQuestion:"How do you prevent the boundary burst attack on fixed windows?",useCases:["API platform","Payment gateway","SMS OTP"],decision:"API abuse prevention",flow:[{step:"Request Arrives",detail:"API Gateway intercepts before routing",type:"client"},{step:"Redis Atomic Check",detail:"Lua script: sliding window counter atomically",type:"cache"},{step:"Limit Decision",detail:"count > limit → 429 + Retry-After. Else → forward.",type:"worker"},{step:"Service Processes",detail:"Rate-limited requests never reach the service",type:"worker"},{step:"Response Headers",detail:"X-RateLimit-Limit, -Remaining, -Reset on every response",type:"client"}],tradeoffs:[{pro:true,text:"Token bucket: allows controlled bursting — user-friendly for bursty APIs"},{pro:true,text:"Sliding window counter: ~0.003% error rate, O(1) memory per user"},{pro:false,text:"Fixed window: boundary attack — 2× rate in 1ms straddling reset time"},{pro:false,text:"Cross-region: Redis latency ~80ms — use local Redis per region"}],code:`-- Lua: Atomic sliding window counter
 -- KEYS[1]=rate_key  ARGV[1]=window_ms  ARGV[2]=limit  ARGV[3]=now_ms
-local window_ms  = tonumber(ARGV[1])
-local limit      = tonumber(ARGV[2])
-local now_ms     = tonumber(ARGV[3])
-
+local window_ms = tonumber(ARGV[1])
+local limit     = tonumber(ARGV[2])
+local now_ms    = tonumber(ARGV[3])
 local curr_window = math.floor(now_ms / window_ms)
 local prev_window = curr_window - 1
 local curr_key = KEYS[1] .. ":" .. curr_window
 local prev_key = KEYS[1] .. ":" .. prev_window
-
 local curr_count = tonumber(redis.call("GET", curr_key) or 0)
 local prev_count = tonumber(redis.call("GET", prev_key) or 0)
-
--- Weight previous window by elapsed ratio — smooth boundary
 local elapsed_ratio = (now_ms % window_ms) / window_ms
 local weighted = math.floor(prev_count * (1 - elapsed_ratio) + curr_count)
-
 if weighted >= limit then
   local retry_after = math.ceil(window_ms - (now_ms % window_ms))
-  return {0, weighted, retry_after}  -- 0=blocked
+  return {0, weighted, retry_after}
 end
-
 redis.call("INCR", curr_key)
 redis.call("EXPIRE", curr_key, math.ceil(window_ms / 1000) * 2)
-return {1, weighted + 1, 0}  -- 1=allowed
-
--- Go call:
--- result, _ := rdb.Eval(ctx, luaScript,
---   []string{"ratelimit:user42:POST:/orders"},
---   60000, 100, time.Now().UnixMilli(),
--- ).Int64Slice()`,insight:"Rate limiting across multiple gateway pods requires ALL pods to share state via Redis. The race condition without Lua: two pods both read count=99, both increment in application code — you've now allowed 101 requests. The Lua script fix: INCR + read is atomic on Redis (single-threaded event loop). Never do application-level read-then-write for rate limiting in a distributed system. For multi-region: allow ~10% burst tolerance per region rather than strict global coordination — the cross-region Redis latency (~80ms) is worse than the occasional 10% over-limit."},{id:10,tag:"UNIQUE IDs",title:"Snowflake ID / UUID v7",color:"#3498DB",accent:"#001525",icon:"❄️",tldr:"Snowflake: 64-bit = 41-bit timestamp + 10-bit machine + 12-bit seq. Sortable, ~4096 IDs/ms/node, no coordination needed between generators.",keyQuestion:"What happens when the system clock drifts backward?",useCases:["Tweet IDs","Instagram media IDs","Order IDs","Message IDs"],decision:"Unique IDs at massive scale",flow:[{step:"Timestamp Bits",detail:"41 bits = ms since custom epoch (~69 years range)",type:"worker"},{step:"Machine ID Bits",detail:"10 bits = up to 1024 generator nodes",type:"worker"},{step:"Sequence Bits",detail:"12 bits = 4096 IDs per millisecond per node",type:"worker"},{step:"Clock Drift Guard",detail:"Detect backward drift → sleep until last_ms or error",type:"worker"},{step:"Sortability",detail:"Higher timestamp = higher ID → sequential B-Tree inserts",type:"db"}],tradeoffs:[{pro:true,text:"Time-ordered: INSERT in ID order = sequential B-Tree writes, no page fragmentation"},{pro:true,text:"4096 IDs/ms/node × 1024 nodes = ~4B IDs/ms globally — virtually unlimited"},{pro:false,text:"Machine ID assignment needs coordination (or hash-based collision risk)"},{pro:false,text:"Clock skew means IDs aren't globally monotonic — only monotonic per node"}],code:`// Go: Snowflake ID generator with clock drift protection
-type Snowflake struct {
-  mu        sync.Mutex
-  epoch     int64 // custom epoch in ms (e.g. 2024-01-01 = 1704067200000)
-  machineID int64
-  sequence  int64
-  lastMs    int64
-}
-
+return {1, weighted + 1, 0}`,insight:"Rate limiting across gateway pods requires ALL pods to share state via Redis. Race condition without Lua: two pods read count=99, both increment in app code — you've allowed 101. The Lua script fix: INCR + read is atomic on Redis (single-threaded event loop). Never do read-then-write for rate limiting in a distributed system. For multi-region: allow ~10% burst tolerance per region rather than strict global coordination."},{id:10,tag:"UNIQUE IDs",title:"Snowflake ID / UUID v7",color:"#3498DB",accent:"#001525",icon:"❄️",tldr:"Snowflake: 64-bit = 41-bit timestamp + 10-bit machine + 12-bit seq. Sortable, ~4096 IDs/ms/node, no coordination needed between generators.",keyQuestion:"What happens when the system clock drifts backward?",useCases:["Tweet IDs","Instagram media IDs","Order IDs"],decision:"Unique IDs at massive scale",flow:[{step:"Timestamp Bits",detail:"41 bits = ms since custom epoch (~69 years range)",type:"worker"},{step:"Machine ID Bits",detail:"10 bits = up to 1024 generator nodes",type:"worker"},{step:"Sequence Bits",detail:"12 bits = 4096 IDs per millisecond per node",type:"worker"},{step:"Clock Drift Guard",detail:"Detect backward drift → sleep until last_ms or error",type:"worker"},{step:"Sortability",detail:"Higher timestamp = higher ID → sequential B-Tree inserts",type:"db"}],tradeoffs:[{pro:true,text:"Time-ordered: INSERT in ID order = sequential B-Tree writes, no fragmentation"},{pro:true,text:"4096 IDs/ms/node × 1024 nodes = ~4B IDs/ms globally"},{pro:false,text:"Machine ID assignment needs coordination or collision risk"},{pro:false,text:"Clock skew: IDs not globally monotonic — only per-node monotonic"}],code:`// Go: Snowflake ID generator with clock drift protection
 const (
   sequenceBits   = 12
   machineBits    = 10
-  maxSequence    = -1 ^ (-1 << sequenceBits) // 4095
+  maxSequence    = -1 ^ (-1 << sequenceBits)
   machineShift   = sequenceBits
-  timestampShift = sequenceBits + machineBits // 22
+  timestampShift = sequenceBits + machineBits
 )
 
 func (s *Snowflake) Next() (int64, error) {
   s.mu.Lock()
   defer s.mu.Unlock()
   now := time.Now().UnixMilli() - s.epoch
-
   if now < s.lastMs {
     diff := s.lastMs - now
-    if diff > 5 {
-      return 0, fmt.Errorf("clock drifted %dms backward", diff)
-    }
+    if diff > 5 { return 0, fmt.Errorf("clock drifted %dms backward", diff) }
     time.Sleep(time.Duration(diff) * time.Millisecond)
     now = s.lastMs
   }
-
   if now == s.lastMs {
     s.sequence = (s.sequence + 1) & maxSequence
     if s.sequence == 0 {
-      for now <= s.lastMs {
-        now = time.Now().UnixMilli() - s.epoch
-      }
+      for now <= s.lastMs { now = time.Now().UnixMilli() - s.epoch }
     }
   } else {
     s.sequence = 0
   }
-
   s.lastMs = now
   return (now << timestampShift) | (s.machineID << machineShift) | s.sequence, nil
 }
-
-// UUID v7: time-ordered, no coordination, UUID-ecosystem compatible
-// 48-bit timestamp | 4-bit version(7) | 12-bit rand_a | 2-bit variant | 62-bit rand_b`,insight:"Auto-increment IDs are a secret write performance killer at scale. Sequential PKs concentrate all inserts on the rightmost B-Tree page — creating a write hotspot with lock contention and page splits. Snowflake IDs have millisecond-level monotonicity: ~4096 IDs share the same ms prefix, spreading inserts across the tree naturally. For Postgres: use UUIDv7 as PK — time-ordered like Snowflake but works natively with UUID columns and no coordination needed. For machine ID assignment at K8s scale: use pod ordinal index from StatefulSet, or hash the pod's unique hostname to a 10-bit ID with collision detection."},{id:11,tag:"CQRS",title:"Command Query Responsibility Segregation",color:"#8E44AD",accent:"#150025",icon:"✂️",tldr:"Separate write model (normalized DB) from read model (denormalized store). Commands produce events → update multiple read models each optimized for its consumer.",keyQuestion:"How do you handle read model lag during high write throughput?",useCases:["E-commerce orders/catalog","Banking ledger","Analytics dashboards"],decision:"Read/write access patterns fundamentally differ",flow:[{step:"Command (Write)",detail:"OrderService validates + persists to normalized DB",type:"db"},{step:"Event Published",detail:"OrderCreated → Kafka with full order payload",type:"queue"},{step:"Read Model Projectors",detail:"UserOrdersProjector, AnalyticsProjector, SearchProjector",type:"worker"},{step:"Denormalized Read Store",detail:"Redis: user orders, ES: search, ClickHouse: OLAP",type:"cache"},{step:"Query (Read)",detail:"GET /users/42/orders → Redis O(1), no DB joins",type:"client"}],tradeoffs:[{pro:true,text:"Read models pre-computed: query is a lookup, not a join-heavy OLTP scan"},{pro:true,text:"Multiple read models: each optimized for its specific consumer's access pattern"},{pro:false,text:"Eventual consistency: read model ~1-5s behind write model under normal load"},{pro:false,text:"Event schema changes are breaking: ALL projectors must be updated simultaneously"}],code:`// Go: CQRS write side + read projector
-
-// --- COMMAND SIDE ---
+// UUID v7: time-ordered, no coordination, UUID-ecosystem compatible`,insight:"Auto-increment IDs are a secret write killer at scale. Sequential PKs concentrate all inserts on the rightmost B-Tree page — creating a write hotspot with lock contention and page splits. Snowflake IDs have ms-level monotonicity: ~4096 IDs share the same prefix, spreading inserts across the tree. For Postgres: use UUIDv7 as PK — time-ordered like Snowflake but works natively with UUID columns and no coordination needed."},{id:11,tag:"CQRS",title:"Command Query Responsibility Segregation",color:"#8E44AD",accent:"#150025",icon:"✂️",tldr:"Separate write model (normalized DB) from read model (denormalized store). Commands produce events → update multiple read models each optimized for its consumer.",keyQuestion:"How do you handle read model lag during high write throughput?",useCases:["E-commerce orders","Banking ledger","Analytics dashboards"],decision:"Read/write access patterns fundamentally differ",flow:[{step:"Command (Write)",detail:"OrderService validates + persists to normalized DB",type:"db"},{step:"Event Published",detail:"OrderCreated → Kafka with full order payload",type:"queue"},{step:"Read Model Projectors",detail:"UserOrdersProjector, AnalyticsProjector, SearchProjector",type:"worker"},{step:"Denormalized Read Store",detail:"Redis: orders, ES: search, ClickHouse: OLAP",type:"cache"},{step:"Query (Read)",detail:"GET /users/42/orders → Redis O(1), no joins",type:"client"}],tradeoffs:[{pro:true,text:"Read models pre-computed: query is a lookup, not a join-heavy scan"},{pro:true,text:"Multiple read models: each optimized for its specific consumer"},{pro:false,text:"Eventual consistency: read model ~1-5s behind write model"},{pro:false,text:"Event schema changes are breaking: ALL projectors must be updated"}],code:`// Go: CQRS write side + read projector
 func (h *OrderCommandHandler) HandleCreate(ctx context.Context, cmd CreateOrderCmd) (*Order, error) {
-  order := &Order{
-    ID: snowflake.Next(), UserID: cmd.UserID,
-    Items: cmd.Items, Status: "PENDING",
-    Total: calculateTotal(cmd.Items),
-  }
+  order := &Order{ID: snowflake.Next(), UserID: cmd.UserID,
+    Items: cmd.Items, Status: "PENDING", Total: calculateTotal(cmd.Items)}
   if err := h.db.InsertOrder(ctx, order); err != nil { return nil, err }
-
-  // Publish event → triggers async read model updates
   return order, h.events.Publish(ctx, OrderCreatedEvent{
     OrderID: order.ID, UserID: order.UserID,
     Items: order.Items, Total: order.Total, Ts: time.Now(),
   })
 }
 
-// --- READ PROJECTOR (Kafka consumer) ---
-type UserOrdersProjector struct{ redis *redis.Client }
-
+// READ PROJECTOR (Kafka consumer)
 func (p *UserOrdersProjector) OnOrderCreated(ctx context.Context, e OrderCreatedEvent) error {
-  summary, _ := json.Marshal(OrderSummary{
-    ID: e.OrderID, Total: e.Total, Status: "PENDING",
-  })
-  // Denormalized: sorted by timestamp for fast feed reads
+  summary, _ := json.Marshal(OrderSummary{ID: e.OrderID, Total: e.Total, Status: "PENDING"})
   return p.redis.ZAdd(ctx, fmt.Sprintf("user:%d:orders", e.UserID), redis.Z{
-    Score:  float64(e.Ts.Unix()),
-    Member: string(summary),
+    Score: float64(e.Ts.Unix()), Member: string(summary),
   }).Err()
 }
 
-// --- QUERY SIDE ---
+// QUERY SIDE
 func (h *OrderQueryHandler) GetUserOrders(ctx context.Context, userID int64, limit int) ([]OrderSummary, error) {
   results, _ := h.redis.ZRevRange(ctx,
     fmt.Sprintf("user:%d:orders", userID), 0, int64(limit-1)).Result()
   // parse and return
-}`,insight:"CQRS shines when read and write access patterns are fundamentally different. The hidden cost: every change to your event payload schema is a migration for ALL projectors. Version your events (v1, v2) and write projectors that handle both during rollout. Additive changes only — never remove or rename fields from published events. Breaking an event schema in a system with 10 downstream projectors is a distributed system migration nightmare. For read model rebuild after a projector bug: replay all events from Kafka from offset 0 into a shadow read model, validate, then cut over."},{id:12,tag:"RESILIENCE",title:"Circuit Breaker + Bulkhead + Retry",color:"#27AE60",accent:"#001A07",icon:"🛡️",tldr:"Circuit breaker opens on failure threshold → fail fast. Bulkhead isolates goroutine pools per dependency. Retry with exponential backoff + full jitter.",keyQuestion:"Do your per-layer timeouts add up to more than the client's SLA?",useCases:["Any service with downstream dependencies — always add this"],decision:"Has downstream dependencies",flow:[{step:"Request to Dependency",detail:"Call wrapped in circuit breaker middleware",type:"client"},{step:"Circuit CLOSED",detail:"Normal operation — track success/failure rate in rolling window",type:"worker"},{step:"Threshold Breached",detail:">50% failures in 10s window → circuit OPENS",type:"worker"},{step:"Circuit OPEN",detail:"Fail fast immediately (no network call) → return fallback",type:"worker"},{step:"Half-Open Probe",detail:"After 30s, allow 1 probe request — success → CLOSE",type:"worker"}],tradeoffs:[{pro:true,text:"Fail fast prevents cascade: one slow dependency can't drain your goroutine pool"},{pro:true,text:"Bulkhead: separate pools — payment slowdown can't affect search response times"},{pro:false,text:"Retry with fixed interval = retry storm when dependency recovers at t=0"},{pro:false,text:"Too-aggressive threshold can trip circuit on normal traffic spikes — tune carefully"}],code:`// Go: Circuit breaker + retry with exponential backoff + full jitter
-import "github.com/sony/gobreaker"
-
-type ResilientClient struct {
-  cb     *gobreaker.CircuitBreaker
-  client HTTPClient
-}
-
-func New(name string, client HTTPClient) *ResilientClient {
-  cb := gobreaker.NewCircuitBreaker(gobreaker.Settings{
-    Name:        name,
-    MaxRequests: 5,               // probes in half-open state
-    Interval:    10 * time.Second,
-    Timeout:     30 * time.Second, // duration to stay open
-    ReadyToTrip: func(c gobreaker.Counts) bool {
-      failRate := float64(c.TotalFailures) / float64(max(c.Requests, 1))
-      return c.Requests >= 10 && failRate >= 0.5
-    },
-  })
-  return &ResilientClient{cb: cb, client: client}
-}
-
+}`,insight:"CQRS shines when read and write access patterns are fundamentally different. The hidden cost: every event payload schema change is a migration for ALL projectors. Version your events (v1, v2) and write projectors that handle both during rollout. Additive changes only — never remove or rename published event fields. For read model rebuild after a projector bug: replay all events from Kafka offset 0 into a shadow model, validate, then cut over."},{id:12,tag:"RESILIENCE",title:"Circuit Breaker + Bulkhead + Retry",color:"#27AE60",accent:"#001A07",icon:"🛡️",tldr:"Circuit breaker opens on failure threshold → fail fast. Bulkhead isolates goroutine pools per dependency. Retry with exponential backoff + full jitter.",keyQuestion:"Do your per-layer timeouts add up to more than the client's SLA?",useCases:["Any service with downstream dependencies"],decision:"Has downstream dependencies — always",flow:[{step:"Request to Dependency",detail:"Call wrapped in circuit breaker middleware",type:"client"},{step:"Circuit CLOSED",detail:"Normal operation — track failure rate in rolling window",type:"worker"},{step:"Threshold Breached",detail:">50% failures in 10s window → circuit OPENS",type:"worker"},{step:"Circuit OPEN",detail:"Fail fast immediately (no network call) → return fallback",type:"worker"},{step:"Half-Open Probe",detail:"After 30s, allow 1 probe — success → CLOSE",type:"worker"}],tradeoffs:[{pro:true,text:"Fail fast prevents cascade: one slow dep can't drain your goroutine pool"},{pro:true,text:"Bulkhead: separate pools — payment slowdown can't affect search"},{pro:false,text:"Retry with fixed interval = retry storm when dependency recovers"},{pro:false,text:"Too-aggressive threshold can trip on normal traffic spikes"}],code:`// Go: Circuit breaker + retry with exponential backoff + full jitter
 func (c *ResilientClient) Call(ctx context.Context, req *Request) (*Response, error) {
   backoff := 100 * time.Millisecond
   for attempt := 0; attempt < 3; attempt++ {
     result, err := c.cb.Execute(func() (interface{}, error) {
-      // Propagate REMAINING context deadline, not fixed timeout
+      // Propagate REMAINING context deadline, not a fixed timeout
       deadline, ok := ctx.Deadline()
       timeout := 500 * time.Millisecond
       if ok {
@@ -800,7 +910,7 @@ func (c *ResilientClient) Call(ctx context.Context, req *Request) (*Response, er
     if err == gobreaker.ErrOpenState {
       return nil, fmt.Errorf("circuit open — failing fast")
     }
-    // Full jitter: avoids synchronized retry storms
+    // Full jitter: random 0 to backoff — eliminates synchronized retry storms
     jitter := time.Duration(rand.Int63n(int64(backoff)))
     select {
     case <-time.After(backoff + jitter):
@@ -810,108 +920,132 @@ func (c *ResilientClient) Call(ctx context.Context, req *Request) (*Response, er
     }
   }
   return nil, fmt.Errorf("max retries exhausted")
-}`,insight:"Timeout budgets are the most commonly missed resilience concern. If ServiceA (500ms timeout) calls ServiceB (400ms) calls ServiceC (400ms) — the chain can take 800ms but A only allows 500ms. Always propagate the REMAINING context deadline, not a fixed local timeout. Also: jitter in retry backoff is non-optional. Without it, 1000 services that all failed at t=0 will all retry at exactly t=100ms, t=200ms — recreating the original spike. Full jitter (random 0 to backoff) eliminates synchronization entirely."}];
+}`,insight:"Timeout budgets are the most commonly missed resilience concern. If ServiceA (500ms) calls ServiceB (400ms) calls ServiceC (400ms) — chain can take 800ms but A allows 500ms. Always propagate the REMAINING context deadline, not a fixed local timeout. Full jitter in retry backoff is non-optional — without it, 1000 services all failing at t=0 will all retry at t=100ms, recreating the original spike."}];
 
 const TC={client:"#4A9EFF",cache:"#FFD700",db:"#FF6B6B",queue:"#FF8C42",worker:"#7EE8A2"};
-let cur=0,tab=0;
+let mCur=0,mTab=0;
 
 function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 
-function renderSidebar(){
-  const q=document.getElementById("pApp-searchInput").value.toLowerCase();
-  document.getElementById("pApp-sidebar-list").innerHTML=PATTERNS
-    .filter(p=>!q||p.title.toLowerCase().includes(q)||p.tag.toLowerCase().includes(q)||p.useCases.some(u=>u.toLowerCase().includes(q)))
+function openPattern(idx){
+  mCur=idx; mTab=0;
+  const modal=document.getElementById("patModal");
+  modal.style.display="flex";
+  document.body.style.overflow="hidden";
+  mRenderAll();
+  // focus search for keyboard nav
+  setTimeout(()=>document.getElementById("mApp-searchInput").focus(),50);
+}
+
+function closePattern(){
+  document.getElementById("patModal").style.display="none";
+  document.body.style.overflow="";
+}
+
+// Close on backdrop click
+document.getElementById("patModal").addEventListener("click",function(e){
+  if(e.target===this) closePattern();
+});
+
+// Keyboard nav scoped to modal
+document.addEventListener("keydown",function(e){
+  if(document.getElementById("patModal").style.display!=="flex") return;
+  if(e.key==="Escape") closePattern();
+  if(e.target===document.getElementById("mApp-searchInput")) return;
+  if(e.key==="ArrowRight"||e.key==="ArrowDown"){mCur=Math.min(mCur+1,PATTERNS.length-1);mTab=0;mRenderAll();}
+  if(e.key==="ArrowLeft"||e.key==="ArrowUp"){mCur=Math.max(mCur-1,0);mTab=0;mRenderAll();}
+  if(e.key>="1"&&e.key<="9"){mCur=Math.min(parseInt(e.key)-1,PATTERNS.length-1);mTab=0;mRenderAll();}
+  const tk={"q":0,"w":1,"e":2,"r":3};
+  if(tk[e.key]!==undefined){mTab=tk[e.key];mRenderDetail();}
+});
+
+function mRenderAll(){
+  document.getElementById("modalTitle").textContent=`P${String(mCur+1).padStart(2,"0")} · ${PATTERNS[mCur].title}`;
+  mRenderSidebar();
+  mRenderDetail();
+}
+
+function mRenderSidebar(){
+  const q=document.getElementById("mApp-searchInput").value.toLowerCase();
+  document.getElementById("mApp-list").innerHTML=PATTERNS
+    .filter(p=>!q||p.title.toLowerCase().includes(q)||p.tag.toLowerCase().includes(q))
     .map(p=>{
-      const a=cur===p.id-1;
-      return`<button class="pApp-pbtn" style="${a?`background:${p.color}12;border-color:${p.color}60;`:""}" onclick="pSel(${p.id-1})">
-        <div class="pApp-pb-row">
-          <span class="pApp-pb-icon">${p.icon}</span>
-          <div class="pApp-pb-info">
-            <div class="pApp-pb-tag" style="color:${p.color}">P${String(p.id).padStart(2,"0")} · ${p.tag}</div>
-            <div class="pApp-pb-title">${p.title}</div>
+      const a=mCur===p.id-1;
+      return`<button class="mApp-pbtn" style="${a?`background:${p.color}12;border-color:${p.color}60;`:""}" onclick="mCur=${p.id-1};mTab=0;mRenderAll()">
+        <div class="mApp-pb-row">
+          <span style="font-size:13px;margin-right:2px">${p.icon}</span>
+          <div style="flex:1;min-width:0">
+            <div class="mApp-pb-tag" style="color:${p.color}">P${String(p.id).padStart(2,"0")} · ${p.tag}</div>
+            <div class="mApp-pb-title">${p.title}</div>
           </div>
         </div>
       </button>`;
     }).join("");
-  document.getElementById("pApp-dtree").innerHTML=`<div class="pApp-dt-label">DECISION TREE</div>`+PATTERNS.map(p=>`<div class="pApp-di"><span class="arr" style="color:${p.color}">→</span><span class="txt">${p.decision}</span></div>`).join("");
+  document.getElementById("mApp-dtree").innerHTML=`<div class="mApp-dt-label">TRIGGER</div>`+PATTERNS.map(p=>`<div class="mApp-di"><span class="arr" style="color:${p.color}">→</span><span class="txt">${p.decision}</span></div>`).join("");
 }
 
-function renderDetail(){
-  const p=PATTERNS[cur];
+function mRenderDetail(){
+  const p=PATTERNS[mCur];
   const heroStyle=`background:linear-gradient(135deg,${p.accent} 0%,#0F0F1A 100%);border-color:${p.color}35;`;
   const insightBg=`background:linear-gradient(135deg,${p.accent} 0%,#07070E 60%);border-color:${p.color}40;`;
 
-  // Flow tab
   const stepsHtml=p.flow.map((s,i)=>{
     const tc=TC[s.type]||"#aaa";
     const isLast=i===p.flow.length-1;
     const nextTc=isLast?tc:(TC[p.flow[i+1].type]||"#aaa");
-    return`<div class="pApp-fstep"><div class="pApp-fstep-line"><div class="pApp-fdot" style="background:${tc}"></div>${!isLast?`<div class="pApp-fconn" style="background:linear-gradient(${tc},${nextTc})"></div>`:""}</div><div class="pApp-fcontent"><div class="pApp-fname" style="color:${tc}">${s.step}</div><div class="pApp-fdetail">${s.detail}</div></div></div>`;
+    return`<div class="mApp-fstep"><div class="mApp-fstep-line"><div class="mApp-fdot" style="background:${tc}"></div>${!isLast?`<div class="mApp-fconn" style="background:linear-gradient(${tc},${nextTc})"></div>`:""}</div><div class="mApp-fcontent"><div class="mApp-fname" style="color:${tc}">${s.step}</div><div class="mApp-fdetail">${s.detail}</div></div></div>`;
   }).join("");
-  const legendHtml=Object.entries({client:"Client / Edge",cache:"Cache (Redis/CDN)",queue:"Queue / Kafka",worker:"Worker / Service",db:"Database / Storage"}).map(([t,l])=>`<div class="pApp-legend-item"><div class="pApp-ldot" style="background:${TC[t]}"></div><span class="pApp-llabel">${l}</span></div>`).join("");
-  const flowHtml=`<div class="pApp-flow-grid"><div class="pApp-card"><div class="pApp-card-label">REQUEST FLOW</div><div class="pApp-flow-steps">${stepsHtml}</div></div><div class="pApp-card"><div class="pApp-card-label">COMPONENT LEGEND</div>${legendHtml}<div class="pApp-trigger" style="background:${p.color}08;border-color:${p.color}20;margin-top:14px"><div class="pApp-trig-label">TRIGGERS WHEN</div><div class="pApp-trig-val" style="color:${p.color}">${p.decision}</div></div></div></div>`;
-
-  // Trade-offs tab
-  const toHtml=`<div class="pApp-card">${p.tradeoffs.map(t=>`<div class="pApp-to-item"><span class="pApp-to-icon" style="color:${t.pro?"#7EE8A2":"#FF6B6B"}">${t.pro?"✓":"✗"}</span><span class="pApp-to-text">${t.text}</span></div>`).join("")}</div>`;
-
-  // Code tab
-  const codeHtml=`<div class="pApp-code-label">PRODUCTION GO CODE</div><div class="pApp-code-wrap"><button class="pApp-copy-btn" onclick="pCopy(this)">copy</button><pre class="pApp-pre" id="pApp-codeBlock">${esc(p.code)}</pre></div>`;
-
-  // Insight tab
-  const insightHtml=`<div class="pApp-insight" style="${insightBg}"><div class="pApp-insight-hd"><div class="pApp-insight-star" style="background:${p.color}">★</div><div><div class="pApp-insight-label" style="color:${p.color}">STAFF-LEVEL INSIGHT</div><div class="pApp-insight-text">${esc(p.insight)}</div></div></div></div>`;
-
+  const legendHtml=Object.entries({client:"Client / Edge",cache:"Cache (Redis/CDN)",queue:"Queue / Kafka",worker:"Worker / Service",db:"Database / Storage"}).map(([t,l])=>`<div class="mApp-legend-item"><div class="mApp-ldot" style="background:${TC[t]}"></div><span class="mApp-llabel">${l}</span></div>`).join("");
+  const flowHtml=`<div class="mApp-flow-grid"><div class="mApp-card"><div class="mApp-card-label">REQUEST FLOW</div><div>${stepsHtml}</div></div><div class="mApp-card"><div class="mApp-card-label">LEGEND</div>${legendHtml}<div class="mApp-trigger" style="background:${p.color}08;border-color:${p.color}20;margin-top:12px"><div class="mApp-trig-label">TRIGGERS WHEN</div><div class="mApp-trig-val" style="color:${p.color}">${p.decision}</div></div></div></div>`;
+  const toHtml=`<div class="mApp-card">${p.tradeoffs.map(t=>`<div class="mApp-to-item"><span class="mApp-to-icon" style="color:${t.pro?"#7EE8A2":"#FF6B6B"}">${t.pro?"✓":"✗"}</span><span class="mApp-to-text">${t.text}</span></div>`).join("")}</div>`;
+  const codeHtml=`<div class="mApp-code-label">PRODUCTION GO CODE</div><div class="mApp-code-wrap"><button class="mApp-copy-btn" onclick="mCopy(this)">copy</button><pre class="mApp-pre" id="mApp-codeBlock">${esc(p.code)}</pre></div>`;
+  const insightHtml=`<div class="mApp-insight" style="${insightBg}"><div class="mApp-insight-hd"><div class="mApp-insight-star" style="background:${p.color}">★</div><div><div class="mApp-insight-label" style="color:${p.color}">STAFF-LEVEL INSIGHT</div><div class="mApp-insight-text">${esc(p.insight)}</div></div></div></div>`;
   const panels=[flowHtml,toHtml,codeHtml,insightHtml];
   const tabNames=["Flow","Trade-offs","Go Code","Senior Insight"];
 
-  document.getElementById("pApp-detail").innerHTML=`
-    <div class="pApp-hero" style="${heroStyle}">
-      <div class="pApp-hero-top">
+  document.getElementById("mApp-detail").innerHTML=`
+    <div class="mApp-hero" style="${heroStyle}">
+      <div class="mApp-hero-top">
         <div>
-          <div class="pApp-badges">
-            <span class="pApp-badge" style="color:${p.color};background:${p.color}18;border-color:${p.color}40">PATTERN ${String(p.id).padStart(2,"0")}</span>
-            <span class="pApp-badge" style="color:${p.color};background:${p.color}12;border-color:${p.color}28">${p.tag}</span>
+          <div class="mApp-badges">
+            <span class="mApp-badge" style="color:${p.color};background:${p.color}18;border-color:${p.color}40">PATTERN ${String(p.id).padStart(2,"0")}</span>
+            <span class="mApp-badge" style="color:${p.color};background:${p.color}12;border-color:${p.color}28">${p.tag}</span>
           </div>
-          <div class="pApp-title">${p.icon} ${p.title}</div>
-          <div class="pApp-tldr">${p.tldr}</div>
-          <div class="pApp-kq" style="background:${p.color}0D;border:1px solid ${p.color}28">
-            <div class="pApp-kq-label">KEY QUESTION</div>
-            <div class="pApp-kq-text" style="color:${p.color}">${p.keyQuestion}</div>
+          <div class="mApp-title">${p.icon} ${p.title}</div>
+          <div class="mApp-tldr">${p.tldr}</div>
+          <div class="mApp-kq" style="background:${p.color}0D;border:1px solid ${p.color}28">
+            <div class="mApp-kq-label">KEY QUESTION</div>
+            <div class="mApp-kq-text" style="color:${p.color}">${p.keyQuestion}</div>
           </div>
         </div>
-        <div class="pApp-uc">
-          <div class="pApp-uc-label">USE WHEN</div>
-          ${p.useCases.map(u=>`<span class="pApp-uc-tag" style="color:${p.color};background:${p.color}10;border-color:${p.color}25">${u}</span>`).join("")}
+        <div class="mApp-uc">
+          <div class="mApp-uc-label">USE WHEN</div>
+          ${p.useCases.map(u=>`<span class="mApp-uc-tag" style="color:${p.color};background:${p.color}10;border-color:${p.color}25">${u}</span>`).join("")}
         </div>
       </div>
     </div>
-    <div class="pApp-tabs">${tabNames.map((t,i)=>`<button class="pApp-tab${tab===i?" active":""}" style="${tab===i?`color:${p.color};border-bottom:2px solid ${p.color};`:""}" onclick="pTab(${i})">${t}</button>`).join("")}</div>
-    ${panels.map((h,i)=>`<div class="pApp-panel${tab===i?" active":""}">${h}</div>`).join("")}
-    <div class="pApp-navbar">
-      <button class="pApp-navbtn" onclick="pSel(${cur-1})" ${cur===0?"disabled":""}>← Previous</button>
-      <span class="pApp-counter">${cur+1} / ${PATTERNS.length}</span>
-      <button class="pApp-navbtn next" onclick="pSel(${cur+1})" ${cur===PATTERNS.length-1?"disabled":""} style="${cur<PATTERNS.length-1?`color:${p.color};border-color:${p.color};background:${p.color}15`:""}">Next →</button>
+    <div class="mApp-tabs">${tabNames.map((t,i)=>`<button class="mApp-tab${mTab===i?" active":""}" style="${mTab===i?`color:${p.color};border-bottom:2px solid ${p.color};`:""}" onclick="mTab=${i};mRenderDetail()">${t}</button>`).join("")}</div>
+    ${panels.map((h,i)=>`<div class="mApp-panel${mTab===i?" active":""}">${h}</div>`).join("")}
+    <div class="mApp-navbar">
+      <button class="mApp-navbtn" onclick="mCur=Math.max(0,mCur-1);mTab=0;mRenderAll()" ${mCur===0?"disabled":""}>← Prev</button>
+      <span class="mApp-counter">${mCur+1} / ${PATTERNS.length}</span>
+      <button class="mApp-navbtn next" onclick="mCur=Math.min(PATTERNS.length-1,mCur+1);mTab=0;mRenderAll()" ${mCur===PATTERNS.length-1?"disabled":""} style="${mCur<PATTERNS.length-1?`color:${p.color};border-color:${p.color};background:${p.color}15`:""}">Next →</button>
     </div>`;
+  document.getElementById("mApp-detail").scrollTop=0;
 }
 
-function pSel(i){if(i<0||i>=PATTERNS.length)return;cur=i;tab=0;renderSidebar();renderDetail();document.getElementById("pApp-detail").scrollTop=0;}
-function pTab(i){tab=i;renderDetail();}
-function pCopy(btn){const code=document.getElementById("pApp-codeBlock").innerText;navigator.clipboard.writeText(code).then(()=>{btn.textContent="✓ copied";btn.style.color="#7EE8A2";setTimeout(()=>{btn.textContent="copy";btn.style.color="";},1600);});}
+function mCopy(btn){
+  const code=document.getElementById("mApp-codeBlock").innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent="✓ copied";btn.style.color="#7EE8A2";
+    setTimeout(()=>{btn.textContent="copy";btn.style.color="";},1600);
+  });
+}
 
-document.getElementById("pApp-searchInput").addEventListener("input",renderSidebar);
-document.addEventListener("keydown",e=>{
-  if(e.target.tagName==="INPUT"||e.target.closest("#pApp-body")==null)return;
-  if(e.key==="ArrowRight"||e.key==="ArrowDown")pSel(cur+1);
-  if(e.key==="ArrowLeft"||e.key==="ArrowUp")pSel(cur-1);
-  if(e.key>="1"&&e.key<="9")pSel(parseInt(e.key)-1);
-  if(e.key==="0")pSel(9);
-  const tk={"q":0,"w":1,"e":2,"r":3};
-  if(tk[e.key]!==undefined){tab=tk[e.key];renderDetail();}
-});
-
-renderSidebar();renderDetail();
+document.getElementById("mApp-searchInput").addEventListener("input",mRenderSidebar);
 })();
 </script>
-</div>
+
 
 <!-- ── REST OF ARTICLE CONTINUES ─────────────────────────────────── -->
 <div class="wrap">
