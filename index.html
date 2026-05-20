@@ -3,626 +3,975 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Saurabh — Staff Engineer Learning OS</title>
+<title>Engineering OS — Saurabh S. Patel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #07090f;
-    --surface: #0e1117;
-    --surface2: #141820;
-    --border: #1e2530;
-    --accent: #00e5b0;
-    --accent2: #ff5f40;
-    --accent3: #5b8fff;
-    --text: #e8eaf0;
-    --muted: #6b7385;
-    --tag-bg: rgba(0,229,176,0.08);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-  /* Grid noise texture */
-  body::before {
-    content:'';
-    position:fixed;
-    inset:0;
-    background-image: radial-gradient(circle at 20% 20%, rgba(0,229,176,0.04) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 80%, rgba(91,143,255,0.04) 0%, transparent 50%);
-    pointer-events:none;
-    z-index:0;
-  }
+/* ─── RESET ─────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 
-  /* NAV */
-  nav {
-    position:fixed; top:0; left:0; right:0;
-    background: rgba(7,9,15,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    z-index:100;
-    padding: 0 2rem;
-    display:flex; align-items:center; justify-content:space-between;
-    height:56px;
-  }
-  .nav-logo {
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.85rem;
-    color: var(--accent);
-    letter-spacing:0.05em;
-  }
-  .nav-logo span { color: var(--muted); }
-  .nav-links {
-    display:flex; gap:1.5rem;
-    list-style:none;
-  }
-  .nav-links a {
-    font-size:0.78rem;
-    text-decoration:none;
-    color:var(--muted);
-    font-family:'JetBrains Mono', monospace;
-    letter-spacing:0.03em;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color:var(--accent); }
+/* ─── DESIGN TOKENS ──────────────────────────────────────────── */
+:root{
+  --ink:       #1a1916;
+  --ink-2:     #3d3c38;
+  --ink-3:     #6b6a64;
+  --ink-4:     #9e9c94;
+  --paper:     #f5f3ee;
+  --paper-2:   #eceae3;
+  --paper-3:   #e0ddd4;
+  --rule:      #d4d1c6;
+  --rule-2:    #c4c0b3;
+  --lime:      #b8f060;
+  --lime-dim:  #b8f06018;
+  --amber:     #e8a020;
+  --red:       #d64030;
+  --blue:      #2060c8;
+  --teal:      #18a080;
+  --mono:      'IBM Plex Mono', monospace;
+  --serif:     'Fraunces', serif;
+  --sans:      'DM Sans', sans-serif;
+  --r:         6px;
+  --r-lg:      12px;
+}
 
-  /* HERO */
-  .hero {
-    min-height:100vh;
-    display:flex; flex-direction:column;
-    justify-content:center;
-    padding: 8rem 2rem 4rem;
-    max-width:1200px; margin:0 auto;
-    position:relative; z-index:1;
-  }
-  .hero-badge {
-    display:inline-flex; align-items:center; gap:0.5rem;
-    background: var(--tag-bg);
-    border: 1px solid rgba(0,229,176,0.2);
-    color: var(--accent);
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.72rem;
-    padding:0.35rem 0.8rem;
-    border-radius:4px;
-    margin-bottom:2rem;
-    letter-spacing:0.08em;
-  }
-  .hero-badge::before { content:'▸ '; }
-  h1.hero-title {
-    font-family:'Syne', sans-serif;
-    font-size:clamp(2.5rem, 6vw, 5rem);
-    font-weight:800;
-    line-height:1.05;
-    margin-bottom:1.5rem;
-    letter-spacing:-0.02em;
-  }
-  h1.hero-title .line2 {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent3) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-sub {
-    color:var(--muted);
-    font-size:1.05rem;
-    max-width:560px;
-    margin-bottom:3rem;
-    font-weight:300;
-  }
-  .hero-stats {
-    display:flex; gap:2.5rem;
-    flex-wrap:wrap;
-  }
-  .stat {
-    display:flex; flex-direction:column;
-  }
-  .stat-num {
-    font-family:'Syne', sans-serif;
-    font-size:2rem;
-    font-weight:800;
-    color:var(--accent);
-    line-height:1;
-  }
-  .stat-label {
-    font-size:0.75rem;
-    color:var(--muted);
-    letter-spacing:0.05em;
-    text-transform:uppercase;
-    margin-top:0.25rem;
-  }
+/* ─── BASE ───────────────────────────────────────────────────── */
+body{
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.65;
+  color:var(--ink);
+  background:var(--paper);
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-  /* SECTION */
-  section {
-    max-width:1200px;
-    margin:0 auto;
-    padding: 5rem 2rem;
-    position:relative; z-index:1;
-  }
-  .section-header {
-    display:flex; align-items:baseline; gap:1rem;
-    margin-bottom:2.5rem;
-  }
-  .section-num {
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.75rem;
-    color:var(--accent);
-    opacity:0.6;
-  }
-  h2.section-title {
-    font-family:'Syne', sans-serif;
-    font-size:1.6rem;
-    font-weight:700;
-    letter-spacing:-0.01em;
-  }
+/* ─── GRID SCAFFOLDING ──────────────────────────────────────── */
+.page{max-width:1100px;margin:0 auto;padding:0 32px}
+@media(max-width:768px){.page{padding:0 20px}}
 
-  /* CARDS GRID */
-  .cards-grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap:1.5rem;
-  }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius:12px;
-    padding:1.8rem;
-    text-decoration:none;
-    color:var(--text);
-    display:flex; flex-direction:column; gap:1rem;
-    transition: all 0.25s ease;
-    position:relative;
-    overflow:hidden;
-  }
-  .card::after {
-    content:'';
-    position:absolute;
-    top:0; left:0; right:0;
-    height:2px;
-    background: linear-gradient(90deg, var(--card-accent, var(--accent)), transparent);
-    opacity:0;
-    transition: opacity 0.25s;
-  }
-  .card:hover {
-    border-color: var(--card-accent, var(--accent));
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-  }
-  .card:hover::after { opacity:1; }
-  .card-header {
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .card-icon {
-    width:40px; height:40px;
-    border-radius:10px;
-    background: var(--tag-bg);
-    border: 1px solid rgba(0,229,176,0.15);
-    display:flex; align-items:center; justify-content:center;
-    font-size:1.1rem;
-  }
-  .card-tag {
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.65rem;
-    letter-spacing:0.08em;
-    padding:0.2rem 0.6rem;
-    border-radius:4px;
-    background: var(--tag-bg);
-    color:var(--accent);
-    border:1px solid rgba(0,229,176,0.15);
-  }
-  .card-tag.orange { 
-    background:rgba(255,95,64,0.08); 
-    color:var(--accent2); 
-    border-color:rgba(255,95,64,0.2);
-  }
-  .card-tag.blue { 
-    background:rgba(91,143,255,0.08); 
-    color:var(--accent3); 
-    border-color:rgba(91,143,255,0.2);
-  }
-  .card h3 {
-    font-family:'Syne', sans-serif;
-    font-size:1.1rem;
-    font-weight:700;
-    letter-spacing:-0.01em;
-  }
-  .card p {
-    font-size:0.83rem;
-    color:var(--muted);
-    line-height:1.6;
-  }
-  .card-meta {
-    display:flex; gap:1rem;
-    margin-top:auto;
-    padding-top:1rem;
-    border-top:1px solid var(--border);
-  }
-  .meta-item {
-    display:flex; flex-direction:column; gap:0.15rem;
-  }
-  .meta-val {
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.8rem;
-    color:var(--text);
-    font-weight:500;
-  }
-  .meta-key {
-    font-size:0.65rem;
-    color:var(--muted);
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-  }
-  .card-arrow {
-    position:absolute;
-    right:1.8rem; bottom:1.8rem;
-    color:var(--muted);
-    font-size:1rem;
-    transition: all 0.2s;
-  }
-  .card:hover .card-arrow {
-    color:var(--accent);
-    transform: translate(3px, -3px);
-  }
+/* ─── NAV ────────────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--paper);
+  border-bottom:1px solid var(--rule);
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
+}
+.nav-brand{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+}
+.nav-mark{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--ink);display:flex;align-items:center;justify-content:center;
+}
+.nav-mark svg{display:block}
+.nav-name{
+  font-family:var(--mono);font-size:12px;
+  color:var(--ink);letter-spacing:.02em;font-weight:500;
+}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-a{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  text-decoration:none;padding:6px 12px;border-radius:var(--r);
+  transition:background .15s,color .15s;
+}
+.nav-a:hover{background:var(--paper-2);color:var(--ink)}
+.nav-status{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  border:1px solid var(--rule);padding:4px 12px;border-radius:20px;
+}
+.status-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--teal);
+  animation:blink 2.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+@media(max-width:600px){.nav-links{display:none}}
 
-  /* ROADMAP cards - larger */
-  .roadmap-grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap:1.5rem;
-  }
-  .roadmap-card {
-    background: var(--surface);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:2.2rem;
-    text-decoration:none;
-    color:var(--text);
-    display:flex; flex-direction:column;
-    gap:1.2rem;
-    transition: all 0.25s;
-    position:relative; overflow:hidden;
-  }
-  .roadmap-card::before {
-    content:'';
-    position:absolute;
-    top:0; right:0;
-    width:180px; height:180px;
-    background: radial-gradient(circle, var(--rm-glow, rgba(0,229,176,0.06)) 0%, transparent 70%);
-    pointer-events:none;
-  }
-  .roadmap-card:hover {
-    border-color:var(--rm-border, rgba(0,229,176,0.4));
-    transform: translateY(-3px);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
-  }
-  .roadmap-title {
-    font-family:'Syne', sans-serif;
-    font-size:1.5rem;
-    font-weight:800;
-    letter-spacing:-0.02em;
-  }
-  .roadmap-desc {
-    font-size:0.85rem;
-    color:var(--muted);
-    line-height:1.7;
-  }
-  .roadmap-weeks {
-    display:flex; gap:0.5rem; flex-wrap:wrap;
-  }
-  .week-badge {
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.65rem;
-    padding:0.25rem 0.6rem;
-    border-radius:4px;
-    border:1px solid var(--border);
-    color:var(--muted);
-  }
-  .roadmap-cta {
-    display:inline-flex; align-items:center; gap:0.5rem;
-    margin-top:auto;
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.78rem;
-    color:var(--accent);
-    text-decoration:none;
-    letter-spacing:0.04em;
-  }
+/* ─── HERO ───────────────────────────────────────────────────── */
+.hero{
+  padding:80px 0 64px;
+  border-bottom:1px solid var(--rule);
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:24px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::after{content:'';display:block;width:32px;height:1px;background:var(--rule-2)}
 
-  /* FOOTER */
-  footer {
-    border-top:1px solid var(--border);
-    padding:2rem;
-    text-align:center;
-    color:var(--muted);
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.72rem;
-    position:relative; z-index:1;
-  }
+.hero-grid{display:grid;grid-template-columns:1fr 320px;gap:64px;align-items:start}
+@media(max-width:800px){.hero-grid{grid-template-columns:1fr;gap:40px}}
 
-  /* Divider */
-  .divider {
-    border:none;
-    border-top:1px solid var(--border);
-    margin:0;
-  }
+h1{
+  font-family:var(--serif);font-size:clamp(44px,5.5vw,72px);
+  font-weight:700;line-height:1;letter-spacing:-.02em;
+  color:var(--ink);margin-bottom:28px;
+}
+h1 em{font-style:italic;font-weight:300;color:var(--ink-3)}
 
-  /* Animate in */
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(20px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  .hero > * {
-    animation: fadeUp 0.6s ease both;
-  }
-  .hero > *:nth-child(1) { animation-delay:0.1s; }
-  .hero > *:nth-child(2) { animation-delay:0.2s; }
-  .hero > *:nth-child(3) { animation-delay:0.3s; }
-  .hero > *:nth-child(4) { animation-delay:0.4s; }
+.hero-body{
+  font-size:16px;color:var(--ink-2);line-height:1.75;
+  max-width:540px;margin-bottom:36px;
+}
+.hero-body p+p{margin-top:14px}
 
-  @media(max-width:768px) {
-    .roadmap-grid { grid-template-columns:1fr; }
-    .cards-grid { grid-template-columns:1fr; }
-    .nav-links { display:none; }
-    h1.hero-title { font-size:2.5rem; }
-  }
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:12px;font-weight:500;
+  padding:10px 20px;border-radius:var(--r);text-decoration:none;
+  transition:all .15s;cursor:pointer;border:none;
+}
+.btn-primary{
+  background:var(--ink);color:var(--paper);
+}
+.btn-primary:hover{background:var(--ink-2)}
+.btn-ghost{
+  background:transparent;color:var(--ink-2);
+  border:1px solid var(--rule-2);
+}
+.btn-ghost:hover{background:var(--paper-2);border-color:var(--ink-3)}
+
+/* ─── HERO SIDEBAR ──────────────────────────────────────────── */
+.hero-sidebar{}
+.sidebar-block{
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:var(--r-lg);padding:24px;margin-bottom:16px;
+}
+.sidebar-label{
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;
+}
+.stat-list{display:flex;flex-direction:column;gap:12px}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline}
+.stat-name{font-size:13px;color:var(--ink-3)}
+.stat-val{
+  font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink);
+}
+.stat-val span{font-size:11px;color:var(--ink-4);font-weight:400}
+
+.sidebar-prereqs{list-style:none;display:flex;flex-direction:column;gap:8px}
+.prereq-item{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:var(--ink-2);
+}
+.prereq-icon{
+  width:20px;height:20px;border-radius:4px;
+  background:var(--lime-dim);border:1px solid #b8f06040;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;flex-shrink:0;
+}
+
+/* ─── SECTION HEADINGS ──────────────────────────────────────── */
+.section{padding:64px 0}
+.section+.section{border-top:1px solid var(--rule)}
+.section-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin-bottom:40px;flex-wrap:wrap;gap:12px;
+}
+.section-label{
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;
+}
+.section-title{
+  font-family:var(--serif);font-size:clamp(26px,3vw,36px);
+  font-weight:700;line-height:1.1;letter-spacing:-.015em;color:var(--ink);
+}
+.section-link{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  text-decoration:none;border-bottom:1px solid var(--rule);
+  padding-bottom:1px;transition:color .15s,border-color .15s;
+}
+.section-link:hover{color:var(--ink);border-color:var(--ink)}
+
+/* ─── ROADMAP CARDS ─────────────────────────────────────────── */
+.roadmap-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+@media(max-width:900px){.roadmap-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.roadmap-grid{grid-template-columns:1fr}}
+
+.roadmap-card{
+  background:var(--paper);border:1px solid var(--rule);
+  border-radius:var(--r-lg);padding:28px 24px;
+  text-decoration:none;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+}
+.roadmap-card:hover{
+  border-color:var(--rule-2);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(26,25,22,.06);
+}
+.card-top-bar{
+  height:3px;border-radius:2px;margin-bottom:24px;
+  background:var(--bar-color,var(--ink));
+}
+.card-track-tag{
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;
+}
+.card-title{
+  font-family:var(--serif);font-size:20px;font-weight:700;
+  color:var(--ink);line-height:1.2;margin-bottom:12px;
+}
+.card-desc{
+  font-size:13px;color:var(--ink-3);line-height:1.65;
+  flex:1;margin-bottom:20px;
+}
+.card-meta{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-weeks{display:flex;gap:4px;flex-wrap:wrap}
+.week-tag{
+  font-family:var(--mono);font-size:9px;color:var(--ink-4);
+  border:1px solid var(--rule);padding:2px 7px;border-radius:10px;
+}
+.card-duration{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  display:flex;align-items:center;gap:5px;
+}
+.card-arrow{
+  font-size:16px;color:var(--ink-4);
+  transition:color .15s,transform .15s;
+  margin-left:4px;
+}
+.roadmap-card:hover .card-arrow{color:var(--ink);transform:translateX(3px)}
+
+/* ─── FEATURED ROADMAP ──────────────────────────────────────── */
+.featured-roadmap{
+  grid-column:1/-1;
+  background:var(--ink);border-radius:var(--r-lg);
+  padding:40px;display:grid;
+  grid-template-columns:1fr 280px;gap:40px;align-items:center;
+  text-decoration:none;position:relative;overflow:hidden;
+  transition:opacity .2s;
+}
+.featured-roadmap:hover{opacity:.94}
+@media(max-width:700px){.featured-roadmap{grid-template-columns:1fr;gap:24px}}
+.featured-roadmap::after{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:var(--lime);opacity:.06;
+}
+.fr-tag{
+  font-family:var(--mono);font-size:10px;color:var(--lime);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.fr-tag::before{content:'★';font-size:9px}
+.fr-title{
+  font-family:var(--serif);font-size:clamp(24px,3vw,34px);
+  font-weight:700;color:var(--paper);line-height:1.15;
+  letter-spacing:-.02em;margin-bottom:14px;
+}
+.fr-title em{font-style:italic;font-weight:300;color:rgba(245,243,238,.6)}
+.fr-desc{font-size:14px;color:rgba(245,243,238,.65);line-height:1.7}
+.fr-right{display:flex;flex-direction:column;gap:12px}
+.fr-stat-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r);padding:16px 20px;
+}
+.fr-stat-label{font-family:var(--mono);font-size:10px;color:rgba(245,243,238,.4);margin-bottom:4px;letter-spacing:.08em}
+.fr-stat-val{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--lime)}
+.fr-stat-sub{font-size:12px;color:rgba(245,243,238,.5);margin-top:2px}
+
+/* ─── CRASH COURSES ─────────────────────────────────────────── */
+.courses-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+@media(max-width:680px){.courses-grid{grid-template-columns:1fr}}
+
+.course-card{
+  display:flex;gap:16px;align-items:flex-start;
+  background:var(--paper);border:1px solid var(--rule);
+  border-radius:var(--r-lg);padding:20px;
+  text-decoration:none;position:relative;
+  transition:border-color .15s,background .15s;
+}
+.course-card:hover{
+  border-color:var(--rule-2);background:var(--paper-2);
+}
+.course-icon{
+  flex-shrink:0;width:40px;height:40px;
+  border-radius:var(--r);background:var(--icon-bg,var(--paper-2));
+  border:1px solid var(--icon-border,var(--rule));
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;
+}
+.course-body{flex:1;min-width:0}
+.course-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.course-level{
+  font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+  text-transform:uppercase;padding:2px 7px;border-radius:10px;
+  background:var(--tag-bg,var(--paper-2));
+  color:var(--tag-color,var(--ink-3));
+  border:1px solid var(--tag-border,var(--rule));
+}
+.course-hours{font-family:var(--mono);font-size:10px;color:var(--ink-4)}
+.course-title{
+  font-size:14px;font-weight:500;color:var(--ink);
+  margin-bottom:5px;line-height:1.35;
+}
+.course-blurb{font-size:12px;color:var(--ink-3);line-height:1.55;margin-bottom:8px}
+.course-tags{display:flex;flex-wrap:wrap;gap:4px}
+.course-tag{
+  font-family:var(--mono);font-size:9px;color:var(--ink-4);
+  padding:1px 6px;border:1px solid var(--rule);border-radius:4px;
+}
+.course-arr{
+  position:absolute;right:16px;top:20px;
+  font-size:13px;color:var(--ink-4);
+  transition:color .15s,transform .15s;
+}
+.course-card:hover .course-arr{color:var(--ink-2);transform:translateX(2px)}
+
+/* ─── PHILOSOPHY BLOCK ──────────────────────────────────────── */
+.philosophy{
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:var(--r-lg);padding:48px;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;
+}
+@media(max-width:700px){.philosophy{grid-template-columns:1fr;padding:32px 24px}}
+.phil-col h3{
+  font-family:var(--serif);font-size:20px;font-weight:700;
+  color:var(--ink);margin-bottom:16px;letter-spacing:-.01em;
+}
+.phil-col p{font-size:14px;color:var(--ink-2);line-height:1.75;margin-bottom:14px}
+.phil-col p:last-child{margin-bottom:0}
+.phil-divider{
+  width:1px;background:var(--rule);
+  @media(max-width:700px){width:100%;height:1px}
+}
+
+.principle-list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.principle-item{display:flex;gap:12px;align-items:flex-start}
+.principle-num{
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);
+  width:20px;padding-top:2px;flex-shrink:0;
+}
+.principle-text{font-size:14px;color:var(--ink-2);line-height:1.65}
+.principle-text strong{color:var(--ink);font-weight:500}
+
+/* ─── TERMINAL / CODE BLOCK ─────────────────────────────────── */
+.terminal{
+  background:var(--ink);border-radius:var(--r-lg);
+  overflow:hidden;margin-bottom:48px;
+}
+.term-bar{
+  display:flex;align-items:center;gap:6px;
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.term-dot{width:10px;height:10px;border-radius:50%}
+.term-title{
+  font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.3);
+  margin-left:8px;
+}
+.term-body{
+  padding:24px;font-family:var(--mono);font-size:12px;
+  line-height:2;overflow-x:auto;
+}
+.t-c{color:rgba(255,255,255,.25)}          /* comment */
+.t-k{color:#74c0fc}                         /* keyword/key */
+.t-s{color:var(--lime)}                     /* string/value accent */
+.t-n{color:#ffa94d}                         /* number */
+.t-p{color:rgba(255,255,255,.55)}           /* punctuation */
+.t-t{color:#cc5de8}                         /* type */
+.t-f{color:#63e6be}                         /* function */
+.t-r{color:rgba(255,255,255,.75)}           /* regular */
+
+/* ─── FOOTER ────────────────────────────────────────────────── */
+footer{
+  border-top:1px solid var(--rule);padding:32px 0;
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-left{
+  font-family:var(--mono);font-size:11px;color:var(--ink-4);
+  line-height:1.7;
+}
+.footer-left a{color:var(--ink-3);text-decoration:none}
+.footer-left a:hover{color:var(--ink)}
+.footer-right{display:flex;gap:20px}
+.footer-link{
+  font-family:var(--mono);font-size:11px;color:var(--ink-4);
+  text-decoration:none;transition:color .15s;
+}
+.footer-link:hover{color:var(--ink)}
+
+/* ─── UTILITY ───────────────────────────────────────────────── */
+.mono{font-family:var(--mono)}
+.lime{color:var(--lime)}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* ─── SCROLL ANIMATION ──────────────────────────────────────── */
+@media(prefers-reduced-motion:no-preference){
+  .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+  .fade-in.visible{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="nav-logo">saurabh<span>.learning_os</span></div>
-  <ul class="nav-links">
-    <li><a href="#roadmaps">Roadmaps</a></li>
-    <li><a href="#crash-courses">Crash Courses</a></li>
-  </ul>
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <div class="nav-mark">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="1" width="5" height="5" fill="#f5f3ee"/>
+          <rect x="8" y="1" width="5" height="5" fill="#f5f3ee" opacity=".5"/>
+          <rect x="1" y="8" width="5" height="5" fill="#f5f3ee" opacity=".5"/>
+          <rect x="8" y="8" width="5" height="5" fill="#f5f3ee"/>
+        </svg>
+      </div>
+      <span class="nav-name">Engineering OS</span>
+    </a>
+    <div class="nav-links">
+      <a href="#roadmaps" class="nav-a">Roadmaps</a>
+      <a href="#courses" class="nav-a">Crash Courses</a>
+      <a href="#philosophy" class="nav-a">About</a>
+    </div>
+    <div class="nav-status">
+      <div class="status-dot"></div>
+      Active · 2026
+    </div>
+  </div>
 </nav>
 
-<div class="hero">
-  <div class="hero-badge">Engineering Interview Prep System</div>
-  <h1 class="hero-title">
-    Your Personal<br>
-    <span class="line2">Engineering OS</span>
-  </h1>
-  <p class="hero-sub">Zero fluff. Pattern-first DSA. System Design with trade-offs. ML from regression to LLMs. Nine one-day crash courses covering OS internals, databases, Kubernetes, Go, Rust, and more.</p>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-num">30</span><span class="stat-label">Days · DSA</span></div>
-    <div class="stat"><span class="stat-num">30</span><span class="stat-label">Days · Sys Design</span></div>
-    <div class="stat"><span class="stat-num">28</span><span class="stat-label">Days · ML</span></div>
-    <div class="stat"><span class="stat-num">9</span><span class="stat-label">Crash Courses</span></div>
-    <div class="stat"><span class="stat-num">~90h</span><span class="stat-label">Total Learning</span></div>
+<!-- HERO -->
+<section class="hero page">
+  <div class="hero-eyebrow">
+    Personal study system &nbsp;·&nbsp; Staff Engineer prep &nbsp;·&nbsp; Saurabh S. Patel
   </div>
-</div>
-
-<hr class="divider">
+  <div class="hero-grid">
+    <div>
+      <h1>Your personal<br><em>engineering</em><br>operating system</h1>
+      <div class="hero-body">
+        <p>Eight years in distributed systems teaches you something uncomfortable: the gap between writing code and understanding systems is enormous. Most engineers optimize locally — fast PR cycles, clean abstractions — while system-level thinking atrophies.</p>
+        <p>This is a structured curriculum built around one belief: depth beats breadth, always. Every roadmap, every crash course here is designed for someone who already ships production code and wants to understand <em>why</em> the machines work — not just how to use them.</p>
+      </div>
+      <div class="hero-actions">
+        <a href="#roadmaps" class="btn btn-primary">Start a Roadmap &nbsp;→</a>
+        <a href="#courses" class="btn btn-ghost">Browse Crash Courses</a>
+      </div>
+    </div>
+    <div class="hero-sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-label">Curriculum at a glance</div>
+        <div class="stat-list">
+          <div class="stat-row">
+            <span class="stat-name">Structured learning paths</span>
+            <span class="stat-val">3 <span>tracks</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">One-day crash courses</span>
+            <span class="stat-val">10 <span>modules</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Total learning hours</span>
+            <span class="stat-val">~90 <span>hrs</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Practice problems</span>
+            <span class="stat-val">120+ <span>problems</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Full system designs</span>
+            <span class="stat-val">14 <span>walkthroughs</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Designed for engineers who</div>
+        <ul class="sidebar-prereqs">
+          <li class="prereq-item">
+            <div class="prereq-icon">→</div>
+            Already write production code daily
+          </li>
+          <li class="prereq-item">
+            <div class="prereq-icon">→</div>
+            Are targeting senior or staff roles
+          </li>
+          <li class="prereq-item">
+            <div class="prereq-icon">→</div>
+            Want depth, not leetcode quantity
+          </li>
+          <li class="prereq-item">
+            <div class="prereq-icon">→</div>
+            Think in trade-offs, not tutorials
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ROADMAPS -->
-<section id="roadmaps">
-  <div class="section-header">
-    <span class="section-num">01</span>
-    <h2 class="section-title">30-Day Roadmaps</h2>
+<section class="section page" id="roadmaps">
+  <div class="section-head fade-in">
+    <div>
+      <div class="section-label">01 &nbsp;·&nbsp; 30-Day Roadmaps</div>
+      <h2 class="section-title">Structured depth,<br>week by week</h2>
+    </div>
+    <a href="#courses" class="section-link">View crash courses →</a>
   </div>
-  <div class="roadmap-grid">
 
-    <a href="dsa-30-day.html" class="roadmap-card" style="--rm-glow:rgba(0,229,176,0.06);--rm-border:rgba(0,229,176,0.4);">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-family:JetBrains Mono,monospace;font-size:0.7rem;color:var(--accent);letter-spacing:.08em;">DSA · GO LANG</span>
-        <span style="font-family:JetBrains Mono,monospace;font-size:0.7rem;color:var(--muted);">30 days</span>
+  <!-- Featured: System Design -->
+  <a href="system-design-30-day.html" class="featured-roadmap fade-in" style="margin-bottom:16px;display:grid">
+    <div>
+      <div class="fr-tag">Flagship Roadmap</div>
+      <div class="fr-title">System Design<br><em>in 30 Days</em></div>
+      <div class="fr-desc">
+        From CAP theorem to designing WhatsApp at scale — with HLD frameworks, 12 universal patterns, API design first principles, LLD concurrency, and a complete Week 5 covering AI agent systems. This is the roadmap that turns a good engineer into a staff-level architectural thinker.
       </div>
-      <div class="roadmap-title">DSA in a Month</div>
-      <p class="roadmap-desc">Pattern-first approach. Sliding window, monotonic stack, union-find, DP state machines. Go-specific implementations using container/heap, sort.Interface. Weekly mock checkpoints.</p>
-      <div class="roadmap-weeks">
-        <span class="week-badge">W1: Arrays & Pointers</span>
-        <span class="week-badge">W2: Stack/Queue/Heap</span>
-        <span class="week-badge">W3: Trees & Binary Search</span>
-        <span class="week-badge">W4: Graphs & DP</span>
+    </div>
+    <div class="fr-right">
+      <div class="fr-stat-card">
+        <div class="fr-stat-label">Coverage</div>
+        <div class="fr-stat-val">36 days</div>
+        <div class="fr-stat-sub">HLD + LLD + AI Agents</div>
       </div>
-      <span class="roadmap-cta">Open Roadmap →</span>
+      <div class="fr-stat-card">
+        <div class="fr-stat-label">Full designs included</div>
+        <div class="fr-stat-val">14</div>
+        <div class="fr-stat-sub">WhatsApp, YouTube, Uber, Twitter, and more</div>
+      </div>
+      <div class="fr-stat-card">
+        <div class="fr-stat-label">Daily commitment</div>
+        <div class="fr-stat-val">~2h</div>
+        <div class="fr-stat-sub">Interview-ready by day 30</div>
+      </div>
+    </div>
+  </a>
+
+  <div class="roadmap-grid fade-in">
+    <!-- DSA -->
+    <a href="dsa-30-day.html" class="roadmap-card">
+      <div class="card-top-bar" style="--bar-color:var(--teal)"></div>
+      <div class="card-track-tag">DSA · Go Lang</div>
+      <div class="card-title">30 Days of DSA</div>
+      <div class="card-desc">
+        Pattern-first, not problem-first. Every day maps to one algorithmic pattern — sliding window, monotonic stack, union-find, DP state machines. Go implementations throughout. Master the pattern; the specific problem becomes obvious.
+      </div>
+      <div class="card-meta">
+        <div class="card-weeks">
+          <span class="week-tag">W1: Arrays</span>
+          <span class="week-tag">W2: Stack/Heap</span>
+          <span class="week-tag">W3: Trees/BS</span>
+          <span class="week-tag">W4: Graphs/DP</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between">
+        <span class="card-duration">30 days · 120+ problems</span>
+        <span class="card-arrow">→</span>
+      </div>
     </a>
 
-    <a href="system-design-30-day.html" class="roadmap-card" style="--rm-glow:rgba(91,143,255,0.06);--rm-border:rgba(91,143,255,0.4);">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-family:JetBrains Mono,monospace;font-size:0.7rem;color:var(--accent3);letter-spacing:.08em;">SYSTEM DESIGN</span>
-        <span style="font-family:JetBrains Mono,monospace;font-size:0.7rem;color:var(--muted);">30 days</span>
+    <!-- ML -->
+    <a href="https://saurabhspatel.github.io/ml-in-a-month/" class="roadmap-card" target="_blank">
+      <div class="card-top-bar" style="--bar-color:var(--amber)"></div>
+      <div class="card-track-tag">ML · AI · LLMs</div>
+      <div class="card-title">28 Days of ML</div>
+      <div class="card-desc">
+        Visual and intuition-first. Linear regression to LLMs. Built around StatQuest, 3Blue1Brown, and Andrej Karpathy's lectures. You will build micrograd and nanoGPT from scratch — not just know that transformers exist, but understand why every piece is there.
       </div>
-      <div class="roadmap-title">System Design in a Month</div>
-      <p class="roadmap-desc">HLD + LLD. CAP theorem to distributed transactions. Design WhatsApp, YouTube, Uber, Kafka-backed systems. Staff-level trade-off vocabulary. Scalability patterns that survive 100x growth.</p>
-      <div class="roadmap-weeks">
-        <span class="week-badge">W1: Foundations</span>
-        <span class="week-badge">W2: Storage & DB</span>
-        <span class="week-badge">W3: Messaging & RT</span>
-        <span class="week-badge">W4: Real Designs</span>
+      <div class="card-meta">
+        <div class="card-weeks">
+          <span class="week-tag">W1: ML Foundations</span>
+          <span class="week-tag">W2: Deep Learning</span>
+          <span class="week-tag">W3: Transformers</span>
+          <span class="week-tag">W4: LLMs</span>
+        </div>
       </div>
-      <span class="roadmap-cta" style="color:var(--accent3);">Open Roadmap →</span>
+      <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between">
+        <span class="card-duration">28 days · 84 quiz questions</span>
+        <span class="card-arrow">↗</span>
+      </div>
     </a>
-
-    <a href="https://saurabhspatel.github.io/ml-in-a-month/" class="roadmap-card" style="--rm-glow:rgba(255,95,64,0.06);--rm-border:rgba(255,95,64,0.4);">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-family:JetBrains Mono,monospace;font-size:0.7rem;color:var(--accent2);letter-spacing:.08em;">ML · AI · LLMs</span>
-        <span style="font-family:JetBrains Mono,monospace;font-size:0.7rem;color:var(--muted);">28 days</span>
-      </div>
-      <div class="roadmap-title">ML in a Month</div>
-      <p class="roadmap-desc">Visual, intuition-first ML. Linear regression to LLMs. StatQuest + 3Blue1Brown + Karpathy. Build micrograd and nanoGPT from scratch. 56+ curated videos, 84 quiz questions.</p>
-      <div class="roadmap-weeks">
-        <span class="week-badge">W1: ML Foundations</span>
-        <span class="week-badge">W2: Deep Learning</span>
-        <span class="week-badge">W3: Transformers</span>
-        <span class="week-badge">W4: LLMs & Agents</span>
-      </div>
-      <span class="roadmap-cta" style="color:var(--accent2);">Open Roadmap →</span>
-    </a>
+  </div>
 </section>
-
-<hr class="divider">
 
 <!-- CRASH COURSES -->
-<section id="crash-courses">
-  <div class="section-header">
-    <span class="section-num">02</span>
-    <h2 class="section-title">One-Day Crash Courses</h2>
+<section class="section page" id="courses">
+  <div class="section-head fade-in">
+    <div>
+      <div class="section-label">02 &nbsp;·&nbsp; One-Day Crash Courses</div>
+      <h2 class="section-title">Senior-level depth<br>in a single session</h2>
+    </div>
   </div>
-  <p style="color:var(--muted);font-size:0.85rem;margin-bottom:2rem;margin-top:-1.5rem;">6–10 hour intensive sessions. Senior-level depth. No beginner hand-holding.</p>
 
-  <div class="cards-grid">
+  <p class="fade-in" style="font-size:15px;color:var(--ink-2);max-width:620px;margin-bottom:40px;line-height:1.75">
+    Each module is a 5–10 hour intensive. No beginner scaffolding. No hand-holding. These are written for engineers who already know the surface layer — and want to understand what actually happens underneath.
+  </p>
 
-    <a href="os-in-a-day.html" class="card" style="--card-accent:var(--accent);">
-      <div class="card-header">
-        <div class="card-icon">⚙️</div>
-        <span class="card-tag">6h · CORE</span>
+  <div class="courses-grid">
+
+    <!-- OS -->
+    <a href="os-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#edf2ff;--icon-border:#c5d8ff;--tag-bg:#edf2ff;--tag-color:#2060c8;--tag-border:#c5d8ff">
+      <div class="course-icon">⚙️</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Core</span>
+          <span class="course-hours">6h</span>
+        </div>
+        <div class="course-title">Operating Systems</div>
+        <div class="course-blurb">Virtual memory internals, paging, TLB miss handling. The real cost of context switching. Why epoll exists and what io_uring changes. CPU cache hierarchy and why it matters for your Go code more than the algorithm does.</div>
+        <div class="course-tags">
+          <span class="course-tag">Processes</span>
+          <span class="course-tag">Scheduling</span>
+          <span class="course-tag">Virtual Memory</span>
+          <span class="course-tag">Paging/TLB</span>
+          <span class="course-tag">I/O Models</span>
+          <span class="course-tag">epoll/io_uring</span>
+        </div>
       </div>
-      <h3>Operating Systems</h3>
-      <p>Virtual memory, paging, TLB misses. epoll vs io_uring. Context switching cost. CPU cache hierarchy impact on your Go code.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Processes</span><span class="meta-key">Scheduling</span></div>
-        <div class="meta-item"><span class="meta-val">Memory</span><span class="meta-key">Paging/TLB</span></div>
-        <div class="meta-item"><span class="meta-val">I/O Models</span><span class="meta-key">epoll/uring</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="k8s-in-a-day.html" class="card" style="--card-accent:#326ce5;">
-      <div class="card-header">
-        <div class="card-icon">☸️</div>
-        <span class="card-tag blue">8h · DEVOPS</span>
+    <!-- Kubernetes -->
+    <a href="k8s-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#e9fbe9;--icon-border:#b8e8b8;--tag-bg:#e9fbe9;--tag-color:#1a7a1a;--tag-border:#b8e8b8">
+      <div class="course-icon">☸️</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">DevOps</span>
+          <span class="course-hours">8h</span>
+        </div>
+        <div class="course-title">Kubernetes Internals</div>
+        <div class="course-blurb">etcd as a linearizable key-value store, not a magic config box. How the scheduler actually picks a node. CNI networking — what happens from pod creation to a routable IP. Writing operators and CRDs that don't cause production incidents.</div>
+        <div class="course-tags">
+          <span class="course-tag">etcd/Raft</span>
+          <span class="course-tag">Control Plane</span>
+          <span class="course-tag">Networking/CNI</span>
+          <span class="course-tag">Operators</span>
+          <span class="course-tag">CRDs</span>
+          <span class="course-tag">HPA/KEDA</span>
+        </div>
       </div>
-      <h3>Kubernetes</h3>
-      <p>etcd internals, scheduler, kubelet. CNI networking. RBAC, HPA, operators/CRDs. Production debugging patterns from your Helm/GKE experience.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Architecture</span><span class="meta-key">Control Plane</span></div>
-        <div class="meta-item"><span class="meta-val">Networking</span><span class="meta-key">CNI/iptables</span></div>
-        <div class="meta-item"><span class="meta-val">Operators</span><span class="meta-key">CRDs</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="db-in-a-day.html" class="card" style="--card-accent:#f97316;">
-      <div class="card-header">
-        <div class="card-icon">🗄️</div>
-        <span class="card-tag orange">8h · STORAGE</span>
+    <!-- Databases -->
+    <a href="db-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#fff3e0;--icon-border:#ffd8a0;--tag-bg:#fff3e0;--tag-color:#b06010;--tag-border:#ffd8a0">
+      <div class="course-icon">🗄️</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Storage</span>
+          <span class="course-hours">8h</span>
+        </div>
+        <div class="course-title">Databases — From Internals to Scale</div>
+        <div class="course-blurb">B-tree vs LSM-tree: which is right depends entirely on your write pattern. MVCC and why PostgreSQL reads never block. WAL and how streaming replication actually works. Consistent hashing for sharding. The Redis data structures that most engineers never use correctly.</div>
+        <div class="course-tags">
+          <span class="course-tag">B-Tree/LSM</span>
+          <span class="course-tag">MVCC/WAL</span>
+          <span class="course-tag">Isolation Levels</span>
+          <span class="course-tag">Sharding</span>
+          <span class="course-tag">Consistent Hash</span>
+          <span class="course-tag">Redis Internals</span>
+        </div>
       </div>
-      <h3>Databases</h3>
-      <p>B-tree vs LSM internals. MVCC. WAL. Isolation anomalies. Consistent hashing for sharding. PostgreSQL query planner. Redis skip-list. From your MariaDB+Redis background.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Internals</span><span class="meta-key">MVCC/WAL</span></div>
-        <div class="meta-item"><span class="meta-val">Isolation</span><span class="meta-key">ACID Levels</span></div>
-        <div class="meta-item"><span class="meta-val">Sharding</span><span class="meta-key">Consistent Hash</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="rust-in-a-day.html" class="card" style="--card-accent:#ce422b;">
-      <div class="card-header">
-        <div class="card-icon">🦀</div>
-        <span class="card-tag orange">7h · SYSTEMS</span>
+    <!-- Rust -->
+    <a href="rust-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#ffeee0;--icon-border:#ffccaa;--tag-bg:#ffeee0;--tag-color:#b04010;--tag-border:#ffccaa">
+      <div class="course-icon">🦀</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Systems</span>
+          <span class="course-hours">7h</span>
+        </div>
+        <div class="course-title">Rust — Expert Level Systems</div>
+        <div class="course-blurb">Not a syntax tour. Lifetime variance and Higher-Ranked Trait Bounds. Async internals: Pin, Waker, and how Tokio's runtime actually polls futures. When unsafe is justified and what invariants you're responsible for maintaining. Zero-cost abstractions unpacked at the assembly level.</div>
+        <div class="course-tags">
+          <span class="course-tag">Ownership</span>
+          <span class="course-tag">Lifetimes</span>
+          <span class="course-tag">Async/Tokio</span>
+          <span class="course-tag">Pin/Waker</span>
+          <span class="course-tag">Unsafe</span>
+          <span class="course-tag">FFI/Layout</span>
+        </div>
       </div>
-      <h3>Rust Advanced</h3>
-      <p>Lifetime variance, HRTBs, async/await internals (Pinning, Waker). unsafe patterns. Zero-cost abstractions. Memory layout. Building on your UTXO Rust service experience.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Ownership</span><span class="meta-key">Lifetimes</span></div>
-        <div class="meta-item"><span class="meta-val">Async/Tokio</span><span class="meta-key">Pinning</span></div>
-        <div class="meta-item"><span class="meta-val">Unsafe</span><span class="meta-key">FFI/Layout</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="go-in-a-day.html" class="card" style="--card-accent:#00acd7;">
-      <div class="card-header">
-        <div class="card-icon">🐹</div>
-        <span class="card-tag blue">7h · EXPERT</span>
+    <!-- Go -->
+    <a href="go-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#e0f7f0;--icon-border:#a0e0d0;--tag-bg:#e0f7f0;--tag-color:#0a7060;--tag-border:#a0e0d0">
+      <div class="course-icon">🐹</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Expert</span>
+          <span class="course-hours">7h</span>
+        </div>
+        <div class="course-title">Go — Runtime Deep Dive</div>
+        <div class="course-blurb">You write Go. This covers what the runtime does behind your code. The GMP scheduler: why GOMAXPROCS matters and what happens on a blocking syscall. Tricolor GC, write barriers, and how to tune with GOGC vs GOMEMLIMIT. Interface dispatch, the nil-interface trap that bites every Go developer once, and how to profile a service that's misbehaving at 3AM.</div>
+        <div class="course-tags">
+          <span class="course-tag">GMP Scheduler</span>
+          <span class="course-tag">Tricolor GC</span>
+          <span class="course-tag">Channel Internals</span>
+          <span class="course-tag">pprof/trace</span>
+          <span class="course-tag">Generics</span>
+          <span class="course-tag">Interface Dispatch</span>
+        </div>
       </div>
-      <h3>Go — Expert Level</h3>
-      <p>GMP scheduler deep dive. Tricolor GC. Channel internals. Interface dispatch (itab). pprof + trace profiling. Generics patterns. You know Go — now understand what the runtime does.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">GMP</span><span class="meta-key">Scheduler</span></div>
-        <div class="meta-item"><span class="meta-val">GC</span><span class="meta-key">Tricolor Mark</span></div>
-        <div class="meta-item"><span class="meta-val">pprof</span><span class="meta-key">Profiling</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="cs-fundamentals-in-a-day.html" class="card" style="--card-accent:#a855f7;">
-      <div class="card-header">
-        <div class="card-icon">🧮</div>
-        <span class="card-tag" style="background:rgba(168,85,247,0.08);color:#a855f7;border-color:rgba(168,85,247,0.2);">6h · THEORY</span>
+    <!-- CS Fundamentals -->
+    <a href="cs-fundamentals-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#f3eeff;--icon-border:#d8c0f8;--tag-bg:#f3eeff;--tag-color:#6030a0;--tag-border:#d8c0f8">
+      <div class="course-icon">🧮</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Theory</span>
+          <span class="course-hours">6h</span>
+        </div>
+        <div class="course-title">CS Fundamentals</div>
+        <div class="course-blurb">The theory underneath distributed systems. Raft consensus from first principles — not just "leader election happens." Vector clocks and why they're a better model than wall clocks for ordering events. TCP's sliding window and congestion control. TLS 1.3 handshake. Bloom filters and HyperLogLog: how to trade accuracy for scale in ways that actually matter.</div>
+        <div class="course-tags">
+          <span class="course-tag">Raft/Paxos</span>
+          <span class="course-tag">Vector Clocks</span>
+          <span class="course-tag">TCP/TLS</span>
+          <span class="course-tag">HTTP/2,3/QUIC</span>
+          <span class="course-tag">Bloom/HLL</span>
+          <span class="course-tag">Consistent Hash</span>
+        </div>
       </div>
-      <h3>CS Fundamentals</h3>
-      <p>Raft/Paxos consensus. Vector clocks. TCP/IP internals. TLS handshake. HTTP/2 vs HTTP/3/QUIC. Bloom filters, HyperLogLog. Consistent hashing. Amortized complexity.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Consensus</span><span class="meta-key">Raft/Paxos</span></div>
-        <div class="meta-item"><span class="meta-val">Networking</span><span class="meta-key">TCP/TLS</span></div>
-        <div class="meta-item"><span class="meta-val">Data Structs</span><span class="meta-key">Bloom/HLL</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="docker-in-a-day.html" class="card" style="--card-accent:#2496ed;">
-      <div class="card-header">
-        <div class="card-icon">🐋</div>
-        <span class="card-tag blue">5h · INFRA</span>
+    <!-- Docker -->
+    <a href="docker-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#e0f0ff;--icon-border:#a8d0f8;--tag-bg:#e0f0ff;--tag-color:#1050a0;--tag-border:#a8d0f8">
+      <div class="course-icon">🐋</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Infra</span>
+          <span class="course-hours">5h</span>
+        </div>
+        <div class="course-title">Docker — Internals and Security</div>
+        <div class="course-blurb">Containers are Linux namespaces plus cgroups plus a union filesystem. This covers all three properly. OverlayFS copy-on-write layers and why your image size matters for build cache. BuildKit's DAG-based build graph. Rootless containers, seccomp filters, and AppArmor profiles — the security primitives most teams skip.</div>
+        <div class="course-tags">
+          <span class="course-tag">Namespaces</span>
+          <span class="course-tag">cgroups</span>
+          <span class="course-tag">OverlayFS</span>
+          <span class="course-tag">BuildKit</span>
+          <span class="course-tag">Multi-stage</span>
+          <span class="course-tag">Security/Rootless</span>
+        </div>
       </div>
-      <h3>Docker</h3>
-      <p>Namespace + cgroups internals. OverlayFS copy-on-write. Multi-stage builds. BuildKit. Rootless containers. seccomp/AppArmor. Container security audit mental model.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Internals</span><span class="meta-key">Namespaces</span></div>
-        <div class="meta-item"><span class="meta-val">BuildKit</span><span class="meta-key">Multi-stage</span></div>
-        <div class="meta-item"><span class="meta-val">Security</span><span class="meta-key">Rootless</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="cicd-in-a-day.html" class="card" style="--card-accent:#22c55e;">
-      <div class="card-header">
-        <div class="card-icon">🔁</div>
-        <span class="card-tag" style="background:rgba(34,197,94,0.08);color:#22c55e;border-color:rgba(34,197,94,0.2);">6h · DEVOPS</span>
+    <!-- CI/CD -->
+    <a href="cicd-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#fff0f5;--icon-border:#f8c0d8;--tag-bg:#fff0f5;--tag-color:#a02060;--tag-border:#f8c0d8">
+      <div class="course-icon">🔁</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">DevOps</span>
+          <span class="course-hours">6h</span>
+        </div>
+        <div class="course-title">CI/CD and GitOps</div>
+        <div class="course-blurb">GitOps is not a deployment tool — it's a reconciliation loop. ArgoCD's controller model and how it handles drift. GitHub Actions internal model: workers, YAML triggers, and how caching actually works. Canary vs blue-green: the choice depends on your rollback budget, not your preference. Vault secrets, feature flags as distributed state, and pipeline optimization that doesn't slow your team down.</div>
+        <div class="course-tags">
+          <span class="course-tag">GitOps</span>
+          <span class="course-tag">ArgoCD</span>
+          <span class="course-tag">Deployments</span>
+          <span class="course-tag">Canary/BG</span>
+          <span class="course-tag">Vault Secrets</span>
+          <span class="course-tag">Feature Flags</span>
+        </div>
       </div>
-      <h3>CI/CD</h3>
-      <p>GitOps with ArgoCD. GitHub Actions deep dive. Canary vs blue-green. Feature flags. Vault secrets. Pipeline optimization. Builds on your Helm CI/CD Hyperledger experience.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">GitOps</span><span class="meta-key">ArgoCD</span></div>
-        <div class="meta-item"><span class="meta-val">Deployments</span><span class="meta-key">Canary/BG</span></div>
-        <div class="meta-item"><span class="meta-val">Secrets</span><span class="meta-key">Vault</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="interview-in-a-day.html" class="card" style="--card-accent:#fbbf24;">
-      <div class="card-header">
-        <div class="card-icon">🎯</div>
-        <span class="card-tag" style="background:rgba(251,191,36,0.08);color:#fbbf24;border-color:rgba(251,191,36,0.2);">8h · CAREER</span>
+    <!-- Interview -->
+    <a href="interview-in-a-day.html" class="course-card fade-in"
+       style="--icon-bg:#f0f8f0;--icon-border:#b0d8b0;--tag-bg:#f0f8f0;--tag-color:#206020;--tag-border:#b0d8b0">
+      <div class="course-icon">🎯</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Career</span>
+          <span class="course-hours">8h</span>
+        </div>
+        <div class="course-title">Staff-Level Interview Preparation</div>
+        <div class="course-blurb">The difference between a senior and staff performance in a system design interview isn't knowledge — it's narrative control. How to lead a 45-minute design session. STAR stories that center architectural decision-making, not just outcomes. The vocabulary of trade-offs that signals seniority. Salary negotiation for senior-plus roles: what "comp strategy" actually means and how to use it.</div>
+        <div class="course-tags">
+          <span class="course-tag">Behavioral/STAR</span>
+          <span class="course-tag">Design Lead</span>
+          <span class="course-tag">Trade-off Vocab</span>
+          <span class="course-tag">Negotiation</span>
+          <span class="course-tag">Comp Strategy</span>
+        </div>
       </div>
-      <h3>Interview Prep</h3>
-      <p>STAR stories for distributed systems decisions. How to lead a system design interview. Staff-level behavioral questions. Salary negotiation. Architectural trade-off vocabulary.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Behavioral</span><span class="meta-key">STAR Method</span></div>
-        <div class="meta-item"><span class="meta-val">Design Lead</span><span class="meta-key">Framework</span></div>
-        <div class="meta-item"><span class="meta-val">Negotiation</span><span class="meta-key">Comp Strategy</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
-    <a href="team-llm-context.html" class="card" style="--card-accent:#8b5cf6;">
-      <div class="card-header">
-        <div class="card-icon">🤖</div>
-        <span class="card-tag" style="background:rgba(139,92,246,0.08);color:#8b5cf6;border-color:rgba(139,92,246,0.2);">4h · TEAM</span>
+    <!-- Team LLM -->
+    <a href="team-llm-context.html" class="course-card fade-in"
+       style="--icon-bg:#f8f0ff;--icon-border:#e0c8f8;--tag-bg:#f8f0ff;--tag-color:#7030b0;--tag-border:#e0c8f8">
+      <div class="course-icon">🤖</div>
+      <div class="course-body">
+        <div class="course-header">
+          <span class="course-level">Team</span>
+          <span class="course-hours">4h</span>
+        </div>
+        <div class="course-title">Team LLM Context Engineering</div>
+        <div class="course-blurb">Using multiple LLMs on a team without context fragmentation. Centralized knowledge bases and context-bridging protocols. Orchestration patterns when Claude, GPT-4o, and Gemini are all in your team's stack simultaneously. How to maintain consistency at the team level, not just the prompt level.</div>
+        <div class="course-tags">
+          <span class="course-tag">Knowledge Centralization</span>
+          <span class="course-tag">Context Sync</span>
+          <span class="course-tag">Multi-LLM</span>
+          <span class="course-tag">Orchestration</span>
+        </div>
       </div>
-      <h3>Team LLM Context</h3>
-      <p>Sync multiple LLMs across team members. Centralized knowledge bases, context bridging protocols, orchestration tools. Maintain consistency when using Claude, GPT-4, Gemini together.</p>
-      <div class="card-meta">
-        <div class="meta-item"><span class="meta-val">Knowledge</span><span class="meta-key">Centralization</span></div>
-        <div class="meta-item"><span class="meta-val">Context</span><span class="meta-key">Sync</span></div>
-        <div class="meta-item"><span class="meta-val">Multi-LLM</span><span class="meta-key">Orchestration</span></div>
-      </div>
-      <span class="card-arrow">↗</span>
+      <span class="course-arr">→</span>
     </a>
 
   </div>
 </section>
 
+<!-- PHILOSOPHY -->
+<section class="section page" id="philosophy">
+  <div class="section-head fade-in">
+    <div>
+      <div class="section-label">03 &nbsp;·&nbsp; Design Philosophy</div>
+      <h2 class="section-title">Why this exists<br>and how to use it</h2>
+    </div>
+  </div>
+
+  <div class="philosophy fade-in">
+    <div class="phil-col">
+      <h3>The problem with most prep material</h3>
+      <p>Most interview prep is optimized for breadth and recall. You get 150 LeetCode problems, a list of system design "components," and a bank of behavioral answers. You can recite the difference between B-trees and LSM-trees but you've never held the failure mode in your head at the same time as the write amplification math.</p>
+      <p>Real seniority is fluency, not recall. It means arriving at an unknown problem and knowing which questions to ask, which constraints to expose, and which trade-off makes the most sense for a specific combination of scale, latency budget, and team capability.</p>
+      <p>That fluency only comes from building mental models — not from memorizing answers to questions you've already seen.</p>
+    </div>
+    <div class="phil-col">
+      <h3>How to use this material</h3>
+      <ul class="principle-list">
+        <li class="principle-item">
+          <span class="principle-num">01</span>
+          <span class="principle-text"><strong>One concept deep per day.</strong> Thirty minutes of shallow review accomplishes less than fifteen minutes of total engagement with one hard idea. Close the laptop and explain it aloud.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">02</span>
+          <span class="principle-text"><strong>Patterns before problems.</strong> Every DSA problem in this curriculum maps to one pattern. Learn the pattern first. The specific problem is just a parameter variation.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">03</span>
+          <span class="principle-text"><strong>Trade-offs, not answers.</strong> There is no correct system design. There is only a design with known trade-offs. The goal is to know what you gave up, not to get to a "right" answer.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">04</span>
+          <span class="principle-text"><strong>Active recall over re-reading.</strong> At the end of each module, close the page. Write down the five things you'd explain to a junior engineer. If you can't, you don't know it yet.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">05</span>
+          <span class="principle-text"><strong>Ship a mock before you think you're ready.</strong> The gap between "I understand this" and "I can drive a 45-minute design session on it" is only closed by doing the 45 minutes under time pressure.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL BLOCK -->
+<section class="page fade-in" style="padding-bottom:64px">
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot" style="background:#ff6058"></div>
+      <div class="term-dot" style="background:#ffc22e"></div>
+      <div class="term-dot" style="background:#2acf3e"></div>
+      <span class="term-title">study-rhythm.sh &nbsp;·&nbsp; Daily protocol</span>
+    </div>
+    <div class="term-body">
+<span class="t-c">#!/usr/bin/env bash</span>
+<span class="t-c"># Engineering OS — daily study protocol</span>
+<span class="t-c"># Saurabh S. Patel · 2026</span>
+&nbsp;
+<span class="t-c">## Morning block (1h — theory)</span>
+<span class="t-f">open_concept</span><span class="t-p">()</span> <span class="t-p">{</span>
+  <span class="t-c"># Read one concept. Close the page.</span>
+  <span class="t-c"># Write the mental model from scratch.</span>
+  <span class="t-c"># If you can't, read it again.</span>
+  <span class="t-k">CONCEPT</span><span class="t-p">=</span><span class="t-s">"${1:-today's module}"</span>
+  <span class="t-f">echo</span> <span class="t-s">"Today: $CONCEPT"</span>
+  <span class="t-f">timer</span> <span class="t-n">60</span>m <span class="t-s">"Deep read"</span>
+<span class="t-p">}</span>
+&nbsp;
+<span class="t-c">## Afternoon block (2h — practice)</span>
+<span class="t-f">practice_loop</span><span class="t-p">()</span> <span class="t-p">{</span>
+  <span class="t-k">PATTERN</span><span class="t-p">=</span><span class="t-s">"$1"</span>       <span class="t-c"># e.g. "sliding-window"</span>
+  <span class="t-c"># Rule: name the pattern BEFORE writing code.</span>
+  <span class="t-c"># Rule: solve with no hints first. Time yourself.</span>
+  <span class="t-c"># Rule: one medium per session minimum.</span>
+  <span class="t-k">for</span> problem <span class="t-k">in</span> <span class="t-p">$(</span><span class="t-f">get-problems</span> <span class="t-s">"$PATTERN"</span><span class="t-p">)</span>; <span class="t-k">do</span>
+    <span class="t-f">solve</span> <span class="t-s">"$problem"</span> <span class="t-p">--</span>timed <span class="t-p">--</span>no-hints
+    <span class="t-f">review</span> <span class="t-s">"$problem"</span> <span class="t-p">--</span>focus<span class="t-p">=</span>allocations
+  <span class="t-k">done</span>
+<span class="t-p">}</span>
+&nbsp;
+<span class="t-c">## End of day (15m — recall)</span>
+<span class="t-f">end_of_day</span><span class="t-p">()</span> <span class="t-p">{</span>
+  <span class="t-c"># Close everything. Write 5 things you'd teach.</span>
+  <span class="t-c"># If you can't name 5, repeat tomorrow.</span>
+  <span class="t-f">recall_check</span> <span class="t-p">--</span>speak-aloud <span class="t-p">--</span>no-notes
+<span class="t-p">}</span>
+&nbsp;
+<span class="t-c"># Weekly checkpoint: one full mock session.</span>
+<span class="t-c"># 45 minutes. Timed. Recorded. No pausing.</span>
+<span class="t-f">mock_session</span><span class="t-p">()</span> <span class="t-p">{</span>
+  <span class="t-f">timer</span> <span class="t-n">45</span>m <span class="t-s">"Design: ${1:-surprise}"</span>
+  <span class="t-f">record</span> <span class="t-p">--</span>audio <span class="t-p">--</span>review-after
+<span class="t-p">}</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <p>Built for Saurabh Singh Patel · Software Engineer · 2026</p>
+  <div class="footer-inner">
+    <div class="footer-left">
+      Built and maintained by <a href="https://github.com/saurabhSPatel">Saurabh S. Patel</a><br>
+      Staff Engineer · Distributed Systems · Go · 2026
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/saurabhSPatel/EngineeringOS" class="footer-link">GitHub</a>
+      <a href="dsa.html" class="footer-link">DSA Reference</a>
+    </div>
+  </div>
 </footer>
 
+<script>
+// Intersection observer for fade-in animations
+const els = document.querySelectorAll('.fade-in');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+els.forEach(el => obs.observe(el));
+</script>
 </body>
 </html>
