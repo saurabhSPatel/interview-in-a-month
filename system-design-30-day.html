@@ -147,16 +147,18 @@ footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
   <aside class="toc">
     <div class="toc-label">Contents</div>
     <ul class="toc-list">
+      <li class="toc-item"><a href="#howtoread">How to Read This</a></li>
       <li class="toc-item"><a href="#framework">45-Min Framework</a></li>
-      <li class="toc-item"><a href="#patterns">12 Patterns — Live App</a></li>
+      <li class="toc-item"><a href="#patterns">12 Patterns</a></li>
       <li class="toc-item"><a href="#api">API Design</a></li>
       <li class="toc-item"><a href="#numbers">Numbers to Know</a></li>
-      <li class="toc-item"><a href="#week1">Week 1 · Foundations</a></li>
-      <li class="toc-item"><a href="#week2">Week 2 · Storage</a></li>
-      <li class="toc-item"><a href="#week3">Week 3 · Messaging</a></li>
-      <li class="toc-item"><a href="#week4">Week 4 · Full Designs</a></li>
-      <li class="toc-item"><a href="#week5">Week 5 · AI Systems</a></li>
-      <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+      <li class="toc-item"><a href="#dbguide">DB Selection Guide</a></li>
+      <li class="toc-item" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--rule)"><a href="#week1">W1 · Foundations</a></li>
+      <li class="toc-item"><a href="#week2">W2 · Storage</a></li>
+      <li class="toc-item"><a href="#week3">W3 · Messaging</a></li>
+      <li class="toc-item"><a href="#week4">W4 · Full Designs</a></li>
+      <li class="toc-item"><a href="#week5">W5 · AI Systems</a></li>
+      <li class="toc-item" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--rule)"><a href="#flashcards">Flash Cards</a></li>
     </ul>
   </aside>
 
@@ -173,6 +175,57 @@ footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
         <div class="meta-pill"><div class="meta-pill-dot"></div>~2h per day</div>
         <div class="meta-pill"><div class="meta-pill-dot"></div>14 full system designs</div>
         <div class="meta-pill"><div class="meta-pill-dot"></div>12 patterns with Go code</div>
+      </div>
+    </div>
+
+    <!-- HOW TO READ -->
+    <div id="howtoread" class="section-anchor" style="margin-top:0;padding-top:0;border-top:none">
+      <span class="section-num">→</span>
+      <h2 class="section-h">How to use this material</h2>
+    </div>
+
+    <div style="background:var(--ink);border-radius:var(--r-lg);padding:32px;margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">WEEKS 1–2 · THEORY</div>
+        <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">Read once, then sketch</div>
+        <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">Read each concept, close the page, draw the mental model from memory. Re-read only what you couldn't draw. Latency numbers should be instant recall before Week 3.</div>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:24px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">WEEK 3 · PATTERNS</div>
+        <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">One pattern per day, Go code open</div>
+        <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">For each of the 12 patterns: read the card, click <strong style="color:rgba(245,243,238,.8)">Explore deep dive</strong>, study flow and trade-offs. Then close everything and write your own implementation. Time yourself — &gt;20 min means the pattern isn't yours yet.</div>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:24px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">WEEKS 4+ · MOCK SESSIONS</div>
+        <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">45-minute sessions, recorded</div>
+        <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">Pick a full design from Week 4, set a 45-min timer, open a blank doc. Drive the session as if you're in an interview. Record audio. Review — identify the 3 minutes where you lost control of the structure.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:6px;margin-bottom:40px;flex-wrap:wrap">
+      <div style="flex:1;min-width:80px;text-align:center">
+        <div style="height:4px;border-radius:2px;background:#00D4FF;margin-bottom:4px"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-4)">W1 Foundations</div>
+      </div>
+      <div style="flex:1;min-width:80px;text-align:center">
+        <div style="height:4px;border-radius:2px;background:#FF6B35;margin-bottom:4px"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-4)">W2 Storage</div>
+      </div>
+      <div style="flex:1;min-width:80px;text-align:center">
+        <div style="height:4px;border-radius:2px;background:#00FF88;margin-bottom:4px"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-4)">W3 Patterns</div>
+      </div>
+      <div style="flex:1;min-width:80px;text-align:center">
+        <div style="height:4px;border-radius:2px;background:#FFD700;margin-bottom:4px"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-4)">W4 Designs</div>
+      </div>
+      <div style="flex:1;min-width:80px;text-align:center">
+        <div style="height:4px;border-radius:2px;background:#9B59B6;margin-bottom:4px"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-4)">W5 AI</div>
+      </div>
+      <div style="flex:1;min-width:80px;text-align:center">
+        <div style="height:4px;border-radius:2px;background:var(--lime);margin-bottom:4px"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-4)">Review</div>
       </div>
     </div>
 
@@ -400,9 +453,7 @@ footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
 
     </div><!-- end .patterns-grid -->
 
-    </article>
-</div>
-</div>
+    <!-- patterns end — article continues below modal -->
 
 <!-- ── MODAL OVERLAY: PATTERNS DEEP DIVE ──────────────────────────── -->
 <div id="patModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(26,25,22,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px">
@@ -551,8 +602,8 @@ footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
   font-size:18px;flex-shrink:0;
   width:32px;height:32px;
   display:flex;align-items:center;justify-content:center;
-  background:color-mix(in srgb, var(--pat) 12%, transparent);
-  border:1px solid color-mix(in srgb, var(--pat) 25%, transparent);
+  background:rgba(128,128,128,.08);
+  border:1px solid rgba(128,128,128,.15);
   border-radius:8px;
 }
 .pat-num{
@@ -583,22 +634,21 @@ footer{border-top:1px solid var(--rule);padding:28px 0;margin-top:64px}
   align-self:flex-start;
   font-family:var(--mono);font-size:11px;
   color:var(--pat);
-  background:color-mix(in srgb, var(--pat) 8%, transparent);
-  border:1px solid color-mix(in srgb, var(--pat) 25%, transparent);
+  background:rgba(128,128,128,.06);
+  border:1px solid rgba(128,128,128,.15);
   padding:5px 12px;border-radius:20px;
   cursor:pointer;
   transition:all .15s;
   margin-top:2px;
 }
 .pat-explore:hover{
-  background:color-mix(in srgb, var(--pat) 18%, transparent);
-  border-color:color-mix(in srgb, var(--pat) 50%, transparent);
+  background:rgba(128,128,128,.14);
+  opacity:.85;
 }
 </style>
 
 <script>
-(function(){
-// ── PATTERN DATA ────────────────────────────────────────────────────
+// ── PATTERN DATA (global scope so onclick= can reach openPattern/closePattern) ──
 const PATTERNS=[{id:1,tag:"READ HEAVY",title:"Cache-Aside + Read Replicas",color:"#00D4FF",accent:"#001D2A",icon:"⚡",tldr:"App checks Redis first → miss → read DB → populate cache. Add read replicas to fanout query load. Critical question: what's the cache invalidation strategy?",keyQuestion:"What's the cache invalidation strategy?",useCases:["Social feeds","Product pages","YouTube view counts"],decision:"Read:write > 5:1",flow:[{step:"Client Request",detail:"GET /product/42",type:"client"},{step:"Redis Check",detail:"GET product:42 → HIT (~1ms) or MISS",type:"cache"},{step:"DB Read (on miss)",detail:"SELECT * FROM products WHERE id=42 (~5–20ms)",type:"db"},{step:"Cache Populate",detail:"SET product:42 <data> EX 300 + jitter",type:"cache"},{step:"Read Replica",detail:"Route reads to replicas, writes to primary only",type:"db"}],tradeoffs:[{pro:true,text:"Dramatically reduces DB load — cache hit rate ~95% for hot data"},{pro:true,text:"Read replicas multiply read throughput linearly at low cost"},{pro:false,text:"Cache invalidation is hard — stale reads possible during TTL window"},{pro:false,text:"Thundering herd: many requests miss simultaneously on cold start"}],code:`// Go: Cache-Aside with singleflight (thundering herd prevention)
 func (s *ProductService) GetProduct(ctx context.Context, id string) (*Product, error) {
   cacheKey := fmt.Sprintf("product:%s", id)
@@ -1043,15 +1093,10 @@ function mCopy(btn){
 }
 
 document.getElementById("mApp-searchInput").addEventListener("input",mRenderSidebar);
-})();
 </script>
 
 
-<!-- ── REST OF ARTICLE CONTINUES ─────────────────────────────────── -->
-<div class="wrap">
-<div class="doc-layout" style="padding-top:0">
-  <div></div><!-- toc placeholder -->
-  <article>
+<!-- ── REST OF ARTICLE ─────────────────────────────────────────────── -->
 
     <!-- API DESIGN -->
     <div id="api" class="section-anchor">
@@ -1082,8 +1127,10 @@ document.getElementById("mApp-searchInput").addEventListener("input",mRenderSide
     <!-- NUMBERS -->
     <div id="numbers" class="section-anchor">
       <span class="section-num">03</span>
-      <h2 class="section-h">Numbers Every Engineer Memorises</h2>
+      <h2 class="section-h">Numbers Every Engineer Has Cold</h2>
     </div>
+
+    <p class="body">Back-of-envelope math in the first 5 minutes signals engineering judgment. Know these well enough to use them in sentences, not recite them. The two that matter most in interviews: Redis vs DB latency gap (40×), and the 1B req/day conversion (don't calculate — just know it's ~11,500 req/sec).</p>
 
     <div class="latency-table">
       <div class="lt-row"><div class="lt-name">L1 cache hit</div><div class="lt-val">~0.5 ns</div></div>
@@ -1096,6 +1143,109 @@ document.getElementById("mApp-searchInput").addEventListener("input",mRenderSide
       <div class="lt-row"><div class="lt-name">Network — cross-region</div><div class="lt-val">~80–150 ms</div></div>
       <div class="lt-row"><div class="lt-name">1B requests/day</div><div class="lt-val">~11,500 req/sec</div></div>
       <div class="lt-row"><div class="lt-name">1M req/day</div><div class="lt-val">~12 req/sec</div></div>
+    </div>
+
+    <!-- DB SELECTION GUIDE -->
+    <div id="dbguide" class="section-anchor">
+      <span class="section-num">04</span>
+      <h2 class="section-h">Database Selection Guide</h2>
+    </div>
+
+    <p class="body">The most common system design question is "why that database?" The answer is never about preference — it's about access patterns. Identify what you're reading, how you're reading it, how you're writing it, and at what scale. That combination uniquely determines the right storage engine.</p>
+
+    <div class="callout" style="--callout-color:var(--amber);--callout-bg:#fff8e0">
+      <div class="callout-label">Decision in two sentences</div>
+      <p>If the pattern is "read by PK or small range, write transactionally, schema is known" → PostgreSQL. If the pattern is "write millions of events/sec, read the latest N by one key, schema is flat" → Cassandra. Everything else is a variation, with Redis added as the cache layer on top of either.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0">
+
+      <div style="background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">🐘</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)">PostgreSQL</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-2);line-height:1.65;margin-bottom:10px">ACID transactions, complex joins, well-understood schema. B-tree engine — in-place updates, read-heavy OLTP. MVCC gives non-blocking reads. WAL enables replication and CDC.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">B-tree</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">MVCC</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">ACID</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">WAL/CDC</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal)">→ When: relational data, transactions, complex queries, joins</div>
+      </div>
+
+      <div style="background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">💎</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)">Cassandra</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-2);line-height:1.65;margin-bottom:10px">Write-optimised LSM-tree. Partition by key, cluster by timestamp — reads an entire partition at once. No joins. Tunable consistency (w+r&gt;n = strong). Best for append-heavy, time-ordered access.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">LSM-tree</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Wide-column</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Tunable C</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal)">→ When: high write throughput, time-series, messages, audit logs</div>
+      </div>
+
+      <div style="background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">🔴</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)">Redis</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-2);line-height:1.65;margin-bottom:10px">In-memory. Sub-ms latency. String, Hash, List, Set, Sorted Set, Stream, HyperLogLog. ZSET for leaderboards and feeds. Pub-Sub for fan-out. TTL on any key. Not a primary DB — data loss risk without persistence.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">In-memory</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">ZSET</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Pub-Sub</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">TTL</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal)">→ When: cache, rate limiting, leaderboards, real-time counters</div>
+      </div>
+
+      <div style="background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">🔍</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)">Elasticsearch</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-2);line-height:1.65;margin-bottom:10px">Inverted index for full-text, fuzzy, geo, range, and aggregations. Sync via CDC from primary DB — never the source of truth. Supports KNN vector search for hybrid semantic+keyword (RRF fusion).</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Inverted index</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">KNN</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Aggregations</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal)">→ When: full-text search, autocomplete, semantic search, analytics</div>
+      </div>
+
+      <div style="background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">🍃</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)">MongoDB</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-2);line-height:1.65;margin-bottom:10px">Document store. Schema-flexible JSON docs. Native horizontal sharding. Good for heterogeneous data where schema evolves rapidly. Single-document ops are atomic. Multi-doc transactions carry overhead.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Document</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Schema-flex</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Native shard</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal)">→ When: heterogeneous docs, evolving schema, content systems</div>
+      </div>
+
+      <div style="background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:20px">📊</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)">ClickHouse</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink-2);line-height:1.65;margin-bottom:10px">Column-oriented OLAP. Aggregations over billions of rows efficiently — each column stored contiguously, compressed, scanned without row overhead. Batched inserts only. Near-real-time from Kafka via materialized views.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">Columnar</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">OLAP</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--ink-4);border:1px solid var(--rule);padding:2px 7px;border-radius:4px">MergeTree</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal)">→ When: analytics dashboards, event aggregations, metrics rollups</div>
+      </div>
+
     </div>
 
     <!-- WEEK 1 -->
@@ -1240,6 +1390,36 @@ document.getElementById("mApp-searchInput").addEventListener("input",mRenderSide
     </div>
 
     <div class="design-card">
+      <div class="dc-label">Day 23 · Full Design</div>
+      <div class="dc-title">Design YouTube — Video Storage and Streaming</div>
+      <div class="dc-body">
+        <p><strong>Upload pipeline:</strong> raw video → S3 → Kafka event → transcoding workers → HLS chunks at multiple resolutions (360p/720p/1080p/4K) stored back to S3. Never block the upload response on transcoding — return 200 immediately, transcode async. Transcoding workers are CPU-intensive and scale independently of the API tier.</p>
+        <p><strong>Streaming:</strong> HLS with 2–10 second segments. CDN caches each segment at edge — cache hit rate &gt;99% for popular content. GeoDNS routes to nearest PoP. ABR (adaptive bitrate) — the client switches resolution based on available bandwidth. The CDN is the entire read architecture; origin is only hit on cache miss.</p>
+        <p><strong>View count antipattern:</strong> don't write to Postgres on every view — that's a write hotspot at 100B views/day. Write events to Kafka → counter service aggregates in memory → flush to Redis INCR every 5 seconds → periodically sync to Postgres. Accept ~5-second staleness on view counts.</p>
+      </div>
+    </div>
+
+    <div class="design-card">
+      <div class="dc-label">Day 24 · Full Design</div>
+      <div class="dc-title">Design Uber — Real-Time Driver Matching</div>
+      <div class="dc-body">
+        <p><strong>Location storage:</strong> Redis GEOADD per driver update (every 4s). Shard by coarse geohash prefix — <code>drivers:active:9q</code> (SF), <code>drivers:active:dr</code> (NYC) — each city shard on a different Redis node. Single ZSET would saturate at 100K+ active drivers/city.</p>
+        <p><strong>Matching:</strong> on ride request: GEOSEARCH for drivers within 5km → score by distance + rating + vehicle type → Redis <code>SET NX PX 30000</code> to atomically claim the top N drivers (30s TTL auto-releases if rejected). This atomic claim prevents the same driver being offered to two riders simultaneously — no DB round-trip needed.</p>
+        <p><strong>Surge pricing:</strong> demand/supply ratio per geohash cell, updated every 30s from Kafka demand events. Price multiplier stored in Redis HSET per cell. Computed at request time — no stored surge price until the rider accepts.</p>
+      </div>
+    </div>
+
+    <div class="design-card">
+      <div class="dc-label">Day 25 · Full Design</div>
+      <div class="dc-title">Design URL Shortener — Consistency and ID Strategy</div>
+      <div class="dc-body">
+        <p><strong>Short code:</strong> random 7-char base62 = 62⁷ ≈ 3.5 trillion combinations. Collision check via Bloom filter in Redis before DB write — avoids a round-trip on most inserts. On collision (rare): retry with new random code.</p>
+        <p><strong>Redirect path:</strong> use <code>302</code> not <code>301</code> — browsers cache 301 permanently, you lose all click analytics after the first visit. Serve from Redis: <code>GET short:abc1234 → long URL</code>. Redis TTL = link expiry. On miss: fall back to Postgres, repopulate cache.</p>
+        <p><strong>Analytics:</strong> write click events to Kafka on every redirect — never to Postgres directly (116K redirects/sec would saturate it). Kafka consumers aggregate into ClickHouse. Dashboard queries ClickHouse. The redirect hot path never touches analytics storage.</p>
+      </div>
+    </div>
+
+    <div class="design-card">
       <div class="dc-label">Day 27 · LLD Focus</div>
       <div class="dc-title">LLD — Concurrency as the Differentiator</div>
       <div class="dc-body">
@@ -1282,7 +1462,7 @@ document.getElementById("mApp-searchInput").addEventListener("input",mRenderSide
 
     <!-- FLASH CARDS -->
     <div id="flashcards" class="section-anchor">
-      <span class="section-num">30</span>
+      <span class="section-num">→</span>
       <h2 class="section-h">Flash Cards — Final Review</h2>
     </div>
 
