@@ -222,7 +222,11 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
             For large datasets: use gradient descent instead
           </div>
           <div class="day-sec">Watch first</div>
-          <p>StatQuest: <strong>Linear Regression, Clearly Explained</strong> (YouTube, 27 min). Build the visual intuition before looking at any code.</p>
+          <a href="https://www.youtube.com/watch?v=nk2CQITm_eo" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 27 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Linear Regression, Clearly Explained</div><div class="ri-desc">The best visual explanation of linear regression. Build this intuition before any code.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
           <div class="day-sec">Key insight</div>
           <p>Linear regression with no regularisation will memorise training data if you have enough features. The model has learned the noise, not the signal. This is overfitting — and why we need regularisation and a held-out test set.</p>
         </div>
@@ -248,7 +252,11 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           </div>
           <p><strong>Learning rate — the most important hyperparameter.</strong> Too large: loss oscillates or diverges. Too small: training takes forever and may get stuck. Learning rate schedule: start large, decay over time. Cosine annealing and linear warmup are standard in deep learning.</p>
           <div class="day-sec">Watch first</div>
-          <p>3Blue1Brown: <strong>Gradient descent, how neural networks learn</strong> (Neural Networks series, Ch 2). The hill-climbing visualisation is the mental model you'll use forever.</p>
+          <a href="https://www.youtube.com/watch?v=IHZwWFHWa-w" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 21 min</span>
+            <div class="ri-body"><div class="ri-title">3Blue1Brown — Gradient descent, how neural networks learn (Ch 2)</div><div class="ri-desc">The hill-climbing visualisation is the mental model you will use for the rest of your career.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -265,6 +273,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>L1 (Lasso):</strong> adds <code>λΣ|wᵢ|</code>. The gradient of |w| is ±1 regardless of w's magnitude — drives some weights to exactly zero. Performs implicit feature selection. Use when you suspect most features are irrelevant.</p>
           <p><strong>Dropout (neural networks):</strong> during training, randomly zero out a fraction of neurons each forward pass. Forces the network to learn redundant representations. Not used at inference time (all neurons active, weights scaled). Effective regulariser for deep networks.</p>
           <p><strong>Validation curve:</strong> train loss always decreases with more complexity. Validation loss decreases, reaches a minimum, then increases — this is overfitting. Optimal complexity is at the minimum of the validation curve. Always requires a held-out validation set never used for training.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=EuBBz3bI-aA" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 20 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Bias and Variance, Clearly Explained</div><div class="ri-desc">Visual walkthrough of the tradeoff with concrete examples. Watch before touching regularisation.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -282,6 +296,17 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p>A tree that splits data by yes/no questions about features. At each node, find the split that maximally reduces impurity (Gini or information gain). Grown to full depth: perfectly classifies training data but memorises noise. Fix: limit depth, or use ensemble methods.</p>
           <p><strong>Random Forest (bagging):</strong> build many trees on bootstrapped data subsets, each using a random feature subset at each split. Average predictions. Variance of the ensemble is lower than any individual tree because errors are uncorrelated.</p>
           <p><strong>Gradient Boosting (XGBoost, LightGBM):</strong> build trees sequentially, each one correcting the residual errors of the previous ones. Often outperforms random forests on tabular data. Standard in competitive ML on structured/tabular datasets.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=7VeUPuFGJHk" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 18 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Decision Trees</div><div class="ri-desc">Gini impurity and information gain explained visually. Essential before Random Forests.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
+          <a href="https://www.youtube.com/watch?v=J4Wdy0Wc_xQ" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 10 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Random Forests</div><div class="ri-desc">How bagging and random feature subsets reduce variance. Quick watch after decision trees.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -306,6 +331,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           </div>
           <p><strong>Precision vs Recall tradeoff:</strong> lower decision threshold → higher recall (catch more positives), lower precision (more false positives). Spam filter: high precision (don't delete good email). Cancer screening: high recall (don't miss cancer).</p>
           <p><strong>K-fold cross-validation:</strong> split data into K folds, train on K−1, evaluate on the held-out fold, repeat K times. Average the K scores. More reliable estimate of generalisation than a single split, especially with small datasets.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=Kdsp6soqA7o" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 16 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — ROC and AUC, Clearly Explained</div><div class="ri-desc">The clearest visual explanation of AUC-ROC. Watch this before reading any other explanation.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -322,6 +353,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>Categorical encoding:</strong> one-hot for nominal categories (no natural order). Ordinal for ordered categories. Target encoding: replace category with mean target value — powerful but leaks label information if not done with cross-validation. Embeddings: learned dense representations in neural networks.</p>
           <p><strong>Data leakage — the silent killer:</strong> any information from the test set or the future leaking into training. Common forms: fitting a scaler on the whole dataset before splitting, including a feature only available after the prediction time (e.g., "was transaction reversed?" in fraud detection), normalising using test set statistics. Produces unrealistically high validation metrics that fail completely in production.</p>
           <p><strong>Missing values:</strong> never silently drop rows. If missingness is informative (e.g., salary missing correlates with high income), add a binary indicator <code>salary_was_missing</code> and impute the value separately. Missingness Not At Random (MNAR) requires explicit modelling.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=viZrOnJclY0" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 25 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Feature Engineering and Selection</div><div class="ri-desc">How to create, transform, and select features. Includes normalisation, encoding, and practical pitfalls.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -377,6 +414,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
             Softmax: normalises to probability distribution — output for classification
           </div>
           <p><strong>Universal approximation theorem:</strong> a network with a single hidden layer of sufficient width can approximate any continuous function on a compact domain. In practice, depth (many layers) generalises better than width for the same parameter count — deep representations are more efficient than wide shallow ones.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 19 min</span>
+            <div class="ri-body"><div class="ri-title">3Blue1Brown — But what is a neural network? (Ch 1)</div><div class="ri-desc">The best visual introduction to neurons, layers, and the forward pass. Watch before any code.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -403,6 +446,22 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>Residual connections (ResNet):</strong> <code>output = F(x) + x</code>. The skip connection provides a gradient highway — gradients flow directly through addition without being multiplied by layer weights. Enables 100+ layer networks. Transformers use the same trick.</p>
           <div class="day-sec">The most important exercise of Week 2</div>
           <p>Implement backpropagation from scratch for a 2-layer MLP in NumPy. No autograd. Derive every gradient by hand. You will understand what PyTorch's <code>.backward()</code> does for the rest of your career.</p>
+          <div class="day-sec">Watch — all three, in this order</div>
+          <a href="https://www.youtube.com/watch?v=Ilg3gGewQ5U" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 13 min</span>
+            <div class="ri-body"><div class="ri-title">3Blue1Brown — What is backpropagation really doing? (Ch 3)</div><div class="ri-desc">The chain rule visualised on a computational graph. Watch before implementing anything.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
+          <a href="https://www.youtube.com/watch?v=tIeHLnjs5U8" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 10 min</span>
+            <div class="ri-body"><div class="ri-title">3Blue1Brown — Backpropagation calculus (Ch 4)</div><div class="ri-desc">The math behind the chain rule, step by step. Watch Ch 3 first.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
+          <a href="https://www.youtube.com/watch?v=VMj-3S1tku0" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 2h25m</span>
+            <div class="ri-body"><div class="ri-title">Karpathy — micrograd: backprop from scratch (full walkthrough)</div><div class="ri-desc">Builds the entire autograd engine live. The most important implementation video in this course.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -428,6 +487,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           </div>
           <p><strong>Learning rate warmup:</strong> start with a very small LR for the first few hundred steps, then increase to the target LR. Without warmup, large initial updates can send you into a bad region before adaptive moments have stabilised. Essential for transformer training.</p>
           <p><strong>Cosine annealing:</strong> after warmup, decay the LR following a cosine curve from max to near zero. Provides smooth LR reduction without manual decay schedules. Standard in LLM training.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=mdKjMPmcWjY" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 11 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Adam and AdamW Optimizers</div><div class="ri-desc">Clear visual breakdown of the momentum and RMSProp combination that makes Adam work.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -444,6 +509,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>ResNet insight:</strong> before residual connections, networks deeper than ~20 layers were harder to train than shallower ones — not just slower, actually worse test accuracy. The skip connection <code>F(x) + x</code> fixed this. ResNet-50 and ResNet-152 dominated ImageNet. The skip connection is the most impactful architectural innovation before attention.</p>
           <div class="day-sec">Batch Normalisation</div>
           <p>Normalise each layer's output to have zero mean and unit variance across the batch. Then apply learnable scale (γ) and shift (β). Benefits: allows higher learning rates, reduces sensitivity to initialisation, provides slight regularisation. Uses a running mean/variance at inference (not batch statistics — batch stats are unavailable). Layer Norm normalises across features instead of across the batch — preferred in transformers where batch size and sequence length vary.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=HGwBXDKFk9I" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 17 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Convolutional Neural Networks (CNNs) Explained</div><div class="ri-desc">Filter sliding, feature maps, and pooling shown step by step. The best visual intro to CNNs.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -458,8 +529,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p>An RNN processes sequences by maintaining a hidden state: <code>hₜ = tanh(Wₕhₜ₋₁ + Wₓxₜ + b)</code>. The same weights reused at every timestep. In theory, the hidden state can remember anything. In practice, RNNs forget most things beyond ~10-20 steps due to vanishing gradients in backpropagation through time (BPTT).</p>
           <p><strong>LSTM:</strong> adds a cell state — a separate highway with only additive interactions. Gates (learned sigmoid layers) control what to add, forget, and output. Can carry information across hundreds of steps. Solved the vanishing gradient problem in RNNs but not the sequential computation problem.</p>
           <p><strong>Why transformers replaced RNNs — two reasons:</strong> (1) RNNs are sequential — token T cannot be computed until T−1 is done, making training slow on modern GPUs. Transformers compute all positions in parallel. (2) Fixed-size hidden state is an information bottleneck — the entire sequence history must be compressed into one vector. Attention directly accesses any previous position without compression.</p>
-        </div>
-      </div>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=AsNTP8Kwu80" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 17 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — RNNs and LSTMs, Clearly Explained</div><div class="ri-desc">How recurrent networks work and why LSTMs solve the vanishing gradient problem. Prepares you for the attention comparison.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
 
       <div class="checkpoint">
         <div class="cp-label">Week 2 Checkpoint</div>
@@ -503,6 +578,17 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           </div>
           <p><strong>Why /√dₖ?</strong> Dot products of Q and K have variance ∝ dₖ. For large dₖ, scores are large, softmax approaches one-hot, gradients through softmax vanish. Dividing by √dₖ normalises variance to ≈1 regardless of dimension.</p>
           <p><strong>Causal (masked) attention:</strong> for generation (GPT), position i should only attend to j ≤ i. Set scores for j > i to −∞ before softmax → 0 weight. Allows training the full sequence in parallel while preserving autoregressive generation order.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=eMlx5fFNoYc" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 26 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Attention Is All You Need (Transformer) — Clearly Explained</div><div class="ri-desc">Q/K/V intuition, dot-product attention, and the full transformer explained visually. Watch before Day 16.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
+          <a href="https://www.youtube.com/watch?v=wjZofJX0v4M" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 9 min</span>
+            <div class="ri-body"><div class="ri-title">3Blue1Brown — Attention in transformers, visually explained (Ch 6)</div><div class="ri-desc">The best visual intuition for what Q, K, V actually represent. Essential companion to the math.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -529,6 +615,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>Why Pre-LayerNorm?</strong> Modern models apply LayerNorm before each sub-layer (Pre-LN), not after (Post-LN as in the original paper). Pre-LN trains more stably for very deep models — gradients are better-conditioned from the start of training.</p>
           <div class="day-sec">Positional encoding</div>
           <p>Attention is permutation-equivariant — shuffling input tokens identically shuffles output. No notion of order without explicit position information. <strong>Sinusoidal:</strong> deterministic position-dependent vectors added to embeddings. <strong>Learned:</strong> treat positions as tokens, learn an embedding. <strong>RoPE (Rotary Positional Embedding):</strong> used in LLaMA, Mistral — encode position by rotating Q and K before the dot product. Relative positions encoded in the rotation angle difference. Generalises to longer sequences than seen in training.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=dichIcUZfOw" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 14 min</span>
+            <div class="ri-body"><div class="ri-title">3Blue1Brown — How might LLMs store facts (multi-head attention, Ch 7)</div><div class="ri-desc">Deep dive into what different attention heads learn and why multiple heads matter.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -547,6 +639,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>BPE (Byte-Pair Encoding):</strong> start with characters. Iteratively merge the most frequent adjacent pair into a new token. Repeat until vocabulary reaches target size (32K–100K). Used by GPT-2, LLaMA 1.</p>
           <p><strong>SentencePiece:</strong> operates on raw bytes, language-agnostic, handles any script. Used by LLaMA 2+, T5. No dependency on pre-tokenisation whitespace rules.</p>
           <p><strong>Why subwords, not characters or words?</strong> Characters produce sequences 4–5× longer — attention cost scales as O(n²). Words require a massive vocabulary for all forms; rare words become OOV. Subwords balance sequence length and vocabulary coverage.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 56 min</span>
+            <div class="ri-body"><div class="ri-title">Karpathy — Let's build the GPT Tokenizer (BPE from scratch)</div><div class="ri-desc">Implements BPE tokenisation in full. You'll never misunderstand tokenisation again after this.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -560,6 +658,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <div class="day-sec">Karpathy's nanoGPT walkthrough</div>
           <p>These three days are the most important in Week 3. Follow Andrej Karpathy's "Let's build GPT from scratch" (2h20min) in full. You implement every component from a blank Python file: character-level tokeniser, embedding table, positional encoding, multi-head attention, transformer block, language model head, training loop. You run it on Shakespeare. By step 5000 it generates plausible Shakespeare.</p>
           <p>Type every line yourself. Do not copy-paste. The act of writing each line while Karpathy explains it is the learning.</p>
+          <div class="day-sec">Watch — the whole thing, no skipping</div>
+          <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 2h20m</span>
+            <div class="ri-body"><div class="ri-title">Karpathy — Let's build GPT: from scratch, in code, spelled out</div><div class="ri-desc">Implements every component from a blank file. The most important ML video for engineers. Watch on Days 19-21.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
           <div class="day-sec">Key tensor shapes to track</div>
           <div class="math-block">
             <div class="math-label">nanoGPT tensor shapes at each step</div>
@@ -631,6 +735,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           </div>
           <p><strong>Emergent capabilities:</strong> qualitatively new abilities appear at certain scales that were absent at smaller scales — in-context learning, chain-of-thought reasoning, multi-step arithmetic. These are not predictable by extrapolating smaller model performance. One of the most important open questions in ML.</p>
           <p><strong>Data quality over quantity:</strong> LLaMA 3 used 15T tokens with significantly better curation than LLaMA 2's 2T tokens. Filtering, deduplication, and quality scoring produce better models than raw web data at 10× scale. Data curation is a competitive moat.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=bZQun8Y4L2A" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 43 min</span>
+            <div class="ri-body"><div class="ri-title">Karpathy — State of GPT (Microsoft Build 2023)</div><div class="ri-desc">Full LLM training pipeline from pre-training to RLHF to prompting. The best single overview video for LLMs.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -649,6 +759,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>Phase 3 — PPO fine-tuning:</strong> treat the LLM as a policy, reward model as the reward. Use PPO to optimise the LLM to maximise reward. A KL-divergence penalty prevents drifting too far from the SFT model — prevents degenerate "reward-hacked" outputs that score highly but are low quality.</p>
           <div class="day-sec">DPO — simpler alternative</div>
           <p>Direct Preference Optimisation (Rafailov et al., 2023) achieves similar results without training a reward model or using RL. Directly optimises the LLM on preference pairs via a reparameterised objective. More stable training, simpler implementation. Now widely used for open-source fine-tuning.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=hhiLw5Q_UFg" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 22 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — RLHF: Reinforcement Learning from Human Feedback</div><div class="ri-desc">Visual walkthrough of all three RLHF phases. Watch after reading the section above.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -676,6 +792,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>QLoRA:</strong> quantise the base model to 4-bit (NF4), then fine-tune LoRA adapters in 16-bit. A 70B model that needs ~140GB in full precision fits in ~40GB. Makes LLM fine-tuning accessible on consumer hardware.</p>
           <div class="day-sec">When to use each</div>
           <p>Full fine-tuning: large dataset, domain-critical accuracy, compute available. LoRA: moderate dataset, limited compute, maintain base model capabilities. QLoRA: extremely limited GPU memory. Prompt engineering/few-shot: when fine-tuning isn't needed and the task can be described in-context.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=PXWGgzQGcS8" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 17 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — LoRA and QLoRA Clearly Explained</div><div class="ri-desc">Low-rank decomposition of weight updates explained visually with the full parameter math.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
@@ -694,6 +816,12 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
           <p><strong>Hybrid search:</strong> dense (ANN semantic) + sparse (BM25 keyword) combined with RRF. "GDPR Article 17" needs exact keyword matching; "rules about deleting user data" needs semantic search. Hybrid serves both.</p>
           <p><strong>Reranking:</strong> retrieve top-50 via hybrid search, rerank with a cross-encoder (slower but more accurate relevance scoring), return top-5 to the LLM. Cross-encoders jointly encode (query, document) — better relevance but too slow for first-pass retrieval.</p>
           <p><strong>RAGAS evaluation:</strong> Faithfulness (is the answer grounded in context?), Answer Relevance, Context Recall, Context Precision. Build a golden Q&A dataset of ~100 questions. Run after every pipeline change — catch regressions before they reach users.</p>
+          <div class="day-sec">Watch</div>
+          <a href="https://www.youtube.com/watch?v=T-D1OfcDW1M" target="_blank" class="resource-item">
+            <span class="ri-type">Video · 14 min</span>
+            <div class="ri-body"><div class="ri-title">StatQuest — Retrieval Augmented Generation (RAG)</div><div class="ri-desc">Clear visual explanation of the full RAG pipeline from chunking to retrieval to generation.</div></div>
+            <span class="ri-arr">↗</span>
+          </a>
         </div>
       </div>
 
