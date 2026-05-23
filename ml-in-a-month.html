@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML in 28 Days — Engineering OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --ink:#1a1916;--ink-2:#3d3c38;--ink-3:#6b6a64;--ink-4:#9e9c94;
+  --paper:#f5f3ee;--paper-2:#eceae3;--paper-3:#e0ddd4;
+  --rule:#d4d1c6;--rule-2:#c4c0b3;
+  --lime:#b8f060;--lime-dim:#b8f06018;
+  --amber:#e8a020;--red:#d64030;--blue:#2060c8;--teal:#18a080;
+  --mono:'IBM Plex Mono',monospace;--serif:'Fraunces',serif;--sans:'DM Sans',sans-serif;
+  --r:6px;--r-lg:12px;
+}
+body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
+.nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}
+.nav-back:hover{color:var(--ink)}
+.nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+@media(max-width:700px){.wrap{padding:0 20px}}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto}
+@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:4px 0 4px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s;line-height:1.4}
+.toc-item a:hover{color:var(--ink);border-left-color:var(--ink-3)}
+.toc-item.active a{color:var(--ink);border-left-color:var(--ink);font-weight:500}
+.toc-div{height:1px;background:var(--rule);margin:7px 0 7px 12px}
+.article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.art-eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px;font-weight:500}
+h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
+h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
+.art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
+.art-meta{display:flex;gap:20px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.week-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:40px}
+@media(max-width:700px){.week-overview{grid-template-columns:repeat(2,1fr)}}
+.wk-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:16px;text-decoration:none;transition:border-color .15s,background .15s;display:block}
+.wk-card:hover{border-color:var(--rule-2);background:var(--paper-3)}
+.wk-num{font-family:var(--mono);font-size:9px;color:var(--ink-4);letter-spacing:.1em;margin-bottom:5px}
+.wk-title{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.2}
+.wk-sub{font-size:11px;color:var(--ink-3);line-height:1.4}
+.sec{margin-top:60px;padding-top:60px;border-top:1px solid var(--rule)}
+.sec:first-child{margin-top:0;padding-top:0;border-top:none}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:20px}
+.sec-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.sec-title{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
+p.body strong{color:var(--ink);font-weight:500}
+p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+.callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
+.callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.callout p+p{margin-top:8px}
+.code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.copy-btn{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer;transition:color .15s}
+.copy-btn:hover{color:var(--ink)}
+pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:rgba(255,255,255,.8)}
+.tc{color:rgba(255,255,255,.28)}.tk{color:#74c0fc}.ts{color:#b8f060}.tn{color:#ffa94d}
+.tp{color:rgba(255,255,255,.55)}.tt{color:#cc5de8}.tf{color:#63e6be}
+.tbl-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
+tbody td:first-child{font-weight:500;color:var(--ink)}
+tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+.day-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);margin:8px 0;overflow:hidden}
+.day-head{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s;user-select:none}
+.day-head:hover{background:var(--paper-3)}
+.day-num{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;flex-shrink:0;width:50px}
+.day-title{font-size:14px;font-weight:500;color:var(--ink);flex:1}
+.day-chevron{font-size:11px;color:var(--ink-4);transition:transform .2s;flex-shrink:0}
+.day-card.open .day-chevron{transform:rotate(180deg)}
+.day-body{display:none;padding:0 20px 20px;border-top:1px solid var(--rule)}
+.day-card.open .day-body{display:block}
+.day-body p{font-size:13px;color:var(--ink-2);line-height:1.75;margin-top:14px}
+.day-body p strong{color:var(--ink);font-weight:500}
+.day-body p code{font-family:var(--mono);font-size:12px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+.day-sec{font-family:var(--mono);font-size:9px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin:16px 0 6px;padding-top:14px;border-top:1px solid var(--rule)}
+.day-sec:first-child{border-top:none;padding-top:0;margin-top:14px}
+.math-block{background:var(--paper-3);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px 20px;margin:14px 0;font-family:var(--mono);font-size:13px;color:var(--ink-2);line-height:2}
+.math-label{font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.resource-list{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.resource-item{display:flex;align-items:flex-start;gap:12px;background:var(--paper-3);border:1px solid var(--rule);border-radius:var(--r);padding:12px 16px;text-decoration:none;transition:border-color .15s}
+.resource-item:hover{border-color:var(--rule-2)}
+.ri-type{font-family:var(--mono);font-size:9px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule);padding:2px 7px;border-radius:10px;flex-shrink:0;margin-top:1px}
+.ri-body{flex:1}
+.ri-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.ri-desc{font-size:12px;color:var(--ink-3);line-height:1.5}
+.ri-arr{font-size:13px;color:var(--ink-4);flex-shrink:0;transition:transform .15s}
+.resource-item:hover .ri-arr{transform:translateX(3px)}
+.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:28px 32px;margin:24px 0}
+.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.cp-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--paper);margin-bottom:14px}
+.cp-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
+.cp-item::before{content:'→';color:var(--lime);flex-shrink:0;font-family:var(--mono)}
+.fc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+@media(max-width:600px){.fc-grid{grid-template-columns:1fr}}
+.fc{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px}
+.fc-q{font-family:var(--mono);font-size:11px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
+footer{border-top:1px solid var(--rule);padding:28px 0}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back">← Platform</a>
+    <div class="nav-badge">🧠 ML · 28 Days · Intuition-First</div>
+  </div>
+</nav>
+
+<div class="wrap">
+<div class="doc-layout">
+
+  <aside class="toc">
+    <div class="toc-label">Contents</div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#howtoread">How to Read</a></li>
+      <div class="toc-div"></div>
+      <li class="toc-item"><a href="#week1">W1 · ML Foundations</a></li>
+      <li class="toc-item"><a href="#week2">W2 · Deep Learning</a></li>
+      <li class="toc-item"><a href="#week3">W3 · Transformers</a></li>
+      <li class="toc-item"><a href="#week4">W4 · LLMs &amp; Scale</a></li>
+      <div class="toc-div"></div>
+      <li class="toc-item"><a href="#micrograd">Build micrograd</a></li>
+      <li class="toc-item"><a href="#nanogpt">Build nanoGPT</a></li>
+      <li class="toc-item"><a href="#mlops">MLOps &amp; Prod</a></li>
+      <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+    </ul>
+  </aside>
+
+  <article>
+
+    <div class="article-header">
+      <div class="art-eyebrow">
+        <span class="art-badge">28 Days</span>
+        Visual-First · Intuition Before Math · Build from Scratch
+      </div>
+      <h1 class="art-title">ML in<br><em>28 Days</em></h1>
+      <p class="art-subtitle">From linear regression to building GPT from scratch. Intuition first, math second, code always. You will understand every part of a transformer — not by reading a paper, but by implementing it line by line. Built around StatQuest, 3Blue1Brown, and Karpathy's lectures.</p>
+      <div class="art-meta">
+        <div class="meta-pill"><div class="meta-pill-dot"></div>28 days · ~2h/day</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>Build micrograd + nanoGPT</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>84 quiz questions</div>
+      </div>
+    </div>
+
+    <!-- HOW TO READ -->
+    <div id="howtoread" class="sec">
+      <div class="sec-head"><span class="sec-num">→</span><h2 class="sec-title">How to use this material</h2></div>
+
+      <div style="background:var(--ink);border-radius:var(--r-lg);padding:32px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">RULE 1 · INTUITION FIRST</div>
+          <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">Watch before you read</div>
+          <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">For each concept, start with the linked video (StatQuest or 3Blue1Brown). You need the visual before the equation makes sense. The equation is a compressed description of what you already saw.</div>
+        </div>
+        <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:24px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">RULE 2 · CODE EVERYTHING</div>
+          <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">No passive reading</div>
+          <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">Every algorithm has a from-scratch Python implementation. If you can't implement it without looking, you don't know it. The implementation is the test. Write it, break it, debug it.</div>
+        </div>
+        <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:24px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">RULE 3 · DEPTH OVER BREADTH</div>
+          <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">Fewer topics, deeper understanding</div>
+          <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">This course does not cover every ML algorithm. It covers the ones that build mental models for everything else. If you understand backprop fully, every neural network variant is obvious. Go deep on the fundamentals.</div>
+        </div>
+      </div>
+
+      <div class="week-overview">
+        <a href="#week1" class="wk-card"><div class="wk-num">WEEK 01</div><div class="wk-title">ML Foundations</div><div class="wk-sub">Linear regression, gradient descent, bias-variance, feature engineering</div></a>
+        <a href="#week2" class="wk-card"><div class="wk-num">WEEK 02</div><div class="wk-title">Deep Learning</div><div class="wk-sub">Neural nets, backprop from scratch, CNNs, RNNs, optimisers</div></a>
+        <a href="#week3" class="wk-card"><div class="wk-num">WEEK 03</div><div class="wk-title">Transformers</div><div class="wk-sub">Attention, multi-head, positional encoding, BERT vs GPT, nanoGPT</div></a>
+        <a href="#week4" class="wk-card"><div class="wk-num">WEEK 04</div><div class="wk-title">LLMs &amp; Scale</div><div class="wk-sub">RLHF, DPO, LoRA, RAG, KV cache, inference, evaluation</div></a>
+      </div>
+    </div>
+
+    <!-- WEEK 1 -->
+    <div id="week1" class="sec">
+      <div class="sec-head"><span class="sec-num">W1</span><h2 class="sec-title">Week 1 — ML Foundations</h2></div>
+
+      <p class="body">The goal of Week 1 is to understand what machine learning actually is — not algorithmically, but philosophically. ML is the process of fitting a parameterised function to data by minimising a loss. Every algorithm you'll ever learn is a variation on that sentence. Once you see it that way, nothing will surprise you.</p>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 01</span>
+          <span class="day-title">Linear Regression — The Simplest Model</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Core concept</div>
+          <p>A linear model predicts output <code>ŷ = w₁x₁ + w₂x₂ + ... + b</code>. How do we find weights that make predictions good? Define "good" as a loss function, then find parameters that minimise it. Mean Squared Error: <code>L = (1/n)Σ(yᵢ - ŷᵢ)²</code>. Squaring penalises large errors disproportionately and keeps loss positive.</p>
+          <div class="math-block">
+            <div class="math-label">Normal Equation — closed-form solution</div>
+            w = (XᵀX)⁻¹ Xᵀy<br><br>
+            X: design matrix [n_samples × n_features]<br>
+            y: target vector [n_samples]<br>
+            Cost: O(m³) for matrix inversion — breaks for large m (features)<br>
+            For large datasets: use gradient descent instead
+          </div>
+          <div class="day-sec">Watch first</div>
+          <p>StatQuest: <strong>Linear Regression, Clearly Explained</strong> (YouTube, 27 min). Build the visual intuition before looking at any code.</p>
+          <div class="day-sec">Key insight</div>
+          <p>Linear regression with no regularisation will memorise training data if you have enough features. The model has learned the noise, not the signal. This is overfitting — and why we need regularisation and a held-out test set.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 02</span>
+          <span class="day-title">Gradient Descent — How Models Actually Learn</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Core concept</div>
+          <p>Compute the gradient of the loss with respect to every parameter — this tells you which direction each parameter should move to increase the loss. Move in the opposite direction by a small amount (the learning rate). Repeat until the loss stops decreasing.</p>
+          <div class="math-block">
+            <div class="math-label">Weight update rule</div>
+            w ← w − α · ∂L/∂w<br><br>
+            α = learning rate (step size)<br>
+            ∂L/∂w = partial derivative of loss w.r.t. weight<br>
+            The gradient points toward steepest increase — move opposite<br><br>
+            Mini-batch SGD: use 32–512 samples to estimate gradient<br>
+            One pass through all data = one epoch
+          </div>
+          <p><strong>Learning rate — the most important hyperparameter.</strong> Too large: loss oscillates or diverges. Too small: training takes forever and may get stuck. Learning rate schedule: start large, decay over time. Cosine annealing and linear warmup are standard in deep learning.</p>
+          <div class="day-sec">Watch first</div>
+          <p>3Blue1Brown: <strong>Gradient descent, how neural networks learn</strong> (Neural Networks series, Ch 2). The hill-climbing visualisation is the mental model you'll use forever.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 03</span>
+          <span class="day-title">Bias-Variance Tradeoff and Regularisation</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Core concept</div>
+          <p><strong>Bias</strong> is error from wrong assumptions — an underfitting model that misses important patterns. <strong>Variance</strong> is error from sensitivity to training data fluctuations — an overfitting model that memorised the noise. Total error = Bias² + Variance + Irreducible noise. The irreducible noise is the floor no model can beat.</p>
+          <p><strong>L2 (Ridge):</strong> adds <code>λΣwᵢ²</code> to the loss. Penalises large weights — pushes toward small, distributed weights. Shrinks weights toward zero but never to exactly zero.</p>
+          <p><strong>L1 (Lasso):</strong> adds <code>λΣ|wᵢ|</code>. The gradient of |w| is ±1 regardless of w's magnitude — drives some weights to exactly zero. Performs implicit feature selection. Use when you suspect most features are irrelevant.</p>
+          <p><strong>Dropout (neural networks):</strong> during training, randomly zero out a fraction of neurons each forward pass. Forces the network to learn redundant representations. Not used at inference time (all neurons active, weights scaled). Effective regulariser for deep networks.</p>
+          <p><strong>Validation curve:</strong> train loss always decreases with more complexity. Validation loss decreases, reaches a minimum, then increases — this is overfitting. Optimal complexity is at the minimum of the validation curve. Always requires a held-out validation set never used for training.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 04</span>
+          <span class="day-title">Classification — Logistic Regression and Decision Trees</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Logistic Regression</div>
+          <p>Linear regression followed by a sigmoid: <code>P(y=1|x) = σ(wᵀx + b) = 1/(1 + e⁻ᶻ)</code>. Output is a probability in (0,1). Decision boundary: predict class 1 if P > 0.5.</p>
+          <p><strong>Cross-entropy loss:</strong> <code>L = −[y·log(ŷ) + (1−y)·log(1−ŷ)]</code>. When the correct class probability is near 1, loss ≈ 0. When confidently wrong (probability near 0 for the correct class), loss → ∞. This strong penalisation of confident wrong predictions trains faster and more robustly than MSE for classification.</p>
+          <div class="day-sec">Decision Trees and Random Forests</div>
+          <p>A tree that splits data by yes/no questions about features. At each node, find the split that maximally reduces impurity (Gini or information gain). Grown to full depth: perfectly classifies training data but memorises noise. Fix: limit depth, or use ensemble methods.</p>
+          <p><strong>Random Forest (bagging):</strong> build many trees on bootstrapped data subsets, each using a random feature subset at each split. Average predictions. Variance of the ensemble is lower than any individual tree because errors are uncorrelated.</p>
+          <p><strong>Gradient Boosting (XGBoost, LightGBM):</strong> build trees sequentially, each one correcting the residual errors of the previous ones. Often outperforms random forests on tabular data. Standard in competitive ML on structured/tabular datasets.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 05</span>
+          <span class="day-title">Evaluation Metrics — What "Good" Actually Means</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Beyond accuracy</div>
+          <p>Accuracy is useless for imbalanced datasets. A model that always predicts "not fraud" on 99.9% non-fraud data is 99.9% accurate and completely worthless. Use metrics that account for class imbalance and your specific cost structure (cost of false positive vs false negative).</p>
+          <div class="math-block">
+            <div class="math-label">Classification metrics</div>
+            Precision = TP / (TP + FP)   ← of all predicted positive, how many were correct?<br>
+            Recall    = TP / (TP + FN)   ← of all actual positive, how many did we find?<br>
+            F1        = 2·(P·R)/(P+R)   ← harmonic mean<br><br>
+            AUC-ROC: area under ROC curve (TPR vs FPR at all thresholds)<br>
+            AUC-PR:  area under precision-recall curve — better for imbalanced data<br><br>
+            RMSE = √(1/n·Σ(y−ŷ)²)  ← same units as target, sensitive to outliers<br>
+            MAE  = 1/n·Σ|y−ŷ|      ← robust to outliers
+          </div>
+          <p><strong>Precision vs Recall tradeoff:</strong> lower decision threshold → higher recall (catch more positives), lower precision (more false positives). Spam filter: high precision (don't delete good email). Cancer screening: high recall (don't miss cancer).</p>
+          <p><strong>K-fold cross-validation:</strong> split data into K folds, train on K−1, evaluate on the held-out fold, repeat K times. Average the K scores. More reliable estimate of generalisation than a single split, especially with small datasets.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 06–07</span>
+          <span class="day-title">Feature Engineering and Data Preprocessing</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Why feature engineering beats model choice</div>
+          <p>In most real-world ML projects, the difference between mediocre and great is feature engineering, not algorithm selection. A well-engineered feature can encode months of domain knowledge and make a linear model competitive with a complex neural network.</p>
+          <p><strong>Normalisation/Standardisation:</strong> gradient descent converges much faster when features are on the same scale. Standardisation: <code>(x − μ)/σ</code>. Always fit the scaler on training data only — applying training statistics to test data is data leakage.</p>
+          <p><strong>Categorical encoding:</strong> one-hot for nominal categories (no natural order). Ordinal for ordered categories. Target encoding: replace category with mean target value — powerful but leaks label information if not done with cross-validation. Embeddings: learned dense representations in neural networks.</p>
+          <p><strong>Data leakage — the silent killer:</strong> any information from the test set or the future leaking into training. Common forms: fitting a scaler on the whole dataset before splitting, including a feature only available after the prediction time (e.g., "was transaction reversed?" in fraud detection), normalising using test set statistics. Produces unrealistically high validation metrics that fail completely in production.</p>
+          <p><strong>Missing values:</strong> never silently drop rows. If missingness is informative (e.g., salary missing correlates with high income), add a binary indicator <code>salary_was_missing</code> and impute the value separately. Missingness Not At Random (MNAR) requires explicit modelling.</p>
+        </div>
+      </div>
+
+      <div class="resource-list">
+        <a href="https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF" target="_blank" class="resource-item">
+          <span class="ri-type">Video Series</span>
+          <div class="ri-body"><div class="ri-title">StatQuest — Machine Learning Playlist (Josh Starmer)</div><div class="ri-desc">The best visual explanations of ML fundamentals on the internet. Slow, methodical, genuinely builds intuition. Start here, not with papers.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+        <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank" class="resource-item">
+          <span class="ri-type">Video Series</span>
+          <div class="ri-body"><div class="ri-title">3Blue1Brown — Neural Networks series (4 videos)</div><div class="ri-desc">The gradient descent and backprop episodes are the best visual explanations ever made. Watch before you code anything.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+      </div>
+
+      <div class="checkpoint">
+        <div class="cp-label">Week 1 Checkpoint</div>
+        <div class="cp-title">Before moving to Week 2</div>
+        <ul class="cp-list">
+          <li class="cp-item">Implement linear regression from scratch in NumPy — gradient descent, not the Normal Equation</li>
+          <li class="cp-item">Explain bias-variance tradeoff and draw the validation curve from memory</li>
+          <li class="cp-item">Why is accuracy a bad metric for fraud detection? What would you use instead?</li>
+          <li class="cp-item">Implement logistic regression with cross-entropy loss from scratch</li>
+          <li class="cp-item">What is data leakage? Give 3 concrete examples of how it occurs</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div id="week2" class="sec">
+      <div class="sec-head"><span class="sec-num">W2</span><h2 class="sec-title">Week 2 — Deep Learning</h2></div>
+
+      <p class="body">Deep learning is linear algebra + gradient descent + a non-linear activation function + a lot of compute. Stacking layers allows the network to learn hierarchical representations — early layers learn simple features (edges, frequencies), later layers combine them into complex concepts (faces, words). You do not hand-engineer these features; the network learns them from data.</p>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 08</span>
+          <span class="day-title">Neural Networks — Architecture and Forward Pass</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">What a neural network actually is</div>
+          <p>A neural network is a function composed of simpler functions. Each layer applies an affine transformation then a non-linearity: <code>a = σ(Wx + b)</code>. Without non-linearities, any stack of linear layers collapses to a single linear layer — depth gives no benefit. The activation function is what makes depth useful.</p>
+          <div class="math-block">
+            <div class="math-label">Common activations and when to use each</div>
+            ReLU:    f(x) = max(0, x)        — default for hidden layers<br>
+                     Dying ReLU: neurons stuck at 0 if inputs are always negative<br>
+            GELU:    f(x) = x·Φ(x)           — smooth ReLU, used in GPT/BERT<br>
+            SiLU:    f(x) = x·σ(x)           — Swish, strong empirical performance<br>
+            Sigmoid: f(x) = 1/(1+e⁻ˣ)       — output ∈ (0,1), for gates/probabilities<br>
+            Tanh:    f(x) = (eˣ−e⁻ˣ)/(eˣ+e⁻ˣ) — saturates, rarely used in hidden layers<br>
+            Softmax: normalises to probability distribution — output for classification
+          </div>
+          <p><strong>Universal approximation theorem:</strong> a network with a single hidden layer of sufficient width can approximate any continuous function on a compact domain. In practice, depth (many layers) generalises better than width for the same parameter count — deep representations are more efficient than wide shallow ones.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 09</span>
+          <span class="day-title">Backpropagation — How Gradients Flow</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">The chain rule in computational graphs</div>
+          <p>Backpropagation is the chain rule of calculus applied to a computational graph. You compute <code>∂L/∂w</code> for every parameter by walking backward through the graph, multiplying local gradients at each node. Every operation has a simple local gradient formula; the global gradient is the product of all local gradients along the path from the loss to that parameter.</p>
+          <div class="math-block">
+            <div class="math-label">Chain rule + local gradients (memorise these)</div>
+            ∂L/∂w = (∂L/∂output) · (∂output/∂w)     ← chain rule<br><br>
+            multiply gate:  grad_self  = upstream_grad × other_input<br>
+                            grad_other = upstream_grad × self_input<br>
+            add gate:       grad flows through unchanged (×1 for both inputs)<br>
+            ReLU gate:      grad = upstream_grad × (1 if input > 0 else 0)<br>
+            tanh gate:      grad = upstream_grad × (1 − tanh(x)²)
+          </div>
+          <p><strong>Vanishing gradients:</strong> in deep networks, gradients are multiplied through many layers. Sigmoid/tanh saturate at derivatives near 0 — gradients vanish exponentially. Early layers learn nothing. Solution: ReLU activations, residual connections, proper initialisation.</p>
+          <p><strong>Exploding gradients:</strong> gradients grow exponentially — training diverges. Fix: gradient clipping. If the gradient norm exceeds a threshold (typically 1.0), scale it down. Standard in all transformer training.</p>
+          <p><strong>Residual connections (ResNet):</strong> <code>output = F(x) + x</code>. The skip connection provides a gradient highway — gradients flow directly through addition without being multiplied by layer weights. Enables 100+ layer networks. Transformers use the same trick.</p>
+          <div class="day-sec">The most important exercise of Week 2</div>
+          <p>Implement backpropagation from scratch for a 2-layer MLP in NumPy. No autograd. Derive every gradient by hand. You will understand what PyTorch's <code>.backward()</code> does for the rest of your career.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 10–11</span>
+          <span class="day-title">Optimisers — Adam, AdamW, and Learning Rate Schedules</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Why SGD alone is insufficient</div>
+          <p>Vanilla SGD applies the same learning rate to all parameters. Some parameters need large updates (rarely-seen features); some need small updates (frequently updated). The loss landscape has ravines — SGD oscillates across ravines instead of following them.</p>
+          <div class="math-block">
+            <div class="math-label">Adam optimiser — know this equation cold</div>
+            m ← β₁·m + (1−β₁)·∇L        first moment (momentum), β₁=0.9<br>
+            v ← β₂·v + (1−β₂)·(∇L)²     second moment (RMSProp), β₂=0.999<br>
+            m̂ = m/(1−β₁ᵗ)                bias correction (t = step number)<br>
+            v̂ = v/(1−β₂ᵗ)<br>
+            w ← w − α·m̂/√(v̂ + ε)       update (ε=1e-8 for numerical stability)<br><br>
+            AdamW: apply weight decay directly to weights (not via gradient)<br>
+            w ← w − α·m̂/√(v̂+ε) − α·λ·w  ← decoupled weight decay<br>
+            Standard for transformer training. Theoretically cleaner than L2 in Adam.
+          </div>
+          <p><strong>Learning rate warmup:</strong> start with a very small LR for the first few hundred steps, then increase to the target LR. Without warmup, large initial updates can send you into a bad region before adaptive moments have stabilised. Essential for transformer training.</p>
+          <p><strong>Cosine annealing:</strong> after warmup, decay the LR following a cosine curve from max to near zero. Provides smooth LR reduction without manual decay schedules. Standard in LLM training.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 12–13</span>
+          <span class="day-title">CNNs — Convolutional Neural Networks</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">The core idea</div>
+          <p>A convolution is a sliding filter that scans the input with shared weights. The same filter applied at every position encodes the inductive bias that a feature useful in one region is useful everywhere (translation equivariance). Early filters detect edges; deeper filters detect textures, then parts, then objects.</p>
+          <p><strong>Pooling:</strong> reduces spatial dimensions by taking max or average over a small window. Provides translation invariance, reduces computation in deeper layers. Max pooling retains the most prominent feature in each region.</p>
+          <p><strong>ResNet insight:</strong> before residual connections, networks deeper than ~20 layers were harder to train than shallower ones — not just slower, actually worse test accuracy. The skip connection <code>F(x) + x</code> fixed this. ResNet-50 and ResNet-152 dominated ImageNet. The skip connection is the most impactful architectural innovation before attention.</p>
+          <div class="day-sec">Batch Normalisation</div>
+          <p>Normalise each layer's output to have zero mean and unit variance across the batch. Then apply learnable scale (γ) and shift (β). Benefits: allows higher learning rates, reduces sensitivity to initialisation, provides slight regularisation. Uses a running mean/variance at inference (not batch statistics — batch stats are unavailable). Layer Norm normalises across features instead of across the batch — preferred in transformers where batch size and sequence length vary.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 14</span>
+          <span class="day-title">Recurrent Networks and Their Limitations</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Why RNNs exist and why they were replaced</div>
+          <p>An RNN processes sequences by maintaining a hidden state: <code>hₜ = tanh(Wₕhₜ₋₁ + Wₓxₜ + b)</code>. The same weights reused at every timestep. In theory, the hidden state can remember anything. In practice, RNNs forget most things beyond ~10-20 steps due to vanishing gradients in backpropagation through time (BPTT).</p>
+          <p><strong>LSTM:</strong> adds a cell state — a separate highway with only additive interactions. Gates (learned sigmoid layers) control what to add, forget, and output. Can carry information across hundreds of steps. Solved the vanishing gradient problem in RNNs but not the sequential computation problem.</p>
+          <p><strong>Why transformers replaced RNNs — two reasons:</strong> (1) RNNs are sequential — token T cannot be computed until T−1 is done, making training slow on modern GPUs. Transformers compute all positions in parallel. (2) Fixed-size hidden state is an information bottleneck — the entire sequence history must be compressed into one vector. Attention directly accesses any previous position without compression.</p>
+        </div>
+      </div>
+
+      <div class="checkpoint">
+        <div class="cp-label">Week 2 Checkpoint</div>
+        <div class="cp-title">Deep Learning Fundamentals</div>
+        <ul class="cp-list">
+          <li class="cp-item">Implement backpropagation from scratch for a 2-layer MLP — no autograd</li>
+          <li class="cp-item">Write out the Adam update equations from memory and explain each term</li>
+          <li class="cp-item">Why does a residual connection help train very deep networks? Explain gradient flow.</li>
+          <li class="cp-item">Vanishing gradients in RNNs: why does it happen, and why doesn't LSTM have the same problem?</li>
+          <li class="cp-item">Two distinct reasons transformers replaced RNNs</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div id="week3" class="sec">
+      <div class="sec-head"><span class="sec-num">W3</span><h2 class="sec-title">Week 3 — Transformers</h2></div>
+
+      <p class="body">The transformer is the foundation of all modern AI. Understanding it at the level of each matrix multiplication is the single most important technical investment you can make. This week you will build it from scratch.</p>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 15</span>
+          <span class="day-title">Attention — The Core Mechanism</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">The intuition</div>
+          <p>The problem with RNNs: to answer a question about a word, you retrieve information from a compressed hidden state — an information bottleneck. Attention asks: what if each word could directly look at every other word and decide how much each one matters? Instead of a bottleneck, you have direct access to all positions.</p>
+          <p><strong>Query, Key, Value:</strong> each token produces three vectors. Query — "what am I looking for?" Key — "what do I offer?" Value — "what do I actually return?" The attention weight between token i and j = similarity between i's Query and j's Key. Output for token i = weighted sum of all Values, weighted by how much i attended to each j.</p>
+          <div class="math-block">
+            <div class="math-label">Scaled dot-product attention — memorise this</div>
+            Attention(Q, K, V) = softmax(QKᵀ / √dₖ) · V<br><br>
+            Q [seq_len × d_k]: query vectors (W_Q projects input → query space)<br>
+            K [seq_len × d_k]: key vectors<br>
+            V [seq_len × d_v]: value vectors<br><br>
+            QKᵀ [seq_len × seq_len]: all-pairs dot products (attention scores)<br>
+            /√dₖ: prevent softmax saturation — dot products grow with dₖ<br>
+            softmax: row-wise normalisation → attention weights (sum to 1)<br>
+            · V: weighted sum of values — the output for each position
+          </div>
+          <p><strong>Why /√dₖ?</strong> Dot products of Q and K have variance ∝ dₖ. For large dₖ, scores are large, softmax approaches one-hot, gradients through softmax vanish. Dividing by √dₖ normalises variance to ≈1 regardless of dimension.</p>
+          <p><strong>Causal (masked) attention:</strong> for generation (GPT), position i should only attend to j ≤ i. Set scores for j > i to −∞ before softmax → 0 weight. Allows training the full sequence in parallel while preserving autoregressive generation order.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 16</span>
+          <span class="day-title">Multi-Head Attention and the Full Transformer Block</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Multi-head attention</div>
+          <p>Single-head attention captures one type of relationship between tokens. Multi-head runs h independent attention functions in parallel — each head learns different relationships (syntactic agreement, coreference, semantic similarity). Outputs are concatenated and projected back to the model dimension.</p>
+          <div class="math-block">
+            <div class="math-label">Multi-head attention + full transformer block</div>
+            MultiHead(Q,K,V) = Concat(head₁,...,headₕ)·Wᴼ<br>
+            headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ)<br><br>
+            GPT-2 small: d_model=768, h=12 heads → d_k=64 per head<br>
+            Total attention params: 4 × d_model²<br><br>
+            Full transformer block (Pre-LayerNorm order):<br>
+            x ← x + Dropout(MultiHeadAttn(LayerNorm(x)))  ← sub-layer 1<br>
+            x ← x + Dropout(FFN(LayerNorm(x)))            ← sub-layer 2<br>
+            FFN(x) = max(0, xW₁+b₁)W₂+b₂  [4× expansion: 768→3072→768]
+          </div>
+          <p><strong>Why Pre-LayerNorm?</strong> Modern models apply LayerNorm before each sub-layer (Pre-LN), not after (Post-LN as in the original paper). Pre-LN trains more stably for very deep models — gradients are better-conditioned from the start of training.</p>
+          <div class="day-sec">Positional encoding</div>
+          <p>Attention is permutation-equivariant — shuffling input tokens identically shuffles output. No notion of order without explicit position information. <strong>Sinusoidal:</strong> deterministic position-dependent vectors added to embeddings. <strong>Learned:</strong> treat positions as tokens, learn an embedding. <strong>RoPE (Rotary Positional Embedding):</strong> used in LLaMA, Mistral — encode position by rotating Q and K before the dot product. Relative positions encoded in the rotation angle difference. Generalises to longer sequences than seen in training.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 17–18</span>
+          <span class="day-title">BERT vs GPT — Encoder vs Decoder, Tokenisation</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">The two transformer families</div>
+          <p><strong>BERT (encoder-only):</strong> bidirectional — every token attends to every other token, no causal mask. Pre-trained with Masked Language Modelling (MLM): mask 15% of tokens, predict them. Learns rich contextual representations because it sees full context. Use for classification, NER, question answering — tasks requiring full-input understanding.</p>
+          <p><strong>GPT (decoder-only):</strong> causal — each token only attends to previous tokens. Pre-trained with next-token prediction. Naturally suited for generation. GPT-3, LLaMA, Claude, Gemini — all use this architecture. The simplicity of the objective (predict next token) scales extremely well with compute.</p>
+          <p><strong>T5/BART (encoder-decoder):</strong> encoder processes full input (bidirectional), decoder generates output (causal + cross-attention to encoder). Used for translation, summarisation. Largely superseded by decoder-only models at scale.</p>
+          <div class="day-sec">Tokenisation</div>
+          <p><strong>BPE (Byte-Pair Encoding):</strong> start with characters. Iteratively merge the most frequent adjacent pair into a new token. Repeat until vocabulary reaches target size (32K–100K). Used by GPT-2, LLaMA 1.</p>
+          <p><strong>SentencePiece:</strong> operates on raw bytes, language-agnostic, handles any script. Used by LLaMA 2+, T5. No dependency on pre-tokenisation whitespace rules.</p>
+          <p><strong>Why subwords, not characters or words?</strong> Characters produce sequences 4–5× longer — attention cost scales as O(n²). Words require a massive vocabulary for all forms; rare words become OOV. Subwords balance sequence length and vocabulary coverage.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 19–21</span>
+          <span class="day-title">Build nanoGPT from Scratch — The Capstone</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Karpathy's nanoGPT walkthrough</div>
+          <p>These three days are the most important in Week 3. Follow Andrej Karpathy's "Let's build GPT from scratch" (2h20min) in full. You implement every component from a blank Python file: character-level tokeniser, embedding table, positional encoding, multi-head attention, transformer block, language model head, training loop. You run it on Shakespeare. By step 5000 it generates plausible Shakespeare.</p>
+          <p>Type every line yourself. Do not copy-paste. The act of writing each line while Karpathy explains it is the learning.</p>
+          <div class="day-sec">Key tensor shapes to track</div>
+          <div class="math-block">
+            <div class="math-label">nanoGPT tensor shapes at each step</div>
+            Input:              [B, T]              batch=4, seq_len=128<br>
+            Token embed:        [B, T, C]            C = d_model = 384<br>
+            After QKV proj:     [B, T, 3*C]<br>
+            Reshape multi-head: [B, n_head, T, hs]   n_head=6, hs=64<br>
+            Attn scores:        [B, n_head, T, T]    QKᵀ/√hs<br>
+            Attn weights:       [B, n_head, T, T]    after causal softmax<br>
+            Attn output:        [B, T, C]            re-assembled heads<br>
+            After FFN:          [B, T, C]<br>
+            Logits:             [B, T, vocab_size]   final projection
+          </div>
+        </div>
+      </div>
+
+      <div class="resource-list">
+        <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" class="resource-item">
+          <span class="ri-type">Video</span>
+          <div class="ri-body"><div class="ri-title">Karpathy — Let's build GPT from scratch (2h20min)</div><div class="ri-desc">The most valuable ML video for engineers. Every line explained. Build it yourself alongside.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=VMj-3S1tku0" target="_blank" class="resource-item">
+          <span class="ri-type">Video</span>
+          <div class="ri-body"><div class="ri-title">Karpathy — The spelled-out intro to neural networks (micrograd)</div><div class="ri-desc">Build autograd from scratch. Understand what PyTorch's .backward() actually does.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+        <a href="https://arxiv.org/abs/1706.03762" target="_blank" class="resource-item">
+          <span class="ri-type">Paper</span>
+          <div class="ri-body"><div class="ri-title">Attention Is All You Need (Vaswani et al., 2017)</div><div class="ri-desc">The original transformer paper. Read after implementing nanoGPT — everything will make sense.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+      </div>
+
+      <div class="checkpoint">
+        <div class="cp-label">Week 3 Checkpoint</div>
+        <div class="cp-title">Transformer Fundamentals</div>
+        <ul class="cp-list">
+          <li class="cp-item">Derive the scaled dot-product attention equation from first principles. Why √dₖ?</li>
+          <li class="cp-item">Implement multi-head attention in PyTorch from scratch — no nn.MultiheadAttention</li>
+          <li class="cp-item">What's the difference between BERT and GPT architecturally? When would you use each?</li>
+          <li class="cp-item">Train nanoGPT on Shakespeare. It should generate coherent text by step 5000.</li>
+          <li class="cp-item">Explain RoPE — why does it generalise to longer sequences better than learned positional embeddings?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div id="week4" class="sec">
+      <div class="sec-head"><span class="sec-num">W4</span><h2 class="sec-title">Week 4 — LLMs, Fine-Tuning, and Production</h2></div>
+
+      <p class="body">Week 4 covers what happens between "we have a pre-trained transformer" and "we have a useful product." Pre-training gives you a text predictor. Alignment makes it follow instructions. Fine-tuning specialises it. RAG grounds it in your data. Evaluation tells you if any of it worked.</p>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 22</span>
+          <span class="day-title">Pre-training at Scale — Scaling Laws and Emergent Capabilities</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Chinchilla scaling laws</div>
+          <p>Chinchilla (Hoffmann et al., 2022) showed that optimal training roughly equally splits compute between model parameters and training tokens. Practical rule: training tokens ≈ 20 × number of parameters. GPT-3 (175B params, 300B tokens) was significantly undertrained. LLaMA 3 (8B params, 15T tokens) is heavily overtrained for inference efficiency — maximise tokens per dollar of inference, not tokens per dollar of training.</p>
+          <div class="math-block">
+            <div class="math-label">Chinchilla optimal allocation</div>
+            L(N, D) ≈ A/Nᵅ + B/Dᵝ + L∞<br><br>
+            N = parameters, D = training tokens, L∞ = irreducible loss<br>
+            Optimal: N_opt ∝ C^0.5, D_opt ∝ C^0.5 (split compute 50/50)<br>
+            Practical rule: D ≈ 20 × N tokens for optimal single-run training
+          </div>
+          <p><strong>Emergent capabilities:</strong> qualitatively new abilities appear at certain scales that were absent at smaller scales — in-context learning, chain-of-thought reasoning, multi-step arithmetic. These are not predictable by extrapolating smaller model performance. One of the most important open questions in ML.</p>
+          <p><strong>Data quality over quantity:</strong> LLaMA 3 used 15T tokens with significantly better curation than LLaMA 2's 2T tokens. Filtering, deduplication, and quality scoring produce better models than raw web data at 10× scale. Data curation is a competitive moat.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 23</span>
+          <span class="day-title">RLHF and DPO — Aligning LLMs to Human Preferences</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Why pre-training is not enough</div>
+          <p>A pre-trained LLM predicts the most likely next token given its training distribution. It will complete "How do I make a bomb?" with information — that's what's in the training data. It has no notion of helpfulness, harmlessness, or honesty. RLHF aligns the model to behave in ways humans prefer.</p>
+          <div class="day-sec">The three RLHF phases</div>
+          <p><strong>Phase 1 — Supervised Fine-Tuning (SFT):</strong> fine-tune on human-written (prompt, ideal response) pairs. Teaches the format of being a helpful assistant. Quality is bottlenecked by human-written data.</p>
+          <p><strong>Phase 2 — Reward Model (RM):</strong> given two responses to the same prompt, humans rank which is better. Train a model on these preference rankings — it outputs a scalar score predicting human preference for a (prompt, response) pair.</p>
+          <p><strong>Phase 3 — PPO fine-tuning:</strong> treat the LLM as a policy, reward model as the reward. Use PPO to optimise the LLM to maximise reward. A KL-divergence penalty prevents drifting too far from the SFT model — prevents degenerate "reward-hacked" outputs that score highly but are low quality.</p>
+          <div class="day-sec">DPO — simpler alternative</div>
+          <p>Direct Preference Optimisation (Rafailov et al., 2023) achieves similar results without training a reward model or using RL. Directly optimises the LLM on preference pairs via a reparameterised objective. More stable training, simpler implementation. Now widely used for open-source fine-tuning.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 24</span>
+          <span class="day-title">Fine-Tuning — Full, LoRA, and QLoRA</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">LoRA — Low-Rank Adaptation</div>
+          <p>Key insight: weight updates during fine-tuning have low intrinsic rank. Instead of updating the full weight matrix W ∈ ℝ^(m×n), decompose the update as ΔW = BA where B ∈ ℝ^(m×r) and A ∈ ℝ^(r×n), rank r ≪ min(m,n). Only train A and B; keep W frozen.</p>
+          <div class="math-block">
+            <div class="math-label">LoRA forward pass + parameter saving</div>
+            h = Wx + BAx      (W frozen, only BA is trained)<br><br>
+            B: [d_out, r] — initialised to zero<br>
+            A: [r, d_in]  — Gaussian initialisation<br>
+            α/r scaling factor applied to ΔW<br><br>
+            At inference: merge W' = W + BA — zero latency overhead<br><br>
+            Parameter saving for r=16, d=4096:<br>
+            LoRA:    2 × 16 × 4096 = 131,072 params per matrix<br>
+            Full:    4096 × 4096  = 16,777,216 params per matrix<br>
+            Saving:  128× fewer trainable params
+          </div>
+          <p><strong>QLoRA:</strong> quantise the base model to 4-bit (NF4), then fine-tune LoRA adapters in 16-bit. A 70B model that needs ~140GB in full precision fits in ~40GB. Makes LLM fine-tuning accessible on consumer hardware.</p>
+          <div class="day-sec">When to use each</div>
+          <p>Full fine-tuning: large dataset, domain-critical accuracy, compute available. LoRA: moderate dataset, limited compute, maintain base model capabilities. QLoRA: extremely limited GPU memory. Prompt engineering/few-shot: when fine-tuning isn't needed and the task can be described in-context.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 25</span>
+          <span class="day-title">RAG — Retrieval-Augmented Generation</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Why RAG exists</div>
+          <p>LLMs hallucinate because they generate the most probable continuation given training data — they have no mechanism to say "I don't know." RAG grounds the model by retrieving relevant documents at query time and providing them as context. The model's task shifts from "recall" to "synthesise the provided context." Hallucination rates drop dramatically when the answer is in the context.</p>
+          <div class="day-sec">The retrieval pipeline</div>
+          <p><strong>Chunking:</strong> fixed-size (simple). Semantic boundaries (better). Parent-child: small chunks (128 tokens) for precise retrieval, return larger parent chunks (512 tokens) for generation context — best of both worlds.</p>
+          <p><strong>Embedding + vector search:</strong> encode chunks as dense vectors (text-embedding-3-large, BGE, E5). Store in vector DB (pgvector, Pinecone, Weaviate). Query: embed the question, find nearest vectors by cosine similarity.</p>
+          <p><strong>Hybrid search:</strong> dense (ANN semantic) + sparse (BM25 keyword) combined with RRF. "GDPR Article 17" needs exact keyword matching; "rules about deleting user data" needs semantic search. Hybrid serves both.</p>
+          <p><strong>Reranking:</strong> retrieve top-50 via hybrid search, rerank with a cross-encoder (slower but more accurate relevance scoring), return top-5 to the LLM. Cross-encoders jointly encode (query, document) — better relevance but too slow for first-pass retrieval.</p>
+          <p><strong>RAGAS evaluation:</strong> Faithfulness (is the answer grounded in context?), Answer Relevance, Context Recall, Context Precision. Build a golden Q&A dataset of ~100 questions. Run after every pipeline change — catch regressions before they reach users.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 26</span>
+          <span class="day-title">LLM Inference — KV Cache, Quantisation, vLLM</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">KV Cache — why inference is fast</div>
+          <p>During autoregressive generation, each new token needs attention with all previous tokens. Without caching: recompute K and V for all previous positions at every step — O(T²) total compute. The KV cache stores computed K and V tensors for all previous positions. Each step only computes K and V for the new token and appends. O(T) compute per step instead of O(T²).</p>
+          <p>Memory cost: 2 × layers × heads × d_k × seq_len × bytes_per_element. For LLaMA-3-70B at 128K context: ~136GB for the KV cache alone — more than the model weights.</p>
+          <div class="day-sec">Quantisation</div>
+          <p><strong>INT8 (W8A8):</strong> weights and activations in 8-bit integers. ~2× speedup, ~2× memory reduction. Minimal quality loss with proper calibration.</p>
+          <p><strong>INT4 (GPTQ, AWQ):</strong> weights in 4-bit. ~4× memory reduction. AWQ: identify and preserve the ~1% of weights that matter most (salient), quantise the rest aggressively. Good quality for 7B–70B models.</p>
+          <p><strong>Speculative decoding:</strong> small draft model generates k candidate tokens, large model verifies all k in parallel. If draft tokens are accepted, get k tokens in the time of one large model forward pass. Typical 2–4× latency speedup with identical output quality.</p>
+          <div class="day-sec">vLLM and continuous batching</div>
+          <p><strong>PagedAttention (vLLM):</strong> KV cache managed like virtual memory — allocated on demand, not pre-allocated. Eliminates fragmentation that wasted 60–80% of KV cache memory. 2–4× higher throughput than naive serving on the same hardware.</p>
+          <p><strong>Continuous batching:</strong> when one sequence finishes, a new one fills its slot immediately — no waiting for a full batch. Dramatically improves GPU utilisation and throughput.</p>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-head" onclick="toggleDay(this)">
+          <span class="day-num">DAY 27–28</span>
+          <span class="day-title">Evaluation, Safety, and Production Considerations</span>
+          <span class="day-chevron">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-sec">Evaluation is harder than training</div>
+          <p>Evaluating open-ended text generation is genuinely hard. BLEU and ROUGE (n-gram overlap) correlate poorly with human quality judgements. LLM-as-judge (use a stronger model to score outputs) is state-of-the-art but expensive and biased toward the judge model's preferences.</p>
+          <p><strong>Benchmarks:</strong> MMLU (57-subject multiple choice, knowledge), HumanEval (coding), GSM8K (grade school math), MATH (competition math), TruthfulQA (factuality), HellaSwag (commonsense). All have contamination risks. Treat as lower bounds on capability, not ground truth.</p>
+          <p><strong>Production evals > benchmark evals always:</strong> task-specific golden datasets, human preference ratings via A/B testing, hallucination rate on known-answer queries, latency at p50/p95/p99, cost per 1K tokens.</p>
+          <div class="day-sec">Safety and production issues</div>
+          <p><strong>Prompt injection:</strong> attacker embeds instructions in user content that override the system prompt. In RAG: a retrieved document contains "Ignore all previous instructions..." Mitigation: clear delineation between system and user content, sandboxed tool execution, output validation.</p>
+          <p><strong>Lost in the middle:</strong> LLMs attend to beginning and end of context better than the middle. Order retrieved chunks with most relevant first and last. For very long contexts, consider hierarchical summarisation.</p>
+          <p><strong>Observability:</strong> log every prompt and completion (with PII handling), trace token counts and latency per request, monitor for anomalous outputs, track user feedback signals. Without logging, you cannot debug, improve, or detect abuse.</p>
+        </div>
+      </div>
+
+      <div class="resource-list">
+        <a href="https://www.youtube.com/watch?v=bZQun8Y4L2A" target="_blank" class="resource-item">
+          <span class="ri-type">Video</span>
+          <div class="ri-body"><div class="ri-title">Karpathy — State of GPT (Microsoft Build 2023, 45min)</div><div class="ri-desc">Best single explanation of the full LLM pipeline: pre-training → SFT → RLHF → prompting. Watch after Day 23.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+        <a href="https://arxiv.org/abs/2203.02155" target="_blank" class="resource-item">
+          <span class="ri-type">Paper</span>
+          <div class="ri-body"><div class="ri-title">InstructGPT — Training LMs to Follow Instructions with RLHF</div><div class="ri-desc">The original RLHF paper. Short, well-written, essential.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+        <a href="https://arxiv.org/abs/2305.14314" target="_blank" class="resource-item">
+          <span class="ri-type">Paper</span>
+          <div class="ri-body"><div class="ri-title">Direct Preference Optimisation (DPO)</div><div class="ri-desc">Simpler alternative to RLHF now widely used for open-source fine-tuning.</div></div>
+          <span class="ri-arr">↗</span>
+        </a>
+      </div>
+
+      <div class="checkpoint">
+        <div class="cp-label">Week 4 Checkpoint</div>
+        <div class="cp-title">LLMs in Production</div>
+        <ul class="cp-list">
+          <li class="cp-item">Explain the three RLHF phases from memory. What does DPO simplify and what does it trade off?</li>
+          <li class="cp-item">LoRA: why does low-rank decomposition work? What's the memory saving for rank-16 on a 4096-dim layer?</li>
+          <li class="cp-item">What is the KV cache? Why does memory grow linearly with context length?</li>
+          <li class="cp-item">Build a minimal RAG pipeline: embed documents, query with cosine similarity, pass top-3 to an LLM</li>
+          <li class="cp-item">What is speculative decoding? Why does it improve latency without changing output quality?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MICROGRAD -->
+    <div id="micrograd" class="sec">
+      <div class="sec-head"><span class="sec-num">★</span><h2 class="sec-title">Build micrograd — Autograd from Scratch</h2></div>
+
+      <p class="body">Karpathy's micrograd is a ~150-line implementation of backpropagation. Building it is more valuable than reading 10 blog posts about backprop. After you build it, PyTorch's <code>.backward()</code> is no longer magic — it's just the chain rule on a computational graph.</p>
+
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">python — micrograd Value class (core autograd engine)</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tk">class</span> <span class="tt">Value</span>:
+  <span class="tc">"""Scalar with gradient tracking — atom of autograd."""</span>
+  <span class="tk">def</span> <span class="tf">__init__</span>(self, data, _children=(), _op=<span class="ts">''</span>):
+    self.data = data
+    self.grad = <span class="tn">0.0</span>
+    self._backward = <span class="tk">lambda</span>: <span class="tk">None</span>
+    self._prev = <span class="tf">set</span>(_children)
+
+  <span class="tk">def</span> <span class="tf">__add__</span>(self, other):
+    out = Value(self.data + other.data, (self, other), <span class="ts">'+'</span>)
+    <span class="tk">def</span> <span class="tf">_backward</span>():
+      self.grad  += out.grad   <span class="tc"># ∂out/∂self = 1</span>
+      other.grad += out.grad   <span class="tc"># ∂out/∂other = 1</span>
+    out._backward = _backward
+    <span class="tk">return</span> out
+
+  <span class="tk">def</span> <span class="tf">__mul__</span>(self, other):
+    out = Value(self.data * other.data, (self, other), <span class="ts">'*'</span>)
+    <span class="tk">def</span> <span class="tf">_backward</span>():
+      self.grad  += other.data * out.grad  <span class="tc"># ∂out/∂self = other</span>
+      other.grad += self.data  * out.grad  <span class="tc"># ∂out/∂other = self</span>
+    out._backward = _backward
+    <span class="tk">return</span> out
+
+  <span class="tk">def</span> <span class="tf">tanh</span>(self):
+    t = (math.exp(<span class="tn">2</span>*self.data)-<span class="tn">1</span>)/(math.exp(<span class="tn">2</span>*self.data)+<span class="tn">1</span>)
+    out = Value(t, (self,), <span class="ts">'tanh'</span>)
+    <span class="tk">def</span> <span class="tf">_backward</span>():
+      self.grad += (<span class="tn">1</span> - t**<span class="tn">2</span>) * out.grad  <span class="tc"># dtanh/dx = 1 - tanh²(x)</span>
+    out._backward = _backward
+    <span class="tk">return</span> out
+
+  <span class="tk">def</span> <span class="tf">backward</span>(self):
+    <span class="tc"># Topological sort → call _backward() in reverse order</span>
+    topo, visited = [], <span class="tf">set</span>()
+    <span class="tk">def</span> <span class="tf">build</span>(v):
+      <span class="tk">if</span> v <span class="tk">not in</span> visited:
+        visited.add(v)
+        <span class="tk">for</span> c <span class="tk">in</span> v._prev: <span class="tf">build</span>(c)
+        topo.append(v)
+    <span class="tf">build</span>(self)
+    self.grad = <span class="tn">1.0</span>
+    <span class="tk">for</span> v <span class="tk">in</span> <span class="tf">reversed</span>(topo): v._backward()
+
+<span class="tc"># Same API as PyTorch tensors</span>
+a = Value(<span class="tn">2.0</span>)
+b = Value(-<span class="tn">3.0</span>)
+c = a * b + Value(<span class="tn">1.0</span>)
+c.backward()
+<span class="tf">print</span>(a.grad)  <span class="tc"># -3.0</span>
+<span class="tf">print</span>(b.grad)  <span class="tc"># 2.0</span></pre>
+      </div>
+
+      <p class="body">Once you have <code>Value</code>, build <code>Neuron</code> (weights × inputs + bias → activation), <code>Layer</code> (list of neurons), <code>MLP</code> (list of layers). Implement SGD training on the XOR problem. ~150 lines total. Watch Karpathy's micrograd video first, then implement without looking.</p>
+    </div>
+
+    <!-- NANOGPT -->
+    <div id="nanogpt" class="sec">
+      <div class="sec-head"><span class="sec-num">★★</span><h2 class="sec-title">Build nanoGPT — Transformer from Scratch</h2></div>
+
+      <p class="body">nanoGPT is ~300 lines of PyTorch. By the end you will have trained a language model that generates Shakespeare from a blank canvas. Every line will make sense.</p>
+
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lang">python — nanoGPT CausalSelfAttention (the core)</span><button class="copy-btn">copy</button></div>
+        <pre><span class="tk">class</span> <span class="tt">CausalSelfAttention</span>(nn.Module):
+  <span class="tk">def</span> <span class="tf">__init__</span>(self, config):
+    <span class="tf">super</span>().__init__()
+    <span class="tk">assert</span> config.n_embd % config.n_head == <span class="tn">0</span>
+    self.n_head = config.n_head
+    self.n_embd = config.n_embd
+    self.c_attn = nn.Linear(config.n_embd, <span class="tn">3</span> * config.n_embd)
+    self.c_proj = nn.Linear(config.n_embd, config.n_embd)
+    self.attn_drop = nn.Dropout(config.attn_pdrop)
+    self.resid_drop = nn.Dropout(config.resid_pdrop)
+    <span class="tc"># Causal mask: token i only attends to j <= i</span>
+    self.register_buffer(<span class="ts">"bias"</span>,
+      torch.tril(torch.ones(config.block_size, config.block_size))
+      .view(<span class="tn">1</span>, <span class="tn">1</span>, config.block_size, config.block_size))
+
+  <span class="tk">def</span> <span class="tf">forward</span>(self, x):
+    B, T, C = x.size()
+    q, k, v = self.c_attn(x).split(self.n_embd, dim=<span class="tn">2</span>)
+    hs = C // self.n_head
+    q = q.view(B, T, self.n_head, hs).transpose(<span class="tn">1</span>, <span class="tn">2</span>)
+    k = k.view(B, T, self.n_head, hs).transpose(<span class="tn">1</span>, <span class="tn">2</span>)
+    v = v.view(B, T, self.n_head, hs).transpose(<span class="tn">1</span>, <span class="tn">2</span>)
+    att = (q @ k.transpose(-<span class="tn">2</span>, -<span class="tn">1</span>)) * (<span class="tn">1.0</span> / math.sqrt(hs))
+    att = att.masked_fill(self.bias[:,:,:T,:T] == <span class="tn">0</span>, float(<span class="ts">'-inf'</span>))
+    att = F.softmax(att, dim=-<span class="tn">1</span>)
+    att = self.attn_drop(att)
+    y = att @ v
+    y = y.transpose(<span class="tn">1</span>, <span class="tn">2</span>).contiguous().view(B, T, C)
+    <span class="tk">return</span> self.resid_drop(self.c_proj(y))</pre>
+      </div>
+
+      <p class="body">The complete nanoGPT: a <code>Block</code> (LayerNorm → CausalSelfAttention → residual, LayerNorm → MLP → residual), a <code>GPT</code> class (token embed + pos embed + N blocks + final LN + lm_head), and the training loop. Build it yourself; use Karpathy's GitHub only as a reference when stuck.</p>
+    </div>
+
+    <!-- MLOPS -->
+    <div id="mlops" class="sec">
+      <div class="sec-head"><span class="sec-num">13</span><h2 class="sec-title">MLOps — From Notebook to Production</h2></div>
+
+      <p class="body">A model that only runs in a Jupyter notebook is not a product. MLOps is the engineering practice of training, evaluating, deploying, and monitoring ML models in production systems — where your distributed systems knowledge applies directly.</p>
+
+      <h3 class="sub">Experiment Tracking</h3>
+      <p class="body">Log every experiment: hyperparameters, dataset version, model architecture, training curves, evaluation metrics, hardware used. Tools: Weights & Biases (W&B), MLflow, ClearML. Without experiment tracking, you cannot reproduce a result from last week or explain why the production model performs the way it does. Start logging from experiment one.</p>
+
+      <h3 class="sub">Data and Model Versioning</h3>
+      <p class="body">A model is a function of its data + code + hyperparameters. Use DVC (Data Version Control) to version large datasets alongside code in git. Version models in a model registry (MLflow, W&B Artifacts). Pin the exact dataset version, code commit, and hyperparameters that produced the production model. Reproducibility is a requirement, not a nice-to-have.</p>
+
+      <h3 class="sub">Training Infrastructure</h3>
+      <p class="body"><strong>Data parallelism (DDP):</strong> split the batch across GPUs, compute gradients independently, all-reduce to synchronise. Each GPU has a full model copy. Scales with batch size.</p>
+      <p class="body"><strong>Mixed precision (BF16/FP16):</strong> store weights in FP32, compute forward/backward in BF16/FP16. Halves memory bandwidth usage, uses GPU tensor cores. BF16 preferred for training — same range as FP32 (less overflow risk), lower precision acceptable for gradients.</p>
+      <p class="body"><strong>Model parallelism:</strong> required when the model doesn't fit on a single GPU. Pipeline parallelism splits layers across GPUs. Tensor parallelism splits individual weight matrices. DeepSpeed ZeRO Stage 3 and Megatron-LM implement this for 70B+ model training.</p>
+
+      <h3 class="sub">Monitoring in Production</h3>
+      <p class="body"><strong>Data drift:</strong> the distribution of inputs at inference time drifts from training distribution — model degrades silently. Monitor: feature distributions, embedding distances, model confidence scores.</p>
+      <p class="body"><strong>Concept drift:</strong> the relationship between inputs and outputs changes over time. Requires periodic retraining. Harder to detect than data drift.</p>
+      <p class="body"><strong>CI/CD for ML:</strong> every code change triggers automated training, evaluation against the test set, comparison to the production baseline. If the new model beats the baseline on all key metrics, it's promoted to staging. Same pipeline pattern as software — just with models as the artifact.</p>
+
+      <div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
+        <div class="callout-label">For engineers from software</div>
+        <p>MLOps is where your software engineering skills are most directly applicable. Git, CI/CD, containerisation, monitoring, alerting — all the same tools and patterns. The difference: the artifact you're testing and deploying is a model, and "correctness" is probabilistic, not deterministic. Your instinct for reliable systems is directly transferable.</p>
+      </div>
+    </div>
+
+    <!-- FLASH CARDS -->
+    <div id="flashcards" class="sec">
+      <div class="sec-head"><span class="sec-num">→</span><h2 class="sec-title">Flash Cards — Final Review</h2></div>
+      <p class="body" style="margin-bottom:20px">Close your notes. Answer from memory. If you can't answer cleanly, go back to that section.</p>
+
+      <div class="fc-grid">
+        <div class="fc"><div class="fc-q">Why does gradient descent use mini-batches instead of the full dataset?</div><div class="fc-a">Full-batch is expensive for large datasets and produces exact but slow gradients. Single-sample SGD is fast but noisy. Mini-batch (32–512) is the sweet spot: fast enough for many steps per epoch, gradient estimate good enough to converge, and naturally parallelisable on GPU hardware. The noise in mini-batch gradients also helps escape sharp local minima.</div></div>
+        <div class="fc"><div class="fc-q">L1 vs L2 regularisation — which performs feature selection and why?</div><div class="fc-a">L1 (Lasso) adds λΣ|wᵢ| — the gradient of |w| is ±1 regardless of w's magnitude, so small weights are pushed to exactly zero. L2 (Ridge) adds λΣwᵢ² — gradient is proportional to w, so small weights shrink but never reach exactly zero. L1 performs implicit feature selection; L2 distributes weight across all features.</div></div>
+        <div class="fc"><div class="fc-q">What is the vanishing gradient problem? Three solutions.</div><div class="fc-a">In deep networks, gradients shrink exponentially through layers as sigmoid/tanh saturate at near-zero derivatives. Early layers learn almost nothing. Solutions: (1) ReLU — gradient is 1 for positive inputs, doesn't shrink; (2) Residual connections — gradient flows directly through the skip, not multiplied by layer weights; (3) Layer/Batch Normalisation — keeps activations in a healthy range at every layer.</div></div>
+        <div class="fc"><div class="fc-q">Scaled dot-product attention: why divide by √dₖ?</div><div class="fc-a">Dot products of Q and K have variance proportional to dₖ. For large dₖ, scores are large, softmax saturates (near-one-hot distribution), gradients through softmax vanish. Dividing by √dₖ normalises the variance to ≈1 regardless of dimension, maintaining healthy gradient flow through the attention mechanism.</div></div>
+        <div class="fc"><div class="fc-q">BERT vs GPT — architecture and use cases</div><div class="fc-a">BERT: encoder-only, bidirectional attention (every token sees all others), pre-trained with masked language modelling. Use for classification, NER, QA — full-input understanding tasks. GPT: decoder-only, causal attention (token sees only past), pre-trained with next-token prediction. Use for generation, in-context learning, instruction following, and anything that benefits from scale.</div></div>
+        <div class="fc"><div class="fc-q">What is LoRA and what's the parameter saving for rank-16 on a 4096-dim layer?</div><div class="fc-a">LoRA decomposes weight updates ΔW = BA where B is [d, r] and A is [r, d]. Only A and B are trained; W is frozen. For rank=16, d=4096: LoRA = 2×16×4096 = 131,072 parameters. Full = 4096×4096 = 16,777,216. That's a 128× reduction in trainable parameters per matrix.</div></div>
+        <div class="fc"><div class="fc-q">What is the KV cache and why does generation need it?</div><div class="fc-a">During autoregressive generation, each new token needs attention with all previous tokens. Without caching: recompute K and V for all previous positions every step — O(T²) total. The KV cache stores computed K and V for all previous positions. Each step only computes K and V for the new token. O(T) compute per step. Without it, generation of a 1000-token sequence would be 1000× slower.</div></div>
+        <div class="fc"><div class="fc-q">RLHF — three phases from memory</div><div class="fc-a">(1) SFT: fine-tune on human-written (prompt, ideal response) pairs — teaches the format of helpful assistant. (2) Reward Model: train a model on human preference rankings to output a scalar score for (prompt, response) pairs. (3) PPO: treat LLM as policy, RM as reward function — optimise LLM to maximise reward with KL penalty to prevent reward hacking (drifting too far from SFT model).</div></div>
+        <div class="fc"><div class="fc-q">What is data leakage and why is it dangerous?</div><div class="fc-a">Information from the test set or from the future leaking into training. Produces unrealistically high validation metrics that fail in production. Common forms: fitting a scaler on the full dataset before splitting, including a feature only available after the prediction time (e.g., "was transaction reversed?" in fraud detection), normalising with test set statistics. The model appears to work but has memorised information it wouldn't have at inference time.</div></div>
+        <div class="fc"><div class="fc-q">Why did transformers replace RNNs? Two reasons.</div><div class="fc-a">(1) Parallelism: RNNs are sequential — token T must finish before T+1 starts. Transformers compute all positions simultaneously via attention — training is dramatically faster on modern hardware. (2) Long-range dependencies: RNNs compress all history into a fixed hidden state (information bottleneck). Transformers directly attend to any position with O(1) path length — distant tokens are as accessible as adjacent ones.</div></div>
+        <div class="fc"><div class="fc-q">What are Chinchilla scaling laws?</div><div class="fc-a">Optimal training splits compute ~50/50 between model size (N) and training tokens (D). Practical rule: D ≈ 20×N. GPT-3 (175B params, 300B tokens) was compute-suboptimal — too large, too few tokens. LLaMA-3-8B (15T tokens) is heavily overtrained for inference efficiency — you get the same quality at smaller model size, which means cheaper inference. Matters for deciding model vs data tradeoff given a compute budget.</div></div>
+        <div class="fc"><div class="fc-q">What is RAG and why does it reduce hallucinations?</div><div class="fc-a">Retrieval-Augmented Generation: retrieve relevant documents at query time, provide as context to the LLM. The model's task shifts from "recall from training memory" to "synthesise the provided context." Hallucinations drop because the model doesn't need to invent information — it extracts it from documents in the prompt. Doesn't eliminate hallucinations (model can still misread context) but significantly reduces them for knowledge-intensive tasks.</div></div>
+      </div>
+    </div>
+
+  </article>
+</div>
+</div>
+
+<div class="wrap">
+<footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
+  </div>
+</footer>
+</div>
+
+<script>
+function toggleDay(head) {
+  head.closest('.day-card').classList.toggle('open');
+}
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  });
+});
+const secs = document.querySelectorAll('[id]');
+const tl = document.querySelectorAll('.toc-item');
+const ob = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tl.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.toc-item a[href="#${e.target.id}"]`);
+      if (a) a.closest('.toc-item').classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+secs.forEach(s => ob.observe(s));
+</script>
+</body>
+</html>
