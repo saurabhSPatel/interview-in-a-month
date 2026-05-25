@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kubernetes in a Day — Engineering OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -12,116 +14,968 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
 nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
 .nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
-.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.nav-back:hover{color:var(--ink)}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}.nav-back:hover{color:var(--ink)}
 .nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
-.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
-.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
-@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
-.toc{position:sticky;top:72px}
-@media(max-width:900px){.toc{display:none}}
-.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}@media(max-width:700px){.wrap{padding:0 20px}}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto}@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
 .toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
-.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
-.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:4px 0 4px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s;line-height:1.4}
+.toc-item a:hover{color:var(--ink);border-left-color:var(--ink-3)}.toc-item.active a{color:var(--ink);border-left-color:var(--ink);font-weight:500}
+.toc-div{height:1px;background:var(--rule);margin:7px 0 7px 12px}
 .article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
-.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
-.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+.art-eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px;font-weight:500}
 h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
 h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
 .art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
-.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
-.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
-.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
-.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
-.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
-.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
-.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
-.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
-.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
-.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
-h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
-h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+.art-meta{display:flex;gap:20px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.sec{margin-top:60px;padding-top:60px;border-top:1px solid var(--rule)}.sec:first-child{margin-top:0;padding-top:0;border-top:none}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:20px}
+.sec-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.sec-title{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
 p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
-p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+p.body strong{color:var(--ink);font-weight:500}p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
 .callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
 .callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
-.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}.callout p+p{margin-top:8px}
+.arch{background:var(--ink);border-radius:var(--r-lg);padding:22px 26px;margin:20px 0;overflow-x:auto}
+.arch-label{font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.arch pre{font-family:var(--mono);font-size:11.5px;line-height:1.85;color:rgba(255,255,255,.8);margin:0;white-space:pre}
 .code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
 .code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
 .code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
-.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
-.code-copy:hover{color:var(--ink)}
-pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
-.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
-.table-wrap{overflow-x:auto;margin:16px 0}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{border-bottom:2px solid var(--rule)}
-thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
-tbody tr{border-bottom:1px solid var(--rule)}
-tbody tr:last-child{border-bottom:none}
-tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
-tbody td:first-child{font-weight:500;color:var(--ink)}
+.copy-btn{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer;transition:color .15s}.copy-btn:hover{color:var(--ink)}
+pre.code{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:rgba(255,255,255,.8)}
+.tbl-wrap{overflow-x:auto;margin:16px 0}table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:2px solid var(--rule)}thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
+tbody tr{border-bottom:1px solid var(--rule)}tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}tbody td:first-child{font-weight:500;color:var(--ink)}
 tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
-.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
-@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
-.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
-.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:28px 32px;margin:24px 0}
+.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.cp-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--paper);margin-bottom:14px}
+.cp-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
+.cp-item::before{content:"→";color:var(--lime);flex-shrink:0;font-family:var(--mono)}
+.fc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}@media(max-width:600px){.fc-grid{grid-template-columns:1fr}}
+.fc{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px}
+.fc-q{font-family:var(--mono);font-size:11px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
 .fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
-.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
 footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
-
-<title>Kubernetes Internals — Engineering OS</title>
 </head>
 <body>
-<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">K8s · 8h · DevOps</div></div></nav>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">☸ Kubernetes · Basics to Production</div></div></nav>
 <div class="wrap"><div class="doc-layout">
-<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list"><li class="toc-item"><a href="#etcd">etcd + Raft</a></li>
-<li class="toc-item"><a href="#scheduler">Scheduler</a></li>
-<li class="toc-item"><a href="#networking">CNI Networking</a></li>
-<li class="toc-item"><a href="#operators">Operators + CRDs</a></li>
-<li class="toc-item"><a href="#flashcards">Flash Cards</a></li></ul></aside>
+<aside class="toc">
+  <div class="toc-label">Contents</div>
+  <ul class="toc-list">
+    <li class="toc-item"><a href="#why">Why K8s Exists</a></li>
+    <li class="toc-item"><a href="#arch">Cluster Architecture</a></li>
+    <li class="toc-item"><a href="#objects">Core Objects</a></li>
+    <li class="toc-item"><a href="#networking">Networking</a></li>
+    <li class="toc-item"><a href="#storage">Storage</a></li>
+    <div class="toc-div"></div>
+    <li class="toc-item"><a href="#scheduling">Scheduling</a></li>
+    <li class="toc-item"><a href="#security">Security</a></li>
+    <li class="toc-item"><a href="#operators">Operators &amp; CRDs</a></li>
+    <li class="toc-item"><a href="#observability">Observability</a></li>
+    <li class="toc-item"><a href="#advanced">Advanced Patterns</a></li>
+    <div class="toc-div"></div>
+    <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+  </ul>
+</aside>
 <article>
 <div class="article-header">
-  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>etcd/Raft · Control Plane · CNI · Operators · HPA</div>
-  <h1 class="art-title">Kubernetes Internals</h1>
-  <p class="art-subtitle">etcd as a linearizable key-value store, not a config box. How the scheduler picks a node. CNI networking from pod creation to routable IP. Writing operators and CRDs that don't cause production incidents.</p>
+  <div class="art-eyebrow"><span class="art-badge">Deep Dive</span> Basics · Architecture · Security · Production</div>
+  <h1 class="art-title">Kubernetes<br><em>in a Day</em></h1>
+  <p class="art-subtitle">Every K8s concept from first principles, with architecture diagrams at every layer. Control plane internals, networking deep dives, scheduler mechanics, RBAC, Operators, and production hardening. For engineers who want to understand K8s, not just use it.</p>
   <div class="art-meta">
-    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
-    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Basics to production</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Architecture diagrams throughout</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>~8 hours</div>
   </div>
 </div>
-<div id="etcd" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">etcd — The Ground Truth of Your Cluster</h2></div>
-<p class='body'>etcd is the source of truth for all Kubernetes state. Every resource — pods, services, configmaps, secrets, deployments — lives as a key-value entry in etcd. Every component in the control plane watches etcd for changes and reacts to them. Understanding etcd is understanding why Kubernetes behaves the way it does.</p><p class='body'>etcd uses the Raft consensus algorithm to maintain a consistent, linearizable log across its cluster (typically 3 or 5 nodes). Writes are committed only when a majority of nodes (quorum) acknowledges them. Reads from the leader are linearizable by default — every read sees the most recent committed write. Reads from followers may see stale data unless you use <code>--consistency=l</code>.</p><p class='body'><strong>Why this matters for production:</strong> an etcd cluster that loses quorum (more than half its nodes are unavailable) stops accepting writes — your control plane freezes. No new pods start, no deployments progress, no HPA scaling. The cluster doesn't crash, it just stops responding to changes. This is why etcd nodes should be spread across availability zones.</p>
-<div id="scheduler" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">The Kube Scheduler — How Pods Get Placed</h2></div>
-<p class='body'>The scheduler is a control loop that watches for unscheduled pods (pods with no <code>nodeName</code>) and assigns them to nodes based on a two-phase process: filtering and scoring.</p><p class='body'><strong>Filtering (predicates):</strong> eliminates nodes that can't run the pod. Checks: available CPU/memory, node selector labels, affinity/anti-affinity rules, taints and tolerations, pod topology constraints, volume availability. The result is a set of feasible nodes.</p><p class='body'><strong>Scoring (priorities):</strong> ranks feasible nodes. Factors: resource utilisation balance (spread workloads, don't stack on one node), inter-pod affinity score (place pods close to others they communicate with), image locality (prefer nodes that already have the required image). The highest-scoring node wins.</p><p class='body'><strong>Custom schedulers and scheduling profiles:</strong> you can run multiple schedulers with different configuration profiles, or write a scheduler extender (webhook that the default scheduler calls for custom filtering/scoring). Used for GPU scheduling, topology-aware placement, specialised hardware.</p>
-<div id="networking" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">CNI Networking — From Pod Creation to Routable IP</h2></div>
-<p class='body'>When a pod is scheduled, the kubelet invokes the CNI (Container Network Interface) plugin to set up networking. The CNI plugin creates a virtual network interface in the container's network namespace, assigns an IP from the pod CIDR, and sets up routing so the pod can communicate with other pods across nodes.</p><p class='body'><strong>Flannel (simple overlay):</strong> wraps pod traffic in VXLAN packets for cross-node communication. Each node has a subnet (e.g., 10.244.1.0/24). Flannel routes packets to the target node's VXLAN endpoint. Simple but has overhead from encapsulation.</p><p class='body'><strong>Calico (BGP-based):</strong> uses Border Gateway Protocol to advertise pod routes between nodes. No encapsulation overhead — native routing. Supports NetworkPolicy for fine-grained traffic control. Common in on-premise and bare-metal deployments.</p><p class='body'><strong>Services and kube-proxy:</strong> a Service gets a ClusterIP (virtual IP). kube-proxy programs iptables rules (or IPVS) on every node to intercept traffic to the ClusterIP and DNAT it to one of the endpoint pod IPs. iptables rules are re-generated every time an endpoint changes — at large scale (10K+ services, 100K+ endpoints), this causes latency spikes. eBPF-based alternatives (Cilium) replace iptables with efficient kernel programs.</p>
-<div id="operators" class="section-anchor"><span class="section-num">04</span><h2 class="section-h">Operators and CRDs — Extending Kubernetes</h2></div>
-<p class='body'>An operator is a controller that watches for custom resources (defined by CRDs) and takes action to reconcile actual state with desired state. This is the same pattern as built-in controllers (the Deployment controller, StatefulSet controller) — just with your custom resources.</p><p class='body'>The reconciliation loop: watch for changes → compare current state with desired state → take the minimum action needed to close the gap → update status. This must be idempotent — if the reconcile function is called 10 times in a row with no state changes, nothing bad should happen.</p><p class='body'><strong>Common operator mistakes:</strong> not handling the case where the controlled resource was deleted while the operator was down (always reconcile from scratch). Using <code>Update()</code> instead of <code>Patch()</code> for status updates (causes version conflicts). Not setting owner references (leaked resources if the CR is deleted). Not implementing finalizers for resources that need cleanup before deletion.</p>
-<div id="flashcards" class="section-anchor"><span class="section-num">05</span><h2 class="section-h">Flash Cards</h2></div>
-<div class='flashcard-grid'><div class='flashcard'><div class='fc-q'>What happens to your cluster when etcd loses quorum?</div><div class='fc-a'>The control plane stops accepting writes. No new pods start, no deployments progress, no HPA scaling, no config changes apply. The cluster continues running existing workloads (data plane is unaffected) but is frozen from a control perspective until quorum is restored.</div></div><div class='flashcard'><div class='fc-q'>What are the two phases of Kubernetes scheduling?</div><div class='fc-a'>Filtering: eliminate nodes that can't run the pod (resource constraints, taints, affinity rules, topology constraints). Scoring: rank feasible nodes by resource balance, affinity, image locality. The highest-scoring feasible node gets the pod.</div></div><div class='flashcard'><div class='fc-q'>Why does iptables-based kube-proxy struggle at scale?</div><div class='fc-a'>iptables rules are re-generated from scratch every time any endpoint changes. With 10K+ services and 100K+ endpoints, this regeneration causes latency spikes and high CPU usage. eBPF-based solutions (Cilium) replace iptables with O(1) per-packet decisions using efficient kernel programs.</div></div><div class='flashcard'><div class='fc-q'>What must every operator reconcile function handle?</div><div class='fc-a'>Idempotency (multiple calls with no state change = no action). Missing resources (the controlled resource may have been deleted while the operator was down). Status updates via Patch not Update (avoid version conflicts). Owner references (prevent resource leaks on CR deletion). Finalizers for resources needing cleanup before deletion.</div></div></div>
 
-</article>
-</div></div>
-<footer style="border-top:1px solid var(--rule);padding:28px 0">
-  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
-    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
+<div id="why" class="sec"><div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">Why Kubernetes Exists</h2></div>
+<p class="body">Before Kubernetes, deploying containers meant: SSH into a server, run <code>docker run</code>, SSH back in when it crashes, restart manually. At one service this is manageable. At 50 services across 100 servers it is operational chaos. Kubernetes solves the <strong>container orchestration problem</strong>: given a desired state (3 replicas of this container, always, on healthy nodes), maintain it automatically in the face of node failures, rolling deployments, and resource contention.</p>
+<p class="body">The key mental model: you declare what you want, Kubernetes figures out how to make it happen and keep it that way. The <strong>reconciliation loop</strong> is the heart of this — every controller in K8s observes actual state, compares to desired state, and acts to reduce the diff. This loop runs continuously and never stops.</p>
+<div class="arch"><div class="arch-label">Without K8s vs With K8s</div><pre>WITHOUT Kubernetes                    WITH Kubernetes
+
+Server A  Server B  Server C          Desired State (YAML)
++--------+ +--------+ +--------+         replicas: 3
+| svc1   | | svc1   | | svc2   |         image: myapp:v2
+| (ok)   | |(DEAD)  | | svc3   |              |
++--------+ +--------+ +--------+              v
+     ^          ^                       Kubernetes Control Plane
+  manual     manual                    +---------------------+
+  restart    restart                   | Observe -> Diff     |
+                                       | -> Act -> Reconcile |
+Problems:                              +---------------------+
+  No auto-restart                            |
+  No health checks                     Ensures 3 replicas on
+  No load balancing                    healthy nodes, always
+  No rolling updates
+  No bin-packing</pre></div>
+</div>
+
+<div id="arch" class="sec"><div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Cluster Architecture</h2></div>
+<p class="body">A Kubernetes cluster has two tiers: the <strong>control plane</strong> (the brain — manages desired state) and <strong>worker nodes</strong> (the muscle — run workloads). In production, the control plane runs on dedicated nodes with redundancy (3 or 5). It never runs user workloads.</p>
+<div class="arch"><div class="arch-label">Full cluster architecture — control plane to node</div><pre>+================================================================+
+|              CONTROL PLANE NODES (3x for HA)                   |
+|                                                                 |
+| +---------------+ +------------------+ +---------------------+ |
+| |  kube-api     | |      etcd        | | controller-manager  | |
+| |  server :6443 | |  Raft consensus  | |                     | |
+| |               | |  only TRUE state | | Node Controller     | |
+| | AuthN/AuthZ   | |  port 2379-2380  | | ReplicaSet Ctrl     | |
+| | Admission     | |  quorum writes   | | Deployment Ctrl     | |
+| | REST gateway  | |                  | | StatefulSet Ctrl    | |
+| | -> etcd only  | +------------------+ | Job/CronJob Ctrl    | |
+| +-------+-------+                      +---------------------+ |
+|         |                                                       |
+| +-------+----------------------------------------+            |
+| |                kube-scheduler                   |            |
+| | Filter phases -> Score phases -> Bind to node   |            |
+| +------------------------------------------------+            |
+| +-----------------------+                                      |
+| |  cloud-controller-mgr |  (AWS/GCP/Azure LB, Node labels)   |
+| +-----------------------+                                      |
++============================+====================================+
+                             | HTTPS
+         +-------------------+-------------------+
+         |                   |                   |
++--------+------+   +--------+------+   +--------+------+
+|  WORKER NODE  |   |  WORKER NODE  |   |  WORKER NODE  |
+|               |   |               |   |               |
+| +----------+  |   | +----------+  |   | +----------+  |
+| | kubelet  |  |   | | kubelet  |  |   | | kubelet  |  |
+| | PodSpec  |  |   | | health   |  |   | |          |  |
+| | health   |  |   | | checks   |  |   | |          |  |
+| | checks   |  |   | +----------+  |   | +----------+  |
+| +----------+  |   | +----------+  |   | +----------+  |
+| |kube-proxy|  |   | |kube-proxy|  |   | |kube-proxy|  |
+| |iptables/ |  |   | |ipvs rules|  |   | |          |  |
+| |ipvs      |  |   | +----------+  |   | +----------+  |
+| +----------+  |   | +----------+  |   | +----------+  |
+| |containerd|  |   | |containerd|  |   | |containerd|  |
+| |(CRI-O)   |  |   | |          |  |   | |          |  |
+| +----------+  |   | +----------+  |   | +----------+  |
+| Pod Pod Pod   |   | Pod Pod Pod   |   | Pod Pod Pod   |
++---------------+   +---------------+   +---------------+</pre></div>
+
+<h3 class="sub">etcd — The Only Source of Truth</h3>
+<p class="body">etcd is a distributed key-value store using Raft consensus. It is the <strong>only component with persistent state</strong>. Every API object is stored here. The kube-apiserver is the only component that talks to etcd directly — all others go through the apiserver. If etcd loses quorum, the cluster cannot make state changes.</p>
+<div class="arch"><div class="arch-label">etcd Raft — 3-node cluster, quorum = 2</div><pre>etcd Cluster (3 nodes, quorum = 2, tolerates 1 failure)
+
++----------+   heartbeat/vote   +----------+
+|  etcd-1  |<------------------>|  etcd-2  |
+|  LEADER  |                   | FOLLOWER |
++-----+----+                   +----------+
+      |
+      |  Client Write: PUT /registry/pods/default/nginx
+      |  1. Leader appends to its log
+      |  2. Replicates entry to followers (parallel)
+      |  3. Quorum (2/3) acknowledge -> commit
+      |  4. Returns success to kube-apiserver
+      |
++-----+----+
+|  etcd-3  |
+| FOLLOWER |
++----------+
+
+Node count  | Quorum | Tolerated failures
+    3       |   2    |   1
+    5       |   3    |   2
+    7       |   4    |   3
+    EVEN    |  N/A   |  NEVER USE EVEN NUMBERS</pre></div>
+
+<h3 class="sub">kube-apiserver Request Pipeline</h3>
+<div class="arch"><div class="arch-label">Every request flows through these phases</div><pre>kubectl apply -f deployment.yaml
+     |
+     v
++----------------------------------------------------------+
+|                   kube-apiserver                         |
+|                                                          |
+|  Phase 1: AUTHENTICATION                                 |
+|  +----------------------------------------------------+  |
+|  | Client cert? ServiceAccount JWT? OIDC? Webhook?    |  |
+|  | -> Identity: user/serviceaccount/anonymous         |  |
+|  +----------------------------------------------------+  |
+|                | confirmed                               |
+|  Phase 2: AUTHORIZATION (RBAC / Webhook / ABAC)          |
+|  +----------------------------------------------------+  |
+|  | Can identity X do verb V on resource R in ns N?    |  |
+|  | Check RoleBindings -> ClusterRoleBindings          |  |
+|  | Deny = any explicit deny. Allow = explicit allow.  |  |
+|  | Default = implicit deny.                           |  |
+|  +----------------------------------------------------+  |
+|                | authorised                              |
+|  Phase 3: ADMISSION CONTROL                              |
+|  +----------------------------------------------------+  |
+|  | MutatingWebhook  -> modify object (inject sidecar) |  |
+|  | ValidatingWebhook -> reject if invalid (OPA/GK)    |  |
+|  | Built-in: ResourceQuota, LimitRange, PodSecurity   |  |
+|  +----------------------------------------------------+  |
+|                | admitted + validated                    |
+|  Phase 4: Persist to etcd                               |
+|  Phase 5: Notify watchers (controllers, kubelet, HPA)   |
++----------------------------------------------------------+</pre></div>
+</div>
+
+<div id="objects" class="sec"><div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Core Objects</h2></div>
+<p class="body">Every Kubernetes resource has a <code>spec</code> (desired state you set) and a <code>status</code> (actual state controllers maintain). Controllers drive actual toward spec continuously. The ownership hierarchy: Deployment owns ReplicaSet owns Pods.</p>
+<div class="arch"><div class="arch-label">Object ownership and pod internals</div><pre>Deployment  (you manage this)
+  spec: replicas:3, strategy:RollingUpdate, image:myapp:v2
+     |
+     | owns via ownerReference (cascade delete)
+     v
+  ReplicaSet  (Deployment controller creates/manages)
+     |
+     | creates/deletes pods to match replica count
+     +-------------------------+
+     v                         v
+   Pod (10.244.1.15)         Pod (10.244.2.7)
+   +-------------------------------+
+   | pause/infra container         |
+   | - Holds the Pod IP            |
+   | - Creates network namespace   |
+   | - Creates IPC/PID namespaces  |
+   |                               |
+   | app container :8080           |
+   | - Shares network ns           |
+   | - Can reach sidecar on :9090  |
+   |                               |
+   | sidecar (envoy proxy)         |
+   | - Same localhost              |
+   | - Same /tmp if emptyDir mount |
+   |                               |
+   | emptyDir volume /tmp/logs     |
+   | - shared between containers   |
+   | - deleted when pod dies       |
+   +-------------------------------+
+   Node: worker-2 (192.168.1.5)</pre></div>
+
+<h3 class="sub">Deployment Rolling Update — Zero Downtime</h3>
+<div class="arch"><div class="arch-label">Rolling update sequence — maxSurge:1 maxUnavailable:0</div><pre>strategy: RollingUpdate
+  maxSurge: 1        (at most 1 extra pod during update)
+  maxUnavailable: 0  (always keep desired count available)
+
+Step 0: Initial    RS-v1: [v1][v1][v1]           3 pods total
+
+Step 1: New RS     RS-v1: [v1][v1][v1]
+                   RS-v2: [v2]                    4 pods (surge)
+                   v2 must PASS readiness probe first
+
+Step 2: Scale down RS-v1: [v1][v1]
+                   RS-v2: [v2][v2]                4 pods
+
+Step 3: Continue   RS-v1: [v1]
+                   RS-v2: [v2][v2][v2]            4 pods
+
+Step 4: Done       RS-v1: []   (kept empty for rollback)
+                   RS-v2: [v2][v2][v2]            3 pods
+
+kubectl rollout undo deployment/app  -> scales RS-v1 back up
+kubectl rollout status deployment/app -> watch progress</pre></div>
+
+<h3 class="sub">StatefulSet vs Deployment</h3>
+<div class="arch"><div class="arch-label">StatefulSet stable identity — for databases and brokers</div><pre>StatefulSet: mysql (replicas: 3)
+
+Pod names are DETERMINISTIC:
+  mysql-0   mysql-1   mysql-2
+  (ordinal, always these names, created in ORDER)
+
+DNS names are STABLE (survive restarts):
+  mysql-0.mysql.default.svc.cluster.local -> 10.244.1.5
+  mysql-1.mysql.default.svc.cluster.local -> 10.244.2.8
+  mysql-2.mysql.default.svc.cluster.local -> 10.244.3.2
+
+PVCs follow the pod (volumeClaimTemplates):
+  data-mysql-0 -> EBS vol-abc  (stays bound to mysql-0)
+  data-mysql-1 -> EBS vol-def  (stays bound to mysql-1)
+  data-mysql-2 -> EBS vol-ghi  (stays bound to mysql-2)
+
+Startup: mysql-0 Running -> mysql-1 starts -> mysql-2 starts
+Shutdown: mysql-2 terminates -> mysql-1 -> mysql-0 (reverse)
+
+Use for: PostgreSQL, MySQL, Cassandra, Kafka, ZooKeeper, Elasticsearch</pre></div>
+</div>
+
+<div id="networking" class="sec"><div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">Networking — Pod to Internet</h2></div>
+<p class="body">K8s networking rules: every pod gets a unique IP, pods reach each other without NAT, nodes reach pods without NAT. How this is implemented is up to the CNI plugin (Cilium, Calico, Flannel).</p>
+<div class="arch"><div class="arch-label">Complete networking stack — client to pod</div><pre>Internet (HTTPS :443)
+     |
+     v
+Cloud Load Balancer (AWS ALB / GCP GLB)
+  Provisioned by: Service type=LoadBalancer
+              or: Ingress + Ingress Controller
+     |
+  +--+--+--+  (traffic to any node)
+  |     |  |
+Node1 Node2 Node3
+:30080 :30080 :30080  (NodePort, same on every node)
+  |
+  v
+kube-proxy (iptables/ipvs rules on each node)
+ClusterIP: 10.96.43.21:80  <-- Service (virtual IP, not a real interface)
+  |
+  | load balances (random or round-robin) to matching pods
+  | (podSelector: app=myapp, readiness probe must pass)
+  +----------------------+
+  v                      v
+Pod 10.244.1.15:8080   Pod 10.244.2.7:8080
+(Node 1)               (Node 2)
+
+Service types:
+  ClusterIP    -- internal only (default)
+  NodePort     -- every node IP:port 30000-32767
+  LoadBalancer -- cloud LB (one per service, costs money)
+  ExternalName -- DNS CNAME alias, no proxy
+  Headless     -- no ClusterIP, DNS returns pod IPs directly</pre></div>
+
+<h3 class="sub">Ingress — L7 HTTP Routing</h3>
+<div class="arch"><div class="arch-label">Ingress routing — one LB, many services</div><pre>Client -> api.example.com/v1/users
+     |
+     v
+LoadBalancer IP: 1.2.3.4  (ONE per Ingress Controller -- saves $)
+     |
+     v
+Ingress Controller Pod  (nginx / traefik / envoy / aws-alb)
++-------------------------------------------------------+
+|  Ingress Rules (watches Ingress K8s objects):         |
+|                                                       |
+|  host: api.example.com                               |
+|    /v1/users   -> user-service:80                    |
+|    /v1/orders  -> order-service:80                   |
+|    /v1/payment -> payment-service:8080               |
+|                                                       |
+|  host: admin.example.com                             |
+|    /           -> admin-service:8080                 |
+|                                                       |
+|  TLS:                                                |
+|    secretName: tls-wildcard                          |
+|    cert-manager renews automatically (ACME/Let's Encrypt)|
++-------------------+-----------------------------------+
+                    |
+         +----------+-----------+
+         v                      v
+user-service ClusterIP     order-service ClusterIP
+-> [pod pod pod]            -> [pod pod pod]</pre></div>
+
+<h3 class="sub">DNS and Service Discovery</h3>
+<div class="arch"><div class="arch-label">CoreDNS resolution — pod calls service name</div><pre>Pod in namespace: payments
+  curl http://user-svc          # same namespace, short name
+       |
+       | DNS query (search domains: payments.svc.cluster.local,
+       |            svc.cluster.local, cluster.local)
+       v
+CoreDNS (kube-dns ClusterIP: 10.96.0.10)
+  Resolves: user-svc.payments.svc.cluster.local
+  Returns:  10.96.43.21  (ClusterIP)
+       |
+       v
+iptables DNAT rule (kube-proxy programmed):
+  10.96.43.21:80 -> 10.244.1.15:8080 (selected pod)
+       |
+       v
+Pod 10.244.1.15:8080  (actual pod, different node ok)
+
+Cross-namespace call:
+  curl http://user-svc.auth   # short form
+  curl http://user-svc.auth.svc.cluster.local  # FQDN
+
+StatefulSet stable DNS (mysql headless service):
+  mysql-0.mysql.default.svc.cluster.local -> 10.244.1.5
+  mysql-1.mysql.default.svc.cluster.local -> 10.244.2.8</pre></div>
+
+<h3 class="sub">NetworkPolicy — Zero-Trust Between Pods</h3>
+<div class="code-wrap"><div class="code-head"><span class="code-lang">yaml — default-deny + targeted allow</span><button class="copy-btn">copy</button></div>
+<pre class="code"># Default deny ALL traffic in namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: production
+spec:
+  podSelector: {}          # all pods
+  policyTypes: [Ingress, Egress]   # no rules = deny all
+---
+# Allow API pods to receive from ingress-nginx only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-api-ingress
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: api
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: ingress-nginx
+    ports:
+    - port: 8080
+---
+# Allow API pods egress to DB + DNS only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-api-egress
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: api
+  policyTypes: [Egress]
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres
+    ports:
+    - port: 5432
+  - to:   # always allow DNS
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - port: 53
+      protocol: UDP</pre></div>
+</div>
+
+<div id="storage" class="sec"><div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Storage — Volumes, PVs, StorageClasses</h2></div>
+<div class="arch"><div class="arch-label">Storage object hierarchy — pod to disk</div><pre>Pod
++------------------------------------------------+
+|  volumeMounts:                                 |
+|  - name: data, mountPath: /var/data            |
+|  volumes:                                      |
+|  - name: data                                  |
+|    persistentVolumeClaim:                      |
+|      claimName: my-pvc  ----------------+     |
++------------------------------------------------+
+                                          |
+                                          v
+PersistentVolumeClaim (PVC)  [namespaced, user-facing]
++------------------------------------------------+
+|  accessModes: [ReadWriteOnce]                  |
+|  resources.requests.storage: 10Gi             |
+|  storageClassName: gp3                         |
+|  status: Bound -> pv-abc123 ----------------+ |
++------------------------------------------------+
+                                             |
++----StorageClass---------+                  |
+|  provisioner:           |  <-- dynamic     |
+|  ebs.csi.aws.com        |  provisioning    |
+|  parameters:            |                  |
+|    type: gp3            |  creates PV      |
++-------------------------+                  |
+                                             v
+PersistentVolume (PV)  [cluster-scoped, admin-facing]
++------------------------------------------------+
+|  capacity: 10Gi                                |
+|  accessModes: [ReadWriteOnce]                  |
+|  reclaimPolicy: Delete | Retain | Recycle      |
+|  csi:                                          |
+|    driver: ebs.csi.aws.com                     |
+|    volumeHandle: vol-0a1b2c3d4e               |
++------------------------------------------------+
+                                          |
+                                          v
+                                   AWS EBS Volume
+
+Access modes:
+  RWO  ReadWriteOnce    -- one node (EBS, local disk)
+  ROX  ReadOnlyMany     -- many nodes read-only
+  RWX  ReadWriteMany    -- many nodes read+write (NFS, EFS)
+  RWOP ReadWriteOncePod -- exactly one pod</pre></div>
+<p class="body"><strong>emptyDir:</strong> ephemeral, deleted when pod dies. Use for scratch space and sidecar log sharing. <strong>configMap/secret:</strong> mounted as files, auto-updated when ConfigMap changes (with some delay). <strong>hostPath:</strong> mounts node filesystem path — security risk, never for user workloads. <strong>projected:</strong> combines multiple sources into one mountPath (ServiceAccount token + ConfigMap + Secret).</p>
+</div>
+
+<div id="scheduling" class="sec"><div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Scheduling — How Pods Land on Nodes</h2></div>
+<div class="arch"><div class="arch-label">Scheduler pipeline — Filter → Score → Bind</div><pre>New Pod (phase: Pending) enters scheduler queue
+     |
+     v
+FILTER PHASE  (eliminate ineligible nodes)
++----------------------------------------------------------+
+|  NodeResourcesFit    enough CPU/memory headroom?         |
+|  NodeAffinity        node labels match required terms?   |
+|  TaintToleration     pod tolerates all node taints?      |
+|  NodeUnschedulable   node cordoned by admin?             |
+|  VolumeBinding       PVCs can bind on this node?         |
+|  PodTopologySpread   spreading constraints satisfied?    |
+|  InterPodAffinity    co-location rules met?              |
+|                                                          |
+|  Result: {node1, node3, node7}  (feasible set)          |
++----------------------------------------------------------+
+     |
+     v
+SCORE PHASE  (rank feasible nodes 0-100)
++----------------------------------------------------------+
+|  LeastAllocated      prefer nodes with more free CPU/mem  |
+|  BalancedAllocation  balance CPU vs memory utilisation    |
+|  ImageLocality       prefer nodes with image already cached|
+|  NodeAffinity        bonus score for preferred affinity   |
+|  InterPodAffinity    bonus for preferred co-location      |
+|  TaintToleration     bonus for preferred tolerations      |
+|                                                           |
+|  Result: node3 wins (score: 94/100)                      |
++----------------------------------------------------------+
+     |
+     v
+BIND: write pod.spec.nodeName = "node3" to etcd
+  node3 kubelet watches -> pulls image -> starts containers</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">yaml — taints, tolerations, affinity, topology spread</span><button class="copy-btn">copy</button></div>
+<pre class="code"># Taint GPU node: only GPU workloads land here
+# kubectl taint nodes gpu-node-1 gpu=true:NoSchedule
+
+spec:
+  tolerations:
+  - key: "gpu"
+    operator: Equal
+    value: "true"
+    effect: NoSchedule          # tolerate the taint
+
+  affinity:
+    nodeAffinity:
+      # HARD: must match (pod won't schedule if fails)
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values: [amd64]
+      # SOFT: prefer but not required
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: node.kubernetes.io/instance-type
+            operator: In
+            values: [p3.8xlarge, p4d.24xlarge]
+
+    podAntiAffinity:             # spread across zones
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels: {app: myapp}
+        topologyKey: topology.kubernetes.io/zone
+
+  # PodTopologySpreadConstraints (better than anti-affinity for spreading)
+  topologySpreadConstraints:
+  - maxSkew: 1                   # max imbalance between zones
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels: {app: myapp}</pre></div>
+
+<div class="arch"><div class="arch-label">QoS classes — determines eviction order under pressure</div><pre>Guaranteed  (last to be evicted)
+  requests.cpu == limits.cpu AND requests.memory == limits.memory
+  Exact amount reserved. CPU throttled at limit. OOMKilled at limit.
+
+Burstable   (second to be evicted)
+  requests < limits (or only requests set)
+  Can burst above requests when capacity available.
+  Throttled/OOMKilled at limits.
+
+BestEffort  (first to be evicted -- NEVER use in production)
+  No requests or limits set.
+  Can consume any available capacity.
+  First evicted when node is under memory pressure.
+
+Node memory pressure eviction order:
+  BestEffort -> Burstable (most over-request first) -> Guaranteed</pre></div>
+</div>
+
+<div id="security" class="sec"><div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Security — RBAC, Pod Security, Supply Chain</h2></div>
+<div class="arch"><div class="arch-label">RBAC object model</div><pre>Subject                  Binding                  Role / ClusterRole
++------------------+     +-----------------+      +----------------------+
+| User             |     | subjects:       |      | rules:               |
+| Group            |---->|   name: dev-svc |----->| - apiGroups: [""]    |
+| ServiceAccount   |     | roleRef:        |      |   resources: [pods]  |
++------------------+     |   kind: Role    |      |   verbs: [get, list] |
+                         |   name: pod-rdr |      +----------------------+
+                         +-----------------+      (namespaced = Role)
+                                                  (cluster-wide = ClusterRole)
+
+Binding types:
+  RoleBinding        binds Role to subject IN ONE NAMESPACE
+  ClusterRoleBinding binds ClusterRole to subject CLUSTER-WIDE
+
+Evaluation logic (PURE ALLOW logic -- no deny rules in RBAC):
+  1. Check all applicable RoleBindings + ClusterRoleBindings
+  2. Any binding grants the permission? -> ALLOW
+  3. No match? -> DENY (implicit -- default)
+  Note: There is no explicit Deny in RBAC. Use NetworkPolicy for that.
+
+Common mistake: using ClusterRoleBinding for namespace-scoped work
+  Better: RoleBinding + ClusterRole (bind cluster role to one namespace)</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">yaml — minimal RBAC + hardened pod security</span><button class="copy-btn">copy</button></div>
+<pre class="code">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: notification-svc
+  namespace: production
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::123:role/notification  # IRSA
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: notification-role
+  namespace: production
+rules:
+- apiGroups: [""]
+  resources: [configmaps]
+  verbs: [get, list, watch]        # read-only
+- apiGroups: [""]
+  resources: [secrets]
+  resourceNames: [notif-creds]     # specific secret only
+  verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: notification-rb
+  namespace: production
+subjects:
+- kind: ServiceAccount
+  name: notification-svc
+  namespace: production
+roleRef:
+  kind: Role
+  name: notification-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Hardened pod security context
+spec:
+  automountServiceAccountToken: false   # disable unless needed
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    seccompProfile:
+      type: RuntimeDefault              # restrict syscalls
+  containers:
+  - name: app
+    securityContext:
+      allowPrivilegeEscalation: false   # no setuid escalation
+      readOnlyRootFilesystem: true      # immutable container FS
+      capabilities:
+        drop: ["ALL"]                   # drop ALL Linux capabilities
+      privileged: false
+    resources:
+      requests: {cpu: "100m", memory: "128Mi"}
+      limits:   {cpu: "500m", memory: "512Mi"}
+    volumeMounts:
+    - name: tmp
+      mountPath: /tmp
+  volumes:
+  - name: tmp
+    emptyDir: {}</pre></div>
+</div>
+
+<div id="operators" class="sec"><div class="sec-head"><span class="sec-num">08</span><h2 class="sec-title">Operators and Custom Resources</h2></div>
+<p class="body">An Operator encodes operational knowledge in code. It extends Kubernetes with custom resource types (CRDs) and custom controllers that watch those resources and act on them. A PostgreSQL Operator watches for <code>PostgresCluster</code> objects and handles provisioning, failover, backups, and upgrades automatically.</p>
+<div class="arch"><div class="arch-label">Operator pattern — CRD + controller reconciliation loop</div><pre>User applies:
+  apiVersion: postgres-operator.crunchydata.com/v1beta1
+  kind: PostgresCluster
+  metadata: {name: prod-db}
+  spec:
+    instances: [{replicas: 3, dataVolumeClaimSpec: {10Gi}}]
+    backups: {pgbackrest: {repos: [{schedules: {full: "0 1 * * 0"}}]}}
+          |
+          | stored in etcd as custom resource
+          v
+PostgreSQL Operator Controller (pod in cluster)
++--------------------------------------------------+
+|  Watch loop (uses controller-runtime library):   |
+|                                                  |
+|  1. Receive event: PostgresCluster created       |
+|  2. Read spec (3 replicas, 10Gi storage, backup) |
+|  3. Observe actual: no StatefulSet, no Services  |
+|  4. Calculate diff -> create resources:          |
+|     - StatefulSet: postgres-primary (1 pod)      |
+|     - StatefulSet: postgres-replica (2 pods)     |
+|     - Service: postgres-primary (read/write)     |
+|     - Service: postgres-replica (read-only)      |
+|     - PVCs: 3 × 10Gi EBS volumes                |
+|     - Secret: postgres credentials (generated)  |
+|     - CronJob: weekly full backup                |
+|  5. Patroni manages leader election              |
+|  6. On failure: auto-failover, promote replica   |
++--------------------------------------------------+
+          |
+          v
+Running: primary (write) + 2 replicas (read) + scheduled backups
+Status written back to PostgresCluster.status (observable)</pre></div>
+
+<h3 class="sub">Writing a Simple Operator in Go</h3>
+<div class="code-wrap"><div class="code-head"><span class="code-lang">go — minimal operator reconcile loop (controller-runtime)</span><button class="copy-btn">copy</button></div>
+<pre class="code">// controller-runtime reconciler pattern
+type MyAppReconciler struct {
+  client.Client
+  Scheme *runtime.Scheme
+}
+
+// Reconcile is called whenever a MyApp object changes
+// (or on error retry, or periodic requeue)
+func (r *MyAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+  log := log.FromContext(ctx)
+
+  // 1. Fetch the custom resource
+  var app myv1.MyApp
+  if err := r.Get(ctx, req.NamespacedName, &app); err != nil {
+    return ctrl.Result{}, client.IgnoreNotFound(err)
+  }
+
+  // 2. Build the desired Deployment
+  desired := &appsv1.Deployment{
+    ObjectMeta: metav1.ObjectMeta{
+      Name:      app.Name,
+      Namespace: app.Namespace,
+    },
+    Spec: buildDeploymentSpec(app.Spec),
+  }
+  // Set ownership: deleting MyApp cascades to Deployment
+  ctrl.SetControllerReference(&app, desired, r.Scheme)
+
+  // 3. Create or Update (server-side apply)
+  var existing appsv1.Deployment
+  if err := r.Get(ctx, req.NamespacedName, &existing); err != nil {
+    if apierrors.IsNotFound(err) {
+      return ctrl.Result{}, r.Create(ctx, desired)
+    }
+    return ctrl.Result{}, err
+  }
+  existing.Spec = desired.Spec
+  return ctrl.Result{}, r.Update(ctx, &existing)
+}
+
+// SetupWithManager: watch MyApp + owned Deployments
+func (r *MyAppReconciler) SetupWithManager(mgr ctrl.Manager) error {
+  return ctrl.NewControllerManagedBy(mgr).
+    For(&myv1.MyApp{}).
+    Owns(&appsv1.Deployment{}).  // requeue if owned Deployment changes
+    Complete(r)
+}</pre></div>
+</div>
+
+<div id="observability" class="sec"><div class="sec-head"><span class="sec-num">09</span><h2 class="sec-title">Observability</h2></div>
+<div class="arch"><div class="arch-label">Full observability stack</div><pre>Application Pods
++---------------------------------------------------------------+
+|  /metrics endpoint (Prometheus exposition format)             |
+|  stdout/stderr logs (JSON structured)                         |
+|  OTLP traces -> otel-collector sidecar/daemonset              |
++-------+----------------------------+---------------------------+
+        |                            |
+        v                            v
+Prometheus                     FluentBit DaemonSet
++--------------------+         +--------------------------+
+| Scrapes /metrics   |         | Tails /var/log/containers|
+| ServiceMonitor CRD |         | Parses JSON logs         |
+| (kube-prometheus)  |         | Adds K8s metadata        |
+| AlertManager       |         | Forwards -> Loki / ES    |
++--------------------+         +--------------------------+
+        |
+        v
+Grafana
++--------------------------------------------------------+
+|  Data sources: Prometheus, Loki, Tempo, Alertmanager  |
+|  Dashboards: cluster health, pod CPU/mem, latency     |
+|  Alerts: PagerDuty / Slack / OpsGenie                |
++--------------------------------------------------------+
+
+Key metrics (know these for interviews):
+  kube_pod_status_phase{phase="Failed"}   -- pod health
+  container_memory_working_set_bytes       -- actual memory (not cache)
+  container_cpu_usage_seconds_total        -- CPU usage
+  kube_node_status_condition{type="Ready"} -- node readiness
+  apiserver_request_duration_seconds       -- control plane latency
+  etcd_server_leader_changes_seen_total    -- etcd stability</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">yaml — liveness, readiness, and startup probes</span><button class="copy-btn">copy</button></div>
+<pre class="code">containers:
+- name: app
+  startupProbe:            # Disables liveness/readiness until passes
+    httpGet:               # Gives slow-starting apps time to boot
+      path: /healthz
+      port: 8080
+    failureThreshold: 30   # 30 * 10s = 5 min startup window
+    periodSeconds: 10
+
+  livenessProbe:           # RESTART container if this fails
+    httpGet:               # Use for deadlock detection
+      path: /healthz       # NOT for dependency checks (use readiness)
+      port: 8080
+    periodSeconds: 10
+    failureThreshold: 3    # 3 consecutive failures -> restart
+
+  readinessProbe:          # REMOVE from Service endpoints if fails
+    httpGet:               # Does NOT restart the container
+      path: /ready         # Check DB connection, cache warmup, etc.
+      port: 8080
+    periodSeconds: 5
+    failureThreshold: 1    # 1 failure -> removed from load balancer
+
+# Rule: liveness = is the process alive? (deadlock -> restart)
+# Rule: readiness = can the process serve? (warming up -> remove from LB)
+# Mistake: same endpoint for both -- a deadlock won't fail a DB check</pre></div>
+</div>
+
+<div id="advanced" class="sec"><div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Advanced Patterns</h2></div>
+
+<h3 class="sub">HPA and KEDA — Autoscaling</h3>
+<div class="arch"><div class="arch-label">HPA control loop + KEDA event-driven scaling</div><pre>HPA Controller (runs every 15 seconds)
+  1. Query metrics-server: current CPU = 80% across 3 pods
+  2. Calculate desired replicas:
+     desired = ceil(current * (current_metric / target_metric))
+     desired = ceil(3 * 80/50) = ceil(4.8) = 5 pods
+  3. Scale Deployment to 5 (within minReplicas/maxReplicas)
+  4. Scale-up cooldown: 0s (immediate)
+     Scale-down cooldown: 5 min (prevents thrashing)
+
+KEDA (Kubernetes Event-Driven Autoscaler):
+  Scale on: Kafka consumer lag, SQS queue depth,
+            Prometheus query, Datadog metric, HTTP RPS
+  Scale to ZERO when no messages (saves cost for batch workloads)
+
+  Example ScaledObject:
+    triggers:
+    - type: kafka
+      metadata:
+        topic: orders
+        consumerGroup: order-processor
+        lagThreshold: "100"     # scale up if lag > 100 messages
+  -> KEDA scales Deployment from 0 to N based on lag depth</pre></div>
+
+<h3 class="sub">Service Mesh — Istio Architecture</h3>
+<div class="arch"><div class="arch-label">Istio sidecar proxy — zero-trust service communication</div><pre>Pod A (namespace: payments)          Pod B (namespace: orders)
++------------------------------+      +------------------------------+
+|  app container :8080         |      |  app container :8080         |
+|  (thinks it talks to :8080)  |      |                              |
+|         |                   |      |         ^                    |
+|         | outbound          |      |         | inbound            |
+|         v (iptables REDIRECT)|      |         | (iptables REDIRECT)|
+|  envoy sidecar :15001        |      |  envoy sidecar :15006        |
+|  - mTLS to all services      |+mTLS>|  - Validates client cert      |
+|  - Retry / timeout policy    |      |  - AuthorizationPolicy check  |
+|  - Circuit breaker           |      |  - Decrypts, forwards :8080  |
+|  - Emits: metrics + traces   |      |  - Emits: metrics + traces   |
++------------------------------+      +------------------------------+
+
+Istiod (control plane):
++--------------------------------------------------+
+|  Pilot: pushes Envoy config via xDS protocol     |
+|  Citadel: issues mTLS certs (SPIFFE/X.509)       |
+|  Galley: validates Istio configuration           |
++--------------------------------------------------+
+
+What you get for FREE (no app code changes):
+  mTLS between all services (zero-trust by default)
+  Distributed tracing (trace headers propagated by Envoy)
+  L7 metrics: request rate, error rate, p50/p99 latency
+  Traffic management: canary %, A/B, circuit breaking, retries
+  Authorization policies: "payments can call orders, nothing else"</pre></div>
+
+<h3 class="sub">GitOps with ArgoCD</h3>
+<div class="arch"><div class="arch-label">GitOps deployment pipeline</div><pre>Developer: git push -> PR -> merge to main
+     |
+     v
+CI Pipeline (GitHub Actions / Tekton)
+  Build + test -> push image:v1.2.3 to registry
+  Update manifests/prod/values.yaml: image.tag: v1.2.3
+  git commit + push -> manifests repo
+     |
+     v
+Git Repository  (SINGLE SOURCE OF TRUTH for cluster state)
+  manifests/
+    production/
+      deployment.yaml   <- image tag updated by CI
+      service.yaml
+      ingress.yaml
+     |
+     | ArgoCD watches every 3 minutes (or webhook trigger)
+     v
+ArgoCD (running in-cluster)
++--------------------------------------------------+
+|  Compares: git state vs cluster state            |
+|  Detects: image tag changed                      |
+|  Applies: kubectl apply the diff                 |
+|  Prunes: removes resources deleted from git      |
+|  Status: Synced / OutOfSync / Degraded           |
+|                                                  |
+|  Rollback: git revert -> ArgoCD auto-syncs back  |
+|  Drift detection: manual change to cluster ->    |
+|    ArgoCD marks OutOfSync -> can auto-revert     |
++--------------------------------------------------+
+     |
+     v
+Kubernetes cluster converges to git state</pre></div>
+
+<div class="tbl-wrap"><table>
+  <thead><tr><th>Multi-Tenancy Pattern</th><th>Isolation level</th><th>Cost</th><th>Use when</th></tr></thead>
+  <tbody>
+    <tr><td>Namespace per team</td><td>RBAC + NetworkPolicy + ResourceQuota</td><td>Low</td><td>Trusted internal teams, same company</td></tr>
+    <tr><td>Cluster per environment</td><td>Full cluster isolation</td><td>Medium</td><td>prod/staging/dev separation</td></tr>
+    <tr><td>Cluster per customer</td><td>Maximum — separate control plane</td><td>High</td><td>Regulated industries, untrusted tenants</td></tr>
+    <tr><td>vcluster</td><td>Virtual API server in a pod</td><td>Low-medium</td><td>Self-service dev environments</td></tr>
+  </tbody>
+</table></div>
+</div>
+
+<div id="flashcards" class="sec"><div class="sec-head"><span class="sec-num">→</span><h2 class="sec-title">Flash Cards</h2></div>
+<div class="fc-grid">
+  <div class="fc"><div class="fc-q">What is etcd and which component is the only one that talks to it?</div><div class="fc-a">etcd is the only persistent state store in Kubernetes — all API objects are stored here using Raft consensus. Only the kube-apiserver talks to etcd directly. All other components (controllers, kubelet, scheduler) interact through the apiserver. Loss of etcd quorum makes the cluster read-only at best.</div></div>
+  <div class="fc"><div class="fc-q">Liveness vs readiness vs startup probe — what does each failure do?</div><div class="fc-a">Startup: disables liveness/readiness until it passes — for slow-starting apps. Liveness failure: restarts the container — use for deadlock detection. Readiness failure: removes pod from Service endpoints, does NOT restart — use for "not ready to serve" (warming cache, waiting on DB). Same endpoint for both is a common mistake.</div></div>
+  <div class="fc"><div class="fc-q">Deployment vs StatefulSet — when do you use each?</div><div class="fc-a">Deployment: stateless workloads, interchangeable pods, random names, no stable storage. StatefulSet: stable pod names (mysql-0, mysql-1), stable DNS per pod (mysql-0.mysql.ns.svc...), PVCs that follow the pod, ordered startup/shutdown. Use StatefulSet for databases, Kafka, ZooKeeper — anything needing stable identity.</div></div>
+  <div class="fc"><div class="fc-q">What are the four K8s networking requirements? How does DNS resolution work?</div><div class="fc-a">Every pod gets unique IP; pods reach each other without NAT; nodes reach pods without NAT; pod's self-IP equals what others use to reach it. DNS: CoreDNS resolves service names to ClusterIP. kube-proxy programs iptables/ipvs rules to DNAT ClusterIP to actual pod IPs. Full name: service.namespace.svc.cluster.local.</div></div>
+  <div class="fc"><div class="fc-q">How does the scheduler choose a node for a pod? Two phases.</div><div class="fc-a">Filter: eliminate nodes that can't run the pod (insufficient resources, taint not tolerated, affinity not matched, PVC can't bind). Score: rank remaining 0-100 (prefer least-loaded, image cached, preferred affinity). Bind: write pod.spec.nodeName to etcd. kubelet on that node watches and starts the pod.</div></div>
+  <div class="fc"><div class="fc-q">RBAC: how does evaluation work? Can you deny access in RBAC?</div><div class="fc-a">RBAC is pure-allow: any matching binding grants the permission; no match = implicit deny. There is NO explicit deny in RBAC — you can't write a rule that blocks. To restrict access, don't create the binding. For real network-level deny between pods, use NetworkPolicy. Common mistake: ClusterRoleBinding for namespace-scoped work — use RoleBinding instead.</div></div>
+  <div class="fc"><div class="fc-q">What is an Operator and how does it differ from a Deployment?</div><div class="fc-a">A Deployment runs generic stateless containers and handles basic lifecycle. An Operator = CRD (custom resource type) + custom controller (reconciliation loop). It watches custom resources and manages the full operational lifecycle — provisioning, failover, backups, upgrades, scaling — encoding domain-specific knowledge that a human operator would otherwise perform manually.</div></div>
+  <div class="fc"><div class="fc-q">Resource requests vs limits — what does each control?</div><div class="fc-a">Requests: used by the scheduler for node selection (node must have enough unreserved capacity). Limits: enforced by the runtime. CPU: throttled at limit (never killed). Memory: OOMKilled if container exceeds limit and restarts. QoS: Guaranteed (req=limit), Burstable (req&lt;limit), BestEffort (none). BestEffort is evicted first under memory pressure.</div></div>
+</div>
+</div>
+
+</article></div></div>
+<div class="wrap"><footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
   </div>
-</footer>
+</footer></div>
 <script>
-document.querySelectorAll(".code-copy").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
-    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => { btn.textContent = 'copied'; setTimeout(() => btn.textContent = 'copy', 1500); });
   });
 });
-const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
-const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
-secs.forEach(s=>ob.observe(s));
+const secs = document.querySelectorAll('[id]');
+const tl = document.querySelectorAll('.toc-item');
+const ob = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tl.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector('.toc-item a[href="#' + e.target.id + '"]');
+      if (a) a.closest('.toc-item').classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+secs.forEach(s => ob.observe(s));
 </script>
 </body>
 </html>

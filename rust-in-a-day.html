@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rust in a Day — Engineering OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -12,120 +14,808 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);min-height:100vh}
 nav{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--rule)}
 .nav-inner{max-width:1060px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:52px}
-.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.nav-back:hover{color:var(--ink)}
+.nav-back{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3);transition:color .15s}.nav-back:hover{color:var(--ink)}
 .nav-badge{font-family:var(--mono);font-size:11px;color:var(--ink-4);border:1px solid var(--rule);padding:3px 10px;border-radius:12px}
-.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
-.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}
-@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
-.toc{position:sticky;top:72px}
-@media(max-width:900px){.toc{display:none}}
-.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}@media(max-width:700px){.wrap{padding:0 20px}}
+.doc-layout{display:grid;grid-template-columns:200px 1fr;gap:64px;align-items:start;padding:48px 0 96px}@media(max-width:900px){.doc-layout{grid-template-columns:1fr}}
+.toc{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto}@media(max-width:900px){.toc{display:none}}
+.toc-label{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
 .toc-list{list-style:none;display:flex;flex-direction:column;gap:1px}
-.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s}
-.toc-item a:hover,.toc-item.active a{color:var(--ink);border-left-color:var(--ink)}
+.toc-item a{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;padding:4px 0 4px 12px;border-left:2px solid transparent;transition:color .15s,border-color .15s;line-height:1.4}
+.toc-item a:hover{color:var(--ink);border-left-color:var(--ink-3)}.toc-item.active a{color:var(--ink);border-left-color:var(--ink);font-weight:500}
+.toc-div{height:1px;background:var(--rule);margin:7px 0 7px 12px}
 .article-header{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
-.art-eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
-.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px}
+.art-eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.art-badge{padding:3px 8px;border-radius:4px;background:var(--lime-dim);border:1px solid #b8f06040;color:var(--teal);font-size:10px;font-weight:500}
 h1.art-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.025em;line-height:1.05;color:var(--ink);margin-bottom:16px}
 h1.art-title em{font-style:italic;font-weight:300;color:var(--ink-3)}
 .art-subtitle{font-size:16px;color:var(--ink-2);line-height:1.75;max-width:600px}
-.art-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
-.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
-.schedule{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:48px}
-.sched-block{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
-.sched-time{font-family:var(--mono);font-size:9px;color:var(--ink-4);margin-bottom:4px}
-.sched-topic{font-size:11px;color:var(--ink-2);font-weight:500;line-height:1.4}
-.section-anchor{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
-.section-anchor:first-child{margin-top:0;padding-top:0;border-top:none}
-.section-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
-.section-h{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
-h3.sub-h{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
-h3.sub-h::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
+.art-meta{display:flex;gap:20px;margin-top:24px;flex-wrap:wrap}
+.meta-pill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}.meta-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--rule-2)}
+.sec{margin-top:60px;padding-top:60px;border-top:1px solid var(--rule)}.sec:first-child{margin-top:0;padding-top:0;border-top:none}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:20px}
+.sec-num{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:28px;flex-shrink:0}
+.sec-title{font-family:var(--serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.1}
+h3.sub{font-size:15px;font-weight:500;color:var(--ink);margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:"";display:block;width:3px;height:14px;border-radius:2px;background:var(--rule-2);flex-shrink:0}
 p.body{font-size:15px;color:var(--ink-2);line-height:1.8;margin-bottom:14px}
-p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
+p.body strong{color:var(--ink);font-weight:500}p.body code{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px;color:var(--ink)}
 .callout{border-left:3px solid var(--callout-color,var(--rule-2));background:var(--callout-bg,var(--paper-2));padding:16px 20px;border-radius:0 var(--r) var(--r) 0;margin:20px 0}
 .callout-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--callout-color,var(--ink-4));margin-bottom:6px}
-.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}
+.callout p{font-size:14px;color:var(--ink-2);line-height:1.7;margin:0}.callout p+p{margin-top:8px}
+.arch{background:var(--ink);border-radius:var(--r-lg);padding:22px 26px;margin:20px 0;overflow-x:auto}
+.arch-label{font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.arch pre{font-family:var(--mono);font-size:11.5px;line-height:1.85;color:rgba(255,255,255,.8);margin:0;white-space:pre}
 .code-wrap{margin:16px 0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule)}
 .code-head{display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);border-bottom:1px solid var(--rule);padding:10px 16px}
 .code-lang{font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
-.code-copy{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer}
-.code-copy:hover{color:var(--ink)}
-pre{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85}
-.t-c{color:rgba(255,255,255,.28)}.t-k{color:#74c0fc}.t-s{color:#b8f060}.t-n{color:#ffa94d}.t-p{color:rgba(255,255,255,.55)}.t-t{color:#cc5de8}.t-f{color:#63e6be}.t-r{color:rgba(255,255,255,.8)}
-.table-wrap{overflow-x:auto;margin:16px 0}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{border-bottom:2px solid var(--rule)}
-thead th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;text-align:left;font-weight:500}
-tbody tr{border-bottom:1px solid var(--rule)}
-tbody tr:last-child{border-bottom:none}
-tbody td{padding:10px 12px;color:var(--ink-2);line-height:1.5;vertical-align:top}
-tbody td:first-child{font-weight:500;color:var(--ink)}
-tbody td code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
-.flashcard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
-@media(max-width:600px){.flashcard-grid{grid-template-columns:1fr}}
-.flashcard{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px}
-.fc-q{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
+.copy-btn{font-family:var(--mono);font-size:10px;color:var(--ink-4);background:none;border:1px solid var(--rule);padding:3px 8px;border-radius:4px;cursor:pointer;transition:color .15s}.copy-btn:hover{color:var(--ink)}
+pre.code{background:var(--ink);overflow-x:auto;padding:20px 24px;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:rgba(255,255,255,.8)}
+.checkpoint{background:var(--ink);border-radius:var(--r-lg);padding:28px 32px;margin:24px 0}
+.cp-label{font-family:var(--mono);font-size:10px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.cp-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--paper);margin-bottom:14px}
+.cp-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.cp-item{display:flex;gap:10px;font-size:13px;color:rgba(245,243,238,.7);line-height:1.6}
+.cp-item::before{content:"→";color:var(--lime);flex-shrink:0;font-family:var(--mono)}
+.fc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}@media(max-width:600px){.fc-grid{grid-template-columns:1fr}}
+.fc{background:var(--paper-2);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px}
+.fc-q{font-family:var(--mono);font-size:11px;color:var(--ink);margin-bottom:10px;font-weight:500;line-height:1.5}
 .fc-a{font-size:13px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--rule);padding-top:10px}
-.fc-a code{font-family:var(--mono);font-size:11px;background:var(--paper-3);padding:1px 5px;border-radius:3px}
 footer{border-top:1px solid var(--rule);padding:28px 0}
 </style>
-
-<title>Rust — Expert Level Systems — Engineering OS</title>
 </head>
 <body>
-<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">🦀 Rust · 7h · Systems</div></div></nav>
+<nav><div class="nav-inner"><a href="index.html" class="nav-back">← Platform</a><div class="nav-badge">🦀 Rust · Ownership to Async · Systems Level</div></div></nav>
 <div class="wrap"><div class="doc-layout">
-<aside class="toc"><div class="toc-label">Contents</div><ul class="toc-list">
-<li class="toc-item"><a href="#overview">Overview</a></li>
-<li class="toc-item"><a href="#core">Core Concepts</a></li>
-<li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
-</ul></aside>
+<aside class="toc">
+  <div class="toc-label">Contents</div>
+  <ul class="toc-list">
+    <li class="toc-item"><a href="#why">Why Rust</a></li>
+    <li class="toc-item"><a href="#ownership">Ownership Model</a></li>
+    <li class="toc-item"><a href="#borrowing">Borrowing &amp; Lifetimes</a></li>
+    <li class="toc-item"><a href="#types">Type System</a></li>
+    <li class="toc-item"><a href="#traits">Traits</a></li>
+    <div class="toc-div"></div>
+    <li class="toc-item"><a href="#concurrency">Concurrency</a></li>
+    <li class="toc-item"><a href="#async">Async / Await</a></li>
+    <li class="toc-item"><a href="#memory">Memory Layout</a></li>
+    <li class="toc-item"><a href="#unsafe">Unsafe Rust</a></li>
+    <li class="toc-item"><a href="#patterns">Advanced Patterns</a></li>
+    <div class="toc-div"></div>
+    <li class="toc-item"><a href="#flashcards">Flash Cards</a></li>
+  </ul>
+</aside>
 <article>
 <div class="article-header">
-  <div class="art-eyebrow"><span class="art-badge">Crash Course</span>🦀 Rust · 7h · Systems</div>
-  <h1 class="art-title">Rust — Expert Level Systems</h1>
-  <p class="art-subtitle">Lifetime variance and Higher-Ranked Trait Bounds. Async internals: Pin, Waker, how Tokio polls futures. When unsafe is justified. Zero-cost abstractions unpacked at the assembly level.</p>
+  <div class="art-eyebrow"><span class="art-badge">Systems</span> Ownership · Lifetimes · Async · Zero-Cost Abstractions</div>
+  <h1 class="art-title">Rust<br><em>in a Day</em></h1>
+  <p class="art-subtitle">Memory safety without a garbage collector — from first principles. Ownership, borrowing, lifetimes, traits, fearless concurrency, async/await internals, and unsafe Rust. With architecture diagrams for every mental model that engineers get wrong.</p>
   <div class="art-meta">
-    <div class="meta-pill"><div class="meta-pill-dot"></div>Senior-level depth</div>
-    <div class="meta-pill"><div class="meta-pill-dot"></div>No beginner scaffolding</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Basics to advanced</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>Architecture diagrams throughout</div>
+    <div class="meta-pill"><div class="meta-pill-dot"></div>~8 hours</div>
   </div>
 </div>
 
-<div id="overview" class="section-anchor"><span class="section-num">01</span><h2 class="section-h">Overview</h2></div>
-<p class="body">Lifetime variance and Higher-Ranked Trait Bounds. Async internals: Pin, Waker, how Tokio polls futures. When unsafe is justified. Zero-cost abstractions unpacked at the assembly level.</p>
-<div class="callout" style="--callout-color:var(--teal);--callout-bg:#e0f7f0">
-  <div class="callout-label">How to use this module</div>
-  <p>Work through each section sequentially. At the end of each major section, close the page and write down the five things you'd explain to a colleague. Re-read only what you couldn't recall. Active recall is the mechanism — re-reading without testing is nearly useless for durable learning.</p>
-</div>
-<div id="core" class="section-anchor"><span class="section-num">02</span><h2 class="section-h">Core Concepts</h2></div>
-<p class="body">This module's content covers the depth required for senior and staff-level technical interviews, as well as day-to-day system design and architecture discussions. The goal is not to memorise facts but to build a mental model that lets you reason about unseen problems in this domain.</p>
-<div id="flashcards" class="section-anchor"><span class="section-num">03</span><h2 class="section-h">Flash Cards</h2></div>
-<div class="flashcard-grid">
-  <div class="flashcard"><div class="fc-q">How do you explain a trade-off in an interview without sounding vague?</div><div class="fc-a">Structure: "I'd choose X because [specific reason]. The cost is [specific downside]. I'd mitigate it with [specific mechanism]. I'd reconsider if [specific condition]." Never "it depends" without immediately saying what it depends on.</div></div>
-  <div class="flashcard"><div class="fc-q">What makes an answer staff-level vs senior-level?</div><div class="fc-a">Staff: proactively surfaces failure modes, names operational knobs (TTL, partition count, timeout budget), proposes observability, states migration path, ties decisions to business constraints. Senior: answers questions correctly. Staff: drives the conversation.</div></div>
+<div id="why" class="sec"><div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">Why Rust Exists</h2></div>
+<p class="body">70% of CVEs in C/C++ codebases are memory safety bugs: use-after-free, buffer overflows, data races, null pointer dereferences. Garbage-collected languages (Go, Java, Python) prevent these but pay a latency penalty for GC pauses and a throughput penalty for heap pressure. Rust eliminates memory safety bugs at compile time with <strong>zero runtime cost</strong> — no GC, no reference counting, no runtime checks.</p>
+<p class="body">The mechanism: the compiler statically verifies a set of ownership rules. If your code violates them, it does not compile. This is the borrow checker. It feels like fighting the compiler until you internalize the ownership model — then it feels like having a collaborator who catches every memory bug before the code runs.</p>
+<div class="arch"><div class="arch-label">Safety vs performance — where Rust sits</div><pre>                     Memory Safe?
+                     YES          NO
+                  +-----------+-----------+
+GC / runtime  YES | Java, Go  |     -     |
+                  | Python    |           |
+Performance   +-----------+-----------+
+(no GC)       NO  |  RUST     | C, C++    |
+                  | (zero GC) | (unsafe)  |
+                  +-----------+-----------+
+
+Rust's guarantee: the compiler proves memory safety
+  No use-after-free (ownership: value has exactly one owner)
+  No buffer overflow (bounds checks, slice types)
+  No null pointer (Option<T> instead of null)
+  No data races (Send/Sync traits enforce thread safety)
+  No dangling references (lifetimes prove reference validity)</pre></div>
 </div>
 
-</article>
-</div></div>
-<footer style="border-top:1px solid var(--rule);padding:28px 0">
-  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS &middot; <a href="index.html" style="color:var(--ink-3);text-decoration:none">&larr; Platform</a></div>
-    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel &middot; 2026</div>
+<div id="ownership" class="sec"><div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Ownership — The Core Model</h2></div>
+<p class="body">Rust's ownership system has three rules enforced at compile time: (1) each value has exactly one owner, (2) when the owner goes out of scope, the value is dropped (memory freed), (3) there can be at most one mutable reference OR any number of immutable references, but not both simultaneously.</p>
+<div class="arch"><div class="arch-label">Ownership, move, and drop</div><pre>OWNERSHIP RULES:
+  1. Every value has exactly ONE owner
+  2. When owner goes out of scope: value is Dropped (free)
+  3. Ownership can be MOVED (not copied)
+
+fn main() {
+    let s1 = String::from("hello");  // s1 OWNS the String
+    //        ^-- allocates on heap
+    
+    let s2 = s1;                     // MOVE: s1 -> s2
+    //        ownership transferred
+    //        s1 is now INVALID (compiler error if used)
+    
+    println!("{}", s2);              // ok: s2 is the owner
+    // println!("{}", s1);           // ERROR: value moved
+    
+}   // s2 goes out of scope: String is DROPPED (heap freed)
+//  No GC needed: compiler knows exactly when to free
+
+COPY vs MOVE:
+  Types that implement Copy: i32, f64, bool, char, tuples of Copy types
+  -> assignment copies the bits, original still valid
+  
+  Types that do NOT implement Copy: String, Vec, Box, most heap types
+  -> assignment MOVES ownership, original invalidated
+
+CLONE: explicit deep copy (expensive, always heap allocation)
+  let s2 = s1.clone();  // both s1 and s2 valid, different heap allocs</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — ownership and drop</span><button class="copy-btn">copy</button></div>
+<pre class="code">fn takes_ownership(s: String) {
+    println!("{s}");
+}   // s dropped here -- heap freed
+
+fn makes_copy(x: i32) {
+    println!("{x}");
+}   // x dropped here -- stack pop (trivial)
+
+fn gives_ownership() -> String {
+    let s = String::from("hello");
+    s   // moved to caller -- NOT dropped here
+}
+
+fn main() {
+    let s1 = gives_ownership();         // s1 owns the String
+    let s2 = String::from("world");
+    takes_ownership(s2);                // s2 moved into function
+    // println!("{s2}");               // ERROR: s2 was moved
+    makes_copy(5);                     // i32 is Copy, 5 still valid
+    
+    // RAII: Drop runs in reverse declaration order
+    let _a = MutexGuard::new();        // lock acquired
+    let _b = SomeResource::new();      // resource opened
+    // out of scope: _b dropped first, _a dropped second
+}   // s1 dropped -- heap freed
+
+// Custom Drop implementation
+struct FileHandle { fd: i32 }
+impl Drop for FileHandle {
+    fn drop(&mut self) {
+        unsafe { libc::close(self.fd); }  // runs automatically
+    }
+}</pre></div>
+</div>
+
+<div id="borrowing" class="sec"><div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Borrowing and Lifetimes</h2></div>
+<p class="body">Instead of moving ownership, you can <em>borrow</em> a reference to a value. Borrowing has rules: you can have any number of immutable references (<code>&T</code>), OR exactly one mutable reference (<code>&mut T</code>), but never both at the same time. Lifetimes ensure references never outlive the data they point to.</p>
+<div class="arch"><div class="arch-label">Borrow checker rules — visualised</div><pre>IMMUTABLE BORROWS: any number, simultaneously
+  let s = String::from("hello");
+  let r1 = &s;      // immutable borrow
+  let r2 = &s;      // another immutable borrow -- ok
+  println!("{r1} {r2}");  // both valid here
+  // r1, r2 dropped here (end of last use = Non-Lexical Lifetimes)
+
+MUTABLE BORROW: exactly one, no immutable borrows simultaneously
+  let mut s = String::from("hello");
+  let r1 = &s;      // immutable borrow starts
+  let r2 = &mut s;  // ERROR: cannot borrow mutably while immutable borrow exists
+  //              ^-- borrow checker rejects this
+
+  // Correct pattern: borrow ends before mutable borrow starts
+  let r1 = &s;
+  println!("{r1}");  // r1 last use here -- borrow ENDS (NLL)
+  let r2 = &mut s;   // ok: r1 is done
+  r2.push_str(" world");
+
+WHY this rule exists:
+  Two simultaneous mutable references = DATA RACE in safe code
+  One mut + one immut = iterator invalidation (classic C++ bug)
+  Rust's compiler prevents BOTH at compile time, not at runtime</pre></div>
+
+<h3 class="sub">Lifetimes — Proving References Don't Dangle</h3>
+<div class="arch"><div class="arch-label">Lifetime annotations — what they mean</div><pre>// DANGLING REFERENCE (compile error):
+fn dangle() -> &String {
+    let s = String::from("hello");
+    &s   // ERROR: s is dropped when function returns
+         // returning a reference to dead memory
+}
+
+// LIFETIME ANNOTATION: 'a means "reference lives at least as long as 'a"
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() { x } else { y }
+    // compiler needs 'a to know: return value lifetime
+    // is tied to the SHORTER of x and y's lifetimes
+}
+
+// This would fail:
+let result;
+{
+    let string2 = String::from("xyz");
+    result = longest("long string", &string2);
+}
+println!("{result}");  // ERROR: string2 dropped above
+// Compiler proves result can't outlive string2
+
+// STRUCT with lifetime:
+struct Important<'a> {
+    text: &'a str,   // struct can't outlive the str it references
+}
+
+// Lifetime elision rules (compiler infers these):
+// 1. Each reference param gets its own lifetime
+// 2. If one ref param: output lifetime = input lifetime
+// 3. If self param: output lifetime = self's lifetime
+fn first_word(s: &str) -> &str {  // elided: fn first_word<'a>(s: &'a str) -> &'a str
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' { return &s[0..i]; }
+    }
+    &s[..]
+}</pre></div>
+</div>
+
+<div id="types" class="sec"><div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">Type System — Option, Result, Enums</h2></div>
+<p class="body">Rust has no null. Instead of a null pointer dereference at runtime, you get a compile error if you try to use a potentially-absent value without handling the absent case. This is enforced by <code>Option&lt;T&gt;</code> and exhaustive pattern matching.</p>
+<div class="arch"><div class="arch-label">Option and Result — replacing null and exceptions</div><pre>// NULL: billion dollar mistake. Rust has none.
+// Instead:
+enum Option<T> {
+    Some(T),   // value is present
+    None,      // value is absent
+}
+
+enum Result<T, E> {
+    Ok(T),     // success with value
+    Err(E),    // failure with error
+}
+
+// You MUST handle both cases (exhaustive match):
+let maybe_num: Option<i32> = Some(42);
+let doubled = match maybe_num {
+    Some(n) => n * 2,
+    None    => 0,     // must handle None
+};
+
+// ? operator: propagate errors up (early return on Err)
+fn parse_and_double(s: &str) -> Result<i32, ParseIntError> {
+    let n = s.parse::<i32>()?;  // returns Err early if parse fails
+    Ok(n * 2)
+}
+
+// Combinators (functional style):
+let result = some_option
+    .map(|x| x * 2)          // transform if Some
+    .filter(|x| x > 0)       // keep if predicate
+    .unwrap_or(0);            // default if None
+
+// unwrap() panics on None/Err -- only use in tests/prototypes
+// expect("msg") panics with message -- better than unwrap in prod
+// if let: concise single-branch matching
+if let Some(value) = maybe_num {
+    println!("got {value}");
+}</pre></div>
+
+<h3 class="sub">Enums with Data — Algebraic Data Types</h3>
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — enums, pattern matching, generics</span><button class="copy-btn">copy</button></div>
+<pre class="code">// Enum variants can hold different data types
+enum Message {
+    Quit,                          // unit variant
+    Move { x: i32, y: i32 },      // struct variant
+    Write(String),                 // tuple variant
+    ChangeColor(i32, i32, i32),   // tuple variant
+}
+
+// Exhaustive pattern matching (compiler ensures all covered)
+fn process(msg: Message) {
+    match msg {
+        Message::Quit => println!("quit"),
+        Message::Move { x, y } => println!("move to {x},{y}"),
+        Message::Write(text) => println!("write: {text}"),
+        Message::ChangeColor(r, g, b) => println!("color {r},{g},{b}"),
+    }
+}
+
+// GENERICS: zero-cost -- monomorphised at compile time
+struct Stack<T> {
+    elements: Vec<T>,
+}
+impl<T> Stack<T> {
+    fn push(&mut self, item: T) { self.elements.push(item); }
+    fn pop(&mut self) -> Option<T> { self.elements.pop() }
+}
+
+// No runtime overhead vs concrete type
+// Stack<i32> and Stack<String> are DIFFERENT types at compile time
+// Each gets its own optimised machine code (monomorphisation)</pre></div>
+</div>
+
+<div id="traits" class="sec"><div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Traits — Rust's Interfaces</h2></div>
+<p class="body">Traits define shared behaviour (like interfaces in Go/Java). Rust's standard library traits are the foundation of everything: <code>Display</code>, <code>Debug</code>, <code>Clone</code>, <code>Iterator</code>, <code>From/Into</code>, <code>Send</code>, <code>Sync</code>. Trait bounds constrain generic types at compile time — the optimizer sees through them and inlines everything.</p>
+<div class="arch"><div class="arch-label">Trait dispatch — static vs dynamic</div><pre>STATIC DISPATCH (monomorphisation -- zero runtime cost):
+  fn print_area<T: Shape>(shape: &T) {
+      println!("{}", shape.area());
+  }
+  // Compiler generates separate fn for each concrete type:
+  // fn print_area_circle(shape: &Circle) { ... }
+  // fn print_area_square(shape: &Square) { ... }
+  // No virtual dispatch overhead. Inlineable.
+
+DYNAMIC DISPATCH (trait objects -- runtime vtable):
+  fn print_area(shape: &dyn Shape) {
+      println!("{}", shape.area());
+  }
+  // shape is a FAT POINTER: (data ptr, vtable ptr)
+  // vtable: array of function pointers for this concrete type
+  // Runtime overhead: one indirect function call per method
+  // Required when: multiple different types in same Vec, return type unknown
+
+  let shapes: Vec<Box<dyn Shape>> = vec![
+      Box::new(Circle { r: 3.0 }),
+      Box::new(Square { side: 4.0 }),   // different types, same Vec
+  ];
+
+OBJECT SAFETY: a trait can be used as dyn Trait only if:
+  - No generic methods
+  - No methods that take/return Self (by value)
+  - No associated functions without self</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — traits, blanket impls, operator overloading</span><button class="copy-btn">copy</button></div>
+<pre class="code">use std::fmt;
+
+trait Shape {
+    fn area(&self) -> f64;
+    fn perimeter(&self) -> f64;
+    // Default implementation:
+    fn describe(&self) -> String {
+        format!("area={:.2} perimeter={:.2}", self.area(), self.perimeter())
+    }
+}
+
+struct Circle { radius: f64 }
+impl Shape for Circle {
+    fn area(&self) -> f64 { std::f64::consts::PI * self.radius * self.radius }
+    fn perimeter(&self) -> f64 { 2.0 * std::f64::consts::PI * self.radius }
+}
+
+// Display trait -- custom fmt::Display
+impl fmt::Display for Circle {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Circle(r={})", self.radius)
+    }
+}
+
+// From/Into -- type conversion idiom
+struct Meters(f64);
+struct Feet(f64);
+impl From<Feet> for Meters {
+    fn from(f: Feet) -> Self { Meters(f.0 * 0.3048) }
+}
+let m: Meters = Feet(10.0).into();  // Into is auto-derived from From
+
+// Iterator trait -- the core of Rust's functional style
+struct Counter { count: u32, max: u32 }
+impl Iterator for Counter {
+    type Item = u32;
+    fn next(&mut self) -> Option<u32> {
+        if self.count < self.max {
+            self.count += 1;
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+// Now ALL iterator adapters are available:
+let sum: u32 = Counter { count: 0, max: 5 }
+    .filter(|x| x % 2 == 0)
+    .map(|x| x * x)
+    .sum();   // all zero-cost: compiled to a tight loop</pre></div>
+</div>
+
+<div id="concurrency" class="sec"><div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Concurrency — Fearless by Design</h2></div>
+<p class="body">Rust's ownership model makes data races impossible in safe code. The <code>Send</code> trait marks types safe to send to another thread. The <code>Sync</code> trait marks types safe to share via reference between threads. The compiler uses these to reject code that would cause data races at compile time — not at runtime.</p>
+<div class="arch"><div class="arch-label">Send and Sync — thread safety at compile time</div><pre>Send: type can be TRANSFERRED to another thread
+  (its ownership can be moved across thread boundaries)
+  Most types: Send. Exceptions: Rc<T> (use Arc<T> instead),
+              raw pointers *mut T, MutexGuard
+
+Sync: type can be SHARED by reference across threads
+  (& T can be sent to another thread)
+  Most types: Sync. Exceptions: Cell<T>, RefCell<T>,
+              Rc<T>, UnsafeCell<T>
+
+Compiler enforces at CALL SITES:
+  thread::spawn(|| {
+      // closure must be Send (captures are Send)
+  });
+
+  // Rc<T> is NOT Send -- compile error:
+  let rc = Rc::new(5);
+  thread::spawn(move || println!("{rc}"));  // ERROR
+  // Use Arc<T> (atomic ref count) instead:
+  let arc = Arc::new(5);
+  thread::spawn(move || println!("{arc}"));  // ok
+
+Common thread-safe patterns:
+  Arc<T>         -- shared ownership across threads (atomic refcount)
+  Arc<Mutex<T>>  -- shared mutable state
+  Arc<RwLock<T>> -- shared state, many readers OR one writer
+  channel        -- message passing (mpsc::channel)
+  Atomic types   -- lock-free shared integers (AtomicUsize, etc.)</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — threads, Arc+Mutex, channels</span><button class="copy-btn">copy</button></div>
+<pre class="code">use std::sync::{Arc, Mutex};
+use std::thread;
+
+// SHARED MUTABLE STATE: Arc<Mutex<T>>
+fn shared_counter() {
+    let counter = Arc::new(Mutex::new(0u64));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let c = Arc::clone(&counter);   // clone the Arc (increments refcount)
+        let h = thread::spawn(move || {
+            let mut lock = c.lock().unwrap();  // blocks until acquired
+            *lock += 1;
+            // lock released here when MutexGuard drops (RAII)
+        });
+        handles.push(h);
+    }
+    for h in handles { h.join().unwrap(); }
+    println!("final: {}", counter.lock().unwrap());
+}
+
+// MESSAGE PASSING: mpsc channel (multiple producer, single consumer)
+fn channel_example() {
+    let (tx, rx) = std::sync::mpsc::channel::<String>();
+
+    // Multiple senders
+    for i in 0..3 {
+        let tx = tx.clone();
+        thread::spawn(move || {
+            tx.send(format!("message {i}")).unwrap();
+        });
+    }
+    drop(tx); // drop original sender so rx knows when all senders are done
+
+    for msg in rx {  // rx is an Iterator -- blocks until message or all tx dropped
+        println!("received: {msg}");
+    }
+}
+
+// RAYON: data parallelism with no data races (work-stealing thread pool)
+use rayon::prelude::*;
+fn parallel_sum(data: &[i64]) -> i64 {
+    data.par_iter()    // parallel iterator -- safe by Send/Sync
+        .map(|x| x * x)
+        .sum()
+}</pre></div>
+</div>
+
+<div id="async" class="sec"><div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Async / Await — Futures and Executors</h2></div>
+<p class="body">Rust's async/await is zero-cost: an async function compiles to a state machine with no heap allocation per await point (unlike Go goroutines which allocate a stack). The runtime (Tokio, async-std) provides the executor that polls futures. Understanding the polling model is essential for debugging async Rust.</p>
+<div class="arch"><div class="arch-label">Async execution model — state machine + executor</div><pre>FUTURE: a value that represents a computation not yet complete
+  trait Future {
+      type Output;
+      fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>;
+  }
+  Poll::Ready(value)  -- computation done, return value
+  Poll::Pending       -- not done yet, will call cx.waker() when ready
+
+ASYNC FUNCTION -> STATE MACHINE (compiler transforms this):
+  async fn fetch(url: &str) -> String {
+      let resp = client.get(url).await;    // await point 1
+      let body = resp.text().await;        // await point 2
+      body
+  }
+
+  Compiles to an enum (state machine):
+  enum FetchFuture {
+      Start,
+      WaitingForResp { /* captured vars */ },
+      WaitingForBody { /* captured vars */ },
+      Done,
+  }
+  impl Future for FetchFuture {
+      fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<String> {
+          loop { match &mut *self {
+              Start => { /* start get(), transition to WaitingForResp */ }
+              WaitingForResp { .. } => { /* poll inner, maybe transition */ }
+              WaitingForBody { .. } => { /* poll inner, maybe return Ready */ }
+              Done => panic!("polled after completion"),
+          }}
+      }
+  }
+
+EXECUTOR (Tokio runtime):
+  - Thread pool (N threads, typically N = CPU cores)
+  - Task queue (each spawned task = Future)
+  - Poll loop: take task, poll its Future
+    - Poll::Ready -> task done, remove
+    - Poll::Pending -> park task, register waker
+  - I/O reactor (epoll/kqueue) wakes tasks when I/O ready
+  - Work stealing: idle threads steal from busy threads' queues</pre></div>
+
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — async/await, Tokio, Pin</span><button class="copy-btn">copy</button></div>
+<pre class="code">use tokio::{time, task, sync::mpsc};
+use std::time::Duration;
+
+// Basic async function
+async fn fetch_data(id: u64) -> Result<String, reqwest::Error> {
+    let url = format!("https://api.example.com/items/{id}");
+    let body = reqwest::get(&url).await?.text().await?;
+    Ok(body)
+}
+
+// Concurrent execution: join! runs futures concurrently on ONE task
+async fn fetch_all() {
+    let (a, b, c) = tokio::join!(
+        fetch_data(1),
+        fetch_data(2),
+        fetch_data(3),
+    );   // all three in-flight simultaneously, single thread
+}
+
+// spawn: independent tasks (scheduled across thread pool)
+async fn spawn_example() {
+    let handle = tokio::spawn(async {
+        time::sleep(Duration::from_secs(1)).await;
+        42u64
+    });
+    let result = handle.await.unwrap();  // JoinHandle is a Future
+}
+
+// select!: race multiple futures, take first to complete
+async fn with_timeout(fut: impl std::future::Future<Output=String>) -> Option<String> {
+    tokio::select! {
+        result = fut => Some(result),
+        _ = time::sleep(Duration::from_secs(5)) => None,
+    }
+}
+
+// PIN: why it exists
+// Self-referential struct (future capturing a reference to itself)
+// If moved in memory, internal pointer becomes invalid
+// Pin<&mut Self> guarantees the value won't move in memory
+// Box::pin(future) -- heap-pin a future
+// pin_mut!(future) -- stack-pin a local future</pre></div>
+
+<div class="callout" style="--callout-color:var(--amber);--callout-bg:#fff8e0">
+  <div class="callout-label">Common async pitfall</div>
+  <p>Holding a <code>MutexGuard</code> across an <code>.await</code> point is a deadlock waiting to happen — the guard holds the lock, the task parks, another task tries to lock, and everything stalls. Use <code>tokio::sync::Mutex</code> (async-aware) instead of <code>std::sync::Mutex</code> in async code, or release the lock before awaiting.</p>
+</div>
+</div>
+
+<div id="memory" class="sec"><div class="sec-head"><span class="sec-num">08</span><h2 class="sec-title">Memory Layout — Stack, Heap, Smart Pointers</h2></div>
+<div class="arch"><div class="arch-label">Memory layout — stack vs heap types</div><pre>STACK (automatic, fast, fixed size known at compile time):
+  let x: i32 = 42;         // 4 bytes on stack
+  let y: [i32; 4] = [1,2,3,4];  // 16 bytes on stack
+  // freed instantly when scope ends (pointer decrement)
+
+HEAP (dynamic, GC-free via RAII in Rust):
+  let s = String::from("hello");
+  // Stack: [ptr | len | capacity]  <- 24 bytes on stack
+  //           |
+  //           +-> Heap: [h][e][l][l][o]  <- 5 bytes on heap
+  // When s drops: Box::drop -> dealloc (free())
+
+SMART POINTERS:
+
+  Box<T>         Single owner, heap allocated
+  [ptr] -> [T on heap]
+  Use: recursive types, large values, dyn Trait
+
+  Rc<T>          Multiple owners, SINGLE THREAD only
+  [ptr] -> [strong:2, weak:0, T]  <- refcount on heap
+  Clone increments count. Drop decrements. Free when 0.
+  NOT Send -- cannot cross thread boundary.
+
+  Arc<T>         Multiple owners, THREAD SAFE
+  [ptr] -> [strong:2(atomic), weak:0(atomic), T]
+  Atomic refcount = slower than Rc but safe across threads.
+
+  RefCell<T>     Interior mutability, SINGLE THREAD
+  Borrow rules checked at RUNTIME (panics on violation).
+  borrow() -> Ref<T>    (like &T, can have many)
+  borrow_mut() -> RefMut<T>  (like &mut T, only one)
+
+  Mutex<T>       Interior mutability, THREAD SAFE
+  lock() -> MutexGuard<T>  (blocks until acquired)
+  Poisoned if thread panics while holding lock.
+
+  Cell<T>        Interior mutability for Copy types
+  get() copies out, set() replaces -- no borrows
+
+Common patterns:
+  Arc<Mutex<T>>  -- shared mutable state across threads
+  Rc<RefCell<T>> -- shared mutable state on one thread
+  Weak<T>        -- non-owning reference (breaks Rc cycles)</pre></div>
+</div>
+
+<div id="unsafe" class="sec"><div class="sec-head"><span class="sec-num">09</span><h2 class="sec-title">Unsafe Rust — When You Know More Than the Compiler</h2></div>
+<p class="body">Unsafe Rust does not disable safety — it allows five additional operations: dereference raw pointers, call unsafe functions, implement unsafe traits, access mutable statics, and access union fields. All other safety guarantees (memory layout, type system, lifetimes) still apply. The goal: contain unsafety to small, auditable blocks with a safe API around them.</p>
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — unsafe, raw pointers, FFI</span><button class="copy-btn">copy</button></div>
+<pre class="code">// Raw pointers: *const T and *mut T
+// Creating them is safe. Dereferencing is unsafe.
+fn raw_pointer_example() {
+    let x = 42i32;
+    let raw = &x as *const i32;      // create raw pointer (safe)
+    unsafe {
+        println!("{}", *raw);         // dereference (unsafe)
+    }
+}
+
+// Unsafe function: caller must uphold invariants
+unsafe fn dangerous(ptr: *mut u8, len: usize) {
+    // We assume ptr is valid and points to len bytes
+    std::slice::from_raw_parts_mut(ptr, len);
+}
+
+// Safe abstraction over unsafe code (the correct pattern)
+pub struct MyVec<T> {
+    ptr: *mut T,
+    len: usize,
+    cap: usize,
+}
+impl<T> MyVec<T> {
+    pub fn get(&self, index: usize) -> Option<&T> {
+        if index < self.len {
+            Some(unsafe { &*self.ptr.add(index) })  // unsafe contained here
+        } else {
+            None  // bounds check makes the unsafe above safe
+        }
+    }
+}
+
+// FFI: calling C from Rust
+extern "C" {
+    fn abs(input: i32) -> i32;       // declare C function
+    fn strlen(s: *const u8) -> usize;
+}
+fn call_c() -> i32 {
+    unsafe { abs(-42) }              // unsafe: C has no safety guarantees
+}
+
+// Implementing an unsafe trait (Send/Sync)
+// Only do this if you've manually verified thread safety
+struct MyRawPointer(*mut u8);
+unsafe impl Send for MyRawPointer {}  // I've verified this is safe to send</pre></div>
+</div>
+
+<div id="patterns" class="sec"><div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Advanced Patterns</h2></div>
+
+<h3 class="sub">The Typestate Pattern — Compile-Time State Machines</h3>
+<div class="code-wrap"><div class="code-head"><span class="code-lang">rust — typestate, builder pattern, newtype</span><button class="copy-btn">copy</button></div>
+<pre class="code">// TYPESTATE: encode state in the type system
+// Illegal state transitions become compile errors
+struct Connection<State> {
+    inner: TcpStream,
+    _state: std::marker::PhantomData<State>,
+}
+struct Disconnected;
+struct Connected;
+struct Authenticated;
+
+impl Connection<Disconnected> {
+    fn connect(addr: &str) -> Result<Connection<Connected>, Error> {
+        let stream = TcpStream::connect(addr)?;
+        Ok(Connection { inner: stream, _state: PhantomData })
+    }
+}
+impl Connection<Connected> {
+    fn authenticate(self, token: &str) -> Result<Connection<Authenticated>, Error> {
+        // send auth token...
+        Ok(Connection { inner: self.inner, _state: PhantomData })
+    }
+}
+impl Connection<Authenticated> {
+    fn send(&mut self, data: &[u8]) -> Result<(), Error> { /* only valid here */ }
+}
+// This is a compile error:
+// let conn: Connection<Disconnected> = ...;
+// conn.send(&data);  // ERROR: Connection<Disconnected> has no send()
+
+// BUILDER PATTERN with typestate
+let request = RequestBuilder::new()
+    .url("https://api.example.com")   // returns Builder<WithUrl>
+    .method("POST")                   // returns Builder<WithMethod>
+    .body(json_data)
+    .build();                         // only available when all required fields set
+
+// NEWTYPE PATTERN: type-safe wrappers
+struct Meters(f64);
+struct Kilograms(f64);
+// Cannot accidentally pass kg where m expected -- different types
+fn speed(distance: Meters, time: f64) -> f64 { distance.0 / time }
+
+// ERROR HANDLING with thiserror
+use thiserror::Error;
+#[derive(Error, Debug)]
+enum AppError {
+    #[error("database error: {0}")]
+    Database(#[from] sqlx::Error),
+    #[error("not found: {id}")]
+    NotFound { id: u64 },
+    #[error("invalid input: {0}")]
+    InvalidInput(String),
+}
+// #[from] auto-implements From<sqlx::Error> for AppError
+// ? operator converts sqlx::Error to AppError automatically</pre></div>
+
+<h3 class="sub">Performance Patterns</h3>
+<div class="arch"><div class="arch-label">Zero-cost abstractions — what the compiler produces</div><pre>HIGH LEVEL RUST CODE:
+  let sum: i64 = (0..1_000_000)
+      .filter(|x| x % 2 == 0)
+      .map(|x| x * x)
+      .sum();
+
+WHAT THE COMPILER GENERATES (LLVM IR -> machine code):
+  ; A single tight loop with no allocations
+  ; No Vec created, no closures allocated on heap
+  ; filter, map, sum all INLINED and FUSED
+  xor eax, eax        ; sum = 0
+  xor ecx, ecx        ; i = 0
+  loop:
+    test ecx, 1       ; if i % 2 != 0, skip
+    jnz next
+    mov rdx, rcx      ; rdx = i
+    imul rdx, rdx     ; rdx = i * i
+    add rax, rdx      ; sum += rdx
+  next:
+    inc ecx
+    cmp ecx, 1000000
+    jl loop
+
+ARENA ALLOCATION: avoid heap fragmentation for short-lived objects
+  use bumpalo::Bump;
+  let arena = Bump::new();
+  let vec = arena.alloc_slice_fill_copy(1000, 0u8);
+  // all allocated from one contiguous slab
+  // freed all at once when arena drops
+
+AVOID CLONES: prefer borrows and slices
+  // Bad: fn process(s: String)  -- takes ownership, caller must clone
+  // Good: fn process(s: &str)   -- borrows a string slice
+  // Good: fn process(data: &[u8]) -- borrows any slice</pre></div>
+</div>
+
+<div id="flashcards" class="sec"><div class="sec-head"><span class="sec-num">→</span><h2 class="sec-title">Flash Cards</h2></div>
+<div class="fc-grid">
+  <div class="fc"><div class="fc-q">What are Rust's three ownership rules?</div><div class="fc-a">(1) Each value has exactly one owner. (2) When the owner goes out of scope, the value is dropped (memory freed). (3) There can be multiple immutable references OR exactly one mutable reference, but never both simultaneously. These three rules are enforced at compile time by the borrow checker and make both use-after-free and data races impossible in safe Rust.</div></div>
+  <div class="fc"><div class="fc-q">What is the difference between Clone and Copy in Rust?</div><div class="fc-a">Copy is for types where a bitwise copy is safe and cheap (i32, bool, f64, char, small structs). Assignment copies the bits — original remains valid. Clone is an explicit deep copy — you call .clone() when you want a copy of a heap-allocated type (String, Vec). Assignment of non-Copy types MOVES ownership. You cannot accidentally clone an expensive type without writing .clone().</div></div>
+  <div class="fc"><div class="fc-q">What is a lifetime annotation and when do you need one?</div><div class="fc-a">A lifetime annotation (like <code>'a</code>) tells the compiler how long a reference lives relative to another. You need them when a function takes multiple references and returns a reference — the compiler needs to know which input the output's lifetime is tied to. They don't change how long references live; they communicate the relationship so the compiler can verify no dangling references are created.</div></div>
+  <div class="fc"><div class="fc-q">What is the difference between Rc and Arc?</div><div class="fc-a">Both are reference-counted smart pointers for shared ownership. Rc uses non-atomic (fast) reference counting — single-thread only, not Send. Arc uses atomic reference counting — thread-safe, implements Send. Use Rc for single-threaded shared ownership (with RefCell for mutation). Use Arc for multi-threaded shared ownership (with Mutex for mutation). Prefer Rc when you don't need thread safety — it's faster.</div></div>
+  <div class="fc"><div class="fc-q">What does Pin do and why does async/await need it?</div><div class="fc-a">Pin guarantees a value won't be moved in memory after being pinned. Async state machines are self-referential — they contain references to fields within the same struct. If the struct moves, those internal references become dangling pointers. Pin prevents movement, making self-referential structs safe. Box::pin allocates on the heap and pins. You usually don't write Pin code directly — async/await generates it.</div></div>
+  <div class="fc"><div class="fc-q">Static dispatch vs dynamic dispatch — when to use each?</div><div class="fc-a">Static dispatch (generics: fn foo<T: Trait>(x: &T)): compiler generates a specialised version for each concrete type — monomorphisation. Zero runtime overhead, inlineable. Code size grows. Dynamic dispatch (trait objects: fn foo(x: &dyn Trait)): fat pointer (data ptr + vtable ptr). One virtual call per method. Use when: different concrete types in one Vec, return types unknown at compile time. Use static dispatch by default; use dyn only when you need type erasure.</div></div>
+  <div class="fc"><div class="fc-q">What is the Send trait? What types are NOT Send?</div><div class="fc-a">Send marks types safe to transfer to another thread (their ownership can be moved across thread boundaries). The compiler checks Send automatically at spawn sites. NOT Send: Rc&lt;T&gt; (use Arc&lt;T&gt;), raw pointers *mut T, MutexGuard (don't send a lock across threads), types containing non-Send fields. If you try to spawn a closure that captures a !Send type, you get a compile error.</div></div>
+  <div class="fc"><div class="fc-q">Why should you not hold std::sync::Mutex across an .await?</div><div class="fc-a">std::sync::Mutex blocks the OS thread while locked. In async code, .await parks the task — but the task still holds the MutexGuard (the lock). The runtime can't run other tasks on that thread while the lock is held. If another task on the same thread tries to lock the same mutex, deadlock. Solution: use tokio::sync::Mutex (async-aware, yields the thread while waiting) or release the lock before any .await point.</div></div>
+</div>
+</div>
+
+</article></div></div>
+<div class="wrap"><footer style="border-top:1px solid var(--rule);padding:28px 0">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Engineering OS · <a href="index.html" style="color:var(--ink-3);text-decoration:none">← Platform</a></div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-4)">Saurabh S. Patel · 2026</div>
   </div>
-</footer>
+</footer></div>
 <script>
-document.querySelectorAll(".code-copy").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const text = btn.closest(".code-wrap").querySelector("pre").innerText;
-    navigator.clipboard.writeText(text).then(() => { btn.textContent="copied"; setTimeout(()=>btn.textContent="copy",1500); });
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => { btn.textContent = 'copied'; setTimeout(() => btn.textContent = 'copy', 1500); });
   });
 });
-const secs=document.querySelectorAll("[id]"),tl=document.querySelectorAll(".toc-item");
-const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){tl.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.toc-item a[href="#${e.target.id}"]`);if(a)a.closest(".toc-item").classList.add("active")}})},{rootMargin:"-20% 0px -70% 0px"});
-secs.forEach(s=>ob.observe(s));
+const secs = document.querySelectorAll('[id]');
+const tl = document.querySelectorAll('.toc-item');
+const ob = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tl.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector('.toc-item a[href="#' + e.target.id + '"]');
+      if (a) a.closest('.toc-item').classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+secs.forEach(s => ob.observe(s));
 </script>
 </body>
 </html>
