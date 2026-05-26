@@ -109,7 +109,7 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-back">← Platform</a>
-    <div class="nav-badge">DSA · 30 Days · Go Lang</div>
+    <div class="nav-badge">DSA · 28 Days · Staff Level · Go</div>
   </div>
 </nav>
 
@@ -119,10 +119,10 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     <div class="toc-label">Contents</div>
     <ul class="toc-list">
       <li class="toc-item"><a href="#philosophy">Philosophy</a></li>
-      <li class="toc-item"><a href="#week1">Week 1 · Arrays</a></li>
-      <li class="toc-item"><a href="#week2">Week 2 · Stack/Heap</a></li>
-      <li class="toc-item"><a href="#week3">Week 3 · Trees/BS</a></li>
-      <li class="toc-item"><a href="#week4">Week 4 · Graphs/DP</a></li>
+      <li class="toc-item"><a href="#week1">W1 · Arrays</a></li>
+      <li class="toc-item"><a href="#week2">W2 · Stack/Heap</a></li>
+      <li class="toc-item"><a href="#week3">W3 · Trees/Graphs</a></li>
+      <li class="toc-item"><a href="#week4">W4 · DP/Backtrack</a></li>
       <li class="toc-item"><a href="#mock">Mock Protocol</a></li>
     </ul>
   </aside>
@@ -130,17 +130,17 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
   <article>
     <div class="article-header">
       <div class="art-eyebrow">
-        <span class="art-badge">30 Days</span>
-        Pattern-First · Go Lang · FAANG+ Calibrated
+        <span class="art-badge">Staff Level</span>
+        Staff Signal · Go Lang · Google/Meta/OpenAI
       </div>
       <h1 class="art-title">DSA in<br><em>30 Days</em></h1>
       <p class="art-subtitle">
-        Not random LeetCode grinding. Every day maps to exactly one algorithmic pattern. Master the pattern and the problems become parameter variations — not surprises. Go implementations throughout, written the way you'd write them in a real codebase.
+        Calibrated for Staff-level interviews at Google L7, Meta E7, and OpenAI. Every day has one pattern, video resources, and problems tagged by company and seniority level. The goal: not "I've seen this problem" but "I can derive the solution from first principles in under 2 minutes."
       </p>
       <div class="art-meta">
-        <div class="meta-pill"><div class="meta-pill-dot"></div>30 days</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>28 days</div>
         <div class="meta-pill"><div class="meta-pill-dot"></div>~2h per day</div>
-        <div class="meta-pill"><div class="meta-pill-dot"></div>120+ problems</div>
+        <div class="meta-pill"><div class="meta-pill-dot"></div>150+ problems</div>
         <div class="meta-pill"><div class="meta-pill-dot"></div>4 mock checkpoints</div>
       </div>
     </div>
@@ -149,7 +149,7 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <a href="#week1" class="week-card">
         <div class="wc-num">WEEK 01</div>
         <div class="wc-title">Arrays &amp; Linear Patterns</div>
-        <div class="wc-sub">Two pointers, sliding window, prefix sum, intervals</div>
+        <div class="wc-sub">Two pointers, sliding window, prefix sum, intervals, hashing</div>
       </a>
       <a href="#week2" class="week-card">
         <div class="wc-num">WEEK 02</div>
@@ -158,53 +158,72 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       </a>
       <a href="#week3" class="week-card">
         <div class="wc-num">WEEK 03</div>
-        <div class="wc-title">Hierarchical Patterns</div>
-        <div class="wc-sub">Binary search, tree DFS/BFS, tries</div>
+        <div class="wc-title">Trees, Search, Graphs</div>
+        <div class="wc-sub">Binary search, tree DFS/BFS, tries, Dijkstra, topo sort</div>
       </a>
       <a href="#week4" class="week-card">
         <div class="wc-num">WEEK 04</div>
-        <div class="wc-title">Deep Patterns</div>
-        <div class="wc-sub">Graphs, union-find, DP, backtracking</div>
+        <div class="wc-title">Union-Find, DP, Backtracking</div>
+        <div class="wc-sub">Union-Find, 5 DP patterns, backtracking, advanced graphs</div>
       </a>
     </div>
 
-    <!-- PHILOSOPHY -->
+        <!-- PHILOSOPHY -->
     <div id="philosophy" class="section-anchor">
       <span class="section-num">00</span>
-      <h2 class="section-h">The Pattern-First Philosophy</h2>
+      <h2 class="section-h">Staff-Level Interview Philosophy</h2>
     </div>
-    <p class="body">There are roughly 15 algorithmic patterns that cover 90% of problems you'll see in a FAANG-calibre interview. Random LeetCode grinding works against you — you end up with a memory of 200 specific solutions rather than fluency with 15 patterns. When you see a new problem you haven't memorised, you're stuck. When you know the patterns cold, you recognise the shape of the problem and know where to start.</p>
-    <p class="body">The daily structure is: read the pattern's core idea, understand <em>why</em> it works, then apply it to 3–4 problems in increasing difficulty. On Day 1 you're not doing Two Sum — you're understanding the two-pointer invariant and why it reduces O(n²) to O(n). Two Sum is then trivially obvious.</p>
+
+    <p class="body">Staff-level DSA at Google L7, Meta E7, Apple ICT6, or OpenAI is not harder problems — it's higher standards on the same problems. You are expected to: name the pattern before touching the keyboard, articulate the invariant, handle every edge case unprompted, derive the complexity correctly, and propose optimisations the interviewer hasn't asked for. A Medium solved perfectly is better than a Hard solved messily.</p>
+
+    <div style="background:var(--ink);border-radius:var(--r-lg);padding:32px;margin:24px 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">SIGNAL 1 · PATTERN RECOGNITION</div>
+        <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">Name it in 60 seconds</div>
+        <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">Say the pattern name out loud before writing a line. "This is sliding window — variable size — because I need the longest subarray satisfying a constraint and the constraint is monotonic as the window grows." If you can't name it, you don't know it.</div>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:24px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">SIGNAL 2 · INVARIANT FIRST</div>
+        <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">State what's always true</div>
+        <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">Every correct algorithm has an invariant — a condition that holds at the start of every iteration. State it before you code. For two pointers on a sorted array: "at every step, the answer (if it exists) is between left and right." If your invariant is wrong, your code will be wrong.</div>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:24px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lime);letter-spacing:.1em;margin-bottom:8px">SIGNAL 3 · OPTIMISE UNPROMPTED</div>
+        <div style="font-size:13px;font-weight:500;color:var(--paper);margin-bottom:6px">Drive the trade-off conversation</div>
+        <div style="font-size:12px;color:rgba(245,243,238,.5);line-height:1.65">After your first solution: "I can reduce space from O(n) to O(1) by using two pointers instead of a map — want me to do that?" or "There's a follow-up where the array is sorted: that changes the approach entirely." Raising the next question yourself is the Staff signal.</div>
+      </div>
+    </div>
+
+    <p class="body"><strong>Company calibration:</strong> Google values elegant solutions with proof of correctness. Meta values speed and correctness under time pressure. OpenAI values depth — understanding <em>why</em> the algorithm works. Apple values clean, production-quality code. Amazon (leadership principles) wants you to think about scale and edge cases. All of them want you to talk continuously while you solve.</p>
 
     <div class="code-wrap">
-      <div class="code-head"><span class="code-lang">go — pattern template: two pointers</span><button class="code-copy">copy</button></div>
-      <pre><span class="t-c">// Before writing any code: name the pattern out loud.</span>
-<span class="t-c">// "This is two pointers — opposite ends — because the array is sorted</span>
-<span class="t-c">// and I need a pair. I know moving the left pointer increases the sum,</span>
-<span class="t-c">// moving the right decreases it."</span>
-<span class="t-c">//</span>
-<span class="t-c">// The invariant: at every step, the answer (if it exists) is</span>
-<span class="t-c">// within [left, right]. We shrink toward it deterministically.</span>
+      <div class="code-head"><span class="code-lang">go — staff-level pattern template</span><button class="code-copy">copy</button></div>
+      <pre><span class="t-c">// Step 1 (before touching keyboard): name the pattern + state the invariant</span>
+<span class="t-c">// "Two pointers, opposite ends, sorted array."</span>
+<span class="t-c">// "Invariant: answer (if exists) is always in [left, right]."</span>
+<span class="t-c">// "Move left when sum too small, right when too large."</span>
 
 <span class="t-k">func</span> <span class="t-f">twoSum</span>(nums []<span class="t-t">int</span>, target <span class="t-t">int</span>) []<span class="t-t">int</span> {
-    left, right := <span class="t-n">0</span>, <span class="t-f">len</span>(nums)-<span class="t-n">1</span>
-    <span class="t-k">for</span> left &lt; right {
-        <span class="t-k">switch</span> sum := nums[left] + nums[right]; {
-        <span class="t-k">case</span> sum == target: <span class="t-k">return</span> []<span class="t-t">int</span>{left + <span class="t-n">1</span>, right + <span class="t-n">1</span>}
-        <span class="t-k">case</span> sum &lt; target:  left++
-        <span class="t-k">default</span>:            right--
+    l, r := <span class="t-n">0</span>, <span class="t-f">len</span>(nums)-<span class="t-n">1</span>
+    <span class="t-k">for</span> l &lt; r {
+        <span class="t-k">switch</span> s := nums[l] + nums[r]; {
+        <span class="t-k">case</span> s == target: <span class="t-k">return</span> []<span class="t-t">int</span>{l + <span class="t-n">1</span>, r + <span class="t-n">1</span>}
+        <span class="t-k">case</span> s &lt; target:  l++
+        <span class="t-k">default</span>:           r--
         }
     }
     <span class="t-k">return</span> <span class="t-k">nil</span>
-}</pre>
+}
+<span class="t-c">// After: "Time O(n), space O(1). Edge cases: empty array handled by l&lt;r."</span>
+<span class="t-c">// Optimisation offer: "If unsorted, use a hash map: O(n) time, O(n) space."</span></pre>
     </div>
 
     <!-- WEEK 1 -->
     <div id="week1" class="section-anchor">
       <span class="section-num">W1</span>
-      <h2 class="section-h">Week 1 — Arrays, Sliding Window, Two Pointers, Prefix Sum</h2>
+      <h2 class="section-h">Week 1 — Arrays, Two Pointers, Sliding Window, Prefix Sum</h2>
     </div>
-    <p class="body">Linear patterns. These are the building blocks everything else rests on. The goal by end of week: you can recognise within 30 seconds whether a problem wants two pointers, sliding window, or prefix sum — and you can articulate why.</p>
+    <p class="body">Linear patterns. Staff-level signal: you can derive the O(n) approach from first principles, not from memory. The interviewer wants to see that you understand <em>why</em> moving a pointer in one direction is always correct — the invariant — not just that you've memorised the pattern exists.</p>
 
     <div class="day-list">
 
@@ -217,19 +236,22 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Start pointers at both ends of a sorted array, move inward based on comparison. The key insight: because the array is sorted, every decision is deterministic. Moving left increases the sum; moving right decreases it. You never need to backtrack. This converts O(n²) brute-force pair search to O(n).</div>
-          <div class="day-section-label">Why It Matters</div>
-          <div class="day-text">The pattern generalises far beyond Two Sum. Trapping Rain Water is two pointers tracking left/right maximums. 3Sum is two pointers inside an outer loop with deduplication. Container With Most Water is pure opposite-ends. Any time you have a sorted array and need a pair satisfying a constraint, start here.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Works on a sorted array. Maintain <code>left</code> and <code>right</code> pointers. At each step, the decision of which pointer to move is <em>deterministic</em> — no guessing. Because the array is sorted, moving left strictly increases the sum; moving right strictly decreases it. This monotone property is what makes the algorithm provably correct and O(n). You never backtrack.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The generalisation: any time you have a sorted structure and need to find a pair satisfying a constraint, ask "is the decision of which end to move always deterministic?" If yes, two pointers applies. Trapping Rain Water uses two pointers tracking <code>leftMax</code> and <code>rightMax</code> — the insight is that the water at position i is <code>min(leftMax, rightMax) - height[i]</code>.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=On03HWe2tZM" target="_blank" style="color:var(--blue)">↗ NeetCode — Two Pointers (15 min)</a> — clean visual of the invariant. Watch before solving.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank">#167 Two Sum II — Sorted Array</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/container-with-most-water/" target="_blank">#11 Container With Most Water</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/3sum/" target="_blank">#15 3Sum</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/trapping-rain-water/" target="_blank">#42 Trapping Rain Water</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank">#167 Two Sum II</a><span class="diff diff-easy">Easy</span><span class="day-pattern" style="margin-left:4px">Warm-up</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/container-with-most-water/" target="_blank">#11 Container With Most Water</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/trapping-rain-water/" target="_blank">#42 Trapping Rain Water</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Apple</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/3sum/" target="_blank">#15 3Sum</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/4sum/" target="_blank">#18 4Sum</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Staff Follow-up</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">For 3Sum: skip duplicates with <code>for i > 0 && nums[i] == nums[i-1] { i++ }</code>. Pre-sort with <code>sort.Ints(nums)</code>. Work in-place — no extra allocation needed.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">3Sum: sort first, then outer loop + two pointers. Skip duplicates: <code>for i &gt; 0 && nums[i] == nums[i-1] { i++ }</code>. Staff standard: zero allocations except the result slice. Pre-allocate result: <code>res := make([][]int, 0, n/3)</code>.</div>
           </div>
         </div>
       </div>
@@ -243,19 +265,21 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Fast pointer moves 2×, slow moves 1×. If there's a cycle, they must meet — the fast pointer laps the slow one inside the loop. After meeting, reset one pointer to head; advance both at 1× — they meet at the cycle start. This uses O(1) space where a visited set would use O(n).</div>
-          <div class="day-section-label">Why It Matters</div>
-          <div class="day-text">Floyd's algorithm is a classic seniority signal — interviewers use it to check if you know O(1) space tricks. The "find duplicate in array" variant (#287) reframes the array as a linked list with the values as next pointers, then applies Floyd's. Once you see that framing, the solution is immediate.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Fast pointer moves 2×, slow moves 1×. If a cycle exists, fast will lap slow inside it — they must meet. After meeting, reset one to head, advance both 1× — they meet at the cycle entry. The proof: at meeting point, distance from entry to meeting = distance from head to entry (mod cycle length). This O(1) space replaces an O(n) visited set.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The "find duplicate in array" variant (#287) is a Staff signal: frame the array as a linked list where <code>arr[i]</code> is the next pointer. Values in [1,n] means every node points somewhere valid — forming a functional graph with exactly one cycle. Then apply Floyd's. This pattern of "reframe the problem as a different data structure" is common at Google and OpenAI.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=gBTe7lFR3vc" target="_blank" style="color:var(--blue)">↗ NeetCode — Linked List Cycle (12 min)</a> — visual proof of why they meet at the cycle entry.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">#141 Linked List Cycle</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank">#142 Linked List Cycle II</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank">#287 Find the Duplicate Number</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank">#876 Middle of Linked List</a><span class="diff diff-easy">Easy</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">#141 Linked List Cycle</a><span class="diff diff-easy">Easy</span><span class="day-pattern" style="margin-left:4px">Warm-up</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank">#142 Linked List Cycle II</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Apple</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank">#287 Find the Duplicate Number</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/reorder-list/" target="_blank">#143 Reorder List</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text"><code>type ListNode struct { Val int; Next *ListNode }</code>. Initialise: <code>slow, fast := head, head</code>. Loop condition: <code>fast != nil && fast.Next != nil</code>. Go nil checks are zero-cost — lean on them.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text"><code>type ListNode struct { Val int; Next *ListNode }</code>. Loop condition: <code>fast != nil && fast.Next != nil</code>. #287: the O(1) space Floyd's solution is the Staff expected answer. O(n) space hash set gets you "correct but not optimal" feedback.</div>
           </div>
         </div>
       </div>
@@ -269,19 +293,19 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Window of size k slides right. At each step: subtract the outgoing left element, add the incoming right element. The key discipline: never recompute the aggregate from scratch. Maintain a running sum, count, or frequency map. This is what makes it O(n) instead of O(n·k).</div>
-          <div class="day-section-label">Real-World Connection</div>
-          <div class="day-text">Fixed-window rate limiting in API gateways is this exact pattern. The window slides over time; the aggregate is the request count. Understanding the algorithm makes the system design obvious.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Window of size k slides right. Subtract outgoing element, add incoming — never recompute the aggregate from scratch. The invariant: the window always contains exactly k elements and the aggregate is current. This converts O(n·k) to O(n).</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=MK-NZ4hN7rs" target="_blank" style="color:var(--blue)">↗ NeetCode — Sliding Window (17 min)</a> — covers fixed and variable in one video.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank">#643 Maximum Average Subarray I</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/" target="_blank">#2461 Max Sum of Distinct Subarrays Length K</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank">#438 Find All Anagrams in a String</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/permutation-in-string/" target="_blank">#567 Permutation in String</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank">#643 Max Average Subarray I</a><span class="diff diff-easy">Easy</span><span class="day-pattern" style="margin-left:4px">Warm-up</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank">#438 Find All Anagrams in a String</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Amazon, Meta</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/permutation-in-string/" target="_blank">#567 Permutation in String</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Microsoft, Apple</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank">#239 Sliding Window Maximum</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, OpenAI</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">For character frequency: use <code>[26]int</code> array instead of <code>map[byte]int</code> for lowercase-only problems — array comparison is a direct memory compare, not a map iteration. Track a <code>matches int</code> counter to avoid <code>reflect.DeepEqual</code>.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">For char freq: <code>[26]int</code> over <code>map[byte]int</code> — array indexing is 5–10× faster. Track a <code>matches int</code> counter instead of comparing arrays each step: O(1) check vs O(26). #239 (deque) is the Staff signal — solve with monotonic deque, not sorting the window each time.</div>
           </div>
         </div>
       </div>
@@ -295,17 +319,21 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Expand right when the condition is satisfied, shrink left when violated. Template: <code>left=0; for right := range s { [add right]; for violated { [remove left]; left++ }; update answer }</code>. This greedy expansion and lazy contraction guarantees O(n) — each element is added and removed at most once.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Expand right when condition is met, shrink left when violated. Template: <code>left=0; for right := range s { add(right); for violated() { remove(left); left++ }; updateAns() }</code>. Correctness: each element is added once and removed at most once — O(n) total.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The key question: "is the condition monotone with window size?" If adding an element can only make a valid window invalid (never fix an invalid one), the variable sliding window applies. Non-monotone conditions require a different approach. This reasoning, stated explicitly, is the Staff signal.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=p-ss2JNynmw" target="_blank" style="color:var(--blue)">↗ NeetCode — Minimum Window Substring (18 min)</a> — hardest variable window problem, full walkthrough.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank">#3 Longest Substring Without Repeating Characters</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank">#76 Minimum Window Substring</a><span class="diff diff-hard">Hard</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/longest-repeating-character-replacement/" target="_blank">#424 Longest Repeating Character Replacement</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/fruits-into-baskets/" target="_blank">#904 Fruit Into Baskets</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank">#3 Longest Substring Without Repeating Characters</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/longest-repeating-character-replacement/" target="_blank">#424 Longest Repeating Character Replacement</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Apple</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank">#76 Minimum Window Substring</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/subarrays-with-k-different-integers/" target="_blank">#992 Subarrays with K Different Integers</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, OpenAI</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">For ASCII string iteration: <code>for i := 0; i &lt; len(s); i++</code> with <code>s[i]</code> is faster than <code>range</code> (avoids rune decoding). <code>max(a,b)</code> is a builtin in Go 1.21+ — use it directly.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">#992 uses the "exactly K = at most K − at most (K−1)" technique — transforming an exact-count constraint into two sliding windows. This technique extension is a Staff signal. Go: <code>max(a,b)</code> is builtin since 1.21.</div>
           </div>
         </div>
       </div>
@@ -319,17 +347,21 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text"><code>prefix[i] = prefix[i-1] + nums[i-1]</code>. Range sum [l,r] in O(1). The power move: combine with a hash map for "subarray sum equals k" — store <code>prefix → count</code>, answer += <code>map[prefix-k]</code>. This transforms O(n²) subarray enumeration to O(n) with a single pass.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text"><code>prefix[i] = prefix[i-1] + nums[i-1]</code>. Range sum [l,r] in O(1). Power move: combine with a hash map for "subarray sum equals k" — store <code>prefix → count</code>, answer += <code>map[prefix-k]</code>. Single pass, O(n). Pre-seed: <code>map[0] = 1</code> handles subarrays starting at index 0.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The generalisation of prefix sum is "any associative operation over a range can be answered in O(1) after O(n) preprocessing." XOR prefix sums find subarrays with XOR = k. Prefix products answer range product queries. 2D prefix sums answer rectangle sum queries. Knowing these extensions is expected at Staff level.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=7pJo_rM0z_s" target="_blank" style="color:var(--blue)">↗ NeetCode — Subarray Sum Equals K (13 min)</a> — the prefix sum + hash map combination visualised.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank">#560 Subarray Sum Equals K</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/contiguous-array/" target="_blank">#525 Contiguous Array</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank">#303 Range Sum Query Immutable</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank">#238 Product of Array Except Self</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank">#238 Product of Array Except Self</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank">#560 Subarray Sum Equals K</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/contiguous-array/" target="_blank">#525 Contiguous Array</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E7, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/" target="_blank">#1074 Number of Submatrices That Sum to Target</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">Pre-initialise map with zero: <code>seen := map[int]int{0: 1}</code>. This handles subarrays starting at index 0 without a special case. The seed <code>0:1</code> represents the empty prefix before any elements.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">#1074 combines 2D prefix sum with subarray sum: fix two rows, collapse columns to 1D, run subarray sum equals k. Staff expectation: derive this reduction unprompted. Time O(n²m), space O(m).</div>
           </div>
         </div>
       </div>
@@ -337,23 +369,53 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <div class="day-card" id="d6">
         <div class="day-head" onclick="toggle(this)">
           <span class="day-num">DAY 06</span>
-          <span class="day-title">Intervals — Merge, Insert, Overlap</span>
+          <span class="day-title">Intervals — Merge, Insert, Sweep Line</span>
           <span class="day-pattern">Intervals</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Sort by start time. Merge condition: <code>curr.start ≤ prev.end</code>. For meeting rooms (min rooms needed): sort starts and ends separately, use two pointers — one for earliest start, one for earliest end. When a meeting starts before the earliest end, you need a new room. This is O(n log n) and avoids a heap entirely.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Sort by start. Merge: <code>curr.start ≤ prev.end</code>. Meeting rooms (min rooms): separate start/end arrays, sort independently, two pointers — when next start < earliest end, need a new room. Sweep line: create events (+1 at start, -1 after end), sort, scan prefix sum — peak is max overlap.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=44H3cEC2fFM" target="_blank" style="color:var(--blue)">↗ NeetCode — Merge Intervals (12 min)</a> + <a href="https://www.youtube.com/watch?v=FdzJmTx9-Ks" target="_blank" style="color:var(--blue)">Meeting Rooms II (11 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">#56 Merge Intervals</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/insert-interval/" target="_blank">#57 Insert Interval</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">#253 Meeting Rooms II</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/non-overlapping-intervals/" target="_blank">#435 Non-Overlapping Intervals</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">#56 Merge Intervals</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/insert-interval/" target="_blank">#57 Insert Interval</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">#253 Meeting Rooms II</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E7, Google, Apple</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/employee-free-time/" target="_blank">#759 Employee Free Time</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text"><code>sort.Slice(intervals, func(i,j int) bool { return intervals[i][0] &lt; intervals[j][0] })</code>. For heap-based meeting rooms, implement <code>container/heap</code> interface (Len, Less, Swap, Push, Pop on a pointer receiver).</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text"><code>sort.Slice(intervals, func(i,j int) bool { return intervals[i][0] &lt; intervals[j][0] })</code>. For #759: merge all intervals across employees, find gaps. Staff level: able to explain both the sweep line and the min-heap approach and articulate when each is preferable.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card" id="d7">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 07</span>
+          <span class="day-title">Hashing — Maps, Sets, Design</span>
+          <span class="day-pattern">Hashing</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Hash maps trade space for O(1) average-case lookup. The key discipline: define your hash key precisely — what information must the key capture? For anagram grouping: sorted string. For isomorphic strings: the position of first occurrence. Getting the key design right is the hard part; the rest is mechanical.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">Hash map design questions test depth: implement LRU Cache (doubly linked list + map), LFU Cache (three maps: key→val, key→freq, freq→LRU list). At Staff level you're expected to design the data structure, not just use a built-in one. LFU is a Google L6+ signal problem.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=7g5FuWAKgXQ" target="_blank" style="color:var(--blue)">↗ NeetCode — LRU Cache (18 min)</a> — the data structure design approach that gets full marks.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/group-anagrams/" target="_blank">#49 Group Anagrams</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/lru-cache/" target="_blank">#146 LRU Cache</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta E6+, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/lfu-cache/" target="_blank">#460 LFU Cache</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/insert-delete-getrandom-o1/" target="_blank">#380 Insert Delete GetRandom O(1)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E7, Google</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">LRU: use a doubly-linked list with sentinel head/tail nodes — eliminates nil checks. Map stores key → *node. O(1) all operations. LFU: <code>minFreq</code> variable tracks the minimum frequency; reset to 1 on put of new key. Go: <code>container/list</code> for the linked list or implement manually.</div>
           </div>
         </div>
       </div>
@@ -361,13 +423,14 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     </div>
 
     <div class="checkpoint">
-      <div class="cp-label">Week 1 Checkpoint</div>
-      <div class="cp-title">Mock Interview — Arrays</div>
+      <div class="cp-label">Week 1 Checkpoint — Staff Standard</div>
+      <div class="cp-title">Before moving to Week 2</div>
       <ul class="cp-list">
-        <li class="cp-item">Solve one medium Two Pointer + one medium Sliding Window in 45 min under timed conditions</li>
-        <li class="cp-item">Verbalize the pattern name and invariant before writing a single line of code</li>
-        <li class="cp-item">Review: prefix sum + hash map combo — most commonly missed pattern in this week</li>
-        <li class="cp-item">Go code standard: no unnecessary allocations, proper nil handling, handles empty input</li>
+        <li class="cp-item">Solve #42 Trapping Rain Water in under 15 min with O(1) space — no array, just two pointers tracking max</li>
+        <li class="cp-item">Implement LRU Cache from scratch: doubly-linked list + map, all operations O(1), without referencing anything</li>
+        <li class="cp-item">Derive the "exactly K = at most K − at most K-1" technique unprompted for #992</li>
+        <li class="cp-item">For every pattern: state the invariant before coding. If you can't, re-read the section.</li>
+        <li class="cp-item">Go standard: zero unnecessary allocations, every edge case handled (empty input, single element, all same)</li>
       </ul>
     </div>
 
@@ -376,11 +439,11 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
       <span class="section-num">W2</span>
       <h2 class="section-h">Week 2 — Stack, Monotonic Stack, Heap, Deque</h2>
     </div>
-    <p class="body">Order and priority patterns. The theme this week is maintaining a partial ordering on a stream of elements. Monotonic stack and deque are the most underrated patterns — they convert what looks like O(n²) into O(n) by using the ordering itself as a data structure.</p>
+    <p class="body">Order and priority patterns. The theme: maintaining a partial ordering on a data stream. Monotonic stack converts what looks like O(n²) into O(n) by using the order property to discard elements that can never be the answer. This is the most underrated pattern cluster in Staff-level interviews.</p>
 
     <div class="day-list">
 
-      <div class="day-card">
+      <div class="day-card" id="d8">
         <div class="day-head" onclick="toggle(this)">
           <span class="day-num">DAY 08</span>
           <span class="day-title">Stack — Classic Applications</span>
@@ -389,65 +452,102 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">LIFO for matching and nesting. Push opening bracket/token, pop on closing, check the top. For calculators: two stacks (nums + ops) or single stack with precedence rules. The key invariant: whatever you've pushed but not popped is "in progress" — not yet matched or resolved.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">LIFO for matching and nesting. Push on open, pop on close, check the top for validity. The invariant: everything on the stack is "in progress — not yet resolved." For calculators: two stacks (values + operators) or postfix evaluation with one stack. Largest Rectangle in Histogram is the hardest stack problem — understand it deeply.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=cHT6sG_hUZI" target="_blank" style="color:var(--blue)">↗ NeetCode — Largest Rectangle in Histogram (18 min)</a> — the hardest classic stack problem. Full walkthrough.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/valid-parentheses/" target="_blank">#20 Valid Parentheses</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/min-stack/" target="_blank">#155 Min Stack</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/" target="_blank">#150 Evaluate Reverse Polish Notation</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">#84 Largest Rectangle in Histogram</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/valid-parentheses/" target="_blank">#20 Valid Parentheses</a><span class="diff diff-easy">Easy</span><span class="day-pattern" style="margin-left:4px">Warm-up</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/min-stack/" target="_blank">#155 Min Stack</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Amazon, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">#84 Largest Rectangle in Histogram</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/maximal-rectangle/" target="_blank">#85 Maximal Rectangle</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, OpenAI Staff</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/decode-string/" target="_blank">#394 Decode String</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">Use slice as stack: push with <code>stack = append(stack, v)</code>, pop with <code>v, stack = stack[len(stack)-1], stack[:len(stack)-1]</code>. This is idiomatic Go — no container package needed.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Go slice as stack: push <code>s = append(s, v)</code>, pop <code>v, s = s[len(s)-1], s[:len(s)-1]</code>. For #84: maintain a monotonically increasing stack of indices. When you pop, calculate area using the popped bar as the shortest: <code>h * (right - left - 1)</code>. #85 reduces to #84 row by row — derive this reduction unprompted.</div>
           </div>
         </div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" id="d9">
         <div class="day-head" onclick="toggle(this)">
           <span class="day-num">DAY 09</span>
-          <span class="day-title">Monotonic Stack — Next Greater/Smaller</span>
+          <span class="day-title">Monotonic Stack — Next Greater, Span</span>
           <span class="day-pattern">Monotonic Stack</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Maintain a stack in strictly increasing or decreasing order. When the current element breaks the ordering, pop elements until the order is restored — and record the answer for each popped element at that moment. Each element is pushed and popped at most once: O(n) total. Always store indices, not values — you'll need the distance.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Maintain a stack in strictly increasing or decreasing order. When the current element breaks the order, pop and record the answer for each popped element — <em>the current element is their answer</em>. Each element is pushed/popped at most once: O(n) total. Always store indices, not values. The invariant: everything on the stack hasn't found its "next greater/smaller" yet.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">Sum of Subarray Minimums (#907) is the Staff signal. The approach: for each element, find how many subarrays have it as the minimum, using prev smaller and next smaller element arrays (both computed with monotonic stacks). The contribution = element × left_count × right_count. This two-stack technique extends to maximum subarray products and similar problems.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=Dq_ObZwTY_Q" target="_blank" style="color:var(--blue)">↗ NeetCode — Daily Temperatures (9 min)</a> + <a href="https://www.youtube.com/watch?v=HRGU4bdJhO4" target="_blank" style="color:var(--blue)">Sum of Subarray Minimums (24 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">#739 Daily Temperatures</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-i/" target="_blank">#496 Next Greater Element I</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-ii/" target="_blank">#503 Next Greater Element II (circular)</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank">#907 Sum of Subarray Minimums</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">#739 Daily Temperatures</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/next-greater-element-ii/" target="_blank">#503 Next Greater Element II (circular)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank">#907 Sum of Subarray Minimums</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/trapping-rain-water/" target="_blank">#42 Trapping Rain Water (stack variant)</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Staff: know both approaches</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">For circular arrays: iterate <code>2*n</code> using index <code>i % n</code>. When popping: <code>result[stack[top]] = i - stack[top]</code> for distance-based answers. Store index, not value — you need both to answer distance questions.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Circular array: iterate <code>2*n</code>, index as <code>i%n</code>. For #907: handle equal elements carefully — use strict inequality on one side to avoid double counting. Staff: able to explain the modular arithmetic proof of why the contribution formula is correct.</div>
           </div>
         </div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" id="d10">
         <div class="day-head" onclick="toggle(this)">
           <span class="day-num">DAY 10</span>
-          <span class="day-title">Heap / Priority Queue — Top K</span>
+          <span class="day-title">Heap / Priority Queue — Top-K and Streaming</span>
           <span class="day-pattern">Heap</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Min-heap of size k for top-k largest. Max-heap of size k for top-k smallest. The key insight: a heap of size k never exceeds k elements — pop when it does, and the top is always the kth largest. O(n log k) beats O(n log n) sorting when k is small. For Merge K Sorted Lists: put the head of each list on the heap, pop the min, push its next.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Min-heap of size k for top-k largest. When heap exceeds k, pop — the top is always the kth largest. O(n log k) beats O(n log n) sort when k ≪ n. For Merge K Sorted Lists: heap of (value, list-index, node-pointer). Pop minimum, push its next node. O(n log k) where n is total elements, k is number of lists.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">Find Median from Data Stream (#295) is the classic Staff problem. Two heaps: max-heap for the lower half, min-heap for the upper half. Invariant: max-heap size = min-heap size ± 1. Median is the top of the larger heap (or average of both tops). Rebalancing after each insert: O(log n). This "two heaps for median" pattern extends to k-th quantile tracking.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=itmhHWaHupI" target="_blank" style="color:var(--blue)">↗ NeetCode — Find Median from Data Stream (24 min)</a> — the two-heap invariant explained with full proof.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank">#215 Kth Largest Element in Array</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank">#347 Top K Frequent Elements</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank">#23 Merge K Sorted Lists</a><span class="diff diff-hard">Hard</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank">#295 Find Median from Data Stream</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank">#215 Kth Largest Element in Array</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Amazon, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank">#347 Top K Frequent Elements</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank">#295 Find Median from Data Stream</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank">#23 Merge K Sorted Lists</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/task-scheduler/" target="_blank">#621 Task Scheduler</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Apple</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text"><code>container/heap</code> requires 5 methods. Min-heap: <code>Less(i,j int) bool { return h[i] &lt; h[j] }</code>. Use <code>heap.Init</code>, <code>heap.Push</code>, <code>heap.Pop</code> — not methods directly. Push/Pop must use pointer receiver on the heap type.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Go: <code>container/heap</code> requires 5 methods (Len, Less, Swap, Push, Pop on pointer receiver). For max-heap: negate values or flip Less. Staff: #215 has a O(n) average Quickselect solution — know it. O(n) average, O(n²) worst. For guaranteed O(n) worst: median-of-medians (rarely asked but shows depth).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card" id="d11">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 11</span>
+          <span class="day-title">Deque — Sliding Window Maximum + Monotonic Queue</span>
+          <span class="day-pattern">Deque</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">A monotonic deque maintains a decreasing (for max) or increasing (for min) sequence of indices. Add to the back: pop the back while the back is smaller than the new element (it can never be the maximum of any future window). Remove from the front: pop front if it's outside the current window. Each element enters/leaves at most once: O(n) total.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=DfljaUwZsOk" target="_blank" style="color:var(--blue)">↗ NeetCode — Sliding Window Maximum (13 min)</a> — the monotonic deque structure step by step.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank">#239 Sliding Window Maximum</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/jump-game-vi/" target="_blank">#1696 Jump Game VI</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/" target="_blank">#862 Shortest Subarray With Sum At Least K</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Implement deque as a slice: push front = <code>append([]int{v}, dq...)</code> (slow) — or use a circular buffer for O(1) amortised. For interviews: <code>dq = dq[1:]</code> for pop front, <code>dq = dq[:len(dq)-1]</code> for pop back. #862: prefix sum + monotonic deque — combines two patterns. Staff signal.</div>
           </div>
         </div>
       </div>
@@ -455,96 +555,159 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     </div>
 
     <div class="checkpoint">
-      <div class="cp-label">Week 2 Checkpoint</div>
-      <div class="cp-title">Mock Interview — Stack &amp; Priority</div>
+      <div class="cp-label">Week 2 Checkpoint — Staff Standard</div>
+      <div class="cp-title">Mock Interview Targets</div>
       <ul class="cp-list">
-        <li class="cp-item">Implement container/heap from scratch — without looking up the interface signature</li>
-        <li class="cp-item">Solve Sliding Window Maximum and articulate precisely why deque beats heap (amortised O(n) vs O(n log n))</li>
-        <li class="cp-item">LRU Cache implementation: doubly linked list + hash map, all operations O(1), in under 20 minutes</li>
-        <li class="cp-item">Explain the monotonic stack invariant verbally — what is guaranteed to be on the stack at any point?</li>
+        <li class="cp-item">Implement LFU Cache from scratch — no looking up the interface. Three maps + minFreq tracking. All O(1).</li>
+        <li class="cp-item">Solve #295 Find Median from Data Stream: two-heap approach, state the invariant before coding</li>
+        <li class="cp-item">Explain why deque beats heap for sliding window maximum: O(n) amortised vs O(n log k)</li>
+        <li class="cp-item">Solve #84 Largest Rectangle in Histogram in under 20 minutes, then immediately derive #85 (Maximal Rectangle) as a reduction</li>
       </ul>
     </div>
 
     <!-- WEEK 3 -->
     <div id="week3" class="section-anchor">
       <span class="section-num">W3</span>
-      <h2 class="section-h">Week 3 — Binary Search, Trees, Tries</h2>
+      <h2 class="section-h">Week 3 — Binary Search, Trees, Graphs, BFS/DFS</h2>
     </div>
-    <p class="body">Hierarchical patterns. Binary search extends far beyond sorted arrays — you can binary search on the <em>answer space</em> of any problem with a monotonic predicate. Trees introduce the most important interview concept: the difference between what a DFS function returns locally (to its parent) vs what it reports globally (to a shared variable).</p>
+    <p class="body">Hierarchical patterns. The single most important concept this week: the difference between what a DFS function <em>returns to its parent</em> (a local value, like height) vs what it <em>updates globally</em> (like the maximum path sum). Getting this distinction clear unlocks every hard tree problem.</p>
 
     <div class="day-list">
 
-      <div class="day-card">
+      <div class="day-card" id="d15">
         <div class="day-head" onclick="toggle(this)">
           <span class="day-num">DAY 15</span>
-          <span class="day-title">Binary Search — Beyond Sorted Arrays</span>
+          <span class="day-title">Binary Search — Answer Space</span>
           <span class="day-pattern">Binary Search</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Template: <code>lo, hi := 0, n-1; for lo &lt;= hi { mid := lo + (hi-lo)/2 }</code>. For leftmost position: use <code>lo &lt;= hi</code> and set <code>hi = mid-1</code> even when found. Binary search on answer space: define a <code>canAchieve(x int) bool</code> predicate — if it's monotonic (false...false...true...true), binary search finds the boundary in O(log(range)).</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Template: <code>lo, hi := 0, n-1; for lo &lt;= hi { mid := lo + (hi-lo)/2; if pred(mid) { ans = mid; hi = mid-1 } else { lo = mid+1 } }</code>. Binary search on answer space: define a <code>feasible(x) bool</code> predicate. If it's monotone (false...true), binary search finds the first true. Works on anything with monotone ordering — not just sorted arrays.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The Staff signal: applying binary search to a problem that doesn't look like a search problem. "What's the minimum speed such that Koko can eat all bananas?" Binary search on speed, check feasibility in O(n). "What's the minimum capacity such that we can ship packages in D days?" Same pattern. At Staff level you derive this independently in under 2 minutes.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=W9QJ8HaRvJQ" target="_blank" style="color:var(--blue)">↗ NeetCode — Binary Search (9 min)</a> + <a href="https://www.youtube.com/watch?v=u1GGqDQyNEo" target="_blank" style="color:var(--blue)">Koko Eating Bananas (12 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank">#33 Search in Rotated Sorted Array</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank">#153 Find Minimum in Rotated Array</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank">#875 Koko Eating Bananas (BS on answer)</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank">#410 Split Array Largest Sum</a><span class="diff diff-hard">Hard</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank">#33 Search in Rotated Sorted Array</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank">#875 Koko Eating Bananas</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank">#410 Split Array Largest Sum</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank">#4 Median of Two Sorted Arrays</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">Always: <code>mid := lo + (hi-lo)/2</code> — never <code>(lo+hi)/2</code> which overflows for large indices. For answer-space problems: define the predicate as a named function — clean separation between "what are we searching?" and "what's the binary search structure?"</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Always <code>mid := lo + (hi-lo)/2</code> to avoid overflow. #4 Median of Two Sorted Arrays is a pure binary search problem disguised — binary search on the partition of the smaller array. O(log(min(m,n))). Staff: derive the partition invariant without hints.</div>
           </div>
         </div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" id="d16">
         <div class="day-head" onclick="toggle(this)">
           <span class="day-num">DAY 16–17</span>
-          <span class="day-title">Trees — DFS Patterns (Pre/In/Post-order)</span>
+          <span class="day-title">Tree DFS — Local vs Global, Hard Problems</span>
           <span class="day-pattern">Tree DFS</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">The key distinction for hard tree problems: what does the DFS function <em>return to its parent</em> (local value, like height) vs what does it update <em>globally</em> (like the maximum path sum seen so far). Diameter and maximum path sum both use this — the function returns the best single-arm path upward, but records the best two-arm path into a global variable before returning.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">The key insight for hard tree problems: the DFS function returns one value to its parent (what's useful going up: height, best path from this node to a leaf) but updates a global variable with a different, better answer (best path passing through this node, using both subtrees). Diameter and Max Path Sum both follow this pattern.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">Binary Tree Cameras (#968) and Recover Binary Search Tree (#99) are Staff-level signals. Cameras requires a 3-state DFS (covered, camera-here, not-covered) with greedy reasoning. Recover BST requires finding the two misplaced nodes in an in-order traversal without extra space — Morris traversal for O(1) space.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=mTUsNGkfNFc" target="_blank" style="color:var(--blue)">↗ NeetCode — Binary Tree Max Path Sum (17 min)</a> + <a href="https://www.youtube.com/watch?v=7zmgQSJghpo" target="_blank" style="color:var(--blue)">Serialize and Deserialize (22 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank">#543 Diameter of Binary Tree</a><span class="diff diff-easy">Easy</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/" target="_blank">#124 Binary Tree Maximum Path Sum</a><span class="diff diff-hard">Hard</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank">#98 Validate BST</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank">#297 Serialize and Deserialize Binary Tree</a><span class="diff diff-hard">Hard</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank">#236 Lowest Common Ancestor</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum/" target="_blank">#124 Binary Tree Maximum Path Sum</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank">#297 Serialize and Deserialize Binary Tree</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank">#236 Lowest Common Ancestor</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Google, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-cameras/" target="_blank">#968 Binary Tree Cameras</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/recover-binary-search-tree/" target="_blank">#99 Recover Binary Search Tree</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">OpenAI, Google L7</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">Global state in DFS: use a closure. <code>var maxPath int; var dfs func(*TreeNode) int; dfs = func(node *TreeNode) int { ... }; dfs(root)</code>. Closures over local variables stay on the stack — no heap allocation, testable, no package-level mutation.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Global DFS state: use closure — <code>var ans int; var dfs func(*TreeNode) int; dfs = func(...){...}; dfs(root)</code>. No global mutation, testable, GC-friendly. For #99: maintain <code>prev, first, second *TreeNode</code> across the in-order traversal. Morris traversal uses O(1) space by temporarily threading right pointers.</div>
           </div>
         </div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" id="d18">
         <div class="day-head" onclick="toggle(this)">
-          <span class="day-num">DAY 19–20</span>
-          <span class="day-title">Trie — Prefix Tree</span>
+          <span class="day-num">DAY 18</span>
+          <span class="day-title">Tree BFS — Level Order, Right View, Zigzag</span>
+          <span class="day-pattern">Tree BFS</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Use a queue. Process level by level: outer loop = levels, inner loop = <code>len(queue)</code> at the start of the level. The key: snapshot the queue length at the start of each level — nodes added during processing are for the next level. This level-snapshotting trick is used by 80% of BFS tree problems.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=6ZnyEApgFYg" target="_blank" style="color:var(--blue)">↗ NeetCode — Binary Tree Level Order Traversal (11 min)</a> — the queue snapshot technique.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank">#102 Binary Tree Level Order Traversal</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Amazon, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-right-side-view/" target="_blank">#199 Binary Tree Right Side View</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/" target="_blank">#103 Zigzag Level Order Traversal</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Amazon, Meta</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/" target="_blank">#117 Populating Next Right Pointers II</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E7 — O(1) space required</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Go queue with slice: <code>q = append(q, node)</code>, dequeue <code>node, q = q[0], q[1:]</code>. For production or large inputs, use a ring buffer to avoid O(n²) slice shifting. #117 O(1) space: use the <code>next</code> pointers of the current level to build the next level — no queue needed.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card" id="d19">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 19</span>
+          <span class="day-title">Trie — Prefix Tree, Search, XOR</span>
           <span class="day-pattern">Trie</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">Node = <code>{children [26]*TrieNode, isEnd bool}</code>. Insert: create nodes for each char. Search: traverse, return false if any node is nil. The power: prefix search is identical to search but stops before checking <code>isEnd</code>. Add a <code>count int</code> field for frequency-based autocomplete ranking.</div>
-          <div class="day-section-label">Real-World Connection</div>
-          <div class="day-text">Search autocomplete uses a trie (or radix trie for memory efficiency). IP routing tables in network hardware use longest-prefix-match tries. XOR tries let you find maximum XOR pair in O(32n). Understanding the data structure makes the system design discussions much richer.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Node = <code>children [26]*TrieNode; isEnd bool</code>. Insert and search in O(L) where L is word length. Prefix search is the same as search but doesn't check <code>isEnd</code>. The invariant: every path from root to an end-marked node spells a valid word. XOR trie: 32 children per node (bits 0/1), finds maximum XOR pair in O(32n).</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=oobqoCJlHA0" target="_blank" style="color:var(--blue)">↗ NeetCode — Implement Trie (16 min)</a> + <a href="https://www.youtube.com/watch?v=QSo2pNMUmHo" target="_blank" style="color:var(--blue)">Word Search II (27 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">#208 Implement Trie</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank">#211 Add and Search Words</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/word-search-ii/" target="_blank">#212 Word Search II (Trie + DFS)</a><span class="diff diff-hard">Hard</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/" target="_blank">#421 Maximum XOR of Two Numbers</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">#208 Implement Trie</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/word-search-ii/" target="_blank">#212 Word Search II (Trie + DFS)</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/" target="_blank">#421 Maximum XOR of Two Numbers</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/design-search-autocomplete-system/" target="_blank">#642 Design Search Autocomplete System</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff System Design DSA</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">Use <code>[26]*TrieNode</code> over <code>map[byte]*TrieNode</code> for lowercase-only — array indexing is 5–10× faster than map lookup. Index: <code>c - 'a'</code>. For wildcard search, recurse on all non-nil children when you see <code>'.'</code>.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Use <code>[26]*TrieNode</code> over <code>map[byte]*TrieNode</code> — 5–10× faster indexing. #212: prune DFS by removing words from trie as they're found to prevent duplicates. #642: trie + min-heap per node for top-3 — this is a full system design problem embedded in DSA.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card" id="d20">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 20–21</span>
+          <span class="day-title">Graph — BFS/DFS, Topological Sort, Dijkstra</span>
+          <span class="day-pattern">Graph</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">BFS = shortest path (unweighted). DFS = connectivity, cycle detection, topological order. Topo sort (Kahn's): in-degree array, queue of zero-in-degree nodes, add neighbours and decrement. Dijkstra: min-heap of (dist, node), relax edges. Template: <code>dist[src]=0; heap push; while heap { pop min; for neighbour: relax }</code>.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">Alien Dictionary (#269) and Minimum Cost to Connect All Points (#1584 — Prim's/Kruskal's) are Staff signals. Alien Dictionary: extract ordering constraints from word pairs, build a DAG, topo sort — if cycle exists, return "". Word Ladder II: BFS to find shortest path length, then DFS to enumerate all shortest paths. Both test graph construction, not just graph traversal.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=EgI5nU9etnU" target="_blank" style="color:var(--blue)">↗ NeetCode — Course Schedule II (15 min)</a> + <a href="https://www.youtube.com/watch?v=XEb7_z5dG3c" target="_blank" style="color:var(--blue)">Dijkstra's Algorithm (21 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/course-schedule-ii/" target="_blank">#210 Course Schedule II (Topo Sort)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/alien-dictionary/" target="_blank">#269 Alien Dictionary</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/network-delay-time/" target="_blank">#743 Network Delay Time (Dijkstra)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/word-ladder/" target="_blank">#127 Word Ladder (BFS)</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/swim-in-rising-water/" target="_blank">#778 Swim in Rising Water</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Adjacency list: <code>graph := make([][]int, n)</code>. Dijkstra: use <code>container/heap</code> with <code>(dist, node)</code> pairs. Track visited with a boolean slice — skip if a node is popped after a shorter path was already found. Staff: know both Dijkstra (SSSP) and Bellman-Ford (handles negative weights, detects negative cycles).</div>
           </div>
         </div>
       </div>
@@ -552,73 +715,135 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     </div>
 
     <div class="checkpoint">
-      <div class="cp-label">Week 3 Checkpoint</div>
-      <div class="cp-title">Mock Interview — Trees &amp; Search</div>
+      <div class="cp-label">Week 3 Checkpoint — Staff Standard</div>
+      <div class="cp-title">Core Trees and Graphs</div>
       <ul class="cp-list">
-        <li class="cp-item">Implement Trie from scratch in under 15 minutes — no reference</li>
-        <li class="cp-item">Solve a Hard tree problem cleanly: Binary Tree Maximum Path Sum or Serialize/Deserialize</li>
-        <li class="cp-item">Binary search on answer space: pick an unseen problem, identify the monotonic predicate before coding</li>
-        <li class="cp-item">BFS vs DFS decision: articulate when you'd choose each without pausing to think</li>
+        <li class="cp-item">Implement Trie in 10 minutes from scratch — no reference. Insert, search, startsWith.</li>
+        <li class="cp-item">Solve #124 Binary Tree Maximum Path Sum: state local-vs-global distinction before coding</li>
+        <li class="cp-item">Solve #269 Alien Dictionary: build the graph, topo sort, handle cycles — from scratch under 30 minutes</li>
+        <li class="cp-item">Median of Two Sorted Arrays (#4): derive the binary search on partition approach. O(log(min(m,n))).</li>
+        <li class="cp-item">Know when to use BFS vs DFS vs Dijkstra vs Bellman-Ford — articulate without pausing</li>
       </ul>
     </div>
 
     <!-- WEEK 4 -->
     <div id="week4" class="section-anchor">
       <span class="section-num">W4</span>
-      <h2 class="section-h">Week 4 — Graphs, DP, Backtracking</h2>
+      <h2 class="section-h">Week 4 — Union Find, DP, Backtracking</h2>
     </div>
-    <p class="body">The deepest patterns. Dynamic programming has exactly five sub-patterns worth mastering — everything else is a variant of one of them. For graphs, the signal that separates senior from mid-level answers is union-find: knowing when to use it over BFS/DFS and being able to implement path compression from memory.</p>
+    <p class="body">The deepest patterns. Dynamic programming has five sub-patterns — every DP problem is one of them. Union-Find separates Staff from mid-level on graph connectivity: knowing when to use it over BFS/DFS and being able to implement path compression + union by rank from memory in under 5 minutes.</p>
 
     <div class="day-list">
 
-      <div class="day-card">
+      <div class="day-card" id="d22">
         <div class="day-head" onclick="toggle(this)">
-          <span class="day-num">DAY 22–23</span>
-          <span class="day-title">Graph — BFS/DFS + Union Find</span>
-          <span class="day-pattern">Graph</span>
+          <span class="day-num">DAY 22</span>
+          <span class="day-title">Union-Find — Connectivity, Path Compression</span>
+          <span class="day-pattern">Union-Find</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
           <div class="day-section-label">Core Pattern</div>
-          <div class="day-text">BFS for shortest path (unweighted), DFS for connected components and cycle detection. Union-Find: <code>find(x)</code> with path compression, <code>union(x,y)</code> by rank. The key — Union-Find is O(α(n)) practically O(1) per operation, making it better than BFS/DFS for connectivity queries that are answered incrementally as edges are added.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-text">Union-Find answers "are x and y connected?" in near-O(1) with path compression + union by rank. <code>find(x)</code>: follow parent pointers to root, compress path on the way back. <code>union(x,y)</code>: attach smaller-rank tree to larger-rank root. After both optimisations: O(α(n)) per operation where α is the inverse Ackermann function — effectively O(1).</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The Staff signal: knowing when Union-Find beats BFS/DFS. BFS/DFS is O(V+E) per query. Union-Find is O(α(n)) per query after O(n) preprocessing. Use Union-Find when: edges are added incrementally, you need dynamic connectivity, or you're checking connectivity many times. Number of Provinces can use BFS; Redundant Connection should use Union-Find (detect cycle as you add edges).</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=ayW5B2W9hfo" target="_blank" style="color:var(--blue)">↗ NeetCode — Union Find (16 min)</a> — path compression and union by rank visualised.</div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/number-of-islands/" target="_blank">#200 Number of Islands</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/clone-graph/" target="_blank">#133 Clone Graph</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/redundant-connection/" target="_blank">#684 Redundant Connection (Union-Find)</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/pacific-atlantic-water-flow/" target="_blank">#417 Pacific Atlantic Water Flow</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/number-of-provinces/" target="_blank">#547 Number of Provinces</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Warm-up</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/redundant-connection/" target="_blank">#684 Redundant Connection</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/accounts-merge/" target="_blank">#721 Accounts Merge</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/number-of-islands-ii/" target="_blank">#305 Number of Islands II</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">Iterative path compression: <code>for parent[x] != x { parent[x] = parent[parent[x]]; x = parent[x] }</code> — path halving, one fewer allocation than full path compression with a slice.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Full implementation from memory (Staff expectation): <code>parent, rank := make([]int, n), make([]int, n); for i := range parent { parent[i] = i }; find := func(x int) int { for parent[x] != x { parent[x] = parent[parent[x]]; x = parent[x] }; return x }; union := func(x, y int) bool { px, py := find(x), find(y); if px == py { return false }; if rank[px] &lt; rank[py] { px, py = py, px }; parent[py] = px; if rank[px] == rank[py] { rank[px]++ }; return true }</code></div>
           </div>
         </div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" id="d23">
         <div class="day-head" onclick="toggle(this)">
-          <span class="day-num">DAY 26–27</span>
-          <span class="day-title">Dynamic Programming — 5 Core Patterns</span>
+          <span class="day-num">DAY 23–25</span>
+          <span class="day-title">Dynamic Programming — 5 Core Sub-Patterns</span>
           <span class="day-pattern">DP</span>
           <span class="day-toggle">▼</span>
         </div>
         <div class="day-body">
-          <div class="day-section-label">The 5 Patterns</div>
-          <div class="day-text"><strong>1D Linear</strong> — Climb Stairs, House Robber. <strong>Knapsack</strong> — 0/1 vs Unbounded. <strong>LCS/LIS</strong> — string subsequences, longest increasing subsequence. <strong>Interval DP</strong> — Burst Balloons, Matrix Chain. <strong>State Machine</strong> — Stock prices with cooldown or transaction limit. Every DP problem is one of these five. Identify the pattern, not the problem title.</div>
-          <div class="day-section-label">How to approach any DP problem</div>
-          <div class="day-text">Write the brute force recursion first — don't skip this step. Identify overlapping subproblems (same arguments called multiple times). Add memoisation. Then convert to bottom-up if needed for space. Space optimisation last: if you only need the previous row, collapse to a 1D array.</div>
-          <div class="day-section-label">Problems</div>
+          <div class="day-section-label">The Framework — Apply in Order</div>
+          <div class="day-text"><strong>1.</strong> Write the brute force recursion first. Never skip this. <strong>2.</strong> Identify overlapping subproblems — same arguments called repeatedly. <strong>3.</strong> Add memoisation (top-down). <strong>4.</strong> Convert to bottom-up if space matters. <strong>5.</strong> Optimise space: if you only need the previous row, collapse to 1D.</div>
+          <div class="day-section-label">The 5 Sub-Patterns</div>
+          <div class="day-text"><strong>1D Linear:</strong> current state depends on 1–3 previous states. House Robber, Climb Stairs, Decode Ways. <strong>Knapsack (0/1 + Unbounded):</strong> include/exclude decision for each item. Partition Equal Subset Sum, Coin Change. <strong>LCS/LIS family:</strong> 2D DP on two sequences or the sequence with itself. Edit Distance, Longest Palindromic Subsequence. <strong>Interval DP:</strong> dp[i][j] = best answer for subproblem on [i,j]. Burst Balloons, Matrix Chain. <strong>State Machine:</strong> model states explicitly as DP dimensions. Stock with cooldown/fee/k transactions.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=oBt53YbR9Kk" target="_blank" style="color:var(--blue)">↗ NeetCode — Coin Change (15 min)</a> + <a href="https://www.youtube.com/watch?v=Ua0GhsJSlWM" target="_blank" style="color:var(--blue)">Edit Distance (18 min)</a> + <a href="https://www.youtube.com/watch?v=VHZbiz6ynCA" target="_blank" style="color:var(--blue)">Burst Balloons (26 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
           <ul class="problem-list">
-            <li class="problem-item"><a href="https://leetcode.com/problems/house-robber/" target="_blank">#198 House Robber (1D Linear)</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/coin-change/" target="_blank">#322 Coin Change (Unbounded Knapsack)</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank">#1143 Longest Common Subsequence</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" target="_blank">#309 Buy/Sell Stock with Cooldown (State Machine)</a><span class="diff diff-med">Med</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/burst-balloons/" target="_blank">#312 Burst Balloons (Interval DP)</a><span class="diff diff-hard">Hard</span></li>
-            <li class="problem-item"><a href="https://leetcode.com/problems/edit-distance/" target="_blank">#72 Edit Distance</a><span class="diff diff-med">Med</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/partition-equal-subset-sum/" target="_blank">#416 Partition Equal Subset Sum (0/1 Knapsack)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/edit-distance/" target="_blank">#72 Edit Distance (LCS family)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7, OpenAI</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/burst-balloons/" target="_blank">#312 Burst Balloons (Interval DP)</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/" target="_blank">#123 Buy/Sell Stock III (State Machine)</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/regular-expression-matching/" target="_blank">#10 Regular Expression Matching</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/distinct-subsequences/" target="_blank">#115 Distinct Subsequences</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">OpenAI, Google L7</span></li>
           </ul>
           <div class="tip-block">
-            <div class="tip-label">Go tip</div>
-            <div class="tip-text">2D DP: <code>dp := make([][]int, m+1)</code> then <code>for i := range dp { dp[i] = make([]int, n+1) }</code>. For space optimisation, two rows: <code>prev, curr := make([]int,n+1), make([]int,n+1)</code>. Swap with <code>prev, curr = curr, prev</code> each iteration.</div>
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">2D DP init: <code>dp := make([][]int, m+1); for i := range dp { dp[i] = make([]int, n+1) }</code>. Space optimise: two rows, swap with <code>prev, curr = curr, prev</code>. For #312: think of balloons as the <em>last</em> one to burst in range [i,j], not the first — this transforms the formulation from "what gets split" to "what remains." This non-obvious framing is the Staff signal.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card" id="d26">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 26–27</span>
+          <span class="day-title">Backtracking — Systematic Exhaustive Search</span>
+          <span class="day-pattern">Backtracking</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Template: <code>func bt(start int, path []int) { if valid(path) { append to result }; for i := start; i &lt; n; i++ { path = append(path, candidates[i]); bt(i+1, path); path = path[:len(path)-1] } }</code>. The key decision: pass <code>i</code> or <code>i+1</code> as the start for the recursive call — the former allows repetition, the latter doesn't.</div>
+          <div class="day-section-label">Staff-Level Depth</div>
+          <div class="day-text">The Staff signal is pruning — not just writing a correct backtracking solution but making it fast. For Combination Sum: sort first, then break the inner loop when <code>candidates[i] > remaining</code>. For N-Queens: use three boolean arrays (rows, diagonals, anti-diagonals) for O(1) conflict check instead of O(n) linear scan. Articulating the pruning strategy and its effect on the worst-case is expected.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=REOH22Xwdkk" target="_blank" style="color:var(--blue)">↗ NeetCode — Subsets (9 min)</a> + <a href="https://www.youtube.com/watch?v=rSA3t6BDDwg" target="_blank" style="color:var(--blue)">N-Queens (18 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/combination-sum/" target="_blank">#39 Combination Sum</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta, Google, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/permutations-ii/" target="_blank">#47 Permutations II (with duplicates)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Meta E6+, Google</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/n-queens/" target="_blank">#51 N-Queens</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L6+, Meta E7</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/sudoku-solver/" target="_blank">#37 Sudoku Solver</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/expression-add-operators/" target="_blank">#282 Expression Add Operators</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Meta E7 Staff</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Avoid allocation on the hot path: pre-allocate path slice with capacity, reuse it. For duplicates (#47): sort first, then <code>if i > start && nums[i] == nums[i-1] { continue }</code>. For #37: pre-compute valid placements per cell for faster backtracking. Staff: state the time complexity as O(9! × 9) for Sudoku with pruning.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card" id="d28">
+        <div class="day-head" onclick="toggle(this)">
+          <span class="day-num">DAY 28</span>
+          <span class="day-title">Advanced Graph — Bellman-Ford, Floyd-Warshall, SCC</span>
+          <span class="day-pattern">Advanced Graph</span>
+          <span class="day-toggle">▼</span>
+        </div>
+        <div class="day-body">
+          <div class="day-section-label">Core Pattern</div>
+          <div class="day-text">Bellman-Ford: relax all edges V-1 times. O(VE). Detects negative cycles (if any edge still relaxes after V-1 passes). Floyd-Warshall: all-pairs shortest paths. O(V³). <code>dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])</code> for all k. Tarjan's SCC: single DFS pass, discovery + low-link values to find strongly connected components.</div>
+          <div class="day-section-label">Video Resource</div>
+          <div class="day-text"><a href="https://www.youtube.com/watch?v=obWXjtg0L64" target="_blank" style="color:var(--blue)">↗ NeetCode — Cheapest Flights Within K Stops (19 min)</a> — Bellman-Ford with constraint. + <a href="https://www.youtube.com/watch?v=4OQeCuLYj-4" target="_blank" style="color:var(--blue)">Find All Critical Connections (22 min)</a></div>
+          <div class="day-section-label">Problems — Staff Calibration</div>
+          <ul class="problem-list">
+            <li class="problem-item"><a href="https://leetcode.com/problems/cheapest-flights-within-k-stops/" target="_blank">#787 Cheapest Flights Within K Stops</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google, Meta, Amazon</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors/" target="_blank">#1334 Find the City (Floyd-Warshall)</a><span class="diff diff-med">Med</span><span class="day-pattern" style="margin-left:4px">Google L6+</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/critical-connections-in-a-network/" target="_blank">#1192 Critical Connections (Tarjan's bridges)</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, OpenAI Staff</span></li>
+            <li class="problem-item"><a href="https://leetcode.com/problems/parallel-courses-iii/" target="_blank">#2050 Parallel Courses III</a><span class="diff diff-hard">Hard</span><span class="day-pattern" style="margin-left:4px">Google L7, Staff Signal</span></li>
+          </ul>
+          <div class="tip-block">
+            <div class="tip-label">Go tip + Staff standard</div>
+            <div class="tip-text">Bellman-Ford with K constraint: copy previous round's distances before updating to avoid using updated values in the same round. Tarjan's bridges: maintain <code>disc[]</code> and <code>low[]</code> arrays; a back edge updates <code>low</code> but a cross/forward edge doesn't. Know the difference between Tarjan's bridges (undirected) and Tarjan's SCC (directed).</div>
           </div>
         </div>
       </div>
@@ -626,19 +851,19 @@ footer{border-top:1px solid var(--rule);padding:28px 0}
     </div>
 
     <div class="checkpoint">
-      <div class="cp-label">Week 4 Checkpoint</div>
-      <div class="cp-title">Final Mocks — Day 29–30</div>
+      <div class="cp-label">Week 4 Checkpoint — Staff Standard</div>
+      <div class="cp-title">Final Mock: Days 29–30</div>
       <ul class="cp-list">
-        <li class="cp-item">Day 29: 2× timed 45-min sessions. One array/graph + one DP problem. Record yourself explaining. Review pattern gaps.</li>
-        <li class="cp-item">Day 30: Re-solve the 5 problems that took you longest. Speed coding practice. No hints.</li>
-        <li class="cp-item">Target: any medium in ≤20 min, any hard in ≤40 min with full verbal explanation</li>
-        <li class="cp-item">Go standard: clean, no unnecessary allocations, handles edge cases (empty input, single element, negative numbers)</li>
+        <li class="cp-item">Implement Union-Find with path compression + union by rank from memory in under 3 minutes</li>
+        <li class="cp-item">Solve #312 Burst Balloons: articulate the "last to burst" framing insight before coding</li>
+        <li class="cp-item">Solve #282 Expression Add Operators: handle multiplication's dependence on the previous operand correctly</li>
+        <li class="cp-item">Day 29: two 45-min timed sessions. One DP (Hard) + one Graph. Record yourself. Review for the 3 minutes where structure broke down.</li>
+        <li class="cp-item">Day 30: re-solve the 5 problems that took longest. Goal: any Medium in ≤15 min, any Hard in ≤35 min with clean verbal explanation</li>
       </ul>
     </div>
-
-    <!-- MOCK PROTOCOL -->
+<!-- MOCK PROTOCOL -->
     <div id="mock" class="section-anchor">
-      <span class="section-num">30</span>
+      <span class="section-num">→</span>
       <h2 class="section-h">The Mock Session Protocol</h2>
     </div>
     <p class="body">The gap between "I understand this pattern" and "I can solve this under pressure in 20 minutes" is only closed by doing timed sessions. Here's the exact protocol for every weekly mock:</p>
